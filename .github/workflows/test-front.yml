@@ -1,0 +1,15 @@
+name: Tests Frontend
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest  # on spécifie l'environnement dans lequel on exécute la pipeline
+
+    steps:
+    - name: clone du repo/accès au code source
+      uses: actions/checkout@v2
+  
+  # On continuera la pipeline une fois la librairie de test choisie

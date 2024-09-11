@@ -1,0 +1,26 @@
+name: Linting Frontend
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest  # on spécifie l'environnement dans lequel on exécute la pipeline
+
+    steps:
+    - name: clone du repo/accès au code source
+      uses: actions/checkout@v2
+
+    - name: installations de Node dans l'environnement
+      uses: actions/setup-node@v2
+      with:
+        node-version: '22'  # on spécifie la version de Node à utiliser
+
+    - name: installations des dépendances
+      run: npm install
+      working-directory: ./frontend
+
+    - name: Linter du code
+      run: npm run lint
+      working-directory: ./frontend
