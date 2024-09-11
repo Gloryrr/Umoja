@@ -7,6 +7,11 @@ Planifiez désormais tout vos évênements depuis notre application WEB. Mutuali
 
 Rejoignez désormais les réseaux professionels présents sur la plateforme et découvrez toutes les fonctionnalités qui vous permettront de simplifier vos organisations.
 
+## Documentation
+
+Pour toutes informations nécessaires à la compréhension du projet, merci de prendre part aux informations distribuées depuis le réseau centralisé **[ici](https://drive.google.com/drive/u/0/folders/1-W8owdcPgCQNZoVTqhNMLNMSHPmEiNQm)**.  
+Pour toutes demandes d'accès, merci d'adresser la demande au propriétaire du dépôt.
+
 ## Installation
 
 ### Local
