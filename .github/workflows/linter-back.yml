@@ -19,6 +19,8 @@ jobs:
 
     - name: installations des dépendances de composer (fichier composer.json)
       run: composer install --prefer-dist --no-progress --no-interaction
+      working-directory: ./saas_backend
 
     - name: exécution de la commande de vérification du code
       run: vendor/bin/phpcs -p --standard=PSR12 src
+      working-directory: ./saas_backend

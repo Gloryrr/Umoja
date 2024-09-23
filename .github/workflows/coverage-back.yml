@@ -19,6 +19,8 @@ jobs:
 
     - name: installations des dépendances de composer (fichier composer.json)
       run: composer install --prefer-dist --no-progress --no-interaction
+      working-directory: ./saas_backend
 
     - name: exécution du coverage (dossier tests/)
       run: vendor/bin/phpunit --coverage-text
+      working-directory: ./saas_backend
