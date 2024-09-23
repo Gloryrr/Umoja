@@ -18,7 +18,7 @@ jobs:
         php-version: '8.1' # on spécifie le versionnage 8.1
 
     - name: installations des dépendances de composer (fichier composer.json)
-      run: composer install --prefer-dist --no-progress --no-suggest --no-interaction
+      run: composer install --prefer-dist --no-progress --no-interaction
 
     - name: exécution du coverage (dossier tests/)
       run: vendor/bin/phpunit --coverage-text
