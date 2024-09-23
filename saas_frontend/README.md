@@ -23,14 +23,14 @@ Pour démarrer le frontend, merci de prendre en compte les deux manières suivan
 
 - Soit vous installez et démarrez le frontend depuis le conteneur prévu à cette effet. Pour cela, merci de vous rendre à la racine du projet et de vous servir de l'utilitaire mis à votre disposition :
     ```bash
-    bash config_bash/frontend/build_react.sh
+    bash config_sh/frontend/build_react.sh
     ```
     Qui construira l'image ( cela peut prendre un peu de temps ) et que vous lancerez (à la suite de l'installation de l'image) avec la commande :
     ```bash
-    bash config_bash/frontend/start_front.sh
+    bash config_sh/frontend/start_front.sh
     ```
 
 Une fois le lancement du serveur effectué, merci d'ouvrir votre navigateur et d'entrer l'adresse suivante :
 ```text
-localhost:8000
+localhost:3000
 ```
