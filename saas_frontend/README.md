@@ -1,36 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Frontend du SAAS
 
-## Getting Started
+## Contexte
 
-First, run the development server:
+Le frontend en React est généré avec Next.js, merci de suivre les instructions du WEB ci-après en cliquant sur le lien **[ici](https://fr.react.dev/learn/start-a-new-react-project)**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Instructions
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Pour retrouver tous les composants du frontend, merci de vous rendre dans le dossier **./src/app/**.  
+La vue initiale est dans le fichier **./src/app/page.js**, elle est notre index.html.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Lancement
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Pour démarrer le frontend, merci de prendre en compte les deux manières suivantes :  
+- Soit vous démarrez le serveur de vous même en exécutant :
+    ```bash
+    npm run dev
+    ```
+    Mais vous prenez en compte la gestion des dépendances en **installant** sur votre poste en **local** toutes les **dépendances nécessaires au lancement** du frontend en exécutant au préalable la commande :
+    ```bash
+    npm install
+    ```
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Soit vous installez et démarrez le frontend depuis le conteneur prévu à cette effet. Pour cela, merci de vous rendre à la racine du projet et de vous servir de l'utilitaire mis à votre disposition :
+    ```bash
+    bash config_bash/frontend/build_react.sh
+    ```
+    Qui construira l'image ( cela peut prendre un peu de temps ) et que vous lancerez (à la suite de l'installation de l'image) avec la commande :
+    ```bash
+    bash config_bash/frontend/start_front.sh
+    ```
