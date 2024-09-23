@@ -26,6 +26,11 @@ Le principal de la définition du modèle se fera dans ce dossier.
 
 ## Instructions Modèle
 
+Avant tout détails des commandes symfony, prenez en compte l'existence d'un utilitaire en shell mis à votre disposition pour vous simplifier le développement. Son utilisation se fait avec la commande à exécuter dans le répertoire **saas_backend/** :
+```bash
+bash conf_bash/utilitaire_saas.sh
+```
+
 Créer une entité en utilisant symfony :
 
 ```bash
@@ -65,10 +70,26 @@ Pour créer un Controller :
 php bin/console make:controller
 ```
 
-## Instructions de serveur
+## Instructions de lancement du serveur
 
-Lancement du serveur :
+Pour lancer le serveur, vous avez deux options :
 
-```bash
-symfony server:start
-```
+- Soit vous pouvez lancer le serveur vous-même en prenant en compte toutes les installations à faire sur votre propre poste au préalable avec l'instalaltion de PHP, composer et symfony. Une fois ces installations faites, merci d'installer toutes les dépendances nécessaires au projet avec la commande suivante :
+    ```bash
+    composer install
+    ```
+    Une fois toutes les dépendances installées, merci de lancer le serveur avec la commande suivante :
+    ```bash
+    symfony server:start
+    ```
+
+- Soit vous installez et démarrez l'application depuis les conteneurs docker mis à votre disposition. Pour cela, merci de vous rendre à la racine de votre projet et d'exécuter l'instruction ci-dessous :
+    ```bash
+    bash config_sh/backend/build_symfony.sh
+    ```
+    Une fois les services docker installées, lancez le serveur avec la commande suivante :
+    ```bash
+    bash config_sh/backend/start_backend.sh
+    ```
+
+Merci de regarder le postman fourni pour tester l'accessibilité avec votre navigateur WEB.
