@@ -13,7 +13,9 @@ echo # pour la saut de ligne
 echo -e "\t1. Utiliser le loader pour charger des données"
 echo -e "\t2. Mettre à jour la BDD avec les changements du modèle"
 echo -e "\t3. Créer une Entité"
-echo -e "\t4. Créer un Controller\n"
+echo -e "\t4. Créer un Controller"
+echo -e "\t5. Exécuter les tests unittaires"
+echo -e "\t6. Checker le coverage des tests\n"
 
 read -p "Entrer l'instruction demandée : " instruction
 
@@ -25,4 +27,8 @@ elif [ $instruction == "3" ]; then
     php bin/console make:entity
 elif [ $instruction == "4" ]; then
     php bin/console make:controller
+elif [ $instruction == "5" ]; then
+    vendor/bin/phpunit --testdox
+elif [ $instruction == "6" ]; then
+    vendor/bin/phpunit --coverage-text
 fi
