@@ -29,3 +29,8 @@ Pour démarrer le frontend, merci de prendre en compte les deux manières suivan
     ```bash
     bash config_bash/frontend/start_front.sh
     ```
+
+Une fois le lancement du serveur effectué, merci d'ouvrir votre navigateur et d'entrer l'adresse suivante :
+```text
+localhost:8000
+```
