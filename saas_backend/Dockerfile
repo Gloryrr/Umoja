@@ -2,20 +2,15 @@
 FROM php:8.1-fpm
 
 # Installer les dépendances système et les extensions PHP nécessaires
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libzip-dev \
-    unzip \
-    git \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     libcurl4-openssl-dev \
     zlib1g-dev \
-    libonig-dev \
     libxml2-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd zip pdo pdo_pgsql curl mbstring xml bcmath ctype
+    libonig-dev \
+    libzip-dev \
+    && docker-php-ext-install pdo pdo_pgsql curl mbstring xml zip \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Créer et définir le répertoire de travail
 WORKDIR /app/saas/backend/
