@@ -16,6 +16,8 @@ echo -e "\t3. Créer une Entité"
 echo -e "\t4. Créer un Controller"
 echo -e "\t5. Exécuter les tests unittaires"
 echo -e "\t6. Checker le coverage des tests\n"
+echo -e "\t7. Vérifier la qualité du code\n"
+echo -e "\t8. Corriger la qualité du code\n"
 
 read -p "Entrer l'instruction demandée : " instruction
 
@@ -31,4 +33,8 @@ elif [ $instruction == "5" ]; then
     vendor/bin/phpunit --testdox
 elif [ $instruction == "6" ]; then
     vendor/bin/phpunit --coverage-text
+elif [ $instruction == "7" ]; then
+    vendor/bin/phpcs -p --standard=PSR12 src
+elif [ $instruction == "8" ]; then
+    vendor/bin/phpcbf src
 fi

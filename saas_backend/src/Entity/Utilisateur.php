@@ -37,8 +37,8 @@ class Utilisateur
 
     /**
      * @var string|null Le rôle de l'utilisateur.
-     * Ex: USER, ADMIN. 
-     * Notes: Le rôle peut être concatené dans une seule chaîne de caractère si le user à plusieurs rôles ("USER:ADMIN").
+     * Ex: USER, ADMIN.
+     * Notes: Le rôle peut être concatené si le user à plusieurs rôles ("USER:ADMIN").
      */
     #[ORM\Column(length: 20)]
     private ?string $roleUtilisateur = null;

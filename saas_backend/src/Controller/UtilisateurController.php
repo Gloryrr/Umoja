@@ -8,7 +8,6 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-
 use App\Repository\UtilisateurRepository;
 
 class UtilisateurController extends AbstractController
@@ -21,8 +20,10 @@ class UtilisateurController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/v1/utilisateurs', name: 'get_utilisateurs', methods: ['GET'])]
-    public function getUtilisateurs(UtilisateurRepository $utilisateurRepository, SerializerInterface $serializer): JsonResponse
-    {
+    public function getUtilisateurs(
+        UtilisateurRepository $utilisateurRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
         $utilisateurs = $utilisateurRepository->findAll();
         $utilisateursJSON = $serializer->serialize($utilisateurs, 'json');
         return new JsonResponse([
@@ -42,10 +43,13 @@ class UtilisateurController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/v1/utilisateurs', name: 'create_utilisateur', methods: ['POST'])]
-    public function createUtilisateur(Request $request, UtilisateurRepository $utilisateurRepository, SerializerInterface $serializer): JsonResponse
-    {
+    public function createUtilisateur(
+        Request $request,
+        UtilisateurRepository $utilisateurRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
         $data = json_decode($request->getContent(), true);
-        
+
         $utilisateur = new Utilisateur();
         $utilisateur->setEmailUtilisateur($data['emailUtilisateur']);
         $utilisateur->setMdpUtilisateur($data['mdpUtilisateur']);
@@ -76,13 +80,17 @@ class UtilisateurController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/v1/utilisateurs/{id}', name: 'update_utilisateur', methods: ['PATCH'])]
-    public function updateUtilisateur(int $id, Request $request, UtilisateurRepository $utilisateurRepository, SerializerInterface $serializer): JsonResponse
-    {
+    public function updateUtilisateur(
+        int $id,
+        Request $request,
+        UtilisateurRepository $utilisateurRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
         $utilisateur = $utilisateurRepository->find($id);
 
         if (!$utilisateur) {
             return new JsonResponse([
-                'message' => 'Utilisateur non trouvé, merci de donner un identifiant valide !', 
+                'message' => 'Utilisateur non trouvé, merci de donner un identifiant valide !',
                 'reponse' => Response::HTTP_NOT_FOUND
             ]);
         }
@@ -144,7 +152,7 @@ class UtilisateurController extends AbstractController
         $utilisateurRepository->remove($utilisateur, true);
 
         return new JsonResponse([
-            'message' => 'Utilisateur supprimé', 
+            'message' => 'Utilisateur supprimé',
             'reponse' => Response::HTTP_NO_CONTENT
         ]);
     }
