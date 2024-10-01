@@ -21,7 +21,7 @@ class RegisterController extends AbstractController
      *
      * @return JsonResponse
      */
-    #[Route('/api/v1/register', name: 'register_user', methods: ['GET'])]
+    #[Route('/api/v1/register', name: 'register_user', methods: ['POST'])]
     public function register(
         Request $request,
         UtilisateurRepository $utilisateurRepository,
