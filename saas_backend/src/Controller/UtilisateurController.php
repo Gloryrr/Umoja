@@ -9,6 +9,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Repository\UtilisateurRepository;
+use App\Entity\Utilisateur;
 
 class UtilisateurController extends AbstractController
 {
@@ -90,6 +91,7 @@ class UtilisateurController extends AbstractController
 
         if (!$utilisateur) {
             return new JsonResponse([
+                'erreur' => 0001,
                 'message' => 'Utilisateur non trouvé, merci de donner un identifiant valide !',
                 'reponse' => Response::HTTP_NOT_FOUND
             ]);
