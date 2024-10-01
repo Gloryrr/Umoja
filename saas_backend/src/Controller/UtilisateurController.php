@@ -51,23 +51,22 @@ class UtilisateurController extends AbstractController
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
 
-        $utilisateur = new Utilisateur();
-        $utilisateur->setEmailUtilisateur($data['emailUtilisateur']);
-        $utilisateur->setMdpUtilisateur($data['mdpUtilisateur']);
-        $utilisateur->setRoleUtilisateur($data['roleUtilisateur']);
-        $utilisateur->setUsername($data['username']);
-        $utilisateur->setNumTelUtilisateur($data['numTelUtilisateur'] ?? null);
-        $utilisateur->setNomUtilisateur($data['nomUtilisateur'] ?? null);
-        $utilisateur->setPrenomUtilisateur($data['prenomUtilisateur'] ?? null);
+        $utilisateur = $utilisateurRepository->inscritUtilisateur($data);
+        if ($utilisateur) {
+            $utilisateurJSON = $serializer->serialize($utilisateur, 'json');
 
-        $utilisateurRepository->save($utilisateur, true);
-        $utilisateurJSON = $serializer->serialize($utilisateur, 'json');
-
+            return new JsonResponse([
+                'utilisateur' => $utilisateurJSON,
+                'reponse' => Response::HTTP_CREATED,
+                'headers' => [],
+                'serialized' => true
+            ]);
+        }
         return new JsonResponse([
-            'utilisateur' => $utilisateurJSON,
-            'reponse' => Response::HTTP_CREATED,
+            'utilisateur' => null,
+            'reponse' => Response::HTTP_BAD_REQUEST,
             'headers' => [],
-            'serialized' => true
+            'serialized' => false
         ]);
     }
 
