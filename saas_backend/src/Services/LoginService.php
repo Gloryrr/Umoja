@@ -17,18 +17,19 @@ class LoginService {
         SerializerInterface $serializer,
         mixed $data_login
     ): JsonResponse {
-        // si l'utilisateur se connecte ne utilisant son email
-        if (!isset($data_login['username'])) {
-            $user = $utilisateurRepository->trouveUtilisateurByMail(
-                $data_login['emailUtilisateur'], 
-                $data_login['mdpUtilisateur']);
-        } else {
-            $user = $utilisateurRepository->trouveUtilisateurByUsername(
-                $data_login['username'],
-                $data_login['mdpUtilisateur']
-            );
-        }
         try {
+            // si l'utilisateur se connecte ne utilisant son email
+            if (!isset($data_login['username'])) {
+                $user = $utilisateurRepository->trouveUtilisateurByMail(
+                    $data_login['emailUtilisateur'], 
+                    $data_login['mdpUtilisateur']);
+            } else {
+                $user = $utilisateurRepository->trouveUtilisateurByUsername(
+                    $data_login['username'],
+                    $data_login['mdpUtilisateur']
+                );
+            }
+            
             // vérification du mode de connexion (par mail ou username)
             // si utilisateur trouvé, alors on renvoie les infos utilisateurs
             if ($user != null) {
