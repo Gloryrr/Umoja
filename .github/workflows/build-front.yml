@@ -17,12 +17,10 @@ jobs:
       with:
         node-version: '22' # on spécifie le versionnage de node quand on le tire
 
-    # On ajoutera le reste des librairies pour compiler le front
-
     - name: installations des dépendances
       run: npm install
-      working-directory: ./frontend
+      working-directory: ./saas_frontend
 
     - name: compilation du code
       run: npm run build
-      working-directory: ./frontend
+      working-directory: ./saas_frontend
