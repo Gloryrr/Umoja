@@ -29,7 +29,6 @@ class UtilisateurService
         // on récupère tous les utilisateurs
         $utilisateurs = $utilisateurRepository->findAll();
         $utilisateursJSON = $serializer->serialize($utilisateurs, 'json');
-
         return new JsonResponse([
             'utilisateurs' => $utilisateursJSON,
             'message' => "Liste des utilisateurs",
@@ -63,7 +62,6 @@ class UtilisateurService
             } elseif (empty($data['mdpUtilisateur'])) {
                 throw new \InvalidArgumentException("Le mot de passe utilisateur est requis.");
             }
-
             // création de l'objet et instanciation des données de l'objet
             $utilisateur = new Utilisateur();
             $utilisateur->setEmailUtilisateur(
@@ -82,7 +80,6 @@ class UtilisateurService
             // vérification de l'action en BDD
             if ($rep) {
                 $utilisateurJSON = $serializer->serialize($utilisateur, 'json');
-
                 return new JsonResponse([
                     'utilisateur' => $utilisateurJSON,
                     'message' => "Utilisateur inscrit !",
