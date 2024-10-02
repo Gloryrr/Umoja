@@ -1,7 +1,11 @@
 import React from 'react';
 import Connection_form from "./components/connection_form";
+import InscriptionForm from './components/inscription_form';
+
 export default function Home() {
   return (
-    <Connection_form/>
+    <div>
+      <Connection_form/>
+    </div>
   );
 }
