@@ -11,7 +11,7 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         // données fictives d'entrées pour un test fonctionnel de l'API
-        for ($i = 0; $i < 10; $i++) {
+        //for ($i = 0; $i < 10; $i++) {
             $utilisateur = new Utilisateur();
             $utilisateur->setEmailUtilisateur("test@example.com");
             $utilisateur->setMdpUtilisateur("mot-de-passe-hashé");
@@ -19,9 +19,9 @@ class AppFixtures extends Fixture
             $utilisateur->setRoleUtilisateur("ADMIN:USER");
             $utilisateur->setNomUtilisateur("Fontaine");
             $utilisateur->setPrenomUtilisateur("Jean");
-            $utilisateur->setUsername("username n°" . $i);
+            $utilisateur->setUsername("username n° 1");
             $manager->persist($utilisateur);
-        }
+        //}
 
         $manager->flush();
     }
