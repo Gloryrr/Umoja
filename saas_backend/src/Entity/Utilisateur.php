@@ -202,7 +202,7 @@ class Utilisateur
      * @param string $nomUtilisateur
      * @return static
      */
-    public function setNomUtilisateur(string $nomUtilisateur): static
+    public function setNomUtilisateur(?string $nomUtilisateur): static
     {
         $this->nomUtilisateur = $nomUtilisateur;
 
@@ -225,7 +225,7 @@ class Utilisateur
      * @param string $prenomUtilisateur
      * @return static
      */
-    public function setPrenomUtilisateur(string $prenomUtilisateur): static
+    public function setPrenomUtilisateur(?string $prenomUtilisateur): static
     {
         $this->prenomUtilisateur = $prenomUtilisateur;
 
