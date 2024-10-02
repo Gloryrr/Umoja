@@ -60,7 +60,7 @@ class OffreController extends AbstractController
         $offre->setPlaceMax($data['placeMax']);
         $offre->setDateLimiteReponse(new \DateTime($data['dateLimiteReponse']));
         $offre->setValidee($data['validee']);
-        
+
         // Supposons que 'ArtisteConcerne' est passé un d'artiste existant
         $artiste = $offreRepository->find($data['IdArtisteConcerne']);
         $offre->setArtisteConcerne($artiste);
@@ -69,7 +69,7 @@ class OffreController extends AbstractController
 
         $offreRepository->getEntityManager()->persist($offre);
         $offreRepository->getEntityManager()->flush();
-        
+
         // Sérialisation de l'offre en JSON
         $offreJSON = $serializer->serialize($offre, 'json');
 
