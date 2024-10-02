@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Fredoka, Nunito } from "next/font/google";
 import "./globals.css";
+import NavbarApp from "./components/navbar";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -40,11 +41,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-  
+      
       <body
-        className={`${fredoka.variable} ${nunito.variable} antialiased`}
+        className={`${fredoka.variable} ${nunito.variable} antialiased flex flex-col`}
       >
+        <NavbarApp/>
         {children}
+        
       </body>
     </html>
   );
