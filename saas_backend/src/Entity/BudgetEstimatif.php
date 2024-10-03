@@ -174,10 +174,10 @@ class BudgetEstimatif
  *
  * @return Offre|null L'offre associée ou null si aucune offre n'est définie.
  */
-public function getOffre(): ?Offre
-{
-    return $this->offre;
-}
+    public function getOffre(): ?Offre
+    {
+        return $this->offre;
+    }
 
 /**
  * Définit l'offre associée.
@@ -185,10 +185,10 @@ public function getOffre(): ?Offre
  * @param Offre $offre L'offre à associer.
  * @return static
  */
-public function setOffre(Offre $offre): static
-{
-    $this->offre = $offre;
+    public function setOffre(Offre $offre): static
+    {
+        $this->offre = $offre;
 
-    return $this;
-}
+        return $this;
+    }
 }
