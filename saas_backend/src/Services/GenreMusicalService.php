@@ -126,7 +126,7 @@ class GenreMusicalService
 
             // on vérifie qu'aucune données ne manque pour la mise à jour
             // et on instancie les données dans l'objet
-            if (isset($data['nomGnereMusical'])) {
+            if (isset($data['nomGenreMusical'])) {
                 $genreMusical->setNomGenreMusical($data['nomGenreMusical']);
             }
 
