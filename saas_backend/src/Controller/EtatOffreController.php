@@ -19,8 +19,8 @@ class EtatOffreController extends AbstractController
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
-    #[Route('/api/v1/genres-musicaux', name: 'get_genres_musicaux', methods: ['GET'])]
-    public function getGenresMusicaux(
+    #[Route('/api/v1/etats-offre', name: 'get_etats_offre', methods: ['GET'])]
+    public function getEtatsOffre(
         EtatOffreRepository $etatOffreRepository,
         SerializerInterface $serializer
     ): JsonResponse {
@@ -38,8 +38,8 @@ class EtatOffreController extends AbstractController
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
-    #[Route('/api/v1/genre-musical/create', name: 'create_genre_musical', methods: ['POST'])]
-    public function createGenreMusical(
+    #[Route('/api/v1/etat-offre/create', name: 'create_etat_offre', methods: ['POST'])]
+    public function createEtatOffre(
         Request $request,
         EtatOffreRepository $etatOffreRepository,
         SerializerInterface $serializer
@@ -61,8 +61,8 @@ class EtatOffreController extends AbstractController
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
-    #[Route('/api/v1/genre-musical/update/{id}', name: 'update_genre_musical', methods: ['PATCH'])]
-    public function updateGenreMusical(
+    #[Route('/api/v1/etat-offre/update/{id}', name: 'update_etat_offre', methods: ['PATCH'])]
+    public function updateEtatOffre(
         int $id,
         Request $request,
         EtatOffreRepository $etatOffreRepository,
@@ -84,8 +84,8 @@ class EtatOffreController extends AbstractController
      * @param EtatOffreRepository $etatOffreRepository, la classe CRUD des états d'offre
      * @return JsonResponse
      */
-    #[Route('/api/v1/genre-musical/delete/{id}', name: 'delete_genre_musical', methods: ['DELETE'])]
-    public function deleteGenreMusical(
+    #[Route('/api/v1/etat-offre/delete/{id}', name: 'delete_etat_offre', methods: ['DELETE'])]
+    public function deleteEtatOffre(
         int $id,
         EtatOffreRepository $etatOffreRepository,
         SerializerInterface $serializer
