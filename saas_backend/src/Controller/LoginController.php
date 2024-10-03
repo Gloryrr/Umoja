@@ -30,7 +30,7 @@ class LoginController extends AbstractController
         // récupération des données de la requête pour la connexion
         $data_login = json_decode($request->getContent(), true);
         return LoginService::login(
-            $utilisateurRepository, 
+            $utilisateurRepository,
             $serializer,
             $data_login
         );

@@ -23,7 +23,7 @@ class GenreMusicalRepository extends ServiceEntityRepository
         parent::__construct($registry, GenreMusical::class);
     }
 
-    
+
     /**
      * Trouve un genre musical par son nom.
      *

@@ -11,7 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
  * Class RegisterService
  * Est le gestionnaire des inscriptions utilisateurs (gestion de la logique métier)
  */
-class RegisterService {
+class RegisterService
+{
     public static function register(
         UtilisateurRepository $utilisateurRepository,
         SerializerInterface $serializer,
