@@ -74,14 +74,15 @@ class Utilisateur
     private ?string $prenomUtilisateur = null;
 
     /**
-     * @var Collection<int, Reseau>
+     * @var Collection<int, Appartenir>
      */
-    #[ORM\ManyToMany(targetEntity: Reseau::class, mappedBy: 'membres')]
-    private Collection $etreMembreDe;
+    #[ORM\OneToMany(targetEntity: Appartenir::class, mappedBy: 'idUtilisateur', orphanRemoval: true)]
+    private Collection $appartientA;
 
     public function __construct()
     {
         $this->etreMembreDe = new ArrayCollection();
+        $this->appartientA = new ArrayCollection();
     }
 
     /**
@@ -269,27 +270,30 @@ class Utilisateur
     }
 
     /**
-     * @return Collection<int, Reseau>
+     * @return Collection<int, Appartenir>
      */
-    public function getEtreMembreDe(): Collection
+    public function getAppartientA(): Collection
     {
-        return $this->etreMembreDe;
+        return $this->appartientA;
     }
 
-    public function addEtreMembreDe(Reseau $etreMembreDe): static
+    public function addAppartientA(Appartenir $appartientA): static
     {
-        if (!$this->etreMembreDe->contains($etreMembreDe)) {
-            $this->etreMembreDe->add($etreMembreDe);
-            $etreMembreDe->addMembre($this);
+        if (!$this->appartientA->contains($appartientA)) {
+            $this->appartientA->add($appartientA);
+            $appartientA->setIdUtilisateur($this);
         }
 
         return $this;
     }
 
-    public function removeEtreMembreDe(Reseau $etreMembreDe): static
+    public function removeAppartientA(Appartenir $appartientA): static
     {
-        if ($this->etreMembreDe->removeElement($etreMembreDe)) {
-            $etreMembreDe->removeMembre($this);
+        if ($this->appartientA->removeElement($appartientA)) {
+            // set the owning side to null (unless already changed)
+            if ($appartientA->getIdUtilisateur() === $this) {
+                $appartientA->setIdUtilisateur(null);
+            }
         }
 
         return $this;

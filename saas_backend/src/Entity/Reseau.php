@@ -31,30 +31,22 @@ class Reseau
     private ?string $nomReseau = null;
 
     /**
-     * @var Collection<int, Utilisateur>
+     * @var Collection<int, Appartenir>
      */
-    #[ORM\ManyToMany(targetEntity: Utilisateur::class, inversedBy: 'etreMembreDe')]
-    #[ORM\JoinTable(
-        name: "appartient",
-        joinColumns: [new ORM\JoinColumn(name: "id_reseau", referencedColumnName: "id_reseau")],
-        inverseJoinColumns: [new ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur")]
-    )]
-    private Collection $membres;
+    #[ORM\OneToMany(targetEntity: Appartenir::class, mappedBy: 'idReseau', orphanRemoval: true)]
+    private Collection $estMembreDe;
 
     /**
-     * @var Collection<int, GenreMusical>
+     * @var Collection<int, Lier>
      */
-    #[ORM\ManyToMany(targetEntity: GenreMusical::class, inversedBy: 'reseauxLies')]
-    #[ORM\JoinTable(
-        name: "lier",
-        joinColumns: [new ORM\JoinColumn(name: "id_reseau", referencedColumnName: "id_reseau")],
-        inverseJoinColumns: [new ORM\JoinColumn(name: "id_genre_musical", referencedColumnName: "id_genre_musical")]
-    )]
-    private Collection $genresLies;
+    #[ORM\OneToMany(targetEntity: Lier::class, mappedBy: 'idReseau', orphanRemoval: true)]
+    private Collection $estLierAuxGenres;
 
     public function __construct()
     {
         $this->genresLies = new ArrayCollection();
+        $this->estMembreDe = new ArrayCollection();
+        $this->estLierAuxGenres = new ArrayCollection();
     }
 
     /**
@@ -90,50 +82,54 @@ class Reseau
         return $this;
     }
 
-    /**
-     * @return Collection<int, Utilisateur>
-     */
-    public function getMembres(): Collection
+    public function addEstMembreDe(Appartenir $estMembreDe): static
     {
-        return $this->membres;
-    }
-
-    public function addMembre(Utilisateur $membre): static
-    {
-        if (!$this->membres->contains($membre)) {
-            $this->membres->add($membre);
+        if (!$this->estMembreDe->contains($estMembreDe)) {
+            $this->estMembreDe->add($estMembreDe);
+            $estMembreDe->setIdReseau($this);
         }
 
         return $this;
     }
 
-    public function removeMembre(Utilisateur $membre): static
+    public function removeEstMembreDe(Appartenir $estMembreDe): static
     {
-        $this->membres->removeElement($membre);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, GenreMusical>
-     */
-    public function getGenresLies(): Collection
-    {
-        return $this->genresLies;
-    }
-
-    public function addGenresLy(GenreMusical $genresLy): static
-    {
-        if (!$this->genresLies->contains($genresLy)) {
-            $this->genresLies->add($genresLy);
+        if ($this->estMembreDe->removeElement($estMembreDe)) {
+            // set the owning side to null (unless already changed)
+            if ($estMembreDe->getIdReseau() === $this) {
+                $estMembreDe->setIdReseau(null);
+            }
         }
 
         return $this;
     }
 
-    public function removeGenresLy(GenreMusical $genresLy): static
+    /**
+     * @return Collection<int, Lier>
+     */
+    public function getEstLierAuxGenres(): Collection
     {
-        $this->genresLies->removeElement($genresLy);
+        return $this->estLierAuxGenres;
+    }
+
+    public function addEstLierAuxGenre(Lier $estLierAuxGenre): static
+    {
+        if (!$this->estLierAuxGenres->contains($estLierAuxGenre)) {
+            $this->estLierAuxGenres->add($estLierAuxGenre);
+            $estLierAuxGenre->setIdReseau($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEstLierAuxGenre(Lier $estLierAuxGenre): static
+    {
+        if ($this->estLierAuxGenres->removeElement($estLierAuxGenre)) {
+            // set the owning side to null (unless already changed)
+            if ($estLierAuxGenre->getIdReseau() === $this) {
+                $estLierAuxGenre->setIdReseau(null);
+            }
+        }
 
         return $this;
     }

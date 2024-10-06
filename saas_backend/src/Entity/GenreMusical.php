@@ -31,14 +31,15 @@ class GenreMusical
     private ?string $nomGenreMusical = null;
 
     /**
-     * @var Collection<int, Reseau>
+     * @var Collection<int, Lier>
      */
-    #[ORM\ManyToMany(targetEntity: Reseau::class, mappedBy: 'genresLies')]
-    private Collection $reseauxLies;
+    #[ORM\OneToMany(targetEntity: Lier::class, mappedBy: 'idGenreMusical', orphanRemoval: true)]
+    private Collection $estAimePar;
 
     public function __construct()
     {
         $this->reseauxLies = new ArrayCollection();
+        $this->estAimePar = new ArrayCollection();
     }
 
     /**
@@ -75,27 +76,30 @@ class GenreMusical
     }
 
     /**
-     * @return Collection<int, Reseau>
+     * @return Collection<int, Lier>
      */
-    public function getReseauxLies(): Collection
+    public function getEstAimePar(): Collection
     {
-        return $this->reseauxLies;
+        return $this->estAimePar;
     }
 
-    public function addReseauxLy(Reseau $reseauxLy): static
+    public function addEstAimePar(Lier $estAimePar): static
     {
-        if (!$this->reseauxLies->contains($reseauxLy)) {
-            $this->reseauxLies->add($reseauxLy);
-            $reseauxLy->addGenresLy($this);
+        if (!$this->estAimePar->contains($estAimePar)) {
+            $this->estAimePar->add($estAimePar);
+            $estAimePar->setIdGenreMusical($this);
         }
 
         return $this;
     }
 
-    public function removeReseauxLy(Reseau $reseauxLy): static
+    public function removeEstAimePar(Lier $estAimePar): static
     {
-        if ($this->reseauxLies->removeElement($reseauxLy)) {
-            $reseauxLy->removeGenresLy($this);
+        if ($this->estAimePar->removeElement($estAimePar)) {
+            // set the owning side to null (unless already changed)
+            if ($estAimePar->getIdGenreMusical() === $this) {
+                $estAimePar->setIdGenreMusical(null);
+            }
         }
 
         return $this;
