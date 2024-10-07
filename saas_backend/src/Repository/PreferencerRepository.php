@@ -40,7 +40,7 @@ class PreferencerRepository extends ServiceEntityRepository
     /**
      * Ajoute un genre musical préféré à un utilisateur
      *
-     * @param Preferencer $preferencerObjet, l'objet contenant l'id de l'utilisateur et l'id du genre musical en question
+     * @param Preferencer $preferencerObjet, l'objet contenant l'id de l'utilisateur et du genre musical en question
      * @return bool Indique si l'ajout a réussi.
      *
      * @throws \RuntimeException Si une erreur survient lors de l'enregistrement.
@@ -59,7 +59,7 @@ class PreferencerRepository extends ServiceEntityRepository
     /**
      * Retire un genre musical préféré à un utilisateur
      *
-     * @param Preferencer $preferencerObject, l'objet contenant l'id de l'utilisateur et l'id du genre musical en question
+     * @param Preferencer $preferencerObject, l'objet contenant l'id de l'utilisateur et du genre musical en question
      * @return bool Indique si la suppression a réussie.
      *
      * @throws \RuntimeException Si une erreur survient lors de l'enregistrement.
@@ -71,7 +71,9 @@ class PreferencerRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
             return true;
         } catch (\Exception $e) {
-            throw new \RuntimeException("Erreur lors de la suppression du genre musical à l'utilisateur : " . $e->getCode());
+            throw new \RuntimeException(
+                "Erreur lors de la suppression du genre musical des préférences : " . $e->getCode()
+            );
         }
     }
 }
