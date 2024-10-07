@@ -96,7 +96,6 @@ class GenreMusical
     public function removeEstAimePar(Lier $estAimePar): static
     {
         if ($this->estAimePar->removeElement($estAimePar)) {
-            // set the owning side to null (unless already changed)
             if ($estAimePar->getIdGenreMusical() === $this) {
                 $estAimePar->setIdGenreMusical(null);
             }

@@ -290,7 +290,6 @@ class Utilisateur
     public function removeAppartientA(Appartenir $appartientA): static
     {
         if ($this->appartientA->removeElement($appartientA)) {
-            // set the owning side to null (unless already changed)
             if ($appartientA->getIdUtilisateur() === $this) {
                 $appartientA->setIdUtilisateur(null);
             }

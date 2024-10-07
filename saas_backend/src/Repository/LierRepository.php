@@ -16,28 +16,41 @@ class LierRepository extends ServiceEntityRepository
         parent::__construct($registry, Lier::class);
     }
 
-    //    /**
-    //     * @return Lier[] Returns an array of Lier objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('l')
-    //            ->andWhere('l.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('l.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Ajoute un genre musical à un réseau
+     *
+     * @param Lier $lierObjet, l'objet contenant l'id du réseau et l'id du genre musical en question
+     * @return bool Indique si l'ajout a réussi.
+     *
+     * @throws \RuntimeException Si une erreur survient lors de l'enregistrement.
+     */
+    public function ajouteMembreAuReseau(Lier $lierObjet): bool
+    {
+        try {
+            $this->getEntityManager()->persist($lierObjet);
+            $this->getEntityManager()->flush();
+            return true;
+        } catch (\Exception $e) {
+            throw new \RuntimeException("Erreur lors de l'ajout du genre musical au réseau : " . $e->getCode());
+        }
+    }
 
-    //    public function findOneBySomeField($value): ?Lier
-    //    {
-    //        return $this->createQueryBuilder('l')
-    //            ->andWhere('l.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * Retire un genre musical d'un réseau
+     *
+     * @param Lier $lierObject, l'objet contenant l'id du réseau et l'id du genre musical en question
+     * @return bool Indique si la suppression a réussie.
+     *
+     * @throws \RuntimeException Si une erreur survient lors de l'enregistrement.
+     */
+    public function retireGenreMusicalReseau(Lier $lierObject): bool
+    {
+        try {
+            $this->getEntityManager()->remove($lierObject);
+            $this->getEntityManager()->flush();
+            return true;
+        } catch (\Exception $e) {
+            throw new \RuntimeException("Erreur lors de la suppression du genre musical du réseau : " . $e->getCode());
+        }
+    }
 }

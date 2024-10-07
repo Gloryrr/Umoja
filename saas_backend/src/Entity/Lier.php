@@ -14,11 +14,11 @@ class Lier
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'estLierAuxGenres')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: 'id_reseau', referencedColumnName: 'id_reseau', nullable: false)]
     private ?Reseau $idReseau = null;
 
     #[ORM\ManyToOne(inversedBy: 'estAimePar')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: 'id_genre_musical', referencedColumnName: 'id_genre_musical', nullable: false)]
     private ?GenreMusical $idGenreMusical = null;
 
     public function getId(): ?int

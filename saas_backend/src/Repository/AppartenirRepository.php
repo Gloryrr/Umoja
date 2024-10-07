@@ -16,28 +16,41 @@ class AppartenirRepository extends ServiceEntityRepository
         parent::__construct($registry, Appartenir::class);
     }
 
-    //    /**
-    //     * @return Appartenir[] Returns an array of Appartenir objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('a.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Ajoute un membre à un réseau
+     *
+     * @param Appartenir $appartenirObject, l'objet contenant l'id du réseau et de l'utilisateur en question
+     * @return bool Indique si l'ajout a réussi.
+     *
+     * @throws \RuntimeException Si une erreur survient lors de l'enregistrement.
+     */
+    public function ajouteMembreAuReseau(Appartenir $appartenirObject): bool
+    {
+        try {
+            $this->getEntityManager()->persist($appartenirObject);
+            $this->getEntityManager()->flush();
+            return true;
+        } catch (\Exception $e) {
+            throw new \RuntimeException("Erreur lors de l'ajout de l'utilisateur au réseau : " . $e->getCode());
+        }
+    }
 
-    //    public function findOneBySomeField($value): ?Appartenir
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * Retire un membre d'un réseau
+     *
+     * @param Appartenir $appartenirObject, l'objet contenant l'id du réseau et de l'utilisateur en question
+     * @return bool Indique si la suppression a réussie.
+     *
+     * @throws \RuntimeException Si une erreur survient lors de l'enregistrement.
+     */
+    public function retireMembreReseau(Appartenir $appartenirObject): bool
+    {
+        try {
+            $this->getEntityManager()->remove($appartenirObject);
+            $this->getEntityManager()->flush();
+            return true;
+        } catch (\Exception $e) {
+            throw new \RuntimeException("Erreur lors de la suppression de l'utilisateur au réseau : " . $e->getCode());
+        }
+    }
 }

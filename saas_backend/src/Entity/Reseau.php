@@ -95,7 +95,6 @@ class Reseau
     public function removeEstMembreDe(Appartenir $estMembreDe): static
     {
         if ($this->estMembreDe->removeElement($estMembreDe)) {
-            // set the owning side to null (unless already changed)
             if ($estMembreDe->getIdReseau() === $this) {
                 $estMembreDe->setIdReseau(null);
             }
@@ -125,7 +124,6 @@ class Reseau
     public function removeEstLierAuxGenre(Lier $estLierAuxGenre): static
     {
         if ($this->estLierAuxGenres->removeElement($estLierAuxGenre)) {
-            // set the owning side to null (unless already changed)
             if ($estLierAuxGenre->getIdReseau() === $this) {
                 $estLierAuxGenre->setIdReseau(null);
             }

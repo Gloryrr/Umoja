@@ -2,11 +2,17 @@
 
 namespace App\Services;
 
+use App\Repository\AppartenirRepository;
+use App\Repository\GenreMusicalRepository;
+use App\Repository\LierRepository;
+use App\Repository\UtilisateurRepository;
 use App\Repository\ReseauRepository;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Reseau;
+use App\Entity\Appartenir;
+use App\Entity\Lier;
 
 /**
  * Class ReseauService
@@ -20,7 +26,7 @@ class ReseauService
      * @param ReseauRepository $reseauRepository Le repository des réseaux.
      * @param SerializerInterface $serializer Le service de sérialisation.
      *
-     * @return JsonResponse La réponse JSON contenant les réseaux.
+     * @return JsonResponse La réponse JSON contenant les réseaux listés.
      */
     public static function getReseaux(
         ReseauRepository $reseauRepository,
@@ -124,7 +130,7 @@ class ReseauService
                 ]);
             }
 
-            // on vérifie qu'aucune données ne manque pour la mise à jour
+            // on vérifie qu'aucune donnée ne manque pour la mise à jour
             // et on instancie les données dans l'objet
             if (isset($data['nomReseau'])) {
                 $reseau->setNomReseau($data['nomReseau']);
@@ -210,57 +216,243 @@ class ReseauService
         }
     }
 
-    // /**
-    //  * Ajoute un membre au réseau et renvoie une réponse JSON.
-    //  *
-    //  * @param int $id L'identifiant de l'utilisateur à supprimer.
-    //  * @param ReseauRepository $reseauRepository Le repository des réseaux.
-    //  * @param SerializerInterface $serializer Le service de sérialisation.
-    //  *
-    //  * @return JsonResponse La réponse JSON après la suppression du réseau.
-    //  */
-    // public static function ajouteMembreReseau(
-    //     mixed $data,
-    //     ReseauRepository $reseauRepository,
-    //     UtilisateurRepository $utilisateurRepository,
-    //     SerializerInterface $serializer,
-    // ): JsonResponse {
-    //     // récupération du réseau ciblé
-    //     $reseau = $reseauRepository->find($data['idReseau']);
-    //     $utilisateur = $utilisateurRepository->find($data['idUtilisateur']);
+    /**
+     * Ajoute un membre au réseau et renvoie une réponse JSON.
+     *
+     * @param mixed $data Les données requises pour ajouter un membre au réseau.
+     * @param ReseauRepository $reseauRepository Le repository des réseaux.
+     * @param UtilisateurRepository $utilisateurRepository Le repository des utilisateurs.
+     * @param AppartenirRepository $appartenirRepository Le repository des appartenance.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après tentatives d'ajout d'un membre au réseau.
+     */
+    public static function ajouteMembreReseau(
+        mixed $data,
+        ReseauRepository $reseauRepository,
+        UtilisateurRepository $utilisateurRepository,
+        AppartenirRepository $appartenirRepository,
+        SerializerInterface $serializer,
+    ): JsonResponse {
+        // récupération du réseau ciblé
+        $reseau = $reseauRepository->find($data['idReseau']);
+        $utilisateur = $utilisateurRepository->find($data['idUtilisateur']);
 
-    //     // si pas de réseau trouvé
-    //     if ($reseau == null || $utilisateur == null) {
-    //         return new JsonResponse([
-    //             'onject' => null,
-    //             'message' => 'réseau ou utilisateur non trouvé, merci de fournir un identifiant valide',
-    //             'reponse' => Response::HTTP_NOT_FOUND,
-    //             'headers' => [],
-    //             'serialized' => false
-    //         ]);
-    //     }
+        // si pas de réseau trouvé
+        if ($reseau == null || $utilisateur == null) {
+            return new JsonResponse([
+                'object' => null,
+                'message' => 'réseau ou utilisateur non trouvé, merci de fournir un identifiant valide',
+                'reponse' => Response::HTTP_NOT_FOUND,
+                'headers' => [],
+                'serialized' => false
+            ]);
+        }
 
-    //     // suppression du en BDD
-    //     $rep = $reseauRepository->removeReseau($reseau);
+        // ajout de l'objet en BDD
+        $appartenirObject = new Appartenir();
+        $reseau->addEstMembreDe($appartenirObject);
+        $utilisateur->addAppartientA($appartenirObject);
+        $rep = $appartenirRepository->ajouteMembreAuReseau($appartenirObject);
 
-    //     // si l'action à réussi
-    //     if ($rep) {
-    //         $reseauJSON = $serializer->serialize($reseau, 'json');
-    //         return new JsonResponse([
-    //             'reseau' => $reseauJSON,
-    //             'message' => 'réseau supprimé',
-    //             'reponse' => Response::HTTP_NO_CONTENT,
-    //             'headers' => [],
-    //             'serialized' => false
-    //         ]);
-    //     } else {
-    //         return new JsonResponse([
-    //             'reseau' => null,
-    //             'message' => 'réseau non supprimé !',
-    //             'reponse' => Response::HTTP_BAD_REQUEST,
-    //             'headers' => [],
-    //             'serialized' => false
-    //         ]);
-    //     }
-    // }
+        // si l'action à réussi
+        if ($rep) {
+            $reseauJSON = $serializer->serialize($reseau, 'json');
+            return new JsonResponse([
+                'reseau' => $reseauJSON,
+                'message' => 'membre ajouté au réseau.',
+                'reponse' => Response::HTTP_NO_CONTENT,
+                'headers' => [],
+                'serialized' => false
+            ]);
+        } else {
+            return new JsonResponse([
+                'reseau' => null,
+                'message' => 'membre non ajouté au réseau !',
+                'reponse' => Response::HTTP_BAD_REQUEST,
+                'headers' => [],
+                'serialized' => false
+            ]);
+        }
+    }
+
+    /**
+     * Retire un membre du réseau et renvoie une réponse JSON.
+     *
+     * @param mixed $data Les données requises pour retirer un membre du réseau.
+     * @param ReseauRepository $reseauRepository Le repository des réseaux.
+     * @param UtilisateurRepository $utilisateurRepository Le repository des utilisateurs.
+     * @param AppartenirRepository $appartenirRepository Le repository des appartenance.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après tentatives de retrait d'un membre du réseau.
+     */
+    public static function retireMembreReseau(
+        mixed $data,
+        ReseauRepository $reseauRepository,
+        UtilisateurRepository $utilisateurRepository,
+        AppartenirRepository $appartenirRepository,
+        SerializerInterface $serializer,
+    ): JsonResponse {
+        // récupération du réseau ciblé
+        $reseau = $reseauRepository->find($data['idReseau']);
+        $utilisateur = $utilisateurRepository->find($data['idUtilisateur']);
+
+        // si pas de réseau trouvé
+        if ($reseau == null || $utilisateur == null) {
+            return new JsonResponse([
+                'object' => null,
+                'message' => 'réseau ou utilisateur non trouvé, merci de fournir un identifiant valide',
+                'reponse' => Response::HTTP_NOT_FOUND,
+                'headers' => [],
+                'serialized' => false
+            ]);
+        }
+
+        // suppression du en BDD
+        $appartenirObject = new Appartenir();
+        $reseau->removeEstMembreDe($appartenirObject);
+        $utilisateur->removeAppartientA($appartenirObject);
+        $rep = $appartenirRepository->retireMembreReseau($appartenirObject);
+
+        // si l'action à réussi
+        if ($rep) {
+            $reseauJSON = $serializer->serialize($reseau, 'json');
+            return new JsonResponse([
+                'reseau' => $reseauJSON,
+                'message' => 'membre retiré du réseau.',
+                'reponse' => Response::HTTP_NO_CONTENT,
+                'headers' => [],
+                'serialized' => false
+            ]);
+        } else {
+            return new JsonResponse([
+                'reseau' => null,
+                'message' => 'membre non retiré du réseau !',
+                'reponse' => Response::HTTP_BAD_REQUEST,
+                'headers' => [],
+                'serialized' => false
+            ]);
+        }
+    }
+
+    /**
+     * Ajoute un genre musical au réseau et renvoie une réponse JSON.
+     *
+     * @param mixed $data Les données requises pour ajouter un genre au réseau.
+     * @param ReseauRepository $reseauRepository Le repository des réseaux.
+     * @param GenreMusicalRepository $genreMusicalRepository Le repository des genres musicaux.
+     * @param LierRepository $lierRepository Le repository des liaisons.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après tentatives d'ajout d'un genre musical au réseau.
+     */
+    public static function ajouteGenreMusicalReseau(
+        mixed $data,
+        ReseauRepository $reseauRepository,
+        GenreMusicalRepository $genreMusicalRepository,
+        LierRepository $lierRepository,
+        SerializerInterface $serializer,
+    ): JsonResponse {
+        // récupération du réseau ciblé
+        $reseau = $reseauRepository->find($data['idReseau']);
+        $genreMusical = $genreMusicalRepository->find($data['idGenreMusical']);
+
+        // si pas de réseau trouvé
+        if ($reseau == null || $genreMusical == null) {
+            return new JsonResponse([
+                'object' => null,
+                'message' => 'réseau ou genre musical non trouvé, merci de fournir un identifiant valide',
+                'reponse' => Response::HTTP_NOT_FOUND,
+                'headers' => [],
+                'serialized' => false
+            ]);
+        }
+
+        // ajout de l'objet en BDD
+        $lierObject = new Lier();
+        $reseau->addEstLierAuxGenre($lierObject);
+        $genreMusical->addEstAimePar($lierObject);
+        $rep = $lierRepository->ajouteMembreAuReseau($lierObject);
+
+        // si l'action à réussi
+        if ($rep) {
+            $reseauJSON = $serializer->serialize($reseau, 'json');
+            return new JsonResponse([
+                'reseau' => $reseauJSON,
+                'message' => 'genre musical ajouté au réseau',
+                'reponse' => Response::HTTP_NO_CONTENT,
+                'headers' => [],
+                'serialized' => false
+            ]);
+        } else {
+            return new JsonResponse([
+                'reseau' => null,
+                'message' => 'genre musical non ajouté au réseau !',
+                'reponse' => Response::HTTP_BAD_REQUEST,
+                'headers' => [],
+                'serialized' => false
+            ]);
+        }
+    }
+
+    /**
+     * Retire un genre musical du réseau et renvoie une réponse JSON.
+     *
+     * @param mixed $data Les données requises pour retirer un genre du réseau.
+     * @param ReseauRepository $reseauRepository Le repository des réseaux.
+     * @param GenreMusicalRepository $genreMusicalRepository Le repository des genres musicaux.
+     * @param LierRepository $lierRepository Le repository des liaisons.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après tentatives de retrait d'un genre musical du réseau.
+     */
+    public static function retireGenreMusicalReseau(
+        mixed $data,
+        ReseauRepository $reseauRepository,
+        GenreMusicalRepository $genreMusicalRepository,
+        LierRepository $lierRepository,
+        SerializerInterface $serializer,
+    ): JsonResponse {
+        // récupération du réseau ciblé
+        $reseau = $reseauRepository->find($data['idReseau']);
+        $genreMusical = $genreMusicalRepository->find($data['idGenreMusical']);
+
+        // si pas de réseau trouvé
+        if ($reseau == null || $genreMusical == null) {
+            return new JsonResponse([
+                'object' => null,
+                'message' => 'réseau ou genre musical non trouvé, merci de fournir un identifiant valide',
+                'reponse' => Response::HTTP_NOT_FOUND,
+                'headers' => [],
+                'serialized' => false
+            ]);
+        }
+
+        // suppression de l'objet en BDD
+        $lierObject = new Lier();
+        $reseau->removeEstLierAuxGenre($lierObject);
+        $genreMusical->removeEstAimePar($lierObject);
+        $rep = $lierRepository->retireGenreMusicalReseau($lierObject);
+
+        // si l'action à réussi
+        if ($rep) {
+            $reseauJSON = $serializer->serialize($reseau, 'json');
+            return new JsonResponse([
+                'reseau' => $reseauJSON,
+                'message' => 'genre musical retiré du réseau',
+                'reponse' => Response::HTTP_NO_CONTENT,
+                'headers' => [],
+                'serialized' => false
+            ]);
+        } else {
+            return new JsonResponse([
+                'reseau' => null,
+                'message' => 'genre musical non retiré du réseau !',
+                'reponse' => Response::HTTP_BAD_REQUEST,
+                'headers' => [],
+                'serialized' => false
+            ]);
+        }
+    }
 }
