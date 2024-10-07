@@ -7,8 +7,8 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use App\Repository\UtilisateurRepository;
+use App\Services\RegisterService;
 
 class RegisterController extends AbstractController
 {
@@ -23,31 +23,16 @@ class RegisterController extends AbstractController
      */
     #[Route('/api/v1/register', name: 'register_user', methods: ['POST'])]
     public function register(
-        Request $request,
         UtilisateurRepository $utilisateurRepository,
-        SerializerInterface $serializer
+        SerializerInterface $serializer,
+        Request $request
     ): JsonResponse {
-        $data_register = json_decode($request->getContent(), true); // récupéaration des données de la requête
-
-        $utilisateur = $utilisateurRepository->inscritUtilisateur($data_register);
-
-        print_r($utilisateur);
-
-        if ($utilisateur) {
-            $utilisateurJSON = $serializer->serialize($utilisateur, 'json');
-
-            return new JsonResponse([
-                'utilisateur' => $utilisateurJSON,
-                'reponse' => Response::HTTP_CREATED,
-                'headers' => [],
-                'serialized' => true
-            ]);
-        }
-        return new JsonResponse([
-            'utilisateur' => null,
-            'reponse' => Response::HTTP_BAD_REQUEST,
-            'headers' => [],
-            'serialized' => false
-        ]);
+        // récupéaration des données de la requête
+        $data_register = json_decode($request->getContent(), true);
+        return RegisterService::register(
+            $utilisateurRepository,
+            $serializer,
+            $data_register
+        );
     }
 }

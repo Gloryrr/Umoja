@@ -31,13 +31,17 @@ class UtilisateurRepository extends ServiceEntityRepository
      */
     public function trouveUtilisateurByUsername(string $username, string $mdp): array
     {
-        return $this->createQueryBuilder('u')
+        try {
+            return $this->createQueryBuilder('u')
             ->andWhere('u.username = :username')
             ->andWhere('u.mdpUtilisateur = :mdp')
             ->setParameter('username', $username)
             ->setParameter('mdp', $mdp)
             ->getQuery()
             ->getResult();
+        } catch (\Exception $e) {
+            throw new \Exception("Erreur lors de la récupération", $e->getCode());
+        }
     }
 
     /**
@@ -49,13 +53,17 @@ class UtilisateurRepository extends ServiceEntityRepository
      */
     public function trouveUtilisateurByMail(string $email, string $mdp): array
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.username = :nom')
-            ->andWhere('u.mdpUtilisateur = :mdp')
-            ->setParameter('emailUtilisateur', $email)
-            ->setParameter('mdp', $mdp)
-            ->getQuery()
-            ->getResult();
+        try {
+            return $this->createQueryBuilder('u')
+                ->andWhere('u.emailUtilisateur = :email')
+                ->andWhere('u.mdpUtilisateur = :mdp')
+                ->setParameter('email', $email)
+                ->setParameter('mdp', $mdp)
+                ->getQuery()
+                ->getResult();
+        } catch (\Exception $e) {
+            throw new \Exception("Erreur lors de la récupération", $e->getCode());
+        }
     }
 
     /**
@@ -74,7 +82,7 @@ class UtilisateurRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
             return true;
         } catch (\Exception $e) {
-            throw new \RuntimeException("Erreur lors de l'enregistrement de l'utilisateur : " . $e->getMessage());
+            throw new \RuntimeException("Erreur lors de l'enregistrement de l'utilisateur : " . $e->getCode());
         }
     }
 
@@ -94,7 +102,7 @@ class UtilisateurRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
             return true;
         } catch (\Exception $e) {
-            throw new \Exception("Erreur lors de l'update de l'utilisateur", $e->getMessage());
+            throw new \Exception("Erreur lors de l'update de l'utilisateur", $e->getCode());
         }
     }
 
@@ -113,7 +121,7 @@ class UtilisateurRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
             return true;
         } catch (\Exception $e) {
-            throw new \RuntimeException("Erreur lors de la suppression de l'utilisateur", $e->getMessage());
+            throw new \RuntimeException("Erreur lors de la suppression de l'utilisateur", $e->getCode());
         }
     }
 }
