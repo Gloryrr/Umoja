@@ -403,7 +403,7 @@ class ReseauService
 
         // si l'action à réussi
         if ($rep) {
-            $reseauJSON = $serializer->serialize($reseau,'json');
+            $reseauJSON = $serializer->serialize($reseau, 'json');
             return new JsonResponse([
                 'reseau' => $reseauJSON,
                 'message' => 'genre musical ajouté au réseau',

@@ -112,7 +112,7 @@ class ReseauController extends AbstractController
      * @param Request $requete, la requête avec les données d'jaout
      * @param ReseauRepository $reseauRepository, la classe CRUD des réseaux
      * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des utilisateurs
-     * @param AppartenirRepository $appartenirRepository, la classe CRUD des utilisateurs qui appartiennent à des réseaux
+     * @param AppartenirRepository $appartenirRepository, CRUD des utilisateurs qui appartiennent à des réseaux
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
@@ -140,7 +140,7 @@ class ReseauController extends AbstractController
      * @param Request $request, la requête avec les données de suppression
      * @param ReseauRepository $reseauRepository, la classe CRUD des réseaux
      * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des utilisateurs
-     * @param AppartenirRepository $appartenirRepository, la classe CRUD des utilisateurs qui appartiennent à des réseaux
+     * @param AppartenirRepository $appartenirRepository, CRUD des utilisateurs qui appartiennent à des réseaux
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */

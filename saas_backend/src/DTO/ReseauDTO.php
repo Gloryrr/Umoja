@@ -14,8 +14,7 @@ class ReseauDTO
         ?string $nomReseau = null,
         array $membreDuReseau = [],
         array $genresMusicauxDuReseau = []
-    )
-    {
+    ) {
         $this->idReseau = $idReseau;
         $this->nomReseau = $nomReseau;
         $this->membreDuReseau = $membreDuReseau;
