@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DTO\ReseauDTO;
 use App\Repository\AppartenirRepository;
 use App\Repository\GenreMusicalRepository;
 use App\Repository\LierRepository;
@@ -30,11 +31,36 @@ class ReseauService
      */
     public static function getReseaux(
         ReseauRepository $reseauRepository,
+        AppartenirRepository $appartenirRepository,
+        LierRepository $lierRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         // on récupère tous les reseaux existants
         $reseaux = $reseauRepository->findAll();
-        $reseauxJSON = $serializer->serialize($reseaux, 'json', ['groups' => ['reseau_detail']]);
+        $arrayReseauxDTO = [];
+        foreach ($reseaux as $indReseau => $reseau) {
+            // initialisation du DTO
+            $reseauxDTO = new ReseauDTO(
+                $reseau->getIdReseau(),
+                $reseau->getNomReseau()
+            );
+
+            // récupération des utilisateurs et genres musicaux du réseau
+            $membresArray = $appartenirRepository->trouveMembresParIdReseau($reseau->getIdReseau());
+            $genresMusicauxArray = $lierRepository->trouveGenresMusicauxParIdReseau($reseau->getIdReseau());
+
+            foreach ($membresArray as $indM => $membre) {
+                array_push($reseauxDTO->membreDuReseau, $membre->getIdUtilisateur());
+            }
+
+            foreach ($genresMusicauxArray as $indGM => $genreMusical) {
+                array_push($reseauxDTO->genresMusicauxDuReseau, $genreMusical->getIdGenreMusical());
+            }
+
+            array_push($arrayReseauxDTO, $reseauxDTO);
+        }
+
+        $reseauxJSON = $serializer->serialize($arrayReseauxDTO, 'json');
         return new JsonResponse([
             'reseaux' => $reseauxJSON,
             'message' => "Liste des réseaux",
@@ -76,7 +102,7 @@ class ReseauService
 
             // vérification de l'action en BDD
             if ($rep) {
-                $reseauJSON = $serializer->serialize($reseau, 'json', ['groups' => ['reseau_detail']]);
+                $reseauJSON = $serializer->serialize($reseau, 'json');
                 return new JsonResponse([
                     'reseau' => $reseauJSON,
                     'message' => "réseau ajouté !",
@@ -141,7 +167,7 @@ class ReseauService
 
             // si l'action à réussi
             if ($rep) {
-                $reseau = $serializer->serialize($reseau, 'json', ['groups' => ['reseau_detail']]);
+                $reseau = $serializer->serialize($reseau, 'json');
 
                 return new JsonResponse([
                     'reseau' => $reseau,
@@ -197,7 +223,7 @@ class ReseauService
 
         // si l'action à réussi
         if ($rep) {
-            $reseauJSON = $serializer->serialize($reseau, 'json', ['groups' => ['reseau_detail']]);
+            $reseauJSON = $serializer->serialize($reseau, 'json');
             return new JsonResponse([
                 'reseau' => $reseauJSON,
                 'message' => 'réseau supprimé',
@@ -251,13 +277,13 @@ class ReseauService
 
         // ajout de l'objet en BDD
         $appartenirObject = new Appartenir();
-        $reseau->addEstMembreDe($appartenirObject);
-        $utilisateur->addAppartientA($appartenirObject);
+        $appartenirObject->setIdReseau($reseau);
+        $appartenirObject->setIdUtilisateur($utilisateur);
         $rep = $appartenirRepository->ajouteMembreAuReseau($appartenirObject);
 
         // si l'action à réussi
         if ($rep) {
-            $reseauJSON = $serializer->serialize($reseau, 'json', ['groups' => ['reseau_detail']]);
+            $reseauJSON = $serializer->serialize($reseau, 'json');
             return new JsonResponse([
                 'reseau' => $reseauJSON,
                 'message' => 'membre ajouté au réseau.',
@@ -311,13 +337,13 @@ class ReseauService
 
         // suppression du en BDD
         $appartenirObject = new Appartenir();
-        $reseau->removeEstMembreDe($appartenirObject);
-        $utilisateur->removeAppartientA($appartenirObject);
+        $appartenirObject->setIdReseau($reseau);
+        $appartenirObject->setIdUtilisateur($utilisateur);
         $rep = $appartenirRepository->retireMembreReseau($appartenirObject);
 
         // si l'action à réussi
         if ($rep) {
-            $reseauJSON = $serializer->serialize($reseau, 'json', ['groups' => ['reseau_detail']]);
+            $reseauJSON = $serializer->serialize($appartenirObject, 'json');
             return new JsonResponse([
                 'reseau' => $reseauJSON,
                 'message' => 'membre retiré du réseau.',
@@ -371,13 +397,13 @@ class ReseauService
 
         // ajout de l'objet en BDD
         $lierObject = new Lier();
-        $reseau->addEstLierAuxGenre($lierObject);
-        $genreMusical->addEstAimePar($lierObject);
+        $lierObject->setIdGenreMusical($genreMusical);
+        $lierObject->setIdReseau($reseau);
         $rep = $lierRepository->ajouteMembreAuReseau($lierObject);
 
         // si l'action à réussi
         if ($rep) {
-            $reseauJSON = $serializer->serialize($reseau,'json', ['groups' => ['reseau_detail']]);
+            $reseauJSON = $serializer->serialize($reseau,'json');
             return new JsonResponse([
                 'reseau' => $reseauJSON,
                 'message' => 'genre musical ajouté au réseau',
@@ -431,13 +457,13 @@ class ReseauService
 
         // suppression de l'objet en BDD
         $lierObject = new Lier();
-        $reseau->removeEstLierAuxGenre($lierObject);
-        $genreMusical->removeEstAimePar($lierObject);
+        $lierObject->setIdGenreMusical($genreMusical);
+        $lierObject->setIdReseau($reseau);
         $rep = $lierRepository->retireGenreMusicalReseau($lierObject);
 
         // si l'action à réussi
         if ($rep) {
-            $reseauJSON = $serializer->serialize($reseau, 'json', ['groups' => ['reseau_detail']]);
+            $reseauJSON = $serializer->serialize($reseau, 'json');
             return new JsonResponse([
                 'reseau' => $reseauJSON,
                 'message' => 'genre musical retiré du réseau',

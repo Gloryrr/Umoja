@@ -17,6 +17,27 @@ class AppartenirRepository extends ServiceEntityRepository
     }
 
     /**
+     * Trouve les membres d'un réseau grâce à son id
+     *
+     * @param int $idReseau, l'id du réseau en question
+     * @return Appartenir[] Une liste d'utilisateurs
+     *
+     * @throws \RuntimeException Si une erreur survient lors de l'enregistrement.
+     */
+    public function trouveMembresParIdReseau(int $idReseau): array
+    {
+        try {
+            return $this->createQueryBuilder('r')
+                ->andWhere('r.idReseau = :idReseau')
+                ->setParameter('idReseau', $idReseau)
+                ->getQuery()
+                ->getResult();
+        } catch (\Exception $e) {
+            throw new \RuntimeException("Erreur lors de la récupération des membres : " . $e->getCode());
+        }
+    }
+
+    /**
      * Ajoute un membre à un réseau
      *
      * @param Appartenir $appartenirObject, l'objet contenant l'id du réseau et de l'utilisateur en question

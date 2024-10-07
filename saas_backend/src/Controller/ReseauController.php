@@ -26,10 +26,14 @@ class ReseauController extends AbstractController
     #[Route('/api/v1/reseaux', name: 'get_reseaux', methods: ['GET'])]
     public function getReseaux(
         ReseauRepository $ReseauRepository,
+        AppartenirRepository $appartenirRepository,
+        LierRepository $lierRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         return ReseauService::getReseaux(
             $ReseauRepository,
+            $appartenirRepository,
+            $lierRepository,
             $serializer
         );
     }

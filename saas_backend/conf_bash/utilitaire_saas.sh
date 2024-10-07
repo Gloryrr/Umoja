@@ -40,3 +40,5 @@ elif [ $instruction == "7" ]; then
 elif [ $instruction == "8" ]; then
     vendor/bin/phpcbf src
 fi
+
+# exécuter une requête SQL : docker-compose exec application php bin/console doctrine:query:sql "REQUETE SQL"

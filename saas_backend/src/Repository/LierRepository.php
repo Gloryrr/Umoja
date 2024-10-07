@@ -17,6 +17,27 @@ class LierRepository extends ServiceEntityRepository
     }
 
     /**
+     * Trouve les genres musicaux depuis un id réseau
+     *
+     * @param int $idReseau, l'id du réseau en question
+     * @return Lier[] Une liste de genres musicaux
+     *
+     * @throws \RuntimeException Si une erreur survient lors de l'enregistrement.
+     */
+    public function trouveGenresMusicauxParIdReseau(int $idReseau): array
+    {
+        try {
+            return $this->createQueryBuilder('l')
+                ->andWhere('l.idReseau = :idReseau')
+                ->setParameter('idReseau', $idReseau)
+                ->getQuery()
+                ->getResult();
+        } catch (\Exception $e) {
+            throw new \RuntimeException("Erreur lors de la récupération des genres musicaux : " . $e->getCode());
+        }
+    }
+
+    /**
      * Ajoute un genre musical à un réseau
      *
      * @param Lier $lierObjet, l'objet contenant l'id du réseau et l'id du genre musical en question

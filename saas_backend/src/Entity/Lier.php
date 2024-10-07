@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\LierRepository;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LierRepository::class)]
@@ -14,22 +13,19 @@ class Lier
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'estLierAuxGenres')]
-    #[ORM\JoinColumn(name: 'id_reseau', referencedColumnName: 'id_reseau', nullable: false)]
-    #[Groups(['genres_musicaux_reseau'])]
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: "id_reseau")]
     private ?Reseau $idReseau = null;
 
-    #[ORM\ManyToOne(inversedBy: 'estAimePar')]
-    #[ORM\JoinColumn(name: 'id_genre_musical', referencedColumnName: 'id_genre_musical', nullable: false)]
-    #[Groups(['genres_musicaux_reseau'])]
-    private ?GenreMusical $idGenreMusical = null; 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: "id_genre_musical")]
+    private ?GenreMusical $idGenreMusical = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    #[Groups(['genres_musicaux_reseau'])]
     public function getIdReseau(): ?Reseau
     {
         return $this->idReseau;
@@ -42,7 +38,6 @@ class Lier
         return $this;
     }
 
-    #[Groups(['genres_musicaux_reseau'])]
     public function getIdGenreMusical(): ?GenreMusical
     {
         return $this->idGenreMusical;

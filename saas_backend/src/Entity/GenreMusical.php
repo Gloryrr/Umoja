@@ -3,9 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\GenreMusicalRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -32,24 +29,10 @@ class GenreMusical
     private ?string $nomGenreMusical = null;
 
     /**
-     * @var Collection<int, Lier>
-     */
-    #[ORM\OneToMany(targetEntity: Lier::class, mappedBy: 'idGenreMusical', orphanRemoval: true)]
-    #[Groups(['genre_musical_detail'])]
-    private Collection $estAimePar;
-
-    public function __construct()
-    {
-        $this->reseauxLies = new ArrayCollection();
-        $this->estAimePar = new ArrayCollection();
-    }
-
-    /**
      * Récupère l'identifiant du genre musical.
      *
      * @return int|null
      */
-    #[Groups(['genre_musical_detail'])]
     public function getIdGenreMusical(): ?int
     {
         return $this->idGenreMusical;
@@ -60,7 +43,6 @@ class GenreMusical
      *
      * @return string|null
      */
-    #[Groups(['genre_musical_detail'])]
     public function getNomGenreMusical(): ?string
     {
         return $this->nomGenreMusical;
@@ -75,36 +57,6 @@ class GenreMusical
     public function setNomGenreMusical(string $nomGenreMusical): static
     {
         $this->nomGenreMusical = $nomGenreMusical;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Lier>
-     */
-    #[Groups(['genre_musical_detail'])]
-    public function getEstAimePar(): Collection
-    {
-        return $this->estAimePar;
-    }
-
-    public function addEstAimePar(Lier $estAimePar): static
-    {
-        if (!$this->estAimePar->contains($estAimePar)) {
-            $this->estAimePar->add($estAimePar);
-            $estAimePar->setIdGenreMusical($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEstAimePar(Lier $estAimePar): static
-    {
-        if ($this->estAimePar->removeElement($estAimePar)) {
-            if ($estAimePar->getIdGenreMusical() === $this) {
-                $estAimePar->setIdGenreMusical(null);
-            }
-        }
 
         return $this;
     }

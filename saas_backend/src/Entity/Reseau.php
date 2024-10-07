@@ -3,9 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\ReseauRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -22,7 +19,6 @@ class Reseau
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['reseau_detail'])]
     private ?int $idReseau = null;
 
     /**
@@ -30,35 +26,13 @@ class Reseau
      * Doit avoir une longueur maximale de 100 caractères.
      */
     #[ORM\Column(length: 100)]
-    #[Groups(['reseau_detail'])]
     private ?string $nomReseau = null;
-
-    /**
-     * @var Collection<int, Appartenir>
-     */
-    #[ORM\OneToMany(targetEntity: Appartenir::class, mappedBy: 'idReseau', orphanRemoval: true)]
-    #[Groups(['reseau_detail'])]
-    private Collection $estMembreDe;
-
-    /**
-     * @var Collection<int, Lier>
-     */
-    #[ORM\OneToMany(targetEntity: Lier::class, mappedBy: 'idReseau', orphanRemoval: true)]
-    #[Groups(['reseau_detail'])]
-    private Collection $estLierAuxGenres;
-
-    public function __construct()
-    {
-        $this->estMembreDe = new ArrayCollection();
-        $this->estLierAuxGenres = new ArrayCollection();
-    }
 
     /**
      * Récupère l'identifiant du réseau.
      *
      * @return int|null
      */
-    #[Groups(['reseau_detail'])]
     public function getIdReseau(): ?int
     {
         return $this->idReseau;
@@ -69,7 +43,6 @@ class Reseau
      *
      * @return string|null
      */
-    #[Groups(['reseau_detail'])]
     public function getNomReseau(): ?string
     {
         return $this->nomReseau;
@@ -84,66 +57,6 @@ class Reseau
     public function setNomReseau(string $nomReseau): static
     {
         $this->nomReseau = $nomReseau;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Appartenir>
-     */
-    #[Groups(['reseau_detail'])]
-    public function getEstMembreDe(): Collection
-    {
-        return $this->estMembreDe;
-    }
-
-    public function addEstMembreDe(Appartenir $estMembreDe): static
-    {
-        if (!$this->estMembreDe->contains($estMembreDe)) {
-            $this->estMembreDe->add($estMembreDe);
-            $estMembreDe->setIdReseau($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEstMembreDe(Appartenir $estMembreDe): static
-    {
-        if ($this->estMembreDe->removeElement($estMembreDe)) {
-            if ($estMembreDe->getIdReseau() === $this) {
-                $estMembreDe->setIdReseau(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Lier>
-     */
-    #[Groups(['reseau_detail'])]
-    public function getEstLierAuxGenres(): Collection
-    {
-        return $this->estLierAuxGenres;
-    }
-
-    public function addEstLierAuxGenre(Lier $estLierAuxGenre): static
-    {
-        if (!$this->estLierAuxGenres->contains($estLierAuxGenre)) {
-            $this->estLierAuxGenres->add($estLierAuxGenre);
-            $estLierAuxGenre->setIdReseau($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEstLierAuxGenre(Lier $estLierAuxGenre): static
-    {
-        if ($this->estLierAuxGenres->removeElement($estLierAuxGenre)) {
-            if ($estLierAuxGenre->getIdReseau() === $this) {
-                $estLierAuxGenre->setIdReseau(null);
-            }
-        }
 
         return $this;
     }
