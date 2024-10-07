@@ -81,7 +81,6 @@ class Utilisateur
 
     public function __construct()
     {
-        $this->etreMembreDe = new ArrayCollection();
         $this->appartientA = new ArrayCollection();
     }
 

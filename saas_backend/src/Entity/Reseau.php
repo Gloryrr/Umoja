@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ReseauRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -34,17 +35,18 @@ class Reseau
      * @var Collection<int, Appartenir>
      */
     #[ORM\OneToMany(targetEntity: Appartenir::class, mappedBy: 'idReseau', orphanRemoval: true)]
+    #[Groups(['membres_reseau'])]
     private Collection $estMembreDe;
 
     /**
      * @var Collection<int, Lier>
      */
     #[ORM\OneToMany(targetEntity: Lier::class, mappedBy: 'idReseau', orphanRemoval: true)]
+    #[Groups(['genres_musicaux_reseau'])]
     private Collection $estLierAuxGenres;
 
     public function __construct()
     {
-        $this->genresLies = new ArrayCollection();
         $this->estMembreDe = new ArrayCollection();
         $this->estLierAuxGenres = new ArrayCollection();
     }
@@ -80,6 +82,14 @@ class Reseau
         $this->nomReseau = $nomReseau;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Appartenir>
+     */
+    public function getEstMembreDe(): Collection
+    {
+        return $this->estMembreDe;
     }
 
     public function addEstMembreDe(Appartenir $estMembreDe): static

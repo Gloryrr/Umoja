@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\LierRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LierRepository::class)]
@@ -15,6 +16,7 @@ class Lier
 
     #[ORM\ManyToOne(inversedBy: 'estLierAuxGenres')]
     #[ORM\JoinColumn(name: 'id_reseau', referencedColumnName: 'id_reseau', nullable: false)]
+    #[Groups(['genres_musicaux_reseau'])]
     private ?Reseau $idReseau = null;
 
     #[ORM\ManyToOne(inversedBy: 'estAimePar')]
