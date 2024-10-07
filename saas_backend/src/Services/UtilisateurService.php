@@ -28,7 +28,7 @@ class UtilisateurService
     ): JsonResponse {
         // on récupère tous les utilisateurs
         $utilisateurs = $utilisateurRepository->findAll();
-        $utilisateursJSON = $serializer->serialize($utilisateurs, 'json');
+        $utilisateursJSON = $serializer->serialize($utilisateurs, 'json', ['groups' => ['utilisateur_detail']]);
         return new JsonResponse([
             'utilisateurs' => $utilisateursJSON,
             'message' => "Liste des utilisateurs",
@@ -79,7 +79,7 @@ class UtilisateurService
 
             // vérification de l'action en BDD
             if ($rep) {
-                $utilisateurJSON = $serializer->serialize($utilisateur, 'json');
+                $utilisateurJSON = $serializer->serialize($utilisateur, 'json', ['groups' => ['utilisateur_detail']]);
                 return new JsonResponse([
                     'utilisateur' => $utilisateurJSON,
                     'message' => "Utilisateur inscrit !",
@@ -162,7 +162,7 @@ class UtilisateurService
 
             // si l'action à réussi
             if ($rep) {
-                $utilisateurJSON = $serializer->serialize($utilisateur, 'json');
+                $utilisateurJSON = $serializer->serialize($utilisateur, 'json', ['groups' => ['utilisateur_detail']]);
 
                 return new JsonResponse([
                     'utilisateur' => $utilisateurJSON,
@@ -218,7 +218,7 @@ class UtilisateurService
 
         // si l'action à réussi
         if ($rep) {
-            $utilisateurJSON = $serializer->serialize($utilisateur, 'json');
+            $utilisateurJSON = $serializer->serialize($utilisateur, 'json', ['groups' => ['utilisateur_detail']]);
             return new JsonResponse([
                 'utilisateur' => $utilisateurJSON,
                 'message' => 'Utilisateur supprimé',

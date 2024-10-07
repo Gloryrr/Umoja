@@ -21,13 +21,15 @@ class Lier
 
     #[ORM\ManyToOne(inversedBy: 'estAimePar')]
     #[ORM\JoinColumn(name: 'id_genre_musical', referencedColumnName: 'id_genre_musical', nullable: false)]
-    private ?GenreMusical $idGenreMusical = null;
+    #[Groups(['genres_musicaux_reseau'])]
+    private ?GenreMusical $idGenreMusical = null; 
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    #[Groups(['genres_musicaux_reseau'])]
     public function getIdReseau(): ?Reseau
     {
         return $this->idReseau;
@@ -40,6 +42,7 @@ class Lier
         return $this;
     }
 
+    #[Groups(['genres_musicaux_reseau'])]
     public function getIdGenreMusical(): ?GenreMusical
     {
         return $this->idGenreMusical;

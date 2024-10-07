@@ -34,7 +34,7 @@ class ReseauService
     ): JsonResponse {
         // on récupère tous les reseaux existants
         $reseaux = $reseauRepository->findAll();
-        $reseauxJSON = $serializer->serialize($reseaux, 'json');
+        $reseauxJSON = $serializer->serialize($reseaux, 'json', ['groups' => ['reseau_detail']]);
         return new JsonResponse([
             'reseaux' => $reseauxJSON,
             'message' => "Liste des réseaux",
@@ -76,7 +76,7 @@ class ReseauService
 
             // vérification de l'action en BDD
             if ($rep) {
-                $reseauJSON = $serializer->serialize($reseau, 'json');
+                $reseauJSON = $serializer->serialize($reseau, 'json', ['groups' => ['reseau_detail']]);
                 return new JsonResponse([
                     'reseau' => $reseauJSON,
                     'message' => "réseau ajouté !",
@@ -141,7 +141,7 @@ class ReseauService
 
             // si l'action à réussi
             if ($rep) {
-                $reseau = $serializer->serialize($reseau, 'json');
+                $reseau = $serializer->serialize($reseau, 'json', ['groups' => ['reseau_detail']]);
 
                 return new JsonResponse([
                     'reseau' => $reseau,
@@ -197,7 +197,7 @@ class ReseauService
 
         // si l'action à réussi
         if ($rep) {
-            $reseauJSON = $serializer->serialize($reseau, 'json');
+            $reseauJSON = $serializer->serialize($reseau, 'json', ['groups' => ['reseau_detail']]);
             return new JsonResponse([
                 'reseau' => $reseauJSON,
                 'message' => 'réseau supprimé',
@@ -257,7 +257,7 @@ class ReseauService
 
         // si l'action à réussi
         if ($rep) {
-            $reseauJSON = $serializer->serialize($reseau, 'json');
+            $reseauJSON = $serializer->serialize($reseau, 'json', ['groups' => ['reseau_detail']]);
             return new JsonResponse([
                 'reseau' => $reseauJSON,
                 'message' => 'membre ajouté au réseau.',
@@ -317,7 +317,7 @@ class ReseauService
 
         // si l'action à réussi
         if ($rep) {
-            $reseauJSON = $serializer->serialize($reseau, 'json');
+            $reseauJSON = $serializer->serialize($reseau, 'json', ['groups' => ['reseau_detail']]);
             return new JsonResponse([
                 'reseau' => $reseauJSON,
                 'message' => 'membre retiré du réseau.',
@@ -377,7 +377,7 @@ class ReseauService
 
         // si l'action à réussi
         if ($rep) {
-            $reseauJSON = $serializer->serialize($reseau, 'json');
+            $reseauJSON = $serializer->serialize($reseau,'json', ['groups' => ['reseau_detail']]);
             return new JsonResponse([
                 'reseau' => $reseauJSON,
                 'message' => 'genre musical ajouté au réseau',
@@ -437,7 +437,7 @@ class ReseauService
 
         // si l'action à réussi
         if ($rep) {
-            $reseauJSON = $serializer->serialize($reseau, 'json');
+            $reseauJSON = $serializer->serialize($reseau, 'json', ['groups' => ['reseau_detail']]);
             return new JsonResponse([
                 'reseau' => $reseauJSON,
                 'message' => 'genre musical retiré du réseau',

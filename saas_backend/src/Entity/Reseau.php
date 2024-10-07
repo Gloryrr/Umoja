@@ -22,6 +22,7 @@ class Reseau
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['reseau_detail'])]
     private ?int $idReseau = null;
 
     /**
@@ -29,20 +30,21 @@ class Reseau
      * Doit avoir une longueur maximale de 100 caractères.
      */
     #[ORM\Column(length: 100)]
+    #[Groups(['reseau_detail'])]
     private ?string $nomReseau = null;
 
     /**
      * @var Collection<int, Appartenir>
      */
     #[ORM\OneToMany(targetEntity: Appartenir::class, mappedBy: 'idReseau', orphanRemoval: true)]
-    #[Groups(['membres_reseau'])]
+    #[Groups(['reseau_detail'])]
     private Collection $estMembreDe;
 
     /**
      * @var Collection<int, Lier>
      */
     #[ORM\OneToMany(targetEntity: Lier::class, mappedBy: 'idReseau', orphanRemoval: true)]
-    #[Groups(['genres_musicaux_reseau'])]
+    #[Groups(['reseau_detail'])]
     private Collection $estLierAuxGenres;
 
     public function __construct()
@@ -56,6 +58,7 @@ class Reseau
      *
      * @return int|null
      */
+    #[Groups(['reseau_detail'])]
     public function getIdReseau(): ?int
     {
         return $this->idReseau;
@@ -66,6 +69,7 @@ class Reseau
      *
      * @return string|null
      */
+    #[Groups(['reseau_detail'])]
     public function getNomReseau(): ?string
     {
         return $this->nomReseau;
@@ -87,6 +91,7 @@ class Reseau
     /**
      * @return Collection<int, Appartenir>
      */
+    #[Groups(['reseau_detail'])]
     public function getEstMembreDe(): Collection
     {
         return $this->estMembreDe;
@@ -116,6 +121,7 @@ class Reseau
     /**
      * @return Collection<int, Lier>
      */
+    #[Groups(['reseau_detail'])]
     public function getEstLierAuxGenres(): Collection
     {
         return $this->estLierAuxGenres;

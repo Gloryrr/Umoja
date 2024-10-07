@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\UtilisateurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -77,6 +78,7 @@ class Utilisateur
      * @var Collection<int, Appartenir>
      */
     #[ORM\OneToMany(targetEntity: Appartenir::class, mappedBy: 'idUtilisateur', orphanRemoval: true)]
+    #[Groups(['utilisateur_detail'])]
     private Collection $appartientA;
 
     public function __construct()
@@ -89,6 +91,7 @@ class Utilisateur
      *
      * @return int|null
      */
+    #[Groups(['utilisateur_detail'])]
     public function getIdUtilisateur(): ?int
     {
         return $this->idUtilisateur;
@@ -112,6 +115,7 @@ class Utilisateur
      *
      * @return string|null
      */
+    #[Groups(['utilisateur_detail'])]
     public function getEmailUtilisateur(): ?string
     {
         return $this->emailUtilisateur;
@@ -135,6 +139,7 @@ class Utilisateur
      *
      * @return string|null
      */
+    #[Groups(['utilisateur_detail'])]
     public function getMdpUtilisateur(): ?string
     {
         return $this->mdpUtilisateur;
@@ -158,6 +163,7 @@ class Utilisateur
      *
      * @return string|null
      */
+    #[Groups(['utilisateur_detail'])]
     public function getNumTelUtilisateur(): ?string
     {
         return $this->numTelUtilisateur;
@@ -181,6 +187,7 @@ class Utilisateur
      *
      * @return string|null
      */
+    #[Groups(['utilisateur_detail'])]
     public function getRoleUtilisateur(): ?string
     {
         return $this->roleUtilisateur;
@@ -204,6 +211,7 @@ class Utilisateur
      *
      * @return string|null
      */
+    #[Groups(['utilisateur_detail'])]
     public function getNomUtilisateur(): ?string
     {
         return $this->nomUtilisateur;
@@ -227,6 +235,7 @@ class Utilisateur
      *
      * @return string|null
      */
+    #[Groups(['utilisateur_detail'])]
     public function getPrenomUtilisateur(): ?string
     {
         return $this->prenomUtilisateur;
@@ -250,6 +259,7 @@ class Utilisateur
      *
      * @return string|null
      */
+    #[Groups(['utilisateur_detail'])]
     public function getUsername(): ?string
     {
         return $this->username;
@@ -271,6 +281,7 @@ class Utilisateur
     /**
      * @return Collection<int, Appartenir>
      */
+    #[Groups(['utilisateur_detail'])]
     public function getAppartientA(): Collection
     {
         return $this->appartientA;

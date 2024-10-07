@@ -21,6 +21,7 @@ class Appartenir
 
     #[ORM\ManyToOne(inversedBy: 'appartientA')]
     #[ORM\JoinColumn(name: 'id_utilisateur', referencedColumnName: 'id_utilisateur', nullable: false)]
+    #[Groups(['membres_reseau'])]
     private ?Utilisateur $idUtilisateur = null;
 
     public function getId(): ?int
@@ -28,6 +29,7 @@ class Appartenir
         return $this->id;
     }
 
+    #[Groups(['membres_reseau'])]
     public function getIdReseau(): ?Reseau
     {
         return $this->idReseau;
@@ -40,6 +42,7 @@ class Appartenir
         return $this;
     }
 
+    #[Groups(['membres_reseau'])]
     public function getIdUtilisateur(): ?Utilisateur
     {
         return $this->idUtilisateur;

@@ -28,7 +28,7 @@ class GenreMusicalService
     ): JsonResponse {
         // on récupère tous les genresMusicaux
         $genresMusicaux = $GenreMusicalRepository->findAll();
-        $genresMusicauxJSON = $serializer->serialize($genresMusicaux, 'json');
+        $genresMusicauxJSON = $serializer->serialize($genresMusicaux, 'json', ['groups' => ['genre_musical_detail']]);
         return new JsonResponse([
             'genres_musicaux' => $genresMusicauxJSON,
             'message' => "Liste des genres musicaux",
@@ -70,7 +70,7 @@ class GenreMusicalService
 
             // vérification de l'action en BDD
             if ($rep) {
-                $genreMusicalJSON = $serializer->serialize($genreMusical, 'json');
+                $genreMusicalJSON = $serializer->serialize($genreMusical, 'json', ['groups' => ['genre_musical_detail']]);
                 return new JsonResponse([
                     'genre_musical' => $genreMusicalJSON,
                     'message' => "Genre musical inscrit !",
@@ -135,7 +135,7 @@ class GenreMusicalService
 
             // si l'action à réussi
             if ($rep) {
-                $genreMusical = $serializer->serialize($genreMusical, 'json');
+                $genreMusical = $serializer->serialize($genreMusical, 'json', ['groups' => ['genre_musical_detail']]);
 
                 return new JsonResponse([
                     'genre_musical' => $genreMusical,
@@ -191,7 +191,7 @@ class GenreMusicalService
 
         // si l'action à réussi
         if ($rep) {
-            $GenreMusicalJSON = $serializer->serialize($genreMusical, 'json');
+            $GenreMusicalJSON = $serializer->serialize($genreMusical, 'json', ['groups' => ['genre_musical_detail']]);
             return new JsonResponse([
                 'genre_musical' => $GenreMusicalJSON,
                 'message' => 'Genre musical supprimé',
