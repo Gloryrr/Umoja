@@ -10,7 +10,6 @@ class UtilisateurDTO
     public ?string $username = null;
     public ?string $nomUtilisateur = null;
     public ?string $prenomUtilisateur = null;
-    public ?string $numTelUtilisateur = null;
     public array $membreDesReseaux = [];
     public array $genresMusicauxPreferes = [];
 
@@ -21,7 +20,8 @@ class UtilisateurDTO
         ?string $username = null,
         ?string $nomUtilisateur = null,
         ?string $prenomUtilisateur = null,
-        ?string $numTelUtilisateur = null
+        array $membreDesReseaux = [],
+        array $genresMusicauxDuReseau = []
     ) {
         $this->idUtilisateur = $idUtilisateur;
         $this->emailUtilisateur = $emailUtilisateur;
@@ -29,6 +29,7 @@ class UtilisateurDTO
         $this->username = $username;
         $this->nomUtilisateur = $nomUtilisateur;
         $this->prenomUtilisateur = $prenomUtilisateur;
-        $this->numTelUtilisateur = $numTelUtilisateur;
+        $this->membreDesReseaux = $membreDesReseaux;
+        $this->genresMusicauxDuReseau = $genresMusicauxDuReseau;
     }
 }
