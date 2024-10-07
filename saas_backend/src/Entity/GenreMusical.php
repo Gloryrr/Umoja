@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\GenreMusicalRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -31,22 +29,11 @@ class GenreMusical
     private ?string $nomGenreMusical = null;
 
     /**
-     * @var Collection<int, Reseau>
-     */
-    #[ORM\ManyToMany(targetEntity: Reseau::class, mappedBy: 'genresLies')]
-    private Collection $reseauxLies;
-
-    public function __construct()
-    {
-        $this->reseauxLies = new ArrayCollection();
-    }
-
-    /**
      * Récupère l'identifiant du genre musical.
      *
      * @return int|null
      */
-    public function getId(): ?int
+    public function getIdGenreMusical(): ?int
     {
         return $this->idGenreMusical;
     }
@@ -70,33 +57,6 @@ class GenreMusical
     public function setNomGenreMusical(string $nomGenreMusical): static
     {
         $this->nomGenreMusical = $nomGenreMusical;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Reseau>
-     */
-    public function getReseauxLies(): Collection
-    {
-        return $this->reseauxLies;
-    }
-
-    public function addReseauxLy(Reseau $reseauxLy): static
-    {
-        if (!$this->reseauxLies->contains($reseauxLy)) {
-            $this->reseauxLies->add($reseauxLy);
-            $reseauxLy->addGenresLy($this);
-        }
-
-        return $this;
-    }
-
-    public function removeReseauxLy(Reseau $reseauxLy): static
-    {
-        if ($this->reseauxLies->removeElement($reseauxLy)) {
-            $reseauxLy->removeGenresLy($this);
-        }
 
         return $this;
     }

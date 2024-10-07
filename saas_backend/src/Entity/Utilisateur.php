@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\UtilisateurRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -72,17 +70,6 @@ class Utilisateur
      */
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $prenomUtilisateur = null;
-
-    /**
-     * @var Collection<int, Reseau>
-     */
-    #[ORM\ManyToMany(targetEntity: Reseau::class, mappedBy: 'membres')]
-    private Collection $etreMembreDe;
-
-    public function __construct()
-    {
-        $this->etreMembreDe = new ArrayCollection();
-    }
 
     /**
      * Récupère l'identifiant de l'utilisateur.
@@ -264,33 +251,6 @@ class Utilisateur
     public function setUsername(string $username): static
     {
         $this->username = $username;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Reseau>
-     */
-    public function getEtreMembreDe(): Collection
-    {
-        return $this->etreMembreDe;
-    }
-
-    public function addEtreMembreDe(Reseau $etreMembreDe): static
-    {
-        if (!$this->etreMembreDe->contains($etreMembreDe)) {
-            $this->etreMembreDe->add($etreMembreDe);
-            $etreMembreDe->addMembre($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEtreMembreDe(Reseau $etreMembreDe): static
-    {
-        if ($this->etreMembreDe->removeElement($etreMembreDe)) {
-            $etreMembreDe->removeMembre($this);
-        }
 
         return $this;
     }

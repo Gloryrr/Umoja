@@ -59,7 +59,7 @@ class ReseauRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
             return true;
         } catch (\Exception $e) {
-            throw new \RuntimeException("Erreur lors de l'enregistrement du genre muscial : " . $e->getCode());
+            throw new \RuntimeException("Erreur lors de l'enregistrement du réseau : " . $e->getCode());
         }
     }
 
