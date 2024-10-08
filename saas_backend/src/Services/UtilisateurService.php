@@ -2,6 +2,11 @@
 
 namespace App\Services;
 
+use App\DTO\UtilisateurDTO;
+use App\Entity\Preferencer;
+use App\Repository\AppartenirRepository;
+use App\Repository\GenreMusicalRepository;
+use App\Repository\PreferencerRepository;
 use App\Repository\UtilisateurRepository;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,11 +29,41 @@ class UtilisateurService
      */
     public static function getUtilisateurs(
         UtilisateurRepository $utilisateurRepository,
+        AppartenirRepository $appartenirRepository,
+        PreferencerRepository $preferencerRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         // on récupère tous les utilisateurs
         $utilisateurs = $utilisateurRepository->findAll();
-        $utilisateursJSON = $serializer->serialize($utilisateurs, 'json');
+        $arrayUtilisateursDTO = [];
+        foreach ($utilisateurs as $indUser => $utilisateur) {
+            $utilisateurDTO = new UtilisateurDTO(
+                $utilisateur->getIdUtilisateur(),
+                $utilisateur->getEmailUtilisateur(),
+                $utilisateur->getRoleUtilisateur(),
+                $utilisateur->getUsername(),
+                $utilisateur->getNomUtilisateur(),
+                $utilisateur->getPrenomUtilisateur()
+            );
+
+            $arrayReseaux = $appartenirRepository->trouveReseauxParIdUtilisateur(
+                $utilisateur->getIdUtilisateur()
+            );
+            $arrayGenresMusicaux = $preferencerRepository->trouveGenresMusicauxParIdUtilisateur(
+                $utilisateur->getIdUtilisateur()
+            );
+
+            foreach ($arrayReseaux as $indR => $reseau) {
+                array_push($utilisateurDTO->membreDesReseaux, $reseau);
+            }
+            foreach ($arrayGenresMusicaux as $indGM => $genreMusical) {
+                array_push($utilisateurDTO->genresMusicauxPreferes, $genreMusical);
+            }
+
+            array_push($arrayUtilisateursDTO, $utilisateurDTO);
+        }
+
+        $utilisateursJSON = $serializer->serialize($arrayUtilisateursDTO, 'json');
         return new JsonResponse([
             'utilisateurs' => $utilisateursJSON,
             'message' => "Liste des utilisateurs",
@@ -230,6 +265,124 @@ class UtilisateurService
             return new JsonResponse([
                 'utilisateur' => null,
                 'message' => 'Utilisateur non supprimé !',
+                'reponse' => Response::HTTP_BAD_REQUEST,
+                'headers' => [],
+                'serialized' => false
+            ]);
+        }
+    }
+
+    /**
+     * Ajoute un genre musical préférée à un utilisateur et renvoie une réponse JSON.
+     *
+     * @param mixed $data Les données requises pour ajouter un genre musical préféré.
+     * @param UtilisateurRepository $utilisateurRepository Le repository des utilisateurs.
+     * @param PreferencerRepository $preferencerRepository Le repository des préférences de genres musicaux.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après tentatives d'ajout d'un membre au réseau.
+     */
+    public static function ajouteGenreMusicalUtilisateur(
+        mixed $data,
+        UtilisateurRepository $utilisateurRepository,
+        PreferencerRepository $preferencerRepository,
+        GenreMusicalRepository $genreMusicalRepository,
+        SerializerInterface $serializer,
+    ): JsonResponse {
+        // récupération du genre musical et de l'utilisateur ciblé
+        $genreMusical = $genreMusicalRepository->find($data['idGenreMusical']);
+        $utilisateur = $utilisateurRepository->find($data['idUtilisateur']);
+
+        // si pas de genre musical OU de l'utilisateur trouvé
+        if ($genreMusical == null || $utilisateur == null) {
+            return new JsonResponse([
+                'object' => null,
+                'message' => 'genre musical ou utilisateur non trouvé, merci de fournir un identifiant valide',
+                'reponse' => Response::HTTP_NOT_FOUND,
+                'headers' => [],
+                'serialized' => false
+            ]);
+        }
+
+        // ajout de l'objet en BDD
+        $preferencerObject = new Preferencer();
+        $preferencerObject->setIdGenreMusical($genreMusical);
+        $preferencerObject->setIdUtilisateur($utilisateur);
+        $rep = $preferencerRepository->ajouteGenreMusicalUtilisateur($preferencerObject);
+
+        // si l'action à réussi
+        if ($rep) {
+            $utilisateurJSON = $serializer->serialize($utilisateur, 'json');
+            return new JsonResponse([
+                'object' => $utilisateurJSON,
+                'message' => "genre musical ajouté aux préférences de l'utilisateur.",
+                'reponse' => Response::HTTP_NO_CONTENT,
+                'headers' => [],
+                'serialized' => false
+            ]);
+        } else {
+            return new JsonResponse([
+                'object' => null,
+                'message' => "genre musical non ajouté aux préférences de l'utilisateur !",
+                'reponse' => Response::HTTP_BAD_REQUEST,
+                'headers' => [],
+                'serialized' => false
+            ]);
+        }
+    }
+
+    /**
+     * Retire un genre musical préféré à un utilisateur et renvoie une réponse JSON.
+     *
+     * @param mixed $data Les données requises pour retirer un genre musical préféré.
+     * @param UtilisateurRepository $utilisateurRepository Le repository des utilisateurs.
+     * @param PreferencerRepository $preferencerRepository Le repository des préférences de genres musicaux.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après tentatives de suppression de préférence.
+     */
+    public static function retireGenreMusicalUtilisateur(
+        mixed $data,
+        UtilisateurRepository $utilisateurRepository,
+        PreferencerRepository $preferencerRepository,
+        GenreMusicalRepository $genreMusicalRepository,
+        SerializerInterface $serializer,
+    ): JsonResponse {
+        // récupération du genre musical et de l'utilisateur ciblé
+        $genreMusical = $genreMusicalRepository->find($data['idGenreMusical']);
+        $utilisateur = $utilisateurRepository->find($data['idUtilisateur']);
+
+        // si pas de genre musical OU de l'utilisateur trouvé
+        if ($genreMusical == null || $utilisateur == null) {
+            return new JsonResponse([
+                'object' => null,
+                'message' => 'genre musical ou utilisateur non trouvé, merci de fournir un identifiant valide',
+                'reponse' => Response::HTTP_NOT_FOUND,
+                'headers' => [],
+                'serialized' => false
+            ]);
+        }
+
+        // ajout de l'objet en BDD
+        $preferencerObject = new Preferencer();
+        $preferencerObject->setIdGenreMusical($genreMusical);
+        $preferencerObject->setIdUtilisateur($utilisateur);
+        $rep = $preferencerRepository->retireGenreMusicalUtilisateur($preferencerObject);
+
+        // si l'action à réussi
+        if ($rep) {
+            $utilisateurJSON = $serializer->serialize($utilisateur, 'json');
+            return new JsonResponse([
+                'object' => $utilisateurJSON,
+                'message' => "genre musical retiré aux préférences de l'utilisateur.",
+                'reponse' => Response::HTTP_NO_CONTENT,
+                'headers' => [],
+                'serialized' => false
+            ]);
+        } else {
+            return new JsonResponse([
+                'object' => null,
+                'message' => "genre musical non retiré aux préférences de l'utilisateur !",
                 'reponse' => Response::HTTP_BAD_REQUEST,
                 'headers' => [],
                 'serialized' => false
