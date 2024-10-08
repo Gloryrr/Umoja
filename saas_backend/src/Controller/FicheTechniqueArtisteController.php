@@ -12,7 +12,6 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class FicheTechniqueArtisteController extends AbstractController
 {
-
     /**
      * Récupère toutes les fiches techniques d'artistes.
      */
