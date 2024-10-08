@@ -23,13 +23,6 @@ class BudgetEstimatifTest extends TestCase
     private BudgetEstimatif $budgetEstimatif;
 
     /**
-     * Instance de l'offre à tester.
-     *
-     * @var Offre
-     */
-    private Offre $offre;
-
-    /**
      * Préparation de l'environnement de test.
      *
      * Cette méthode est exécutée avant chaque test.
@@ -38,7 +31,6 @@ class BudgetEstimatifTest extends TestCase
     protected function setUp(): void
     {
         $this->budgetEstimatif = new BudgetEstimatif();
-        $this->offre = new Offre();
     }
 
     /**
@@ -49,8 +41,8 @@ class BudgetEstimatifTest extends TestCase
      */
     public function testId()
     {
-        $this->budgetEstimatif->setId(1);
-        $this->assertEquals(1, $this->budgetEstimatif->getId());
+        $this->budgetEstimatif->setIdBE(1);
+        $this->assertEquals(1, $this->budgetEstimatif->getIdBE());
 
     }
 
@@ -100,16 +92,5 @@ class BudgetEstimatifTest extends TestCase
     {
         $this->budgetEstimatif->setFraisRestauration(200);
         $this->assertEquals(200, $this->budgetEstimatif->getFraisRestauration());
-    }
-
-    /**
-     * Test de la méthode setOffre() et getOffre().
-     *
-     * Vérifie si l'offre peut être correctement définie et récupérée.
-     */
-    public function testOffre()
-    {
-        $this->budgetEstimatif->setOffre($this->offre);
-        $this->assertSame($this->offre, $this->budgetEstimatif->getOffre());
     }
 }

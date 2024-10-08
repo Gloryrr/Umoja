@@ -16,7 +16,7 @@ class BudgetEstimatif
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private ?int $idBE = null;
 
     /**
      * Montant du cachet de l'artiste.
@@ -51,20 +51,13 @@ class BudgetEstimatif
     private ?int $fraisRestauration = null;
 
     /**
-     * @var Offre|null L'offre associée à cette entité.
-     */
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Offre $offre = null;
-
-    /**
      * Récupère l'identifiant du budget estimatif.
      *
      * @return int|null
      */
-    public function getId(): ?int
+    public function getIdBE(): ?int
     {
-        return $this->id;
+        return $this->idBE;
     }
 
     /**
@@ -72,9 +65,9 @@ class BudgetEstimatif
      *
      * @return int|null
      */
-    public function setId(int $id): ?int
+    public function setIdBE(int $idBE): ?int
     {
-        return $this->id = $id;
+        return $this->idBE = $idBE;
     }
 
     /**
@@ -165,29 +158,6 @@ class BudgetEstimatif
     public function setFraisRestauration(int $fraisRestauration): static
     {
         $this->fraisRestauration = $fraisRestauration;
-
-        return $this;
-    }
-
-   /**
- * Récupère l'offre associée.
- *
- * @return Offre|null L'offre associée ou null si aucune offre n'est définie.
- */
-    public function getOffre(): ?Offre
-    {
-        return $this->offre;
-    }
-
-/**
- * Définit l'offre associée.
- *
- * @param Offre $offre L'offre à associer.
- * @return static
- */
-    public function setOffre(Offre $offre): static
-    {
-        $this->offre = $offre;
 
         return $this;
     }
