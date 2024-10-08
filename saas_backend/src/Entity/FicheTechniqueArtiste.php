@@ -17,7 +17,7 @@ class FicheTechniqueArtiste
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private ?int $idFT = null;
 
     /**
      * Besoins en sonorisation de l'offre.
@@ -64,9 +64,9 @@ class FicheTechniqueArtiste
      *
      * @return int|null
      */
-    public function getId(): ?int
+    public function getIdFT(): ?int
     {
-        return $this->id;
+        return $this->idFT;
     }
 
     /**

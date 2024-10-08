@@ -15,8 +15,8 @@ echo -e "\t2. Mettre à jour la BDD avec les changements du modèle"
 echo -e "\t3. Créer une Entité"
 echo -e "\t4. Créer un Controller"
 echo -e "\t5. Exécuter les tests unittaires"
-echo -e "\t6. Checker le coverage des tests\n"
-echo -e "\t7. Vérifier la qualité du code\n"
+echo -e "\t6. Checker le coverage des tests"
+echo -e "\t7. Vérifier la qualité du code"
 echo -e "\t8. Corriger la qualité du code\n"
 
 read -p "Entrer l'instruction demandée : " instruction
@@ -24,7 +24,9 @@ read -p "Entrer l'instruction demandée : " instruction
 if [ $instruction == "1" ]; then
     docker-compose exec application php bin/console doctrine:fixtures:load # entre dans le shell interfactif du container BDD
 elif [ $instruction == "2" ]; then
-    docker-compose exec application php bin/console doctrine:schema:update --force # entre dans le shell interfactif du container BDD
+    # docker-compose exec application php bin/console doctrine:schema:update --force # entre dans le shell interfactif du container BDD
+    docker-compose exec application php bin/console make:migration
+    docker-compose exec application php bin/console doctrine:migrations:migrate
 elif [ $instruction == "3" ]; then
     php bin/console make:entity
 elif [ $instruction == "4" ]; then
@@ -38,3 +40,5 @@ elif [ $instruction == "7" ]; then
 elif [ $instruction == "8" ]; then
     vendor/bin/phpcbf src
 fi
+
+# exécuter une requête SQL : docker-compose exec application php bin/console doctrine:query:sql "REQUETE SQL"

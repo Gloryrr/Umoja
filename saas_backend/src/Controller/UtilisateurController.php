@@ -2,13 +2,16 @@
 
 namespace App\Controller;
 
+use App\Repository\AppartenirRepository;
+use App\Repository\GenreMusicalRepository;
+use App\Repository\PreferencerRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use App\Repository\UtilisateurRepository;
+use App\Services\UtilisateurService;
 
 class UtilisateurController extends AbstractController
 {
@@ -22,16 +25,16 @@ class UtilisateurController extends AbstractController
     #[Route('/api/v1/utilisateurs', name: 'get_utilisateurs', methods: ['GET'])]
     public function getUtilisateurs(
         UtilisateurRepository $utilisateurRepository,
+        AppartenirRepository $appartenirRepository,
+        PreferencerRepository $preferencerRepository,
         SerializerInterface $serializer
     ): JsonResponse {
-        $utilisateurs = $utilisateurRepository->findAll();
-        $utilisateursJSON = $serializer->serialize($utilisateurs, 'json');
-        return new JsonResponse([
-            'utilisateurs' => $utilisateursJSON,
-            'reponse' => Response::HTTP_OK,
-            'headers' => [],
-            'serialized' => true
-        ]);
+        return UtilisateurService::getUtilisateurs(
+            $utilisateurRepository,
+            $appartenirRepository,
+            $preferencerRepository,
+            $serializer
+        );
     }
 
     /**
@@ -42,32 +45,18 @@ class UtilisateurController extends AbstractController
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
-    #[Route('/api/v1/utilisateurs', name: 'create_utilisateur', methods: ['POST'])]
+    #[Route('/api/v1/utilisateurs/create', name: 'create_utilisateur', methods: ['POST'])]
     public function createUtilisateur(
         Request $request,
         UtilisateurRepository $utilisateurRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
-
-        $utilisateur = new Utilisateur();
-        $utilisateur->setEmailUtilisateur($data['emailUtilisateur']);
-        $utilisateur->setMdpUtilisateur($data['mdpUtilisateur']);
-        $utilisateur->setRoleUtilisateur($data['roleUtilisateur']);
-        $utilisateur->setUsername($data['username']);
-        $utilisateur->setNumTelUtilisateur($data['numTelUtilisateur'] ?? null);
-        $utilisateur->setNomUtilisateur($data['nomUtilisateur'] ?? null);
-        $utilisateur->setPrenomUtilisateur($data['prenomUtilisateur'] ?? null);
-
-        $utilisateurRepository->save($utilisateur, true);
-        $utilisateurJSON = $serializer->serialize($utilisateur, 'json');
-
-        return new JsonResponse([
-            'utilisateur' => $utilisateurJSON,
-            'reponse' => Response::HTTP_CREATED,
-            'headers' => [],
-            'serialized' => true
-        ]);
+        return UtilisateurService::createUtilisateur(
+            $utilisateurRepository,
+            $serializer,
+            $data
+        );
     }
 
     /**
@@ -79,55 +68,20 @@ class UtilisateurController extends AbstractController
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
-    #[Route('/api/v1/utilisateurs/{id}', name: 'update_utilisateur', methods: ['PATCH'])]
+    #[Route('/api/v1/utilisateurs/update/{id}', name: 'update_utilisateur', methods: ['PATCH'])]
     public function updateUtilisateur(
         int $id,
         Request $request,
         UtilisateurRepository $utilisateurRepository,
         SerializerInterface $serializer
     ): JsonResponse {
-        $utilisateur = $utilisateurRepository->find($id);
-
-        if (!$utilisateur) {
-            return new JsonResponse([
-                'message' => 'Utilisateur non trouvé, merci de donner un identifiant valide !',
-                'reponse' => Response::HTTP_NOT_FOUND
-            ]);
-        }
-
         $data = json_decode($request->getContent(), true);
-
-        if (isset($data['emailUtilisateur'])) {
-            $utilisateur->setEmailUtilisateur($data['emailUtilisateur']);
-        }
-        if (isset($data['mdpUtilisateur'])) {
-            $utilisateur->setMdpUtilisateur($data['mdpUtilisateur']);
-        }
-        if (isset($data['roleUtilisateur'])) {
-            $utilisateur->setRoleUtilisateur($data['roleUtilisateur']);
-        }
-        if (isset($data['username'])) {
-            $utilisateur->setUsername($data['username']);
-        }
-        if (isset($data['numTelUtilisateur'])) {
-            $utilisateur->setNumTelUtilisateur($data['numTelUtilisateur']);
-        }
-        if (isset($data['nomUtilisateur'])) {
-            $utilisateur->setNomUtilisateur($data['nomUtilisateur']);
-        }
-        if (isset($data['prenomUtilisateur'])) {
-            $utilisateur->setPrenomUtilisateur($data['prenomUtilisateur']);
-        }
-
-        $utilisateurRepository->save($utilisateur, true);
-        $utilisateurJSON = $serializer->serialize($utilisateur, 'json');
-
-        return new JsonResponse([
-            'utilisateur' => $utilisateurJSON,
-            'reponse' => Response::HTTP_OK,
-            'headers' => [],
-            'serialized' => true
-        ]);
+        return UtilisateurService::updateUtilisateur(
+            $id,
+            $utilisateurRepository,
+            $serializer,
+            $data
+        );
     }
 
     /**
@@ -137,23 +91,70 @@ class UtilisateurController extends AbstractController
      * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des utilisateurs
      * @return JsonResponse
      */
-    #[Route('/api/v1/utilisateurs/{id}', name: 'delete_utilisateur', methods: ['DELETE'])]
-    public function deleteUtilisateur(int $id, UtilisateurRepository $utilisateurRepository): JsonResponse
-    {
-        $utilisateur = $utilisateurRepository->find($id);
+    #[Route('/api/v1/utilisateurs/delete/{id}', name: 'delete_utilisateur', methods: ['DELETE'])]
+    public function deleteUtilisateur(
+        int $id,
+        UtilisateurRepository $utilisateurRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        return UtilisateurService::deleteUtilisateur(
+            $id,
+            $utilisateurRepository,
+            $serializer
+        );
+    }
 
-        if (!$utilisateur) {
-            return new JsonResponse([
-                'message' => 'Utilisateur non trouvé, merci de fournir un identifiant valide',
-                'reponse' => Response::HTTP_NOT_FOUND
-            ]);
-        }
+    /**
+     * Ajoute un genre musical préféré à l'utilisateur
+     *
+     * @param Request $requete, la requête avec les données d'ajout
+     * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des utilisateurs
+     * @param PreferencerRepository $preferencerRepository, CRUD des utilisateurs qui ont des genres préférés
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/utilisateur/add-genre-musical', name: 'add_genre_musical', methods: ['POST'])]
+    public function ajouteGenreMusicalUtilisateur(
+        Request $request,
+        UtilisateurRepository $utilisateurRepository,
+        PreferencerRepository $preferencerRepository,
+        GenreMusicalRepository $genreMusicalRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        return UtilisateurService::ajouteGenreMusicalUtilisateur(
+            $data,
+            $utilisateurRepository,
+            $preferencerRepository,
+            $genreMusicalRepository,
+            $serializer
+        );
+    }
 
-        $utilisateurRepository->remove($utilisateur, true);
-
-        return new JsonResponse([
-            'message' => 'Utilisateur supprimé',
-            'reponse' => Response::HTTP_NO_CONTENT
-        ]);
+    /**
+     * Retire un genre musical préféré aux préférences de l'utilisateur
+     *
+     * @param Request $requete, la requête avec les données d'ajout
+     * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des utilisateurs
+     * @param PreferencerRepository $preferencerRepository, CRUD des utilisateurs qui ont des genres préférés
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/utilisateur/delete-genre-musical', name: 'delete_genre_musical', methods: ['DELETE'])]
+    public function retireGenreMusicalUtilisateur(
+        Request $request,
+        UtilisateurRepository $utilisateurRepository,
+        PreferencerRepository $preferencerRepository,
+        GenreMusicalRepository $genreMusicalRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        return UtilisateurService::retireGenreMusicalUtilisateur(
+            $data,
+            $utilisateurRepository,
+            $preferencerRepository,
+            $genreMusicalRepository,
+            $serializer
+        );
     }
 }
