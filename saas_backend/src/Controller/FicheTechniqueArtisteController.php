@@ -9,21 +9,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
-use Doctrine\ORM\EntityManagerInterface;
 
 class FicheTechniqueArtisteController extends AbstractController
 {
-    private FicheTechniqueArtisteRepository $ficheTechniqueArtisteRepository;
-    private EntityManagerInterface $entityManager;
-
-    public function __construct(
-        FicheTechniqueArtisteRepository $ficheTechniqueArtisteRepository,
-        EntityManagerInterface $entityManager
-    ) {
-        $this->ficheTechniqueArtisteRepository = $ficheTechniqueArtisteRepository;
-        $this->entityManager = $entityManager;
-    }
-
     /**
      * Récupère toutes les fiches techniques d'artistes.
      */

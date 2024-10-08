@@ -3,9 +3,6 @@
 namespace App\Services;
 
 use App\DTO\FicheTechniqueArtisteDTO;
-use App\Entity\Preferencer;
-use App\Repository\GenreMusicalRepository;
-use App\Repository\PreferencerRepository;
 use App\Repository\FicheTechniqueArtisteRepository;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
