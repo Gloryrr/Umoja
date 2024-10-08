@@ -15,7 +15,7 @@ class ConditionsFinancieresController extends AbstractController
     /**
      * Récupère toutes les conditions financières existantes.
      *
-     * @param ConditionsFinancieresRepository $conditionsFinancieresRepository, la classe CRUD des conditions financières
+     * @param ConditionsFinancieresRepository $conditionsFinancieresRepository, la repo CRUD des conditions financières
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
@@ -34,7 +34,7 @@ class ConditionsFinancieresController extends AbstractController
      * Crée une nouvelle conditions financière.
      *
      * @param Request $request
-     * @param ConditionsFinancieresRepository $conditionsFinancieresRepository, la classe CRUD des conditions financières
+     * @param ConditionsFinancieresRepository $conditionsFinancieresRepository, la repo CRUD des conditions financières
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
@@ -57,7 +57,7 @@ class ConditionsFinancieresController extends AbstractController
      *
      * @param int $id
      * @param Request $request
-     * @param ConditionsFinancieresRepository $conditionsFinancieresRepository, la classe CRUD des conditions financières
+     * @param ConditionsFinancieresRepository $conditionsFinancieresRepository, la repo CRUD des conditions financières
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
@@ -81,7 +81,7 @@ class ConditionsFinancieresController extends AbstractController
      * Supprime une condition financière.
      *
      * @param int $id
-     * @param ConditionsFinancieresRepository $conditionsFinancieresRepository, la classe CRUD des conditions financières
+     * @param ConditionsFinancieresRepository $conditionsFinancieresRepository, la repo CRUD des conditions financières
      * @return JsonResponse
      */
     #[Route('/api/v1/condition-financiere/delete/{id}', name: 'delete_condition_financiere', methods: ['DELETE'])]
