@@ -20,7 +20,7 @@ class ConditionsFinancieres
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private ?int $idCF = null;
 
     /**
      * @var int|null Le montant minimum garanti pour une transaction ou un contrat.
@@ -41,18 +41,14 @@ class ConditionsFinancieres
     #[ORM\Column]
     private ?float $pourcentageRecette = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Offre $offre = null;
-
     /**
      * Récupère l'identifiant unique des conditions financières.
      *
      * @return int|null
      */
-    public function getId(): ?int
+    public function getIdCF(): ?int
     {
-        return $this->id;
+        return $this->idCF;
     }
 
     /**
@@ -120,29 +116,6 @@ class ConditionsFinancieres
     public function setPourcentageRecette(float $pourcentageRecette): static
     {
         $this->pourcentageRecette = $pourcentageRecette;
-
-        return $this;
-    }
-
-    /**
-     * Récupère l'offre associée aux conditions financières.
-     *
-     * @return Offre|null L'offre actuelle, ou null si aucune n'a été définie.
-     */
-    public function getOffre(): ?Offre
-    {
-        return $this->offre;
-    }
-
-    /**
-     * Définit l'offre associée aux conditions financières.
-     *
-     * @param Offre $offre L'offre à associer.
-     * @return static Retourne l'instance actuelle pour permettre le chaînage de méthodes.
-     */
-    public function setOffre(Offre $offre): static
-    {
-        $this->offre = $offre;
 
         return $this;
     }

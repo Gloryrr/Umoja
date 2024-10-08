@@ -22,13 +22,6 @@ class ConditionsFinancieresTest extends TestCase
     private ConditionsFinancieres $conditionsFinancieres;
 
     /**
-     * Instance de Offre à tester.
-     *
-     * @var Offre
-     */
-    private Offre $offre;
-
-    /**
      * Préparation de l'environnement de test.
      *
      * Cette méthode est exécutée avant chaque test.
@@ -37,7 +30,6 @@ class ConditionsFinancieresTest extends TestCase
     protected function setUp(): void
     {
         $this->conditionsFinancieres = new ConditionsFinancieres();
-        $this->offre = new Offre();
     }
 
     /**
@@ -46,10 +38,10 @@ class ConditionsFinancieresTest extends TestCase
      * Vérifie si l'identifiant des conditions financières peut être
      * correctement défini et récupéré.
      */
-    public function testId()
+    public function testIdCF()
     {
         // Ici, comme l'ID est généré automatiquement, on ne teste que la récupération (par défaut null).
-        $this->assertNull($this->conditionsFinancieres->getId());
+        $this->assertNull($this->conditionsFinancieres->getIdCF());
     }
 
     /**
@@ -88,19 +80,4 @@ class ConditionsFinancieresTest extends TestCase
         $this->conditionsFinancieres->setPourcentageRecette(12.5);
         $this->assertEquals(12.5, $this->conditionsFinancieres->getPourcentageRecette());
     }
-    
-    /**
-     * Test de la méthode setOffre() et getOffre().
-     *
-     * Vérifie si l'offre associée aux conditions financières peut être
-     * correctement définie et récupérée.
-     * Utilise la méthode setOffre() pour définir l'offre, puis vérifie 
-     * que la méthode getOffre() retourne bien la même instance.
-     */
-    public function testOffre()
-    {
-        $this->conditionsFinancieres->setOffre($this->offre);
-        $this->assertSame($this->offre, $this->conditionsFinancieres->getOffre());
-    }
-
 }
