@@ -36,9 +36,9 @@ class FicheTechniqueArtisteTest extends TestCase
      *
      * Vérifie si l'identifiant d'une fiche technique peut être récupéré.
      */
-    public function testGetId()
+    public function testGetIdFT()
     {
-        $this->assertNull($this->ficheTechnique->getId());
+        $this->assertNull($this->ficheTechnique->getIdFT());
     }
 
     /**
