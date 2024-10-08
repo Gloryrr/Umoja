@@ -21,7 +21,7 @@ class FicheTechniqueArtisteService
     /**
      * Récupère toutes les fiches techniques des artistes et renvoie une réponse JSON.
      *
-     * @param FicheTechniqueArtisteRepository $ficheTechniqueArtisteRepository, le repository des fiches techniques des artistes.
+     * @param FicheTechniqueArtisteRepository $ficheTechniqueArtisteRepository, le repository des fiches techniques.
      * @param SerializerInterface $serializer Le service de sérialisation.
      *
      * @return JsonResponse La réponse JSON contenant les fiches techniques des artistes.
@@ -59,7 +59,7 @@ class FicheTechniqueArtisteService
     /**
      * Créer une nouvelle fiche technique d'artiste et renvoie une réponse JSON.
      *
-     * @param FicheTechniqueArtisteRepository $ficheTechniqueArtisteRepository Le repository des fiches techniques des artistes.
+     * @param FicheTechniqueArtisteRepository $ficheTechniqueArtisteRepository Le repository des fiches techniques.
      * @param SerializerInterface $serializer Le service de sérialisation.
      * @param mixed $data Les données de la fiche technique à créer.
      *
@@ -122,7 +122,7 @@ class FicheTechniqueArtisteService
      * Met à jour une fiche technique de l'artiste existant et renvoie une réponse JSON.
      *
      * @param int $id L'identifiant de la fiche technique à mettre à jour.
-     * @param FicheTechniqueArtisteRepository $ficheTechniqueArtisteRepository Le repository des fiches techniques des artistes.
+     * @param FicheTechniqueArtisteRepository $ficheTechniqueArtisteRepository Le repository des fiches techniques.
      * @param SerializerInterface $serializer Le service de sérialisation.
      * @param mixed $data Les nouvelles données de la fiche technique.
      *
@@ -201,7 +201,7 @@ class FicheTechniqueArtisteService
      * Supprime une fiche technique de l'artiste et renvoie une réponse JSON.
      *
      * @param int $id L'identifiant de la fiche technique à supprimer.
-     * @param FicheTechniqueArtisteRepository $ficheTechniqueArtisteRepository Le repository des fiches techniques des artistes.
+     * @param FicheTechniqueArtisteRepository $ficheTechniqueArtisteRepository Le repository des fiches techniques.
      * @param SerializerInterface $serializer Le service de sérialisation.
      *
      * @return JsonResponse La réponse JSON après la suppression de la fiche technique.
