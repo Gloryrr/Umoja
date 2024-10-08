@@ -3,7 +3,6 @@
 namespace App\Tests\Entity;
 
 use App\Entity\BudgetEstimatif;
-use App\Entity\Offre;
 
 use PHPUnit\Framework\TestCase;
 
