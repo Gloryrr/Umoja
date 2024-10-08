@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Repository\AppartenirRepository;
+use App\Repository\GenreMusicalRepository;
+use App\Repository\PreferencerRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -22,10 +25,14 @@ class UtilisateurController extends AbstractController
     #[Route('/api/v1/utilisateurs', name: 'get_utilisateurs', methods: ['GET'])]
     public function getUtilisateurs(
         UtilisateurRepository $utilisateurRepository,
+        AppartenirRepository $appartenirRepository,
+        PreferencerRepository $preferencerRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         return UtilisateurService::getUtilisateurs(
             $utilisateurRepository,
+            $appartenirRepository,
+            $preferencerRepository,
             $serializer
         );
     }
@@ -93,6 +100,60 @@ class UtilisateurController extends AbstractController
         return UtilisateurService::deleteUtilisateur(
             $id,
             $utilisateurRepository,
+            $serializer
+        );
+    }
+
+    /**
+     * Ajoute un genre musical préféré à l'utilisateur
+     *
+     * @param Request $requete, la requête avec les données d'ajout
+     * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des utilisateurs
+     * @param PreferencerRepository $preferencerRepository, CRUD des utilisateurs qui ont des genres préférés
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/utilisateur/add-genre-musical', name: 'add_genre_musical', methods: ['POST'])]
+    public function ajouteGenreMusicalUtilisateur(
+        Request $request,
+        UtilisateurRepository $utilisateurRepository,
+        PreferencerRepository $preferencerRepository,
+        GenreMusicalRepository $genreMusicalRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        return UtilisateurService::ajouteGenreMusicalUtilisateur(
+            $data,
+            $utilisateurRepository,
+            $preferencerRepository,
+            $genreMusicalRepository,
+            $serializer
+        );
+    }
+
+    /**
+     * Retire un genre musical préféré aux préférences de l'utilisateur
+     *
+     * @param Request $requete, la requête avec les données d'ajout
+     * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des utilisateurs
+     * @param PreferencerRepository $preferencerRepository, CRUD des utilisateurs qui ont des genres préférés
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/utilisateur/delete-genre-musical', name: 'delete_genre_musical', methods: ['DELETE'])]
+    public function retireGenreMusicalUtilisateur(
+        Request $request,
+        UtilisateurRepository $utilisateurRepository,
+        PreferencerRepository $preferencerRepository,
+        GenreMusicalRepository $genreMusicalRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        return UtilisateurService::retireGenreMusicalUtilisateur(
+            $data,
+            $utilisateurRepository,
+            $preferencerRepository,
+            $genreMusicalRepository,
             $serializer
         );
     }
