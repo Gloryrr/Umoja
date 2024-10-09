@@ -16,7 +16,7 @@ export const CardHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDiv
 
 export const CardTitle = ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
   <h3
-    className={`text-xl font-bold mb-2 ${className}`}
+    className={`text-[1.5rem] font-bold mb-2 font-fredoka ${className}`}
     {...props}
   />
 )

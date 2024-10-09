@@ -14,7 +14,7 @@ export default function Home() {
       imageUrl: "/angele.jpeg" // Replace with actual image URL
     },
     {
-      id: 1,
+      id: 2,
       title: "Tournée de Damso",
       creator: "Alex Stevens Lab",
       contributions: 512,
