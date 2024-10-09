@@ -1,83 +1,70 @@
 "use client";
-import { Avatar, Dropdown, Navbar, NavbarBrand, NavbarCollapse, NavbarLink, NavbarToggle } from "flowbite-react";
+import React, { useState } from 'react';
+import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
+const Navbar = () => {
+  // State to manage the navbar's visibility
+  const [nav, setNav] = useState(false);
 
-export default function NavbarApp() {
+  // Toggle function to handle the navbar's display
+  const handleNav = () => {
+    setNav(!nav);
+  };
+
+  // Array containing navigation items
+  const navItems = [
+    { id: 1, text: 'Home' },
+    { id: 2, text: 'Company' },
+    { id: 3, text: 'Resources' },
+    { id: 4, text: 'About' },
+    { id: 5, text: 'Contact' },
+  ];
+
   return (
-    <Navbar fluid rounded className="bg-white shadow-lg">
-      <div className="container mx-auto flex items-center justify-between py-4 px-6">
-        {/* Brand / Logo */}
-        <NavbarBrand className="flex items-center">
-          <img src="/logo.png" alt="logo" className="w-56 h-auto mr-6" />
-        </NavbarBrand>
+    <div className='bg-black  flex justify-between w-full items-center h-24 mx-auto px-4 text-white'>
+      {/* Logo */}
+      <h1 className='w-full text-3xl font-bold text-[#00df9a]'>SAAS</h1>
 
-        {/* Middle Navigation Links */}
-        <div className="hidden md:flex space-x-6">
-          <NavbarLink href="#" active className="text-lg font-semibold text-gray-900 hover:text-blue-600">
-            Home
-          </NavbarLink>
-          <NavbarLink href="#" className="text-lg text-gray-700 hover:text-blue-600">
-            About
-          </NavbarLink>
-          <NavbarLink href="#" className="text-lg text-gray-700 hover:text-blue-600">
-            Services
-          </NavbarLink>
-          <NavbarLink href="#" className="text-lg text-gray-700 hover:text-blue-600">
-            Pricing
-          </NavbarLink>
-          <NavbarLink href="#" className="text-lg text-gray-700 hover:text-blue-600 ">
-            Contact
-          </NavbarLink>
-        </div>
-
-        {/* Right Section (Dropdown / Toggle for Mobile) */}
-        <div className="flex items-center ml-[20px] space-x-4">
-          <Dropdown
-            arrowIcon={false}
-            inline
-            label={
-              <Avatar
-                alt="User settings"
-                img="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-                rounded
-                className="h-10 w-10"
-              />
-            }
+      {/* Desktop Navigation */}
+      <ul className='hidden md:flex'>
+        {navItems.map(item => (
+          <li
+            key={item.id}
+            className='p-4 hover:bg-[#00df9a] rounded-xl m-2 cursor-pointer duration-300 hover:text-black'
           >
-            <Dropdown.Header>
-              <span className="block text-sm font-medium text-gray-900">Bonnie Green</span>
-              <span className="block truncate text-sm text-gray-500">name@flowbite.com</span>
-            </Dropdown.Header>
-            <Dropdown.Item className="hover:bg-gray-100">Dashboard</Dropdown.Item>
-            <Dropdown.Item className="hover:bg-gray-100">Settings</Dropdown.Item>
-            <Dropdown.Item className="hover:bg-gray-100">Earnings</Dropdown.Item>
-            <Dropdown.Divider />
-            <Dropdown.Item className="hover:bg-gray-100">Sign out</Dropdown.Item>
-          </Dropdown>
-          <NavbarToggle />
-        </div>
+            {item.text}
+          </li>
+        ))}
+      </ul>
+
+      {/* Mobile Navigation Icon */}
+      <div onClick={handleNav} className='block md:hidden z-[10000] relative'>
+        {nav ? <AiOutlineClose size={20} /> : <AiOutlineMenu size={20} />}
       </div>
 
-      {/* Mobile Menu */}
-      <NavbarCollapse className="md:hidden flex flex-col space-y-4 bg-white px-6 py-4">
-        <NavbarLink href="#" active className="text-lg font-semibold text-gray-900 hover:text-blue-600">
-          Home
-        </NavbarLink>
-        <NavbarLink href="#" className="text-lg text-gray-700 hover:text-blue-600">
-          About
-        </NavbarLink>
-        <NavbarLink href="#" className="text-lg text-gray-700 hover:text-blue-600">
-          Services
-        </NavbarLink>
-        <NavbarLink href="#" className="text-lg text-gray-700 hover:text-blue-600">
-          Pricing
-        </NavbarLink>
-        <NavbarLink href="#" className="text-lg text-gray-700 hover:text-blue-600">
-          Contact
-        </NavbarLink>
-      </NavbarCollapse>
-    </Navbar>
+      {/* Mobile Navigation Menu */}
+      <ul
+        className={
+          nav
+            ? 'fixed md:hidden left-0 top-0 w-[60%] h-full border-r border-r-gray-900 bg-[#000300] z-[5000] ease-in-out duration-500'
+            : 'ease-in-out w-[60%] duration-500 fixed top-0 bottom-0 left-[-100%] z-[5000]'
+        }
+      >
+        {/* Mobile Logo */}
+        <h1 className='w-full text-3xl font-bold text-[#00df9a] m-4'>REACT.</h1>
+
+        {/* Mobile Navigation Items */}
+        {navItems.map(item => (
+          <li
+            key={item.id}
+            className='p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600'
+          >
+            {item.text}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
-}
+};
 
-
+export default Navbar;
 
