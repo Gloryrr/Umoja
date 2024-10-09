@@ -18,7 +18,6 @@ class Commentaire
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false, referencedColumnName: "id_utilisateur")]
-    #[ORM\JoinColumn(nullable: false)]
     private ?Utilisateur $idUtilisateur = null;
 
     public function getIdCommentaire(): ?int
