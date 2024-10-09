@@ -1,6 +1,6 @@
 import InscriptionForm from "../components/inscription_form";
 
-InscriptionForm
+// InscriptionForm
 export default function Inscription() {
     return (
         <InscriptionForm/>
