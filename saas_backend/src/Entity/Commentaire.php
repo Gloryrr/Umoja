@@ -11,10 +11,41 @@ class Commentaire
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private ?int $idCommentaire = null;
 
-    public function getId(): ?int
+    #[ORM\Column(length: 500)]
+    private ?string $commentaire = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Utilisateur $idUtilisateur = null;
+
+    public function getIdCommentaire(): ?int
     {
-        return $this->id;
+        return $this->idCommentaire;
+    }
+
+    public function getCommentaire(): ?string
+    {
+        return $this->commentaire;
+    }
+
+    public function setCommentaire(string $commentaire): static
+    {
+        $this->commentaire = $commentaire;
+
+        return $this;
+    }
+
+    public function getIdUtilisateur(): ?Utilisateur
+    {
+        return $this->idUtilisateur;
+    }
+
+    public function setIdUtilisateur(?Utilisateur $idUtilisateur): static
+    {
+        $this->idUtilisateur = $idUtilisateur;
+
+        return $this;
     }
 }
