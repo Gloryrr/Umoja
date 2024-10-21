@@ -12,7 +12,7 @@ use App\Services\ReponseService;
 
 /**
  * Contrôleur pour l'entité Reponse.
- * 
+ *
  * Gère les opérations CRUD de l'entité Reponse via une API REST.
  */
 class ReponseController extends AbstractController

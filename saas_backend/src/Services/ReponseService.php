@@ -57,13 +57,15 @@ class ReponseService
     ): JsonResponse {
         try {
             // Vérifie que les données nécessaires sont présentes
-            if ((
-                empty($data['idEtatReponse']) || 
-                empty($data['idOffre']) || 
-                empty($data['dateDebut']) || 
-                empty($data['dateFin']) || 
+            if (
+                (
+                empty($data['idEtatReponse']) ||
+                empty($data['idOffre']) ||
+                empty($data['dateDebut']) ||
+                empty($data['dateFin']) ||
                 empty($data['prixParticipation'])
-            )) {
+                )
+            ) {
                 throw new \InvalidArgumentException("Toutes les données de la réponse sont requises.");
             }
 
