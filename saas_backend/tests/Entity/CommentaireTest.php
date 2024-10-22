@@ -4,6 +4,7 @@ namespace App\Tests\Entity;
 
 use App\Entity\Commentaire;
 use App\Entity\Utilisateur;
+use App\Entity\Offre;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -15,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 class CommentaireTest extends TestCase
 {
     /**
-     * Instance du commentaire à tester.
+     * Instance de Commentaire à tester.
      *
      * @var Commentaire
      */
@@ -35,7 +36,7 @@ class CommentaireTest extends TestCase
     /**
      * Test de la méthode getIdCommentaire().
      *
-     * Vérifie si l'identifiant d'un commentaire peut être récupéré.
+     * Vérifie si l'identifiant de Commentaire peut être récupéré.
      */
     public function testGetIdCommentaire()
     {
@@ -43,39 +44,41 @@ class CommentaireTest extends TestCase
     }
 
     /**
-     * Test de la méthode setCommentaire() et getCommentaire().
+     * Test de la méthode getCommentaire() et setCommentaire().
      *
-     * Vérifie si le texte du commentaire peut être correctement
+     * Vérifie si le commentaire peut être correctement
      * défini et récupéré.
      */
     public function testCommentaire()
     {
-        $this->commentaire->setCommentaire("Ceci est un commentaire.");
-        $this->assertEquals("Ceci est un commentaire.", $this->commentaire->getCommentaire());
+        $texteCommentaire = "Un excellent commentaire";
+        $this->commentaire->setCommentaire($texteCommentaire);
+        $this->assertSame($texteCommentaire, $this->commentaire->getCommentaire());
     }
 
     /**
      * Test de la méthode getIdUtilisateur() et setIdUtilisateur().
      *
-     * Vérifie si l'utilisateur associé à un commentaire peut être
-     * correctement défini et récupéré.
+     * Vérifie si l'utilisateur peut être correctement
+     * défini et récupéré.
      */
     public function testIdUtilisateur()
     {
-        $utilisateur = new Utilisateur(); // Simulez un objet Utilisateur.
-
+        $utilisateur = new Utilisateur();
         $this->commentaire->setIdUtilisateur($utilisateur);
-        $this->assertEquals($utilisateur, $this->commentaire->getIdUtilisateur());
+        $this->assertSame($utilisateur, $this->commentaire->getIdUtilisateur());
     }
 
     /**
-     * Test du comportement lorsque l'utilisateur est nul.
+     * Test de la méthode getIdOffre() et setIdOffre().
      *
-     * Vérifie que la méthode getIdUtilisateur() retourne null
-     * lorsqu'aucun utilisateur n'est associé.
+     * Vérifie si l'offre peut être correctement
+     * définie et récupérée.
      */
-    public function testIdUtilisateurNull()
+    public function testIdOffre()
     {
-        $this->assertNull($this->commentaire->getIdUtilisateur());
+        $offre = new Offre();
+        $this->commentaire->setIdOffre($offre);
+        $this->assertSame($offre, $this->commentaire->getIdOffre());
     }
 }
