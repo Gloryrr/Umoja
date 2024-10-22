@@ -21,12 +21,12 @@ class LoginService
         try {
             // si l'utilisateur se connecte ne utilisant son email
             if (!isset($data_login['username'])) {
-                $user = $utilisateurRepository->trouveUtilisateurByMail(
+                $user = $utilisateurRepository->trouveUtilisateurByMailAndMDP(
                     $data_login['emailUtilisateur'],
                     $data_login['mdpUtilisateur']
                 );
             } else {
-                $user = $utilisateurRepository->trouveUtilisateurByUsername(
+                $user = $utilisateurRepository->trouveUtilisateurByUsernameAndMDP(
                     $data_login['username'],
                     $data_login['mdpUtilisateur']
                 );

@@ -2,12 +2,20 @@
 
 namespace App\Controller;
 
+use App\Repository\ArtisteRepository;
+use App\Repository\ConcernerRepository;
+use App\Repository\CreerRepository;
+use App\Repository\GenreMusicalRepository;
+use App\Repository\PosterRepository;
+use App\Repository\RattacherRepository;
+use App\Repository\ReseauRepository;
+use App\Repository\UtilisateurRepository;
+use App\Services\OffreService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use App\Repository\OffreRepository;
 
 class OffreController extends AbstractController
@@ -15,23 +23,19 @@ class OffreController extends AbstractController
     /**
      * Récupère tous les Offres.
      *
-     * @param OffreRepository $OffreRepository, la classe CRUD des Offres
+     * @param OffreRepository $offreRepository, la classe CRUD des Offres
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
     #[Route('/api/v1/Offres', name: 'get_Offres', methods: ['GET'])]
     public function getOffres(
-        OffreRepository $OffreRepository,
+        OffreRepository $offreRepository,
         SerializerInterface $serializer
     ): JsonResponse {
-        $Offres = $OffreRepository->findAll();
-        $OffresJSON = $serializer->serialize($Offres, 'json');
-        return new JsonResponse([
-            'Offres' => $OffresJSON,
-            'reponse' => Response::HTTP_OK,
-            'headers' => [],
-            'serialized' => true
-        ]);
+        return OffreService::getOffres(
+            $offreRepository,
+            $serializer
+        );
     }
 
     /**
@@ -42,43 +46,34 @@ class OffreController extends AbstractController
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
-    #[Route('/api/v1/Offres', name: 'create_offre', methods: ['POST'])]
+    #[Route('/api/v1/offre/create', name: 'create_offre', methods: ['POST'])]
     public function createOffre(
         Request $request,
         OffreRepository $offreRepository,
+        UtilisateurRepository $utilisateurRepository,
+        CreerRepository $creerRepository,
+        ReseauRepository $reseauRepository,
+        PosterRepository $posterRepository,
+        RattacherRepository $rattacherRepository,
+        GenreMusicalRepository $genreMusicalRepository,
+        ArtisteRepository $artisteRepository,
+        ConcernerRepository $concernerRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
-
-        $offre = new Offre();
-        $offre->setDescrTournee($data['descrTournee']);
-        $offre->setDateMinProposee(new \DateTime($data['dateMinProposee']));
-        $offre->setDateMaxProposee(new \DateTime($data['dateMaxProposee']));
-        $offre->setVilleVisee($data['villeVisee']);
-        $offre->setRegionVisee($data['regionVisee']);
-        $offre->setPlaceMin($data['placeMin']);
-        $offre->setPlaceMax($data['placeMax']);
-        $offre->setDateLimiteReponse(new \DateTime($data['dateLimiteReponse']));
-        $offre->setValidee($data['validee']);
-
-        // Supposons que 'ArtisteConcerne' est passé un d'artiste existant
-        $artiste = $offreRepository->find($data['IdArtisteConcerne']);
-        $offre->setArtisteConcerne($artiste);
-
-        // Sauvegarde de l'offre dans la base de données
-
-        $offreRepository->getEntityManager()->persist($offre);
-        $offreRepository->getEntityManager()->flush();
-
-        // Sérialisation de l'offre en JSON
-        $offreJSON = $serializer->serialize($offre, 'json');
-
-        return new JsonResponse([
-            'offre' => $offreJSON,
-            'reponse' => Response::HTTP_CREATED,
-            'headers' => [],
-            'serialized' => true
-        ], Response::HTTP_CREATED);
+        return OffreService::createOffre(
+            $offreRepository,
+            $utilisateurRepository,
+            $creerRepository,
+            $reseauRepository,
+            $posterRepository,
+            $rattacherRepository,
+            $genreMusicalRepository,
+            $artisteRepository,
+            $concernerRepository,
+            $serializer,
+            $data
+        );
     }
 
 
@@ -91,66 +86,20 @@ class OffreController extends AbstractController
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
-    #[Route('/api/v1/Offres/{id}', name: 'update_offre', methods: ['PATCH'])]
+    #[Route('/api/v1/offre/update/{id}', name: 'update_offre', methods: ['PATCH'])]
     public function updateOffre(
         int $id,
         Request $request,
         OffreRepository $offreRepository,
         SerializerInterface $serializer
     ): JsonResponse {
-        $offre = $offreRepository->find($id);
-
-        if (!$offre) {
-            return new JsonResponse([
-                'message' => 'Offre non trouvée, merci de donner un identifiant valide !',
-                'reponse' => Response::HTTP_NOT_FOUND
-            ], Response::HTTP_NOT_FOUND);
-        }
-
         $data = json_decode($request->getContent(), true);
-
-        // Mise à jour des champs de l'offre seulement si présents dans la requête
-        if (isset($data['descrTournee'])) {
-            $offre->setDescrTournee($data['descrTournee']);
-        }
-        if (isset($data['dateMinProposee'])) {
-            $offre->setDateMinProposee(new \DateTime($data['dateMinProposee']));
-        }
-        if (isset($data['dateMaxProposee'])) {
-            $offre->setDateMaxProposee(new \DateTime($data['dateMaxProposee']));
-        }
-        if (isset($data['villeVisee'])) {
-            $offre->setVilleVisee($data['villeVisee']);
-        }
-        if (isset($data['regionVisee'])) {
-            $offre->setRegionVisee($data['regionVisee']);
-        }
-        if (isset($data['placeMin'])) {
-            $offre->setPlaceMin($data['placeMin']);
-        }
-        if (isset($data['placeMax'])) {
-            $offre->setPlaceMax($data['placeMax']);
-        }
-        if (isset($data['dateLimiteReponse'])) {
-            $offre->setDateLimiteReponse(new \DateTime($data['dateLimiteReponse']));
-        }
-        if (isset($data['validee'])) {
-            $offre->setValidee($data['validee']);
-        }
-
-        // Persist et flush pour mettre à jour l'offre dans la base de données
-        $offreRepository->getEntityManager()->persist($offre);
-        $offreRepository->getEntityManager()->flush();
-
-        // Sérialisation de l'offre mise à jour en JSON
-        $offreJSON = $serializer->serialize($offre, 'json');
-
-        return new JsonResponse([
-            'offre' => $offreJSON,
-            'reponse' => Response::HTTP_OK,
-            'headers' => [],
-            'serialized' => true
-        ]);
+        return OffreService::updateOffre(
+            $id,
+            $offreRepository,
+            $serializer,
+            $data
+        );
     }
 
     /**
@@ -160,25 +109,128 @@ class OffreController extends AbstractController
      * @param OffreRepository $offreRepository, la classe CRUD des Offres
      * @return JsonResponse
      */
-    #[Route('/api/v1/Offres/{id}', name: 'delete_offre', methods: ['DELETE'])]
-    public function deleteOffre(int $id, OffreRepository $offreRepository): JsonResponse
-    {
-        $offre = $offreRepository->find($id);
+    #[Route('/api/v1/offre/delete/{id}', name: 'delete_offre', methods: ['DELETE'])]
+    public function deleteOffre(
+        int $id,
+        OffreRepository $offreRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        return OffreService::deleteOffre(
+            $id,
+            $offreRepository,
+            $serializer
+        );
+    }
 
-        if (!$offre) {
-            return new JsonResponse([
-                'message' => 'Offre non trouvée, merci de fournir un identifiant valide.',
-                'reponse' => Response::HTTP_NOT_FOUND
-            ], Response::HTTP_NOT_FOUND);
-        }
+    /**
+     * Ajoute un artiste à l'offre
+     *
+     * @param Request $requete, la requête avec les données d'ajout
+     * @param OffreRepository $offreRepository, la classe CRUD des offres
+     * @param ArtisteRepository $artisteRepository, la classe CRUD des artistes
+     * @param ConcernerRepository $concernerRepository, CRUD des artistes qui sont concernés par des offres
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/offre/add-artiste', name: 'add_artiste_offre', methods: ['POST'])]
+    public function ajouteArtisteOffre(
+        Request $request,
+        OffreRepository $offreRepository,
+        ArtisteRepository $artisteRepository,
+        ConcernerRepository $concernerRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        return OffreService::ajouteArtisteOffre(
+            $data,
+            $offreRepository,
+            $artisteRepository,
+            $concernerRepository,
+            $serializer
+        );
+    }
 
-        //supprimer l'offre
-        $offreRepository->getEntityManager()->remove($offre);
-        $offreRepository->getEntityManager()->flush();
+    /**
+     * Supprime un artiste de l'offre
+     *
+     * @param Request $request, la requête avec les données de suppression
+     * @param OffreRepository $offreRepository, la classe CRUD des offres
+     * @param ArtisteRepository $artisteRepository, la classe CRUD des artistes
+     * @param ConcernerRepository $concernerRepository, CRUD des artistes qui sont concernés par des offres
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/offre/delete-artiste', name: 'delete_artiste_offre', methods: ['DELETE'])]
+    public function supprimeMembreReseau(
+        Request $request,
+        OffreRepository $offreRepository,
+        ArtisteRepository $artisteRepository,
+        ConcernerRepository $concernerRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        return OffreService::retireArtisteOffre(
+            $data,
+            $offreRepository,
+            $artisteRepository,
+            $concernerRepository,
+            $serializer
+        );
+    }
 
-        return new JsonResponse([
-            'message' => 'Offre supprimée avec succès.',
-            'reponse' => Response::HTTP_NO_CONTENT
-        ], Response::HTTP_NO_CONTENT);
+    /**
+     * Ajoute un genre musical préféré à une offre
+     *
+     * @param Request $requete, la requête avec les données d'jaout
+     * @param OffreRepository $offreRepository, la classe CRUD des offrex
+     * @param GenreMusicalRepository $genreMusicalRepository, la classe CRUD des genres musicaux
+     * @param RattacherRepository $rattacherRepository, la classe CRUD des utilisateurs qui appartiennent à des offrex
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/offre/add-genre-musical', name: 'add_genre_musical_offre', methods: ['POST'])]
+    public function ajouteGenreMusicalReseau(
+        Request $request,
+        OffreRepository $offreRepository,
+        GenreMusicalRepository $genreMusicalRepository,
+        RattacherRepository $rattacherRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        return OffreService::ajouteGenreMusicalReseau(
+            $data,
+            $offreRepository,
+            $genreMusicalRepository,
+            $rattacherRepository,
+            $serializer
+        );
+    }
+
+    /**
+     * Retire un genre musical préféré du réseau
+     *
+     * @param Request $requete, la requête avec les données d'jaout
+     * @param OffreRepository $offreRepository, la classe CRUD des réseaux
+     * @param GenreMusicalRepository $genreMusicalRepository, la classe CRUD des genres musicaux
+     * @param RattacherRepository $rattacherRepository, la classe CRUD des utilisateurs qui appartiennent à des réseaux
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/offre/delete-genre-musical', name: 'delete_genre_musical_offre', methods: ['DELETE'])]
+    public function retireGenreMusicalReseau(
+        Request $request,
+        OffreRepository $offreRepository,
+        GenreMusicalRepository $genreMusicalRepository,
+        RattacherRepository $rattacherRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        return OffreService::retireGenreMusicalReseau(
+            $data,
+            $offreRepository,
+            $genreMusicalRepository,
+            $rattacherRepository,
+            $serializer
+        );
     }
 }
