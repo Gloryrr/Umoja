@@ -140,7 +140,7 @@ class Offre
      * Cette colonne ne peut pas être nulle.
      */
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: "id_etat_offre")]
     private ?EtatOffre $etatOffre = null;
 
     /**
@@ -162,7 +162,7 @@ class Offre
      * Cette colonne ne peut pas être nulle.
      */
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: "id_cf")]
     private ?ConditionsFinancieres $conditionsFinancieres = null;
 
     /**
@@ -172,7 +172,7 @@ class Offre
      * représentant le budget estimé pour l'offre. Cette colonne ne peut pas être nulle.
      */
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: "id_be")]
     private ?BudgetEstimatif $budgetEstimatif = null;
 
     /**
@@ -183,7 +183,7 @@ class Offre
      * Cette colonne ne peut pas être nulle.
      */
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: "id_ft")]
     private ?FicheTechniqueArtiste $ficheTechniqueArtiste = null;
 
     /**

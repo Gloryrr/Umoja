@@ -38,7 +38,7 @@ class Commentaire
      * @var Utilisateur|null
      */
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: "id_utilisateur")]
     private ?Utilisateur $idUtilisateur = null;
 
     /**
