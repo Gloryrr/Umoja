@@ -20,14 +20,22 @@ const UserAvatar = () => {
         }
       >
         <Dropdown.Header>
-          <span className="block text-sm font-medium text-gray-900">Bonnie Green</span>
-          <span className="block truncate text-sm text-gray-500">name@flowbite.com</span>
+          <span className="block text-sm font-medium text-black">Bonnie Green</span>
+          <span className="block truncate text-sm text-gray">name@flowbite.com</span>
         </Dropdown.Header>
-        <Dropdown.Item className="hover:bg-gray-100">Dashboard</Dropdown.Item>
-        <Dropdown.Item className="hover:bg-gray-100">Settings</Dropdown.Item>
-        <Dropdown.Item className="hover:bg-gray-100">Earnings</Dropdown.Item>
-        <Dropdown.Divider />
-        <Dropdown.Item className="hover:bg-gray-100">Sign out</Dropdown.Item>
+        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white-800">
+          Dashboard
+        </Dropdown.Item>
+        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white-800">
+          Settings
+        </Dropdown.Item>
+        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white-800">
+          Earnings
+        </Dropdown.Item>
+        <Dropdown.Divider className="border-t border-gray-200 my-1" />
+        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white-800 hover:bg-red-400">
+          Sign out
+        </Dropdown.Item>
       </Dropdown>
     </div>
   );
@@ -35,7 +43,7 @@ const UserAvatar = () => {
 
 const UserAvatarMobile = () => {
   return (
-    <div className='relative '>
+    <div className='relative'>
       <Dropdown
         arrowIcon={false}
         inline
@@ -47,17 +55,25 @@ const UserAvatarMobile = () => {
             className="h-10 w-10"
           />
         }
-        
       >
+        {/* Dropdown menu content */}
         <Dropdown.Header>
-          <span className="block text-sm font-medium text-gray-900">Bonnie Green</span>
-          <span className="block truncate text-sm text-gray-500">name@flowbite.com</span>
+          <span className="block text-sm font-medium text-black">Bonnie Green</span>
+          <span className="block truncate text-sm text-gray">name@flowbite.com</span>
         </Dropdown.Header>
-        <Dropdown.Item className="hover:bg-gray-100">Dashboard</Dropdown.Item>
-        <Dropdown.Item className="hover:bg-gray-100">Settings</Dropdown.Item>
-        <Dropdown.Item className="hover:bg-gray-100">Earnings</Dropdown.Item>
-        <Dropdown.Divider />
-        <Dropdown.Item className="hover:bg-gray-100">Sign out</Dropdown.Item>
+        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white-800">
+          Dashboard
+        </Dropdown.Item>
+        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white-800">
+          Settings
+        </Dropdown.Item>
+        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white-800">
+          Earnings
+        </Dropdown.Item>
+        <Dropdown.Divider className="border-t border-gray-200 my-1" />
+        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white-800 hover:bg-red-400">
+          Sign out
+        </Dropdown.Item>
       </Dropdown>
     </div>
   );
@@ -84,7 +100,7 @@ const Navbar = () => {
   return (
     <div className='bg-black flex justify-between w-full items-center h-24 mx-auto px-4 text-white font-fredoka'>
       {/* Logo */}
-      <h1 className=' text-3xl font-bold text-[#00df9a]'>SAAS</h1>
+      <h1 className=' text-3xl font-bold text-[#00df9a]'>UmoDJA</h1>
 
       {/* Desktop Navigation */}
       <ul className='hidden md:flex'>
@@ -98,7 +114,7 @@ const Navbar = () => {
         ))}
       </ul>
 
-      <UserAvatar/>
+      <UserAvatar />
 
       {/* Mobile Navigation Icon */}
       <div onClick={handleNav} className='block md:hidden z-[10000] relative'>
@@ -112,13 +128,13 @@ const Navbar = () => {
             ? 'fixed md:hidden left-0 top-0 w-[60%] h-full border-r border-r-gray-900 bg-[#000300] z-[5000] ease-in-out duration-500'
             : 'ease-in-out w-[60%] duration-500 fixed top-0 bottom-0 left-[-100%] z-[5000]'
         }
-      
+
       >
-        
+
         {/* Mobile Logo */}
         <div className='flex m-4 '>
-        <h1 className='w-full text-3xl font-bold text-[#00df9a]'>REACT.</h1>
-        <UserAvatarMobile/>
+          <h1 className='w-full text-3xl font-bold text-[#00df9a]'>UmoDJA</h1>
+          <UserAvatarMobile />
         </div>
         {/* Mobile Navigation Items */}
         {navItems.map(item => (
