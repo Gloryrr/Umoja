@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Fredoka, Nunito } from "next/font/google";
 import "./globals.css";
 import NavbarApp from "./components/navbar";
+import Footer from "./components/footer";
 
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
@@ -47,6 +48,7 @@ export default function RootLayout({
       >
         <NavbarApp/>
         {children}
+        <Footer/>
         
       </body>
     </html>
