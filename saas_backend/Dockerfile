@@ -22,7 +22,7 @@ COPY . .
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Installer les dépendances avec Composer
-RUN composer install --optimize-autoloader
+RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --optimize-autoloader
 
 # Exposer le port 9000 pour PHP-FPM
 EXPOSE 9000

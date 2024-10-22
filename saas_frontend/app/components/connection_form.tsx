@@ -28,7 +28,7 @@ export default function connection_form() {
         <button className="w-full h-11 bg-blue-700 text-white border-none outline-none rounded-full shadow-md cursor-pointer text-lg font-bold" type="submit">Se connecter</button>
 
         <div className="text-sm text-center my-4">
-          <p>Tu n'as pas encore de compte ? 
+          <p>Tu n&aposas pas encore de compte ? 
           <NavigationHandler>
             {(handleNavigation: (path: string) => void) => (
               <a onClick={() => handleNavigation('/inscription')} className="text-white no-underline font-semibold hover:underline">Inscription</a>

@@ -1,6 +1,6 @@
 "use client"
 import { useState } from 'react';
-import { FaUser, FaLock } from "react-icons/fa";
+import { FaUser } from "react-icons/fa";
 import NavigationHandler from './router';
 
 
