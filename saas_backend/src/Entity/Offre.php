@@ -251,7 +251,6 @@ class Offre
     public function setDescrTournee(string $descrTournee): static
     {
         $this->descrTournee = $descrTournee;
-
         return $this;
     }
 
@@ -274,7 +273,6 @@ class Offre
     public function setDateMinProposee(\DateTimeInterface $dateMinProposee): static
     {
         $this->dateMinProposee = $dateMinProposee;
-
         return $this;
     }
 
@@ -297,7 +295,6 @@ class Offre
     public function setDateMaxProposee(\DateTimeInterface $dateMaxProposee): static
     {
         $this->dateMaxProposee = $dateMaxProposee;
-
         return $this;
     }
 
@@ -320,7 +317,6 @@ class Offre
     public function setVilleVisee(string $villeVisee): static
     {
         $this->villeVisee = $villeVisee;
-
         return $this;
     }
 
@@ -343,7 +339,6 @@ class Offre
     public function setRegionVisee(string $regionVisee): static
     {
         $this->regionVisee = $regionVisee;
-
         return $this;
     }
 

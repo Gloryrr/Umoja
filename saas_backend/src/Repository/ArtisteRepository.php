@@ -17,6 +17,25 @@ class ArtisteRepository extends ServiceEntityRepository
     }
 
     /**
+     * Trouve un artiste par son nom.
+     *
+     * @param string $username Le nom du genre à rechercher.
+     * @return Artiste[] Une liste d'artistes correspondant aux critères.
+     */
+    public function trouveArtisteByName(string $nomArtiste): array
+    {
+        try {
+            return $this->createQueryBuilder('gm')
+            ->andWhere('gm.nomArtiste = :nomArtiste')
+            ->setParameter('nomArtiste', $nomArtiste)
+            ->getQuery()
+            ->getResult();
+        } catch (\Exception $e) {
+            throw new \Exception("Erreur lors de la récupération de l'artiste", $e->getCode());
+        }
+    }
+
+    /**
      * Inscrit un nouvel artiste dans la base de données.
      *
      * @param mixed $data Les données de l'artiste.
