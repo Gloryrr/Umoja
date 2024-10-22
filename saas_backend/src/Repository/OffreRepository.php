@@ -16,28 +16,62 @@ class OffreRepository extends ServiceEntityRepository
         parent::__construct($registry, Offre::class);
     }
 
-//    /**
-//     * @return Offre[] Returns an array of Offre objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('o.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * Inscrit une nouvelle offre dans la base de données.
+     *
+     * @param mixed $data Les données de l'offre.
+     * @param Offre $offre L'objet offre à persister.
+     * @return bool Indique si l'inscription a réussi.
+     *
+     * @throws \RuntimeException Si une erreur survient lors de l'enregistrement.
+     */
+    public function inscritOffre(Offre $offre): bool
+    {
+        try {
+            $this->getEntityManager()->persist($offre);
+            $this->getEntityManager()->flush();
+            return true;
+        } catch (\Exception $e) {
+            throw new \RuntimeException("Erreur lors de l'enregistrement de l'offre : " . $e->getCode());
+        }
+    }
 
-//    public function findOneBySomeField($value): ?Offre
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * Met à jour une offre existante dans la base de données.
+     *
+     * @param mixed $data Les données de l'offre.
+     * @param Offre $offre L'objet offre à mettre à jour.
+     * @return bool|null Indique si la mise à jour a réussi.
+     *
+     * @throws \Exception Si une erreur survient lors de la mise à jour.
+     */
+    public function updateOffre(Offre $offre): ?bool
+    {
+        try {
+            $this->getEntityManager()->persist($offre);
+            $this->getEntityManager()->flush();
+            return true;
+        } catch (\Exception $e) {
+            throw new \Exception("Erreur lors de l'update de l'offre", $e->getCode());
+        }
+    }
+
+    /**
+     * Supprime une offre de la base de données.
+     *
+     * @param Offre $offre L'offre à supprimer.
+     * @return bool|null Indique si la suppression a réussi.
+     *
+     * @throws \RuntimeException Si une erreur survient lors de la suppression.
+     */
+    public function removeOffre(Offre $offre): ?bool
+    {
+        try {
+            $this->getEntityManager()->remove($offre);
+            $this->getEntityManager()->flush();
+            return true;
+        } catch (\Exception $e) {
+            throw new \RuntimeException("Erreur lors de la suppression de l'offre", $e->getCode());
+        }
+    }
 }

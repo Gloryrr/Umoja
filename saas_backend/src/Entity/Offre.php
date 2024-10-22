@@ -7,15 +7,19 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Classe représentant une offre.
+ * Représente une offre dans le système.
  *
- * @ORM\Entity(repositoryClass=OffreRepository::class)
+ * Cette entité encapsule les informations sur une offre, incluant son titre,
+ * sa description, les dates proposées, la ville et région visées, et le nombre
+ * d'artistes et d'invités concernés, ainsi que les liens promotionnels associés.
  */
 #[ORM\Entity(repositoryClass: OffreRepository::class)]
 class Offre
 {
     /**
-     * @var int|null L'identifiant unique de l'offre.
+     * Identifiant unique de l'offre.
+     *
+     * @var int|null
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -23,82 +27,213 @@ class Offre
     private ?int $id = null;
 
     /**
-     * @var string|null La description de la tournée.
-     * Doit être une chaîne de caractères d'une longueur maximale de 255.
+     * Titre de l'offre.
+     *
+     * @var string|null
      */
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 50)]
+    private ?string $titleOffre = null;
+
+    /**
+     * Date limite pour répondre à l'offre.
+     *
+     * @var \DateTimeInterface|null
+     */
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $deadLine = null;
+
+    /**
+     * Description de la tournée associée à l'offre.
+     *
+     * @var string|null
+     */
+    #[ORM\Column(length: 500)]
     private ?string $descrTournee = null;
 
     /**
-     * @var \DateTimeInterface|null La date minimale proposée pour l'offre.
+     * Date minimale proposée pour la tournée.
+     *
+     * @var \DateTimeInterface|null
      */
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateMinProposee = null;
 
     /**
-     * @var \DateTimeInterface|null La date maximale proposée pour l'offre.
+     * Date maximale proposée pour la tournée.
+     *
+     * @var \DateTimeInterface|null
      */
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateMaxProposee = null;
 
     /**
-     * @var string|null La ville ciblée par l'offre.
-     * Doit être une chaîne de caractères d'une longueur maximale de 70.
+     * Ville visée par la tournée.
+     *
+     * @var string|null
      */
-    #[ORM\Column(length: 70)]
+    #[ORM\Column(length: 50)]
     private ?string $villeVisee = null;
 
     /**
-     * @var string|null La région ciblée par l'offre.
-     * Doit être une chaîne de caractères d'une longueur maximale de 80.
+     * Région visée par la tournée.
+     *
+     * @var string|null
      */
-    #[ORM\Column(length: 80)]
+    #[ORM\Column(length: 50)]
     private ?string $regionVisee = null;
 
     /**
-     * @var int|null Le nombre minimum de places proposées.
+     * Nombre minimum de places disponibles.
+     *
+     * @var int|null
      */
     #[ORM\Column]
-    private ?int $placeMin = null;
+    private ?int $placesMin = null;
 
     /**
-     * @var int|null Le nombre maximum de places proposées.
+     * Nombre maximum de places disponibles.
+     *
+     * @var int|null
      */
     #[ORM\Column]
-    private ?int $placeMax = null;
+    private ?int $placesMax = null;
 
     /**
-     * @var \DateTimeInterface|null La date limite pour répondre à l'offre.
-     */
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $dateLimiteReponse = null;
-
-    /**
-     * @var bool|null Indique si l'offre est validée.
+     * Nombre d'artistes concernés par l'offre.
+     *
+     * @var int|null
      */
     #[ORM\Column]
-    private ?bool $validee = null;
+    private ?int $nbArtistesConcernes = null;
 
     /**
-     * @var Utilisateur|null L'artiste concerné par l'offre.
-     * Cette relation est obligatoire.
+     * Nombre d'invités concernés par l'offre.
+     *
+     * @var int|null
+     */
+    #[ORM\Column]
+    private ?int $nbInvitesConcernes = null;
+
+    /**
+     * Liens promotionnels associés à l'offre.
+     *
+     * @var string|null
+     */
+    #[ORM\Column(length: 255)]
+    private ?string $liensPromotionnels = null;
+
+    /**
+     * Relation avec l'entité Extras.
+     *
+     * Définit une relation ManyToOne avec l'entité Extras. Cela représente
+     * les extras associés à une offre. Cette colonne ne peut pas être nulle.
      */
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $ArtisteConcerne = null;
+    private ?Extras $extras = null;
 
     /**
-     * Récupère l'identifiant de l'offre.
+     * Relation avec l'entité EtatOffre.
      *
-     * @return int|null
+     * Définit une relation ManyToOne avec l'entité EtatOffre, qui spécifie l'état
+     * ou le statut de l'offre (par exemple, "en cours", "terminée").
+     * Cette colonne ne peut pas être nulle.
      */
-    public function getId(): ?int
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: "id_etat_offre")]
+    private ?EtatOffre $etatOffre = null;
+
+    /**
+     * Relation avec l'entité TypeOffre.
+     *
+     * Définit une relation ManyToOne avec l'entité TypeOffre, représentant le type
+     * spécifique de l'offre (par exemple, "concert", "événement privé").
+     * Cette colonne ne peut pas être nulle.
+    */
+     #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?TypeOffre $typeOffre = null;
+
+    /**
+     * Relation avec l'entité ConditionsFinancieres.
+     *
+     * Définit une relation ManyToOne avec l'entité ConditionsFinancieres,
+     * qui précise les conditions financières associées à l'offre.
+     * Cette colonne ne peut pas être nulle.
+     */
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: "id_cf")]
+    private ?ConditionsFinancieres $conditionsFinancieres = null;
+
+    /**
+     * Relation avec l'entité BudgetEstimatif.
+     *
+     * Définit une relation ManyToOne avec l'entité BudgetEstimatif,
+     * représentant le budget estimé pour l'offre. Cette colonne ne peut pas être nulle.
+     */
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: "id_be")]
+    private ?BudgetEstimatif $budgetEstimatif = null;
+
+    /**
+     * Relation avec l'entité FicheTechniqueArtiste.
+     *
+     * Définit une relation ManyToOne avec l'entité FicheTechniqueArtiste,
+     * qui spécifie la fiche technique de l'artiste liée à l'offre.
+     * Cette colonne ne peut pas être nulle.
+     */
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: "id_ft")]
+    private ?FicheTechniqueArtiste $ficheTechniqueArtiste = null;
+
+    /**
+     * Obtient le titre de l'offre.
+     *
+     * @return string|null
+     */
+    public function getTitleOffre(): ?string
     {
-        return $this->id;
+        return $this->titleOffre;
     }
 
     /**
-     * Récupère la description de la tournée.
+     * Définit le titre de l'offre.
+     *
+     * @param string $titleOffre
+     * @return self
+     */
+    public function setTitleOffre(string $titleOffre): static
+    {
+        $this->titleOffre = $titleOffre;
+
+        return $this;
+    }
+
+    /**
+     * Obtient la date limite pour répondre à l'offre.
+     *
+     * @return \DateTimeInterface|null
+     */
+    public function getDeadLine(): ?\DateTimeInterface
+    {
+        return $this->deadLine;
+    }
+
+    /**
+     * Définit la date limite pour répondre à l'offre.
+     *
+     * @param \DateTimeInterface $deadLine
+     * @return self
+     */
+    public function setDeadLine(\DateTimeInterface $deadLine): static
+    {
+        $this->deadLine = $deadLine;
+
+        return $this;
+    }
+
+    /**
+     * Obtient la description de la tournée.
      *
      * @return string|null
      */
@@ -110,8 +245,8 @@ class Offre
     /**
      * Définit la description de la tournée.
      *
-     * @param string $descrTournee La description de la tournée.
-     * @return static
+     * @param string $descrTournee
+     * @return self
      */
     public function setDescrTournee(string $descrTournee): static
     {
@@ -120,7 +255,7 @@ class Offre
     }
 
     /**
-     * Récupère la date minimale proposée.
+     * Obtient la date minimale proposée pour la tournée.
      *
      * @return \DateTimeInterface|null
      */
@@ -130,10 +265,10 @@ class Offre
     }
 
     /**
-     * Définit la date minimale proposée.
+     * Définit la date minimale proposée pour la tournée.
      *
-     * @param \DateTimeInterface $dateMinProposee La date minimale.
-     * @return static
+     * @param \DateTimeInterface $dateMinProposee
+     * @return self
      */
     public function setDateMinProposee(\DateTimeInterface $dateMinProposee): static
     {
@@ -142,7 +277,7 @@ class Offre
     }
 
     /**
-     * Récupère la date maximale proposée.
+     * Obtient la date maximale proposée pour la tournée.
      *
      * @return \DateTimeInterface|null
      */
@@ -152,10 +287,10 @@ class Offre
     }
 
     /**
-     * Définit la date maximale proposée.
+     * Définit la date maximale proposée pour la tournée.
      *
-     * @param \DateTimeInterface $dateMaxProposee La date maximale.
-     * @return static
+     * @param \DateTimeInterface $dateMaxProposee
+     * @return self
      */
     public function setDateMaxProposee(\DateTimeInterface $dateMaxProposee): static
     {
@@ -164,7 +299,7 @@ class Offre
     }
 
     /**
-     * Récupère la ville visée.
+     * Obtient la ville visée par la tournée.
      *
      * @return string|null
      */
@@ -174,10 +309,10 @@ class Offre
     }
 
     /**
-     * Définit la ville visée.
+     * Définit la ville visée par la tournée.
      *
-     * @param string $villeVisee La ville visée.
-     * @return static
+     * @param string $villeVisee
+     * @return self
      */
     public function setVilleVisee(string $villeVisee): static
     {
@@ -186,7 +321,7 @@ class Offre
     }
 
     /**
-     * Récupère la région visée.
+     * Obtient la région visée par la tournée.
      *
      * @return string|null
      */
@@ -196,10 +331,10 @@ class Offre
     }
 
     /**
-     * Définit la région visée.
+     * Définit la région visée par la tournée.
      *
-     * @param string $regionVisee La région visée.
-     * @return static
+     * @param string $regionVisee
+     * @return self
      */
     public function setRegionVisee(string $regionVisee): static
     {
@@ -208,112 +343,255 @@ class Offre
     }
 
     /**
-     * Récupère le nombre minimum de places.
+     * Obtient le nombre minimum de places disponibles.
      *
      * @return int|null
      */
-    public function getPlaceMin(): ?int
+    public function getPlacesMin(): ?int
     {
-        return $this->placeMin;
+        return $this->placesMin;
     }
 
     /**
-     * Définit le nombre minimum de places.
+     * Définit le nombre minimum de places disponibles.
      *
-     * @param int $placeMin Le nombre minimum de places.
-     * @return static
+     * @param int $placesMin
+     * @return self
      */
-    public function setPlaceMin(int $placeMin): static
+    public function setPlacesMin(int $placesMin): static
     {
-        $this->placeMin = $placeMin;
+        $this->placesMin = $placesMin;
+
         return $this;
     }
 
     /**
-     * Récupère le nombre maximum de places.
+     * Obtient le nombre maximum de places disponibles.
      *
      * @return int|null
      */
-    public function getPlaceMax(): ?int
+    public function getPlacesMax(): ?int
     {
-        return $this->placeMax;
+        return $this->placesMax;
     }
 
     /**
-     * Définit le nombre maximum de places.
+     * Définit le nombre maximum de places disponibles.
      *
-     * @param int $placeMax Le nombre maximum de places.
-     * @return static
+     * @param int $placesMax
+     * @return self
      */
-    public function setPlaceMax(int $placeMax): static
+    public function setPlacesMax(int $placesMax): static
     {
-        $this->placeMax = $placeMax;
+        $this->placesMax = $placesMax;
+
         return $this;
     }
 
     /**
-     * Récupère la date limite de réponse.
+     * Obtient le nombre d'artistes concernés par l'offre.
      *
-     * @return \DateTimeInterface|null
+     * @return int|null
      */
-    public function getDateLimiteReponse(): ?\DateTimeInterface
+    public function getNbArtistesConcernes(): ?int
     {
-        return $this->dateLimiteReponse;
+        return $this->nbArtistesConcernes;
     }
 
     /**
-     * Définit la date limite de réponse.
+     * Définit le nombre d'artistes concernés par l'offre.
      *
-     * @param \DateTimeInterface $dateLimiteReponse La date limite.
-     * @return static
+     * @param int $nbArtistesConcernes
+     * @return self
      */
-    public function setDateLimiteReponse(\DateTimeInterface $dateLimiteReponse): static
+    public function setNbArtistesConcernes(int $nbArtistesConcernes): static
     {
-        $this->dateLimiteReponse = $dateLimiteReponse;
+        $this->nbArtistesConcernes = $nbArtistesConcernes;
+
         return $this;
     }
 
     /**
-     * Indique si l'offre est validée.
+     * Obtient le nombre d'invités concernés par l'offre.
      *
-     * @return bool|null
+     * @return int|null
      */
-    public function isValidee(): ?bool
+    public function getNbInvitesConcernes(): ?int
     {
-        return $this->validee;
+        return $this->nbInvitesConcernes;
     }
 
     /**
-     * Définit si l'offre est validée.
+     * Définit le nombre d'invités concernés par l'offre.
      *
-     * @param bool $validee Indique si l'offre est validée.
-     * @return static
+     * @param int $nbInvitesConcernes
+     * @return self
      */
-    public function setValidee(bool $validee): static
+    public function setNbInvitesConcernes(int $nbInvitesConcernes): static
     {
-        $this->validee = $validee;
+        $this->nbInvitesConcernes = $nbInvitesConcernes;
+
         return $this;
     }
 
     /**
-     * Récupère l'artiste concerné par l'offre.
+     * Obtient les liens promotionnels associés à l'offre.
      *
-     * @return Utilisateur|null
+     * @return string|null
      */
-    public function getArtisteConcerne(): ?Utilisateur
+    public function getLiensPromotionnels(): ?string
     {
-        return $this->ArtisteConcerne;
+        return $this->liensPromotionnels;
     }
 
     /**
-     * Définit l'artiste concerné par l'offre.
+     * Définit les liens promotionnels associés à l'offre.
      *
-     * @param Utilisateur|null $idArtisteConcerne L'artiste concerné.
-     * @return static
+     * @param string $liensPromotionnels
+     * @return self
      */
-    public function setArtisteConcerne(?Utilisateur $ArtisteConcerne): static
+    public function setLiensPromotionnels(string $liensPromotionnels): static
     {
-        $this->ArtisteConcerne = $ArtisteConcerne;
+        $this->liensPromotionnels = $liensPromotionnels;
+
+        return $this;
+    }
+
+    /**
+     * Récupère l'entité Extras associée à cette offre.
+     *
+     * @return Extras|null L'entité Extras associée ou null si aucune n'est définie.
+     */
+    public function getExtras(): ?Extras
+    {
+        return $this->extras;
+    }
+
+    /**
+     * Définit l'entité Extras associée à cette offre.
+     *
+     * @param Extras|null $extras L'entité Extras à associer à l'offre.
+     * @return static Retourne l'instance actuelle pour chaînage des méthodes.
+     */
+    public function setExtras(?Extras $extras): static
+    {
+        $this->extras = $extras;
+
+        return $this;
+    }
+
+    /**
+     * Récupère l'entité EtatOffre associée à cette offre.
+     *
+     * @return EtatOffre|null L'état de l'offre ou null si aucun n'est défini.
+     */
+    public function getEtatOffre(): ?EtatOffre
+    {
+        return $this->etatOffre;
+    }
+
+    /**
+     * Définit l'entité EtatOffre associée à cette offre.
+     *
+     * @param EtatOffre|null $etatOffre L'entité EtatOffre à associer à l'offre.
+     * @return static Retourne l'instance actuelle pour chaînage des méthodes.
+     */
+    public function setEtatOffre(?EtatOffre $etatOffre): static
+    {
+        $this->etatOffre = $etatOffre;
+
+        return $this;
+    }
+
+    /**
+     * Récupère l'entité TypeOffre associée à cette offre.
+     *
+     * @return TypeOffre|null Le type de l'offre ou null si aucun n'est défini.
+     */
+    public function getTypeOffre(): ?TypeOffre
+    {
+        return $this->typeOffre;
+    }
+
+    /**
+     * Définit l'entité TypeOffre associée à cette offre.
+     *
+     * @param TypeOffre|null $typeOffre Le type d'offre à associer à cette instance.
+     * @return static Retourne l'instance actuelle pour chaînage des méthodes.
+     */
+    public function setTypeOffre(?TypeOffre $typeOffre): static
+    {
+        $this->typeOffre = $typeOffre;
+
+        return $this;
+    }
+
+    /**
+     * Récupère l'entité ConditionsFinancieres associée à cette offre.
+     *
+     * @return ConditionsFinancieres|null Les conditions financières de l'offre ou null si aucune n'est définie.
+     */
+    public function getConditionsFinancieres(): ?ConditionsFinancieres
+    {
+        return $this->conditionsFinancieres;
+    }
+
+    /**
+     * Définit l'entité ConditionsFinancieres associée à cette offre.
+     *
+     * @param ConditionsFinancieres|null $conditionsFinancieres Les conditions financières à associer à l'offre.
+     * @return static Retourne l'instance actuelle pour chaînage des méthodes.
+     */
+    public function setConditionsFinancieres(?ConditionsFinancieres $conditionsFinancieres): static
+    {
+        $this->conditionsFinancieres = $conditionsFinancieres;
+
+        return $this;
+    }
+
+    /**
+     * Récupère l'entité BudgetEstimatif associée à cette offre.
+     *
+     * @return BudgetEstimatif|null Le budget estimatif de l'offre ou null si aucun n'est défini.
+     */
+    public function getBudgetEstimatif(): ?BudgetEstimatif
+    {
+        return $this->budgetEstimatif;
+    }
+
+    /**
+     * Définit l'entité BudgetEstimatif associée à cette offre.
+     *
+     * @param BudgetEstimatif|null $budgetEstimatif Le budget estimatif à associer à l'offre.
+     * @return static Retourne l'instance actuelle pour chaînage des méthodes.
+     */
+    public function setBudgetEstimatif(?BudgetEstimatif $budgetEstimatif): static
+    {
+        $this->budgetEstimatif = $budgetEstimatif;
+
+        return $this;
+    }
+
+    /**
+     * Récupère l'entité FicheTechniqueArtiste associée à cette offre.
+     *
+     * @return FicheTechniqueArtiste|null La fiche technique de l'artiste liée à l'offre ou null si aucune n'est définie
+     */
+    public function getFicheTechniqueArtiste(): ?FicheTechniqueArtiste
+    {
+        return $this->ficheTechniqueArtiste;
+    }
+
+    /**
+     * Définit l'entité FicheTechniqueArtiste associée à cette offre.
+     *
+     * @param FicheTechniqueArtiste|null $ficheTechniqueArtiste La fiche technique de l'artiste à associer à l'offre.
+     * @return static Retourne l'instance actuelle pour chaînage des méthodes.
+     */
+    public function setFicheTechniqueArtiste(?FicheTechniqueArtiste $ficheTechniqueArtiste): static
+    {
+        $this->ficheTechniqueArtiste = $ficheTechniqueArtiste;
+
         return $this;
     }
 }

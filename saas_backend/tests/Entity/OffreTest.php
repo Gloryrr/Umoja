@@ -3,7 +3,6 @@
 namespace App\Tests\Entity;
 
 use App\Entity\Offre;
-use App\Entity\Utilisateur;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -15,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class OffreTest extends TestCase
 {
     /**
-     * Instance de l'offre à tester.
+     * Instance de l'entité Offre à tester.
      *
      * @var Offre
      */
@@ -33,139 +32,221 @@ class OffreTest extends TestCase
     }
 
     /**
-     * Test de la méthode setId() et getId().
+     * Test de la méthode getTitleOffre() et setTitleOffre().
      *
-     * Vérifie si l'identifiant d'une offre peut être correctement
+     * Vérifie si le titre de l'offre peut être correctement
      * défini et récupéré.
      */
-    public function testId()
+    public function testSetTitleOffreAndGetTitleOffre(): void
     {
-        // Les ID sont généralement générés par la base de données,
-        // donc ce test peut être omis ou simuler l'attribution de l'ID.
-        $this->assertNull($this->offre->getId());
+        $title = "Nouvelle Offre";
+        $this->offre->setTitleOffre($title);
+        $this->assertSame($title, $this->offre->getTitleOffre());
     }
 
     /**
-     * Test de la méthode setDescrTournee() et getDescrTournee().
+     * Test de la méthode getDeadLine() et setDeadLine().
      *
-     * Vérifie si la description de la tournée peut être correctement
+     * Vérifie si la date limite peut être correctement
      * définie et récupérée.
      */
-    public function testDescrTournee()
+    public function testSetDeadLineAndGetDeadLine(): void
     {
-        $this->offre->setDescrTournee("Tournée 2024");
-        $this->assertEquals("Tournée 2024", $this->offre->getDescrTournee());
+        $deadline = new \DateTime('2024-12-31');
+        $this->offre->setDeadLine($deadline);
+        $this->assertSame($deadline, $this->offre->getDeadLine());
     }
 
     /**
-     * Test de la méthode setDateMinProposee() et getDateMinProposee().
+     * Test de la méthode getDescrTournee() et setDescrTournee().
      *
-     * Vérifie si la date minimale proposée peut être correctement
-     * définie et récupérée.
+     * Vérifie si la description de la tournée peut être
+     * correctement définie et récupérée.
      */
-    public function testDateMinProposee()
+    public function testSetDescrTourneeAndGetDescrTournee(): void
     {
-        $date = new \DateTime('2024-01-01');
-        $this->offre->setDateMinProposee($date);
-        $this->assertEquals($date, $this->offre->getDateMinProposee());
+        $description = "Description de la tournée";
+        $this->offre->setDescrTournee($description);
+        $this->assertSame($description, $this->offre->getDescrTournee());
     }
 
     /**
-     * Test de la méthode setDateMaxProposee() et getDateMaxProposee().
+     * Test de la méthode getDateMinProposee() et setDateMinProposee().
      *
-     * Vérifie si la date maximale proposée peut être correctement
-     * définie et récupérée.
+     * Vérifie si la date minimale peut être définie et récupérée.
      */
-    public function testDateMaxProposee()
+    public function testSetDateMinProposeeAndGetDateMinProposee(): void
     {
-        $date = new \DateTime('2024-12-31');
-        $this->offre->setDateMaxProposee($date);
-        $this->assertEquals($date, $this->offre->getDateMaxProposee());
+        $dateMin = new \DateTime('2024-01-01');
+        $this->offre->setDateMinProposee($dateMin);
+        $this->assertSame($dateMin, $this->offre->getDateMinProposee());
     }
 
     /**
-     * Test de la méthode setVilleVisee() et getVilleVisee().
+     * Test de la méthode getDateMaxProposee() et setDateMaxProposee().
      *
-     * Vérifie si la ville visée peut être correctement
-     * définie et récupérée.
+     * Vérifie si la date maximale peut être définie et récupérée.
      */
-    public function testVilleVisee()
+    public function testSetDateMaxProposeeAndGetDateMaxProposee(): void
     {
-        $this->offre->setVilleVisee("Paris");
-        $this->assertEquals("Paris", $this->offre->getVilleVisee());
+        $dateMax = new \DateTime('2024-12-31');
+        $this->offre->setDateMaxProposee($dateMax);
+        $this->assertSame($dateMax, $this->offre->getDateMaxProposee());
     }
 
     /**
-     * Test de la méthode setRegionVisee() et getRegionVisee().
+     * Test de la méthode getVilleVisee() et setVilleVisee().
      *
-     * Vérifie si la région visée peut être correctement
-     * définie et récupérée.
+     * Vérifie si la ville visée peut être définie et récupérée.
      */
-    public function testRegionVisee()
+    public function testSetVilleViseeAndGetVilleVisee(): void
     {
-        $this->offre->setRegionVisee("Île-de-France");
-        $this->assertEquals("Île-de-France", $this->offre->getRegionVisee());
+        $ville = "Paris";
+        $this->offre->setVilleVisee($ville);
+        $this->assertSame($ville, $this->offre->getVilleVisee());
     }
 
     /**
-     * Test de la méthode setPlaceMin() et getPlaceMin().
+     * Test de la méthode getRegionVisee() et setRegionVisee().
      *
-     * Vérifie si le nombre minimum de places peut être correctement
-     * défini et récupéré.
+     * Vérifie si la région visée peut être définie et récupérée.
      */
-    public function testPlaceMin()
+    public function testSetRegionViseeAndGetRegionVisee(): void
     {
-        $this->offre->setPlaceMin(10);
-        $this->assertEquals(10, $this->offre->getPlaceMin());
+        $region = "Île-de-France";
+        $this->offre->setRegionVisee($region);
+        $this->assertSame($region, $this->offre->getRegionVisee());
     }
 
     /**
-     * Test de la méthode setPlaceMax() et getPlaceMax().
+     * Test de la méthode getPlacesMin() et setPlacesMin().
      *
-     * Vérifie si le nombre maximum de places peut être correctement
-     * défini et récupéré.
+     * Vérifie si le nombre minimum de places peut être défini et récupéré.
      */
-    public function testPlaceMax()
+    public function testSetPlacesMinAndGetPlacesMin(): void
     {
-        $this->offre->setPlaceMax(50);
-        $this->assertEquals(50, $this->offre->getPlaceMax());
+        $placesMin = 10;
+        $this->offre->setPlacesMin($placesMin);
+        $this->assertSame($placesMin, $this->offre->getPlacesMin());
     }
 
     /**
-     * Test de la méthode setDateLimiteReponse() et getDateLimiteReponse().
+     * Test de la méthode getPlacesMax() et setPlacesMax().
      *
-     * Vérifie si la date limite de réponse peut être correctement
-     * définie et récupérée.
+     * Vérifie si le nombre maximum de places peut être défini et récupéré.
      */
-    public function testDateLimiteReponse()
+    public function testSetPlacesMaxAndGetPlacesMax(): void
     {
-        $date = new \DateTime('2024-06-30');
-        $this->offre->setDateLimiteReponse($date);
-        $this->assertEquals($date, $this->offre->getDateLimiteReponse());
+        $placesMax = 100;
+        $this->offre->setPlacesMax($placesMax);
+        $this->assertSame($placesMax, $this->offre->getPlacesMax());
     }
 
     /**
-     * Test de la méthode setValidee() et isValidee().
+     * Test de la méthode getNbArtistesConcernes() et setNbArtistesConcernes().
      *
-     * Vérifie si l'état de validation de l'offre peut être correctement
-     * défini et récupéré.
+     * Vérifie si le nombre d'artistes concernés peut être défini et récupéré.
      */
-    public function testValidee()
+    public function testSetNbArtistesConcernesAndGetNbArtistesConcernes(): void
     {
-        $this->offre->setValidee(true);
-        $this->assertTrue($this->offre->isValidee());
+        $nbArtistes = 5;
+        $this->offre->setNbArtistesConcernes($nbArtistes);
+        $this->assertSame($nbArtistes, $this->offre->getNbArtistesConcernes());
     }
 
     /**
-     * Test de la méthode setIdArtisteConcerne() et getArtisteConcerne().
+     * Test de la méthode getNbInvitesConcernes() et setNbInvitesConcernes().
      *
-     * Vérifie si l'artiste concerné par l'offre peut être correctement
-     * défini et récupéré.
+     * Vérifie si le nombre d'invités concernés peut être défini et récupéré.
      */
-    public function testArtisteConcerne()
+    public function testSetNbInvitesConcernesAndGetNbInvitesConcernes(): void
     {
-        $artiste = new Utilisateur(); // Supposons que Utilisateur est une classe valide
-        $this->offre->setArtisteConcerne($artiste);
-        $this->assertEquals($artiste, $this->offre->getArtisteConcerne());
+        $nbInvites = 20;
+        $this->offre->setNbInvitesConcernes($nbInvites);
+        $this->assertSame($nbInvites, $this->offre->getNbInvitesConcernes());
+    }
+
+    /**
+     * Test de la méthode getLiensPromotionnels() et setLiensPromotionnels().
+     *
+     * Vérifie si les liens promotionnels peuvent être définis et récupérés.
+     */
+    public function testSetLiensPromotionnelsAndGetLiensPromotionnels(): void
+    {
+        $lienPromo = "http://promotion.com";
+        $this->offre->setLiensPromotionnels($lienPromo);
+        $this->assertSame($lienPromo, $this->offre->getLiensPromotionnels());
+    }
+
+        /**
+     * Test de la méthode getExtras() et setExtras().
+     *
+     * Vérifie si l'entité Extras peut être définie et récupérée.
+     */
+    public function testSetExtrasAndGetExtras(): void
+    {
+        $extras = $this->createMock(\App\Entity\Extras::class);
+        $this->offre->setExtras($extras);
+        $this->assertSame($extras, $this->offre->getExtras());
+    }
+
+    /**
+     * Test de la méthode getEtatOffre() et setEtatOffre().
+     *
+     * Vérifie si l'état de l'offre peut être défini et récupéré.
+     */
+    public function testSetEtatOffreAndGetEtatOffre(): void
+    {
+        $etatOffre = $this->createMock(\App\Entity\EtatOffre::class);
+        $this->offre->setEtatOffre($etatOffre);
+        $this->assertSame($etatOffre, $this->offre->getEtatOffre());
+    }
+
+    /**
+     * Test de la méthode getTypeOffre() et setTypeOffre().
+     *
+     * Vérifie si le type de l'offre peut être défini et récupéré.
+     */
+    public function testSetTypeOffreAndGetTypeOffre(): void
+    {
+        $typeOffre = $this->createMock(\App\Entity\TypeOffre::class);
+        $this->offre->setTypeOffre($typeOffre);
+        $this->assertSame($typeOffre, $this->offre->getTypeOffre());
+    }
+
+    /**
+     * Test de la méthode getConditionsFinancieres() et setConditionsFinancieres().
+     *
+     * Vérifie si les conditions financières peuvent être définies et récupérées.
+     */
+    public function testSetConditionsFinancieresAndGetConditionsFinancieres(): void
+    {
+        $conditionsFinancieres = $this->createMock(\App\Entity\ConditionsFinancieres::class);
+        $this->offre->setConditionsFinancieres($conditionsFinancieres);
+        $this->assertSame($conditionsFinancieres, $this->offre->getConditionsFinancieres());
+    }
+
+    /**
+     * Test de la méthode getBudgetEstimatif() et setBudgetEstimatif().
+     *
+     * Vérifie si le budget estimatif peut être défini et récupéré.
+     */
+    public function testSetBudgetEstimatifAndGetBudgetEstimatif(): void
+    {
+        $budgetEstimatif = $this->createMock(\App\Entity\BudgetEstimatif::class);
+        $this->offre->setBudgetEstimatif($budgetEstimatif);
+        $this->assertSame($budgetEstimatif, $this->offre->getBudgetEstimatif());
+    }
+
+    /**
+     * Test de la méthode getFicheTechniqueArtiste() et setFicheTechniqueArtiste().
+     *
+     * Vérifie si la fiche technique de l'artiste peut être définie et récupérée.
+     */
+    public function testSetFicheTechniqueArtisteAndGetFicheTechniqueArtiste(): void
+    {
+        $ficheTechniqueArtiste = $this->createMock(\App\Entity\FicheTechniqueArtiste::class);
+        $this->offre->setFicheTechniqueArtiste($ficheTechniqueArtiste);
+        $this->assertSame($ficheTechniqueArtiste, $this->offre->getFicheTechniqueArtiste());
     }
 }
