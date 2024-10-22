@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
 import { Dropdown, Avatar } from 'flowbite-react';
+import NavigationHandler from './router';
 
 
 const UserAvatar = () => {
@@ -19,21 +20,22 @@ const UserAvatar = () => {
           />
         }
       >
+        {/* Dropdown menu content */}
         <Dropdown.Header>
           <span className="block text-sm font-medium text-black">Bonnie Green</span>
           <span className="block truncate text-sm text-gray">name@flowbite.com</span>
         </Dropdown.Header>
-        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white-800">
+        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white hover:bg-gray-200">
           Dashboard
         </Dropdown.Item>
-        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white-800">
+        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white hover:bg-gray-200">
           Settings
         </Dropdown.Item>
-        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white-800">
+        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white hover:bg-gray-200">
           Earnings
         </Dropdown.Item>
         <Dropdown.Divider className="border-t border-gray-200 my-1" />
-        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white-800 hover:bg-red-400">
+        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white hover:bg-red-400">
           Sign out
         </Dropdown.Item>
       </Dropdown>
@@ -61,17 +63,17 @@ const UserAvatarMobile = () => {
           <span className="block text-sm font-medium text-black">Bonnie Green</span>
           <span className="block truncate text-sm text-gray">name@flowbite.com</span>
         </Dropdown.Header>
-        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white-800">
+        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white hover:bg-gray-200">
           Dashboard
         </Dropdown.Item>
-        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white-800">
+        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white hover:bg-gray-200">
           Settings
         </Dropdown.Item>
-        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white-800">
+        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white hover:bg-gray-200">
           Earnings
         </Dropdown.Item>
         <Dropdown.Divider className="border-t border-gray-200 my-1" />
-        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white-800 hover:bg-red-400">
+        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white hover:bg-red-400">
           Sign out
         </Dropdown.Item>
       </Dropdown>
@@ -109,9 +111,19 @@ const Navbar = () => {
             key={item.id}
             className='p-4 hover:bg-[#00df9a] rounded-xl m-2 cursor-pointer duration-300 hover:text-black'
           >
-            {item.text}
+            <NavigationHandler>
+              {(handleNavigation) => (
+                <a
+                  onClick={() => handleNavigation(`/${item.text.toLowerCase()}`)} // Assure-toi que ce chemin existe
+                  className="text-white no-underline font-semibold hover:underline"
+                >
+                  {item.text}
+                </a>
+              )}
+            </NavigationHandler>
           </li>
         ))}
+
       </ul>
 
       <UserAvatar />
