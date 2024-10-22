@@ -50,18 +50,18 @@ class UtilisateurRepository extends ServiceEntityRepository
     * @param string $mdp Le mot de passe de l'utilisateur.
     * @return Utilisateur[] Une liste d'utilisateurs correspondant aux critères.
     */
-   public function trouveUtilisateurByUsername(string $username): array
-   {
-       try {
-           return $this->createQueryBuilder('u')
-           ->andWhere('u.username = :username')
-           ->setParameter('username', $username)
-           ->getQuery()
-           ->getResult();
-       } catch (\Exception $e) {
-           throw new \Exception("Erreur lors de la récupération", $e->getCode());
-       }
-   }
+    public function trouveUtilisateurByUsername(string $username): array
+    {
+        try {
+            return $this->createQueryBuilder('u')
+            ->andWhere('u.username = :username')
+            ->setParameter('username', $username)
+            ->getQuery()
+            ->getResult();
+        } catch (\Exception $e) {
+            throw new \Exception("Erreur lors de la récupération", $e->getCode());
+        }
+    }
 
     /**
      * Trouve un utilisateur par son e-mail et mot de passe.

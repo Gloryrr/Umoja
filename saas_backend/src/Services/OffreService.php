@@ -81,30 +81,32 @@ class OffreService
     ): JsonResponse {
         try {
             // vérifie qu'aucune donnée ne manque pour la création de l'offre
-            if ((
-                empty($data['titleOffre']) && 
-                empty($data['deadLine']) && 
-                empty($data['descrTournee']) && 
-                empty($data['dateMinProposee']) && 
-                empty($data['dateMaxProposee']) &&  
-                empty($data['villeVisee']) && 
-                empty($data['regionVisee']) && 
-                empty($data['placesMin']) &&  
-                empty($data['placesMax']) && 
-                empty($data['nbArtistesConcernes']) &&  
-                empty($data['nbInvitesConcernes']) && 
-                empty($data['liensPromotionnels']) &&  
-                empty($data['extras']) && 
-                empty($data['etatOffre']) && 
-                empty($data['typeOffre']) && 
-                empty($data['conditionsFinancieres']) && 
-                empty($data['budgetEstimatif']) &&  
-                empty($data['ficheTechniqueArtiste']) && 
-                empty($data['utilisateur']) && 
-                empty($data['reseau']) && 
+            if (
+                (
+                empty($data['titleOffre']) &&
+                empty($data['deadLine']) &&
+                empty($data['descrTournee']) &&
+                empty($data['dateMinProposee']) &&
+                empty($data['dateMaxProposee']) &&
+                empty($data['villeVisee']) &&
+                empty($data['regionVisee']) &&
+                empty($data['placesMin']) &&
+                empty($data['placesMax']) &&
+                empty($data['nbArtistesConcernes']) &&
+                empty($data['nbInvitesConcernes']) &&
+                empty($data['liensPromotionnels']) &&
+                empty($data['extras']) &&
+                empty($data['etatOffre']) &&
+                empty($data['typeOffre']) &&
+                empty($data['conditionsFinancieres']) &&
+                empty($data['budgetEstimatif']) &&
+                empty($data['ficheTechniqueArtiste']) &&
+                empty($data['utilisateur']) &&
+                empty($data['reseau']) &&
                 empty($data['genreMusical']) &&
                 empty($data['artiste'])
-            )) {
+                )
+            ) {
                 throw new \InvalidArgumentException("L'offre n'est pas complète.");
             }
 
@@ -123,7 +125,7 @@ class OffreService
             $offre->setNbInvitesConcernes($data['nbInvitesConcernes']);
             $offre->setLiensPromotionnels($data['liensPromotionnels']);
 
-            $extras = new Extras(); 
+            $extras = new Extras();
             $extras->setDescrExtras($data['extras']['descrExtras']);
             $extras->setCoutExtras($data['extras']['coutExtras']);
             $extras->setExclusivite($data['extras']['exlusivite']);
@@ -139,7 +141,7 @@ class OffreService
             $typeOffre = new TypeOffre();
             $typeOffre->setNomTypeOffre($data['typeOffre']['nomTypeOffre']);
             $offre->setTypeOffre($typeOffre);
-            
+
             $conditionsFinancieres = new ConditionsFinancieres();
             $conditionsFinancieres->setMinimunGaranti($data['conditionsFinancieres']['minimumGaranti']);
             $conditionsFinancieres->setConditionsPaiement($data['conditionsFinancieres']['conditionsPaiement']);
@@ -174,7 +176,7 @@ class OffreService
 
             // ajoute l'offre sur le ou les réseau(x) indiqués
             $nb_reseaux = $data['reseau']['nbReseaux'];
-            for ($i=0; $i < $nb_reseaux; $i++) { 
+            for ($i = 0; $i < $nb_reseaux; $i++) {
                 $reseau = $reseauRepository->trouveReseauByName($data['reseau'][$i]['nomReseau']);
                 $poster = new Poster();
                 $poster->setIdOffre($offre);
@@ -183,8 +185,10 @@ class OffreService
             }
 
             $nb_genres_musicaux = $data['genreMusical']['nbGenresMusicaux'];
-            for ($i=0; $i < $nb_genres_musicaux; $i++) { 
-                $genreMusical = $genreMusicalRepository->trouveGenreMusicalByName($data['genreMusical'][$i]['nomGenreMusical']);
+            for ($i = 0; $i < $nb_genres_musicaux; $i++) {
+                $genreMusical = $genreMusicalRepository->trouveGenreMusicalByName(
+                    $data['genreMusical'][$i]['nomGenreMusical']
+                );
                 $rattacher = new Rattacher();
                 $rattacher->setIdOffre($offre);
                 $rattacher->setIdGenreMusical($genreMusical[0]);
@@ -192,7 +196,7 @@ class OffreService
             }
 
             $nb_artistes = $data['artiste']['nbArtistes'];
-            for ($i=0; $i < $nb_artistes; $i++) { 
+            for ($i = 0; $i < $nb_artistes; $i++) {
                 $artiste = $artisteRepository->trouveArtisteByName($data['artiste'][$i]['nomArtiste']);
                 $concerner = new Concerner();
                 $concerner->setIdOffre($offre);
