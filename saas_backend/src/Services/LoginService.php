@@ -6,6 +6,8 @@ use App\Repository\UtilisateurRepository;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\DTO\UtilisateurDTO;
 
 /**
  * Class LoginService
@@ -15,27 +17,35 @@ class LoginService
 {
     public static function login(
         UtilisateurRepository $utilisateurRepository,
+        UserPasswordHasherInterface $passwordHasher,
         SerializerInterface $serializer,
         mixed $data_login
     ): JsonResponse {
         try {
-            // si l'utilisateur se connecte ne utilisant son email
-            if (!isset($data_login['username'])) {
-                $user = $utilisateurRepository->trouveUtilisateurByMailAndMDP(
-                    $data_login['emailUtilisateur'],
-                    $data_login['mdpUtilisateur']
+            // on cherche l'utilisateur par son username
+            $authentification_valide = false;
+            if (isset($data_login['username']) && isset($data_login['mdpUtilisateur'])) {
+                $user = $utilisateurRepository->trouveUtilisateurByUsername(
+                    $data_login['username']
                 );
-            } else {
-                $user = $utilisateurRepository->trouveUtilisateurByUsernameAndMDP(
-                    $data_login['username'],
-                    $data_login['mdpUtilisateur']
-                );
+                if ($passwordHasher->isPasswordValid($user[0], $data_login['mdpUtilisateur'])) {
+                    $authentification_valide = true;
+                }
             }
+
+            $utilisateurDTO = new UtilisateurDTO(
+                $user[0]->getIdUtilisateur(),
+                $user[0]->getEmailUtilisateur(),
+                $user[0]->getRoles(),
+                $user[0]->getUsername(),
+                $user[0]->getNomUtilisateur(),
+                $user[0]->getPrenomUtilisateur()
+            );
 
             // vérification du mode de connexion (par mail ou username)
             // si utilisateur trouvé, alors on renvoie les infos utilisateurs
-            if ($user != null) {
-                $utilisateurJSON = $serializer->serialize($user, 'json');
+            if ($authentification_valide) {
+                $utilisateurJSON = $serializer->serialize($utilisateurDTO, 'json');
                 return new JsonResponse([
                     'utilisateur' => $utilisateurJSON,
                     'reponse' => Response::HTTP_OK,
