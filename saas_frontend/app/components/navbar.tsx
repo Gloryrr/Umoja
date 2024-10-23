@@ -102,7 +102,16 @@ const Navbar = () => {
   return (
     <div className='bg-black flex justify-between w-full items-center h-24 mx-auto px-4 text-white font-fredoka'>
       {/* Logo */}
-      <h1 className=' text-3xl font-bold text-[#00df9a]'>UmoDJA</h1>
+      <h1 className=' text-3xl font-bold '><NavigationHandler>
+              {(handleNavigation) => (
+                <a
+                onClick={() => handleNavigation(`/home`)}
+                className="text-white cursor-pointer text-custom-green no-underline font-semibold hover:underline m-0"
+              >
+                UmoDJA
+              </a>              
+              )}
+            </NavigationHandler></h1>
 
       {/* Desktop Navigation */}
       <ul className='hidden md:flex'>

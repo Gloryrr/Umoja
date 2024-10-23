@@ -11,6 +11,7 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        'custom-green': '#00df9a',
       },
       fontFamily: {
         fredoka: ['var(--font-fredoka)', 'sans-serif'],
