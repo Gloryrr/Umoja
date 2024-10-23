@@ -26,7 +26,7 @@ export default function contact_form() {
         </div>
 
         <div className="relative w-full h-1/2 my-8">
-          <input type="email" placeholder="Email" defaultValue={user.email} required className="w-full h-full bg-gray-700 outline-none border-solid border-2 border-white rounded-full text-lg text-white p-5 pr-12 placeholder-white" />
+          <input type="email" placeholder="Email" defaultValue={user.email} required className="w-full h-full bg-gray-700 outline-none border-solid border-2 border-white rounded-full text-lg text-white p-5 pr-12 placeholder-white" readOnly />
           <FaEnvelope className='absolute right-5 top-1/2 transform -translate-y-1/2 text-lg' />
         </div>
 
