@@ -168,10 +168,10 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Récupère le rôle de l'utilisateur, implémentation des fonctions d'interfaces.
      * Même si on renvoie une liste, l'utilisateur n'a qu'un rôle dans la hiérarchie
-     * 
+     *
      * Exemple : ['ROLE_USER'] ou ['ROLE_ADMIN'] donc son attribut sera un string comme 'ROLE_USER' ou 'ROLE_ADMIN'
      * Si l'utilisateur à 'ROLE_ADMIN', il est évident qu'il a aussi les droits 'ROLE_USER' implicitement.
-     * 
+     *
      * @return string|null
      */
     public function getRoles(): array
@@ -263,10 +263,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Implémentation de la méthode de l'interface UserInterface.
-     * 
+     *
      * @return string|null
      */
-    function eraseCredentials() {
+    public function eraseCredentials()
+    {
         // Implémentation de la méthode de l'interface UserInterface.
         // Cette méthode ne fait rien, mais doit être implémentée.
     }
@@ -274,10 +275,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Implémentation de la méthode de l'interface PasswordAuthenticatedUserInterface.
      * Renvoie un string interpolé des identifiants de l'utilisateur: "email;username".
-     * 
+     *
      * @return string
      */
-    function getUserIdentifier(): string {
+    public function getUserIdentifier(): string
+    {
         return "{$this->emailUtilisateur}" . ";" . "{$this->username}";
     }
 }
