@@ -12,6 +12,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\UtilisateurRepository;
 use App\Services\UtilisateurService;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UtilisateurController extends AbstractController
 {
@@ -49,11 +50,13 @@ class UtilisateurController extends AbstractController
     public function createUtilisateur(
         Request $request,
         UtilisateurRepository $utilisateurRepository,
+        UserPasswordHasherInterface $passwordHasher,
         SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
         return UtilisateurService::createUtilisateur(
             $utilisateurRepository,
+            $passwordHasher,
             $serializer,
             $data
         );
