@@ -4,7 +4,7 @@ import { Facebook, Linkedin, Twitter, Instagram, Youtube } from 'lucide-react'
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-white w-full p-[5em]">
+    <footer className="bg-gray-900 text-white w-full pt-[5em] md:p-[5em]">
       <div className="mx-auto px-4">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between bg-gray-800 rounded-3xl p-[3em] items-center mb-8">
@@ -16,11 +16,11 @@ export default function Footer() {
             </div>
           </div>
           <div className="flex space-x-4">
-            <Link href="#" className="hover:text-[#3b5998] rounded-full p-[20px] bg-gray-900"><Facebook size={45} /></Link>
-            <Link href="#" className="hover:text-[#0077B5] rounded-full p-[20px] bg-gray-900"><Linkedin size={45} /></Link>
-            <Link href="#" className="hover:text-[#00ACEE] rounded-full p-[20px] bg-gray-900"><Twitter size={45} /></Link>
-            <Link href="#" className="hover:text-[#1DA1F2] rounded-full p-[20px] bg-gray-900"><Instagram size={45} /></Link>            
-            <Link href="#" className="hover:text-[#FF0000] rounded-full p-[20px] bg-gray-900"><Youtube size={45} /></Link>
+            <Link href="#" className="hover:text-[#3b5998] rounded-full p-[10px] bg-gray-900 md:p-[20px]"><Facebook className="w-10 h-10 md:w-12 md:h-12" /></Link>
+            <Link href="#" className="hover:text-[#0077B5] rounded-full p-[10px] bg-gray-900 md:p-[20px]"><Linkedin className="w-10 h-10 md:w-12 md:h-12" /></Link>
+            <Link href="#" className="hover:text-[#00ACEE] rounded-full p-[10px] bg-gray-900 md:p-[20px]"><Twitter className="w-10 h-10 md:w-12 md:h-12" /></Link>
+            <Link href="#" className="hover:text-[#1DA1F2] rounded-full p-[10px] bg-gray-900 md:p-[20px]"><Instagram className="w-10 h-10 md:w-12 md:h-12" /></Link>            
+            <Link href="#" className="hover:text-[#FF0000] rounded-full p-[10px] bg-gray-900 md:p-[20px]"><Youtube className="w-10 h-10 md:w-12 md:h-12" /></Link>
           </div>
         </div>
 
