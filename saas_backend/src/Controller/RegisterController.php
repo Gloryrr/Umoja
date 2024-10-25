@@ -9,6 +9,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\UtilisateurRepository;
 use App\Services\RegisterService;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class RegisterController extends AbstractController
 {
@@ -25,12 +26,14 @@ class RegisterController extends AbstractController
     public function register(
         UtilisateurRepository $utilisateurRepository,
         SerializerInterface $serializer,
+        UserPasswordHasherInterface $passwordHasher,
         Request $request
     ): JsonResponse {
         // récupéaration des données de la requête
         $data_register = json_decode($request->getContent(), true);
         return RegisterService::register(
             $utilisateurRepository,
+            $passwordHasher,
             $serializer,
             $data_register
         );

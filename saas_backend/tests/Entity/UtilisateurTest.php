@@ -64,7 +64,7 @@ class UtilisateurTest extends TestCase
     public function testMdpUtilisateur()
     {
         $this->utilisateur->setMdpUtilisateur("password123");
-        $this->assertEquals("password123", $this->utilisateur->getMdpUtilisateur());
+        $this->assertEquals("password123", $this->utilisateur->getPassword());
     }
 
     /**
@@ -75,8 +75,8 @@ class UtilisateurTest extends TestCase
      */
     public function testRoleUtilisateur()
     {
-        $this->utilisateur->setRoleUtilisateur("USER");
-        $this->assertEquals("USER", $this->utilisateur->getRoleUtilisateur());
+        $this->utilisateur->setRoles("USER");
+        $this->assertEquals(["USER"], $this->utilisateur->getRoles());
     }
 
     /**

@@ -12,6 +12,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Utilisateur;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
  * Class UtilisateurService
@@ -40,7 +41,7 @@ class UtilisateurService
             $utilisateurDTO = new UtilisateurDTO(
                 $utilisateur->getIdUtilisateur(),
                 $utilisateur->getEmailUtilisateur(),
-                $utilisateur->getRoleUtilisateur(),
+                $utilisateur->getRoles(),
                 $utilisateur->getUsername(),
                 $utilisateur->getNomUtilisateur(),
                 $utilisateur->getPrenomUtilisateur()
@@ -87,23 +88,31 @@ class UtilisateurService
      */
     public static function createUtilisateur(
         UtilisateurRepository $utilisateurRepository,
+        UserPasswordHasherInterface $passwordHasher,
         SerializerInterface $serializer,
         mixed $data
     ): JsonResponse {
         try {
             // vérifie qu'aucune donnée ne manque pour la création du compte
-            if ((empty($data['emailUtilisateur']) && empty($data['username']))) {
-                throw new \InvalidArgumentException("L'email ou le username de l'utilisateur est requis.");
+            if (empty($data['username'])) {
+                throw new \InvalidArgumentException("Le nom d'utilisateur de l'utilisateur est requis.");
             } elseif (empty($data['mdpUtilisateur'])) {
                 throw new \InvalidArgumentException("Le mot de passe utilisateur est requis.");
             }
+
             // création de l'objet et instanciation des données de l'objet
             $utilisateur = new Utilisateur();
             $utilisateur->setEmailUtilisateur(
                 !(empty($data['emailUtilisateur'])) ? $data['emailUtilisateur'] : ""
             );
-            $utilisateur->setMdpUtilisateur($data['mdpUtilisateur']);
-            $utilisateur->setRoleUtilisateur("USER");
+
+            // hashage du mot de passe
+            $hashedPassword = $passwordHasher->hashPassword(
+                $utilisateur,
+                $data['mdpUtilisateur']
+            );
+            $utilisateur->setMdpUtilisateur($hashedPassword);
+            $utilisateur->setRoles("ROLE_USER");
             $utilisateur->setUsername(!(empty($data['username'])) ? $data['username'] : "");
             $utilisateur->setNumTelUtilisateur($data['numTelUtilisateur'] ?? null);
             $utilisateur->setNomUtilisateur($data['nomUtilisateur'] ?? null);
@@ -112,9 +121,18 @@ class UtilisateurService
             // ajout de l'utilisateur en base de données
             $rep = $utilisateurRepository->inscritUtilisateur($utilisateur);
 
+            $utilisateurDTO = new UtilisateurDTO(
+                $utilisateur->getIdUtilisateur(),
+                $utilisateur->getEmailUtilisateur(),
+                $utilisateur->getRoles(),
+                $utilisateur->getUsername(),
+                $utilisateur->getNomUtilisateur(),
+                $utilisateur->getPrenomUtilisateur()
+            );
+
             // vérification de l'action en BDD
             if ($rep) {
-                $utilisateurJSON = $serializer->serialize($utilisateur, 'json');
+                $utilisateurJSON = $serializer->serialize($utilisateurDTO, 'json');
                 return new JsonResponse([
                     'utilisateur' => $utilisateurJSON,
                     'message' => "Utilisateur inscrit !",
@@ -177,7 +195,7 @@ class UtilisateurService
                 $utilisateur->setMdpUtilisateur($data['mdpUtilisateur']);
             }
             if (isset($data['roleUtilisateur'])) {
-                $utilisateur->setRoleUtilisateur($data['roleUtilisateur']);
+                $utilisateur->setRoles($data['roleUtilisateur']);
             }
             if (isset($data['username'])) {
                 $utilisateur->setUsername($data['username']);

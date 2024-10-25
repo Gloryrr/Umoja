@@ -6,7 +6,7 @@ class UtilisateurDTO
 {
     public ?int $idUtilisateur = null;
     public ?string $emailUtilisateur = null;
-    public ?string $roleUtilisateur = null;
+    public array $roleUtilisateur = [];
     public ?string $username = null;
     public ?string $nomUtilisateur = null;
     public ?string $prenomUtilisateur = null;
@@ -16,7 +16,7 @@ class UtilisateurDTO
     public function __construct(
         ?int $idUtilisateur = null,
         ?string $emailUtilisateur = null,
-        ?string $roleUtilisateur = null,
+        array $roleUtilisateur = [],
         ?string $username = null,
         ?string $nomUtilisateur = null,
         ?string $prenomUtilisateur = null,

@@ -140,7 +140,7 @@ class Offre
      * Cette colonne ne peut pas être nulle.
      */
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: "id_etat_offre")]
     private ?EtatOffre $etatOffre = null;
 
     /**
@@ -162,7 +162,7 @@ class Offre
      * Cette colonne ne peut pas être nulle.
      */
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: "id_cf")]
     private ?ConditionsFinancieres $conditionsFinancieres = null;
 
     /**
@@ -172,7 +172,7 @@ class Offre
      * représentant le budget estimé pour l'offre. Cette colonne ne peut pas être nulle.
      */
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: "id_be")]
     private ?BudgetEstimatif $budgetEstimatif = null;
 
     /**
@@ -183,7 +183,7 @@ class Offre
      * Cette colonne ne peut pas être nulle.
      */
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: "id_ft")]
     private ?FicheTechniqueArtiste $ficheTechniqueArtiste = null;
 
     /**
@@ -251,7 +251,6 @@ class Offre
     public function setDescrTournee(string $descrTournee): static
     {
         $this->descrTournee = $descrTournee;
-
         return $this;
     }
 
@@ -274,7 +273,6 @@ class Offre
     public function setDateMinProposee(\DateTimeInterface $dateMinProposee): static
     {
         $this->dateMinProposee = $dateMinProposee;
-
         return $this;
     }
 
@@ -297,7 +295,6 @@ class Offre
     public function setDateMaxProposee(\DateTimeInterface $dateMaxProposee): static
     {
         $this->dateMaxProposee = $dateMaxProposee;
-
         return $this;
     }
 
@@ -320,7 +317,6 @@ class Offre
     public function setVilleVisee(string $villeVisee): static
     {
         $this->villeVisee = $villeVisee;
-
         return $this;
     }
 
@@ -343,7 +339,6 @@ class Offre
     public function setRegionVisee(string $regionVisee): static
     {
         $this->regionVisee = $regionVisee;
-
         return $this;
     }
 
