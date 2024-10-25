@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -11,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass=UtilisateurRepository::class)
  */
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
-class Utilisateur
+class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
      * @var int|null L'identifiant unique de l'utilisateur.
@@ -122,7 +124,7 @@ class Utilisateur
      *
      * @return string|null
      */
-    public function getMdpUtilisateur(): ?string
+    public function getPassword(): ?string
     {
         return $this->mdpUtilisateur;
     }
@@ -164,13 +166,17 @@ class Utilisateur
     }
 
     /**
-     * Récupère le rôle de l'utilisateur.
+     * Récupère le rôle de l'utilisateur, implémentation des fonctions d'interfaces.
+     * Même si on renvoie une liste, l'utilisateur n'a qu'un rôle dans la hiérarchie
+     *
+     * Exemple : ['ROLE_USER'] ou ['ROLE_ADMIN'] donc son attribut sera un string comme 'ROLE_USER' ou 'ROLE_ADMIN'
+     * Si l'utilisateur à 'ROLE_ADMIN', il est évident qu'il a aussi les droits 'ROLE_USER' implicitement.
      *
      * @return string|null
      */
-    public function getRoleUtilisateur(): ?string
+    public function getRoles(): array
     {
-        return $this->roleUtilisateur;
+        return [$this->roleUtilisateur];
     }
 
     /**
@@ -179,7 +185,7 @@ class Utilisateur
      * @param string $roleUtilisateur
      * @return static
      */
-    public function setRoleUtilisateur(string $roleUtilisateur): static
+    public function setRoles(string $roleUtilisateur): static
     {
         $this->roleUtilisateur = $roleUtilisateur;
 
@@ -253,5 +259,27 @@ class Utilisateur
         $this->username = $username;
 
         return $this;
+    }
+
+    /**
+     * Implémentation de la méthode de l'interface UserInterface.
+     *
+     * @return string|null
+     */
+    public function eraseCredentials()
+    {
+        // Implémentation de la méthode de l'interface UserInterface.
+        // Cette méthode ne fait rien, mais doit être implémentée.
+    }
+
+    /**
+     * Implémentation de la méthode de l'interface PasswordAuthenticatedUserInterface.
+     * Renvoie un string interpolé des identifiants de l'utilisateur: "email;username".
+     *
+     * @return string
+     */
+    public function getUserIdentifier(): string
+    {
+        return "{$this->emailUtilisateur}" . ";" . "{$this->username}";
     }
 }

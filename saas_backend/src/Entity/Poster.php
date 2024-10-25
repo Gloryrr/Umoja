@@ -39,7 +39,7 @@ class Poster
      * @ORM\JoinColumn(nullable=false)
      */
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: "id_reseau")]
     private ?Reseau $idReseau = null;
 
     /**

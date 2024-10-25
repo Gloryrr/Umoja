@@ -42,7 +42,7 @@ class Rattacher
      * @ORM\JoinColumn(nullable=false)
      */
     #[ORM\ManyToOne(targetEntity: GenreMusical::class)]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: "id_genre_musical")]
     private ?GenreMusical $idGenreMusical = null;
 
     /**

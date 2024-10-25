@@ -33,7 +33,7 @@ class Attacher
      * Le genre musical associé à cette relation.
      */
     #[ORM\ManyToOne(targetEntity: GenreMusical::class)]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: "id_genre_musical")]
     private ?GenreMusical $genresAttaches = null;
 
     /**
