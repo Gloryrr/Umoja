@@ -15,23 +15,36 @@ const user: User = {
 
 export default function contact_form() {
 
+const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const nom = (e.target as HTMLFormElement).elements.namedItem('Nom') as HTMLInputElement;
+    const email = (e.target as HTMLFormElement).elements.namedItem('Email') as HTMLInputElement;
+    const message = (e.target as HTMLFormElement).elements.namedItem('Message') as HTMLTextAreaElement;
+
+    console.log('Nom:', nom.value);
+    console.log('Email:', email.value);
+    console.log('Message:', message.value);
+    console.log('Nom:', nom.value);
+
+  };
+  
   return (
     <div className='w-auto bg-transparent text-white rounded-lg p-8 font-nunito'>
+      
       <h1 className='text-8xl text-center pb-12 font-fredoka'>Contactez-nous !</h1>
-      <form action="">
+      <form onSubmit={handleSubmit}>
 
         <div className="relative w-full h-1/2 my-8">
-          <input type="text" placeholder="Nom" defaultValue={user.name} required className="w-full h-full bg-gray-700 outline-none border-solid border-2 border-white rounded-full text-lg text-white p-5 pr-12 placeholder-white" readOnly/>
+          <input type="text" name='Nom' placeholder="Nom" defaultValue={user.name} required className="w-full h-full bg-gray-700 cursor-not-allowed outline-none border-solid border-2 border-white rounded-full text-lg text-white p-5 pr-12 placeholder-white" readOnly/>
           <FaUser className='absolute right-5 top-1/2 transform -translate-y-1/2 text-lg' />
         </div>
 
         <div className="relative w-full h-1/2 my-8">
-          <input type="email" placeholder="Email" defaultValue={user.email} required className="w-full h-full bg-gray-700 outline-none border-solid border-2 border-white rounded-full text-lg text-white p-5 pr-12 placeholder-white" />
+          <input type="email" name='Email' placeholder="Email" defaultValue={user.email} required className="w-full h-full bg-gray-700 cursor-not-allowed outline-none border-solid border-2 border-white rounded-full text-lg text-white p-5 pr-12 placeholder-white" readOnly />
           <FaEnvelope className='absolute right-5 top-1/2 transform -translate-y-1/2 text-lg' />
         </div>
 
         <div className="relative w-full h-1/2 my-8">
-          <textarea placeholder="Message" required className="w-full h-32 bg-transparent outline-none border-solid border-2 border-white rounded-lg text-lg text-white p-5 placeholder-white resize-none"></textarea>
+          <textarea placeholder="Message" name='Message' required className="w-full h-32 bg-transparent outline-none cursor-pointer border-solid border-2 border-white rounded-lg text-lg text-white p-5 placeholder-white resize-none"></textarea>
           <FaComment className='absolute right-5 top-5 text-lg' />
         </div>
 

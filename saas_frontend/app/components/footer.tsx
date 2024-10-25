@@ -9,7 +9,6 @@ export default function Footer() {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between bg-gray-800 rounded-3xl p-[3em] items-center mb-8">
           <div className="flex items-center mb-4 md:mb-0">
-            <Image src="/logo.svg" alt="KissKiss BankBank" width={40} height={40} />
             <div className="ml-4">
               <h2 className="text-xl font-bold">UmoDJA</h2>
               <p className="text-sm text-gray-400">????????????????????????</p>
