@@ -30,10 +30,10 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
   return (
     <div className='w-auto bg-transparent text-white rounded-lg p-8 font-nunito'>
       
-      <h1 className='text-8xl text-center pb-12 font-fredoka'>Contactez-nous !</h1>
+      <h1 className=' text-center pb-12 font-fredoka text-2xl md:text-8xl '>Contactez-nous !</h1>
       <form onSubmit={handleSubmit}>
 
-        <div className="relative w-full h-1/2 my-8">
+        <div className="relative w-full h-1/6 my-8">
           <input type="text" name='Nom' placeholder="Nom" defaultValue={user.name} required className="w-full h-full bg-gray-700 cursor-not-allowed outline-none border-solid border-2 border-white rounded-full text-lg text-white p-5 pr-12 placeholder-white" readOnly/>
           <FaUser className='absolute right-5 top-1/2 transform -translate-y-1/2 text-lg' />
         </div>
