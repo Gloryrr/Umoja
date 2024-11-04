@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import ExtrasForm from '@/app/components/Form/Offre/ExtrasForm';
 import ConditionsFinancieresForm from '@/app/components/Form/Offre/ConditionFinancieresForm';
+import BudgetEstimatifForm from '@/app/components/Form/Offre/BudgetEstimatifForm';
+import FicheTechniqueArtisteForm from '@/app/components/Form/Offre/FicheTechniqueArtiste';
 
 const OffreForm: React.FC = () => {
 
@@ -118,7 +120,7 @@ const OffreForm: React.FC = () => {
         }));
     };
 
-    const handleFicheTechniqueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFicheTechniqueArtisteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
             ...prevData,
@@ -281,7 +283,7 @@ const OffreForm: React.FC = () => {
                             className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
                         />
                     </div>
-                    <div className="col-span-full flex flex-col space-y-4">
+                    <div className="flex flex-col">
                         <label htmlFor="liensPromotionnels" className="text-gray-700">Liens Promotionnels:</label>
                         
                         {liensPromotionnels.map((lien, index) => (
@@ -299,7 +301,7 @@ const OffreForm: React.FC = () => {
                                 <button
                                     type="button"
                                     onClick={() => handleRemoveLien(index)}
-                                    className="bg-red-500 text-white py-2 px-4 rounded-lg w-28 h-10 flex justify-center items-center hover:bg-red-600 transition-colors"
+                                    className="bg-red-500 text-white px-4 rounded-lg w-28 h-10 flex justify-center items-center hover:bg-red-600 transition-colors"
                                 >
                                     Supprimer
                                 </button>
@@ -310,17 +312,12 @@ const OffreForm: React.FC = () => {
                             <button
                                 type="button"
                                 onClick={handleAddLien}
-                                className="bg-green-500 text-white py-2 px-4 rounded-lg w-35 h-10 flex justify-center items-center hover:bg-green-600 transition-colors"
+                                className="bg-green-500 text-white py-2 px-4 rounded-lg w-35 h-10 flex justify-center items-center hover:bg-green-600 transition-colors mt-2"
                             >
                                 Ajouter lien
                             </button>
                         </div>
                     </div>
-                    <ExtrasForm 
-                        extrasData={formData.extras} 
-                        onChange={handleExtrasChange}
-                        // onRemove={handleRemoveExtras}
-                    />
                     <div className="flex flex-col">
                         <label htmlFor="typeOffre" className="text-gray-700">Type d'Offre:</label>
                         <input
@@ -334,130 +331,24 @@ const OffreForm: React.FC = () => {
                             className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
                         />
                     </div>
+                    <ExtrasForm 
+                        extrasData={formData.extras} 
+                        onChange={handleExtrasChange}
+                        // onRemove={handleRemoveExtras}
+                    />
                     <ConditionsFinancieresForm
                         conditionsFinancieresData={formData.conditionsFinancieres}
                         onChange={handleConditionsFinancieresChange}
                     />
-                    <div className="col-span-full flex flex-col mt-8">
-                        <h3 className="text-xl font-semibold text-gray-800 mb-4">Budget Estimatif</h3>
-                        <label htmlFor="cachetArtiste" className="text-gray-700">Cachet Artiste:</label>
-                        <input
-                            type="number"
-                            id="cachetArtiste"
-                            name="cachetArtiste"
-                            value={formData.budgetEstimatif.cachetArtiste}
-                            onChange={handleBudgetEstimatifChange}
-                            required
-                            placeholder="Cachet de l'artiste"
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="fraisDeplacement" className="text-gray-700">Frais de Déplacement:</label>
-                        <input
-                            type="number"
-                            id="fraisDeplacement"
-                            name="fraisDeplacement"
-                            value={formData.budgetEstimatif.fraisDeplacement}
-                            onChange={handleBudgetEstimatifChange}
-                            required
-                            placeholder="Frais de déplacement"
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="fraisHebergement" className="text-gray-700">Frais d'Hébergement:</label>
-                        <input
-                            type="number"
-                            id="fraisHebergement"
-                            name="fraisHebergement"
-                            value={formData.budgetEstimatif.fraisHebergement}
-                            onChange={handleBudgetEstimatifChange}
-                            required
-                            placeholder="Frais d'hébergement"
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="fraisRestauration" className="text-gray-700">Frais de Restauration:</label>
-                        <input
-                            type="number"
-                            id="fraisRestauration"
-                            name="fraisRestauration"
-                            value={formData.budgetEstimatif.fraisRestauration}
-                            onChange={handleBudgetEstimatifChange}
-                            required
-                            placeholder="Frais de restauration"
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
+                    <BudgetEstimatifForm
+                        budgetEstimatifData={formData.budgetEstimatif}
+                        onChange={handleBudgetEstimatifChange}
+                    />
+                    <FicheTechniqueArtisteForm
+                        ficheTechniqeArtisteData={formData.ficheTechniqueArtiste}
+                        onChange={handleFicheTechniqueArtisteChange}
+                    />
 
-                    <div className="col-span-full flex flex-col mt-8">
-                        <h3 className="text-xl font-semibold text-gray-800 mb-4">Fiche Technique Artiste</h3>
-                        <label htmlFor="besoinBackline" className="text-gray-700">Besoin Backline:</label>
-                        <input
-                            type="text"
-                            id="besoinBackline"
-                            name="besoinBackline"
-                            value={formData.ficheTechniqueArtiste.besoinBackline}
-                            onChange={handleFicheTechniqueChange}
-                            required
-                            placeholder="Besoins en backline"
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="besoinEclairage" className="text-gray-700">Besoin Éclairage:</label>
-                        <input
-                            type="text"
-                            id="besoinEclairage"
-                            name="besoinEclairage"
-                            value={formData.ficheTechniqueArtiste.besoinEclairage}
-                            onChange={handleFicheTechniqueChange}
-                            required
-                            placeholder="Besoins en éclairage"
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="besoinEquipements" className="text-gray-700">Besoin Équipements:</label>
-                        <input
-                            type="text"
-                            id="besoinEquipements"
-                            name="besoinEquipements"
-                            value={formData.ficheTechniqueArtiste.besoinEquipements}
-                            onChange={handleFicheTechniqueChange}
-                            required
-                            placeholder="Besoins en équipements"
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="besoinScene" className="text-gray-700">Besoin Scène:</label>
-                        <input
-                            type="text"
-                            id="besoinScene"
-                            name="besoinScene"
-                            value={formData.ficheTechniqueArtiste.besoinScene}
-                            onChange={handleFicheTechniqueChange}
-                            required
-                            placeholder="Besoins en scène"
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="besoinSonorisation" className="text-gray-700">Besoin Sonorisation:</label>
-                        <input
-                            type="text"
-                            id="besoinSonorisation"
-                            name="besoinSonorisation"
-                            value={formData.ficheTechniqueArtiste.besoinSonorisation}
-                            onChange={handleFicheTechniqueChange}
-                            required
-                            placeholder="Besoins en sonorisation"
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
                     <div className="flex flex-col">
                         <label htmlFor="reseau" className="text-gray-700">Réseau:</label>
                         <input

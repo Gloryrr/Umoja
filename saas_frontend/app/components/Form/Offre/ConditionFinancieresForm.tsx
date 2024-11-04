@@ -13,6 +13,7 @@ const ConditionsFinancieresForm: React.FC<{
     return (
         <div className="flex flex-col bg-gray-100 p-4 rounded-lg mb-4">
             <div className="col-span-full flex flex-col">
+                <h3 className="text-xl font-semibold text-gray-800 mb-4">Conditions financières</h3>
                 <label htmlFor="minimumGaranti" className="text-gray-700">Minimum Garanti:</label>
                 <input
                     type="number"
