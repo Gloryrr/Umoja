@@ -137,7 +137,7 @@ const OffreForm: React.FC = () => {
     };
 
     return (
-        <div className='mt-10 mb-10 w-[70%]'>
+        <div className='mt-10 mb-10 w-[60%]'>
             <form onSubmit={handleSubmit} className="w-full mx-auto bg-white shadow-md rounded-lg p-8 space-y-4">
                 <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">Offre Formulaire</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
