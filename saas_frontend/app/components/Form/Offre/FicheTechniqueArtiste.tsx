@@ -1,13 +1,24 @@
 "use client";
 import React from 'react';
 
-const FicheTechniqueArtisteForm: React.FC<{
-    ficheTechniqeArtisteData: any;
-    onChange: (updatedData: any) => void;
-}> = ({ ficheTechniqeArtisteData, onChange }) => {
-    const handleFicheTechniqueArtisteChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+interface FicheTechniqueArtisteFormProps {
+    ficheTechniqueArtiste: {
+        besoinBackline: string;
+        besoinEclairage: string;
+        besoinEquipements: string;
+        besoinScene: string;
+        besoinSonorisation: string;
+    };
+    onFicheTechniqueChange: (name: string, value: string) => void;
+}
+
+const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
+    ficheTechniqueArtiste,
+    onFicheTechniqueChange,
+}) => {
+    const handleFicheTechniqueArtisteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        onChange({ ...ficheTechniqeArtisteData, [name]: value });
+        onFicheTechniqueChange(name, value);
     };
 
     return (
@@ -15,7 +26,6 @@ const FicheTechniqueArtisteForm: React.FC<{
             <div className="mx-auto w-full max-w bg-white">
                 <h3 className="text-2xl font-semibold text-[#07074D] mb-4">Fiche Technique Artiste</h3>
                 
-                {/* Grouped Besoin Backline and Besoin Éclairage */}
                 <div className="grid grid-cols-2 gap-4 mb-5">
                     <div>
                         <label htmlFor="besoinBackline" className="text-gray-700">Besoin Backline:</label>
@@ -23,7 +33,7 @@ const FicheTechniqueArtisteForm: React.FC<{
                             type="text"
                             id="besoinBackline"
                             name="besoinBackline"
-                            value={ficheTechniqeArtisteData.besoinBackline}
+                            value={ficheTechniqueArtiste.besoinBackline}
                             onChange={handleFicheTechniqueArtisteChange}
                             required
                             placeholder="Besoins en backline"
@@ -37,7 +47,7 @@ const FicheTechniqueArtisteForm: React.FC<{
                             type="text"
                             id="besoinEclairage"
                             name="besoinEclairage"
-                            value={ficheTechniqeArtisteData.besoinEclairage}
+                            value={ficheTechniqueArtiste.besoinEclairage}
                             onChange={handleFicheTechniqueArtisteChange}
                             required
                             placeholder="Besoins en éclairage"
@@ -46,7 +56,6 @@ const FicheTechniqueArtisteForm: React.FC<{
                     </div>
                 </div>
 
-                {/* Grouped Besoin Équipements and Besoin Scène */}
                 <div className="grid grid-cols-2 gap-4 mb-5">
                     <div>
                         <label htmlFor="besoinEquipements" className="text-gray-700">Besoin Équipements:</label>
@@ -54,7 +63,7 @@ const FicheTechniqueArtisteForm: React.FC<{
                             type="text"
                             id="besoinEquipements"
                             name="besoinEquipements"
-                            value={ficheTechniqeArtisteData.besoinEquipements}
+                            value={ficheTechniqueArtiste.besoinEquipements}
                             onChange={handleFicheTechniqueArtisteChange}
                             required
                             placeholder="Besoins en équipements"
@@ -68,7 +77,7 @@ const FicheTechniqueArtisteForm: React.FC<{
                             type="text"
                             id="besoinScene"
                             name="besoinScene"
-                            value={ficheTechniqeArtisteData.besoinScene}
+                            value={ficheTechniqueArtiste.besoinScene}
                             onChange={handleFicheTechniqueArtisteChange}
                             required
                             placeholder="Besoins en scène"
@@ -77,14 +86,13 @@ const FicheTechniqueArtisteForm: React.FC<{
                     </div>
                 </div>
 
-                {/* Besoin Sonorisation without group */}
                 <div className="mb-5">
                     <label htmlFor="besoinSonorisation" className="text-gray-700">Besoin Sonorisation:</label>
                     <input
                         type="text"
                         id="besoinSonorisation"
                         name="besoinSonorisation"
-                        value={ficheTechniqeArtisteData.besoinSonorisation}
+                        value={ficheTechniqueArtiste.besoinSonorisation}
                         onChange={handleFicheTechniqueArtisteChange}
                         required
                         placeholder="Besoins en sonorisation"

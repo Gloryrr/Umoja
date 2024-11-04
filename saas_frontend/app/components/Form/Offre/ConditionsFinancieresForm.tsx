@@ -1,13 +1,22 @@
 "use client";
 import React from 'react';
 
-const ConditionsFinancieresForm: React.FC<{
-    conditionsFinancieresData: any;
-    onChange: (updatedData: any) => void;
-}> = ({ conditionsFinancieresData, onChange }) => {
-    const handleConditionsFinancieresChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+interface ConditionsFinancieresFormProps {
+    conditionsFinancieres: {
+        minimumGaranti: string;
+        conditionsPaiement: string;
+        pourcentageRecette: string;
+    };
+    onConditionsFinancieresChange: (name: string, value: string) => void;
+}
+
+const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
+    conditionsFinancieres,
+    onConditionsFinancieresChange,
+}) => {
+    const handleConditionsFinancieresChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        onChange({ ...conditionsFinancieresData, [name]: value });
+        onConditionsFinancieresChange(name, value);
     };
 
     return (
@@ -23,7 +32,7 @@ const ConditionsFinancieresForm: React.FC<{
                             type="number"
                             id="minimumGaranti"
                             name="minimumGaranti"
-                            value={conditionsFinancieresData.minimumGaranti}
+                            value={conditionsFinancieres.minimumGaranti}
                             onChange={handleConditionsFinancieresChange}
                             required
                             placeholder="Minimum garanti"
@@ -37,7 +46,7 @@ const ConditionsFinancieresForm: React.FC<{
                             type="text"
                             id="conditionsPaiement"
                             name="conditionsPaiement"
-                            value={conditionsFinancieresData.conditionsPaiement}
+                            value={conditionsFinancieres.conditionsPaiement}
                             onChange={handleConditionsFinancieresChange}
                             required
                             placeholder="Conditions de paiement"
@@ -53,7 +62,7 @@ const ConditionsFinancieresForm: React.FC<{
                         type="number"
                         id="pourcentageRecette"
                         name="pourcentageRecette"
-                        value={conditionsFinancieresData.pourcentageRecette}
+                        value={conditionsFinancieres.pourcentageRecette}
                         onChange={handleConditionsFinancieresChange}
                         required
                         placeholder="15%"

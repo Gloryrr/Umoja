@@ -1,14 +1,25 @@
 "use client";
 import React from 'react';
 
-const ExtrasForm: React.FC<{
-    extrasData: any;
-    onChange: (updatedData: any) => void;
-    // onRemove: (index: number) => void;
-}> = ({ extrasData, onChange, /* onRemove */ }) => {
-    const handleConditionsFinancieresChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+interface ExtrasFormProps {
+    extras: {
+        descrExtras: string;
+        coutExtras: string;
+        exclusivite: string;
+        exception: string;
+        ordrePassage: string;
+        clausesConfidentialites: string;
+    };
+    onExtrasChange: (name: string, value: string) => void;
+}
+
+const ExtrasForm: React.FC<ExtrasFormProps> = ({
+    extras,
+    onExtrasChange,
+}) => {
+    const handleExtrasChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        onChange({ ...extrasData, [name]: value });
+        onExtrasChange(name, value);
     };
 
     return (
@@ -22,8 +33,8 @@ const ExtrasForm: React.FC<{
                             type="text"
                             id='descrExtras'
                             name="descrExtras"
-                            value={extrasData.descrExtras}
-                            onChange={handleConditionsFinancieresChange}
+                            value={extras.descrExtras}
+                            onChange={handleExtrasChange}
                             placeholder="Description des Extras"
                             className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                         />
@@ -34,8 +45,8 @@ const ExtrasForm: React.FC<{
                             type="number"
                             name="coutExtras"
                             id='coutExtras'
-                            value={extrasData.coutExtras}
-                            onChange={handleConditionsFinancieresChange}
+                            value={extras.coutExtras}
+                            onChange={handleExtrasChange}
                             placeholder="Coût des Extras"
                             className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                         />
@@ -49,8 +60,8 @@ const ExtrasForm: React.FC<{
                             type="text"
                             id='exclusivite'
                             name="exclusivite"
-                            value={extrasData.exclusivite}
-                            onChange={handleConditionsFinancieresChange}
+                            value={extras.exclusivite}
+                            onChange={handleExtrasChange}
                             placeholder="Exclusivité"
                             className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                         />
@@ -62,8 +73,8 @@ const ExtrasForm: React.FC<{
                             type="text"
                             id='exception'
                             name="exception"
-                            value={extrasData.exception}
-                            onChange={handleConditionsFinancieresChange}
+                            value={extras.exception}
+                            onChange={handleExtrasChange}
                             placeholder="Exceptions"
                             className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                         />
@@ -77,8 +88,8 @@ const ExtrasForm: React.FC<{
                             type="text"
                             id='ordrePassage'
                             name="ordrePassage"
-                            value={extrasData.ordrePassage}
-                            onChange={handleConditionsFinancieresChange}
+                            value={extras.ordrePassage}
+                            onChange={handleExtrasChange}
                             placeholder="Ordre de Passage"
                             className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                         />
@@ -89,8 +100,8 @@ const ExtrasForm: React.FC<{
                         <textarea
                             name="clausesConfidentialites"
                             id='clausesConfidentialites'
-                            value={extrasData.clausesConfidentialites}
-                            onChange={handleConditionsFinancieresChange}
+                            value={extras.clausesConfidentialites}
+                            onChange={handleExtrasChange}
                             placeholder="Clauses de Confidentialité"
                             className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                         />

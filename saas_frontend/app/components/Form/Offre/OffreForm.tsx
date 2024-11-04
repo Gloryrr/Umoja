@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import ExtrasForm from '@/app/components/Form/Offre/ExtrasForm';
-import ConditionsFinancieresForm from '@/app/components/Form/Offre/ConditionFinancieresForm';
+import ConditionsFinancieresForm from '@/app/components/Form/Offre/ConditionsFinancieresForm';
 import BudgetEstimatifForm from '@/app/components/Form/Offre/BudgetEstimatifForm';
 import FicheTechniqueArtisteForm from '@/app/components/Form/Offre/FicheTechniqueArtiste';
 
