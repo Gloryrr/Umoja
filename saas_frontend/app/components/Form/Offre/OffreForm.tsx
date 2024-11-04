@@ -3,23 +3,26 @@ import React, { useState } from 'react';
 import ExtrasForm from '@/app/components/Form/Offre/ExtrasForm';
 import ConditionsFinancieresForm from '@/app/components/Form/Offre/ConditionsFinancieresForm';
 import BudgetEstimatifForm from '@/app/components/Form/Offre/BudgetEstimatifForm';
-import FicheTechniqueArtisteForm from '@/app/components/Form/Offre/FicheTechniqueArtiste';
+import DetailOffreForm from '@/app/components/Form/Offre/DetailOffreForm';
+import DonneesSupplementairesForm from '@/app/components/Form/Offre/DonneesSupplementairesForm';
 
 const OffreForm: React.FC = () => {
-
+    const [etapeCourante, setEtapeCourante] = useState(1);
     const [formData, setFormData] = useState({
-        titleOffre: '',
-        deadLine: '',
-        descrTournee: '',
-        dateMinProposee: '',
-        dateMaxProposee: '',
-        villeVisee: '',
-        regionVisee: '',
-        placesMin: '',
-        placesMax: '',
-        nbArtistesConcernes: '',
-        nbInvitesConcernes: '',
-        liensPromotionnels: '',
+        detailOffre: {
+            titleOffre: '',
+            deadLine: '',
+            descrTournee: '',
+            dateMinProposee: '',
+            dateMaxProposee: '',
+            villeVisee: '',
+            regionVisee: '',
+            placesMin: '',
+            placesMax: '',
+            nbArtistesConcernes: '',
+            nbInvitesConcernes: '',
+            liensPromotionnels: ''
+        },
         extras: {
             descrExtras: '',
             coutExtras: '',
@@ -41,357 +44,191 @@ const OffreForm: React.FC = () => {
             fraisHebergement: '',
             fraisRestauration: ''
         },
-        ficheTechniqueArtiste: {
-            besoinBackline: '',
-            besoinEclairage: '',
-            besoinEquipements: '',
-            besoinScene: '',
-            besoinSonorisation: ''
+        donneesSupplementaires : {
+            ficheTechniqueArtiste: {
+                besoinBackline: '',
+                besoinEclairage: '',
+                besoinEquipements: '',
+                besoinScene: '',
+                besoinSonorisation: ''
+            },
+            reseau: '',
+            genreMusical: '',
+            artiste: ''
         },
         utilisateur: '',
-        reseau: '',
-        genreMusical: '',
-        artiste: ''
     });
-    const [liensPromotionnels, setLiensPromotionnels] = useState<string[]>(['']);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-    };
-
-    const handleLienChange = (index: number, value: string) => {
-        const newLiens = [...liensPromotionnels];
-        newLiens[index] = value;
-        setLiensPromotionnels(newLiens);
-    };
-
-    const handleAddLien = () => {
-        setLiensPromotionnels([...liensPromotionnels, '']);
-    };
-
-    const handleRemoveLien = (index: number) => {
-        const newLiens = liensPromotionnels.filter((_, i) => i !== index);
-        setLiensPromotionnels(newLiens);
-    };
-
-    const handleExtrasChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
+    const handleSectionChange = (section: string, updatedData: any) => {
         setFormData((prevData) => ({
             ...prevData,
-            extras: {
-                ...prevData.extras,
-                [name]: value
-            }
+            [section]: updatedData
         }));
-    };
+    };    
 
-    // const handleRemoveExtras = (index: number) => {
-    //     const newExtras = { ...formData.extras };
-    //     delete newExtras[index];
-    //     setFormData((prevData) => ({
-    //         ...prevData,
-    //         extras: newExtras
-    //     }));
-    // };
-
-    const handleConditionsFinancieresChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            conditionsFinancieres: {
-                ...prevData.conditionsFinancieres,
-                [name]: value
-            }
-        }));
-    };
-
-    const handleBudgetEstimatifChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            budgetEstimatif: {
-                ...prevData.budgetEstimatif,
-                [name]: value
-            }
-        }));
-    };
-
-    const handleFicheTechniqueArtisteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            ficheTechniqueArtiste: {
-                ...prevData.ficheTechniqueArtiste,
-                [name]: value
-            }
-        }));
-    };
-
-    const handleSubmit = (e: React.FormEvent) => {
+    const valideFormulaire = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Création de l'offre:", { ...formData, liensPromotionnels });
+        console.log(formData);
+        // ajouter l'appel à l'API REST pour la création    
     };
+
+    const accedeEtapeSuivante = () => {
+        if (valideEtape(etapeCourante)) {
+            setEtapeCourante(prev => Math.min(prev + 1, 5));
+        }
+    };
+
+    const revientEtapePrecedente = () => {
+        setEtapeCourante(prev => Math.max(prev - 1, 1));
+    };
+
+    const valideEtape = (step: number) => {
+        return true;
+    };
+
+    const renderEtapeFormulaire = () => {
+        switch (etapeCourante) {
+            case 1:
+                return <DetailOffreForm 
+                            detailOffre={formData.detailOffre} 
+                            onDetailOffreChange={(name, value) =>
+                                setFormData((prevData) => ({
+                                    ...prevData,
+                                    detailOffre: {
+                                        ...prevData.detailOffre,
+                                        [name]: value
+                                    }
+                                }))
+                            } 
+                        />;
+            case 2:
+                return <ExtrasForm 
+                            extras={formData.extras} 
+                            onExtrasChange={(name, value) =>
+                                setFormData((prevData) => ({
+                                    ...prevData,
+                                    extras: {
+                                        ...prevData.extras,
+                                        [name]: value
+                                    }
+                                }))
+                            }
+                        />;
+            case 3:
+                return <ConditionsFinancieresForm 
+                            conditionsFinancieres={formData.conditionsFinancieres} 
+                            onConditionsFinancieresChange={(name, value) =>
+                                setFormData((prevData) => ({
+                                    ...prevData,
+                                    conditionsFinancieres: {
+                                        ...prevData.conditionsFinancieres,
+                                        [name]: value
+                                    }
+                                }))
+                            }
+                        />;
+            case 4:
+                return <BudgetEstimatifForm 
+                            budgetEstimatif={formData.budgetEstimatif} 
+                            onBudgetEstimatifChange={(name, value) =>
+                                setFormData((prevData) => ({
+                                    ...prevData,
+                                    budgetEstimatif: {
+                                        ...prevData.budgetEstimatif,
+                                        [name]: value
+                                    }
+                                }))
+                            }
+                        />;
+            case 5:
+                return <DonneesSupplementairesForm 
+                            donneesSupplementaires={formData.donneesSupplementaires} 
+                            onDonneesSupplementairesChange={(name, value) =>
+                                setFormData((prevData) => ({
+                                    ...prevData,
+                                    donneesSupplementaires: {
+                                        ...prevData.donneesSupplementaires,
+                                        [name]: value
+                                    }
+                                }))
+                            }
+                            onFicheTechniqueChange={(name, value) =>
+                                setFormData((prevData) => ({
+                                    ...prevData,
+                                    donneesSupplementaires: {
+                                        ...prevData.donneesSupplementaires,
+                                        ficheTechniqueArtiste: {
+                                            ...prevData.donneesSupplementaires.ficheTechniqueArtiste,
+                                            [name]: value
+                                        }
+                                    }
+                                }))
+                            }
+                        />;
+            default:
+                return null;
+        }
+    };
+    
 
     return (
-        <div className='mt-10 mb-10 w-[60%]'>
-            <form onSubmit={handleSubmit} className="w-full mx-auto bg-white shadow-md rounded-lg p-8 space-y-4">
-                <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">Offre Formulaire</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="flex flex-col">
-                        <label htmlFor="titleOffre" className="text-gray-700">Titre de l'Offre:</label>
-                        <input
-                            type="text"
-                            id="titleOffre"
-                            name="titleOffre"
-                            value={formData.titleOffre}
-                            onChange={handleChange}
-                            required
-                            placeholder="Indiquer le titre de l'Offre"
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="deadLine" className="text-gray-700">Date maximale de réponse:</label>
-                        <input
-                            type="date"
-                            id="deadLine"
-                            name="deadLine"
-                            value={formData.deadLine}
-                            onChange={handleChange}
-                            required
-                            placeholder="La date limite de réponse à l'offre"
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
-                    <div className="col-span-full flex flex-col">
-                        <label htmlFor="descrTournee" className="text-gray-700">Description de la Tournée:</label>
-                        <textarea
-                            id="descrTournee"
-                            name="descrTournee"
-                            value={formData.descrTournee}
-                            onChange={handleChange}
-                            required
-                            placeholder='La description de la tournée'
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="dateMinProposee" className="text-gray-700">Date Min Proposée:</label>
-                        <input
-                            type="date"
-                            id="dateMinProposee"
-                            name="dateMinProposee"
-                            value={formData.dateMinProposee}
-                            onChange={handleChange}
-                            required
-                            placeholder="Date Mininmale Proposée"
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="dateMaxProposee" className="text-gray-700">Date Max Proposée:</label>
-                        <input
-                            type="date"
-                            id="dateMaxProposee"
-                            name="dateMaxProposee"
-                            value={formData.dateMaxProposee}
-                            onChange={handleChange}
-                            required
-                            placeholder="Date Maximale Proposée"
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="villeVisee" className="text-gray-700">Ville Visée:</label>
-                        <input
-                            type="text"
-                            id="villeVisee"
-                            name="villeVisee"
-                            value={formData.villeVisee}
-                            onChange={handleChange}
-                            required
-                            placeholder="Dans quelle ville se déroulera l'offre"
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="regionVisee" className="text-gray-700">Région Visée:</label>
-                        <input
-                            type="text"
-                            id="regionVisee"
-                            name="regionVisee"
-                            value={formData.regionVisee}
-                            onChange={handleChange}
-                            required
-                            placeholder="Dans quelle région se déroulera l'offre"
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="placesMin" className="text-gray-700">Places Minimum:</label>
-                        <input
-                            type="number"
-                            id="placesMin"
-                            name="placesMin"
-                            value={formData.placesMin}
-                            onChange={handleChange}
-                            required
-                            placeholder="Nombre de places minimum"
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="placesMax" className="text-gray-700">Places Maximum:</label>
-                        <input
-                            type="number"
-                            id="placesMax"
-                            name="placesMax"
-                            value={formData.placesMax}
-                            onChange={handleChange}
-                            required
-                            placeholder="Nombre de places maximum"
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="nbArtistesConcernes" className="text-gray-700">Nombre d'Artistes Concernés:</label>
-                        <input
-                            type="number"
-                            id="nbArtistesConcernes"
-                            name="nbArtistesConcernes"
-                            value={formData.nbArtistesConcernes}
-                            onChange={handleChange}
-                            required
-                            placeholder="Nombre d'artistes concernés"
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="nbInvitesConcernes" className="text-gray-700">Nombre d'Invités Concernés:</label>
-                        <input
-                            type="number"
-                            id="nbInvitesConcernes"
-                            name="nbInvitesConcernes"
-                            value={formData.nbInvitesConcernes}
-                            onChange={handleChange}
-                            required
-                            placeholder="Nombre d'invités concernés"
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="liensPromotionnels" className="text-gray-700">Liens Promotionnels:</label>
-                        
-                        {liensPromotionnels.map((lien, index) => (
-                            <div key={index} className="flex items-center space-x-2">
-                                <input
-                                    type="url"
-                                    id={`liensPromotionnels${index}`}
-                                    name="liensPromotionnels"
-                                    value={lien}
-                                    onChange={(e) => handleLienChange(index, e.target.value)}
-                                    required
-                                    className="flex-grow mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                                    placeholder="Lien promotionnel de l'artiste"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => handleRemoveLien(index)}
-                                    className="bg-red-500 text-white px-4 rounded-lg w-28 h-10 flex justify-center items-center hover:bg-red-600 transition-colors"
-                                >
-                                    Supprimer
-                                </button>
-                            </div>
-                        ))}
+        <div className="mt-10 mb-10 w-[60%] mx-auto">
+            <form onSubmit={valideFormulaire} className="w-full mx-auto bg-white shadow-md rounded-lg p-8 space-y-4">
+                <h2 className="text-3xl font-semibold text-center text-gray-800 mb-10">Formulaire d'Offre</h2>
 
-                        <div className="flex justify-center">
-                            <button
-                                type="button"
-                                onClick={handleAddLien}
-                                className="bg-green-500 text-white py-2 px-4 rounded-lg w-35 h-10 flex justify-center items-center hover:bg-green-600 transition-colors mt-2"
-                            >
-                                Ajouter lien
-                            </button>
-                        </div>
+                <div className="mb-8">
+                    <div className="flex justify-between mb-2">
+                        <span className={`text-xs font-bold inline-block py-2 px-4 rounded-full transition-all duration-300 ${0 < etapeCourante ? 'text-white bg-blue-600' : 'text-gray-500 bg-gray-300 opacity-75'}`} id="step1">
+                            Informations de base
+                        </span>
+                        <span className={`text-xs font-bold inline-block py-2 px-4 rounded-full transition-all duration-300 ${1 < etapeCourante ? 'text-white bg-blue-600' : 'text-gray-500 bg-gray-300 opacity-75'}`} id="step2">
+                            Extras
+                        </span>
+                        <span className={`text-xs font-bold inline-block py-2 px-4 rounded-full transition-all duration-300 ${2 < etapeCourante ? 'text-white bg-blue-600' : 'text-gray-500 bg-gray-300 opacity-75'}`} id="step3">
+                            Conditions Financières
+                        </span>
+                        <span className={`text-xs font-bold inline-block py-2 px-4 rounded-full transition-all duration-300 ${3 < etapeCourante ? 'text-white bg-blue-600' : 'text-gray-500 bg-gray-300 opacity-75'}`} id="step4">
+                            Budget Estimatif
+                        </span>
+                        <span className={`text-xs font-bold inline-block py-2 px-4 rounded-full transition-all duration-300 ${4 < etapeCourante ? 'text-white bg-blue-600' : 'text-gray-500 bg-gray-300 opacity-75'}`} id="step5">
+                            Données supplémentaires
+                        </span>
                     </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="typeOffre" className="text-gray-700">Type d'Offre:</label>
-                        <input
-                            type="text"
-                            id="typeOffre"
-                            name="typeOffre"
-                            value={formData.typeOffre}
-                            onChange={handleChange}
-                            required
-                            placeholder="Type d'offre"
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
-                    <ExtrasForm 
-                        extrasData={formData.extras} 
-                        onChange={handleExtrasChange}
-                        // onRemove={handleRemoveExtras}
-                    />
-                    <ConditionsFinancieresForm
-                        conditionsFinancieresData={formData.conditionsFinancieres}
-                        onChange={handleConditionsFinancieresChange}
-                    />
-                    <BudgetEstimatifForm
-                        budgetEstimatifData={formData.budgetEstimatif}
-                        onChange={handleBudgetEstimatifChange}
-                    />
-                    <FicheTechniqueArtisteForm
-                        ficheTechniqeArtisteData={formData.ficheTechniqueArtiste}
-                        onChange={handleFicheTechniqueArtisteChange}
-                    />
-
-                    <div className="flex flex-col">
-                        <label htmlFor="reseau" className="text-gray-700">Réseau:</label>
-                        <input
-                            type="text"
-                            id="reseau"
-                            name="reseau"
-                            value={formData.reseau}
-                            onChange={handleChange}
-                            required
-                            placeholder="Les réseaux sur lesquels vous posterez votre offre"
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="genreMusical" className="text-gray-700">Genre Musical:</label>
-                        <input
-                            type="text"
-                            id="genreMusical"
-                            name="genreMusical"
-                            value={formData.genreMusical}
-                            onChange={handleChange}
-                            required
-                            placeholder="Le genre musical de l'offre"
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="artiste" className="text-gray-700">Artiste:</label>
-                        <input
-                            type="text"
-                            id="artiste"
-                            name="artiste"
-                            value={formData.artiste}
-                            onChange={handleChange}
-                            required
-                            placeholder="L'artiste concerné par l'offre"
-                            className="mt-1 px-3 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring focus:border-blue-300"
-                        />
+                    <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-blue-200">
+                        <div className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-600 transition-all duration-300`} style={{ width: `${(etapeCourante / 5) * 100}%` }}></div>
                     </div>
                 </div>
-                <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors">
-                    Poster l'offre
-                </button>
+
+                {renderEtapeFormulaire()}
+
+                <div className="flex justify-between mt-8">
+                    {etapeCourante > 1 && (
+                        <button
+                            type="button"
+                            onClick={revientEtapePrecedente}
+                            className="px-5 py-3 bg-gray-300 text-gray-800 rounded-lg transition-colors duration-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
+                        >
+                            Précédent
+                        </button>
+                    )}
+                    {etapeCourante < 5 && (
+                        <button
+                            type="button"
+                            onClick={accedeEtapeSuivante}
+                            className="px-5 py-3 bg-blue-500 text-white rounded-lg transition-colors duration-300 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50"
+                        >
+                            Suivant
+                        </button>
+                    )}
+                    {etapeCourante === 5 && (
+                        <button
+                            type="submit"
+                            className="px-5 py-3 bg-blue-500 text-white rounded-lg transition-colors duration-300 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
+                        >
+                            Poster l'offre
+                        </button>
+                    )}
+                </div>
             </form>
         </div>
     );
