@@ -1,6 +1,7 @@
 "use client";
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import FicheTechniqueArtisteForm from '@/app/components/Form/Offre/FicheTechniqueArtiste';
+import { apiGet } from '@/app/services/apiClients';
 
 interface DonneesSupplementairesFormProps {
     donneesSupplementaires: {
@@ -24,10 +25,25 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
     onDonneesSupplementairesChange,
     onFicheTechniqueChange
 }) => {
-    const handleDonneesSupplementairesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleDonneesSupplementairesChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         onDonneesSupplementairesChange(name, value);
     };
+
+    const [genresMusicaux, setGenresMusicaux] = useState<Array<{ nomGenreMusical: string }>>([]);
+
+    useEffect(() => {
+        const fetchGenresMusicaux = async () => {
+            try {
+                const genres = await apiGet('/genres-musicaux');
+                const genresList = JSON.parse(genres.genres_musicaux);
+                setGenresMusicaux(genresList);
+            } catch (error) {
+                console.error("Erreur lors du chargement des genres musicaux :", error);
+            }
+        };
+        fetchGenresMusicaux();
+    }, []);
 
     return (
         <div className="mx-auto w-full max-w bg-white rounded-lg shadow-md p-8">
@@ -73,16 +89,21 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
 
                     <div className="flex flex-col">
                         <label htmlFor="genreMusical" className="text-gray-700">Genre Musical:</label>
-                        <input
-                            type="text"
+                        <select
                             id="genreMusical"
                             name="genreMusical"
                             value={donneesSupplementaires.genreMusical}
                             onChange={handleDonneesSupplementairesChange}
                             required
-                            placeholder="Le genre musical de l'offre"
                             className="w-full mt-1 rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                        />
+                        >
+                            <option value="" disabled>Choisir un genre musical</option>
+                            {genresMusicaux.map((genre, index) => (
+                                <option key={index} value={genre.nomGenreMusical}>
+                                    {genre.nomGenreMusical}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                 </div>
             </div>
