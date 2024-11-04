@@ -52,8 +52,10 @@ const OffreForm: React.FC = () => {
                 besoinScene: '',
                 besoinSonorisation: ''
             },
-            reseau: '',
-            genreMusical: '',
+            reseau: [],
+            nbReseaux: 0,
+            genreMusical: [],
+            nbGenresMusicaux: 0,
             artiste: ''
         },
         utilisateur: '',

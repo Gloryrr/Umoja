@@ -83,28 +83,28 @@ class OffreService
             // vérifie qu'aucune donnée ne manque pour la création de l'offre
             if (
                 (
-                empty($data['titleOffre']) &&
-                empty($data['deadLine']) &&
-                empty($data['descrTournee']) &&
-                empty($data['dateMinProposee']) &&
-                empty($data['dateMaxProposee']) &&
-                empty($data['villeVisee']) &&
-                empty($data['regionVisee']) &&
-                empty($data['placesMin']) &&
-                empty($data['placesMax']) &&
-                empty($data['nbArtistesConcernes']) &&
-                empty($data['nbInvitesConcernes']) &&
-                empty($data['liensPromotionnels']) &&
+                empty($data['detailOffre']['titleOffre']) &&
+                empty($data['detailOffre']['deadLine']) &&
+                empty($data['detailOffre']['descrTournee']) &&
+                empty($data['detailOffre']['dateMinProposee']) &&
+                empty($data['detailOffre']['dateMaxProposee']) &&
+                empty($data['detailOffre']['villeVisee']) &&
+                empty($data['detailOffre']['regionVisee']) &&
+                empty($data['detailOffre']['placesMin']) &&
+                empty($data['detailOffre']['placesMax']) &&
+                empty($data['detailOffre']['nbArtistesConcernes']) &&
+                empty($data['detailOffre']['nbInvitesConcernes']) &&
+                empty($data['detailOffre']['liensPromotionnels']) &&
                 empty($data['extras']) &&
                 empty($data['etatOffre']) &&
                 empty($data['typeOffre']) &&
                 empty($data['conditionsFinancieres']) &&
                 empty($data['budgetEstimatif']) &&
-                empty($data['ficheTechniqueArtiste']) &&
+                empty($data['donneesSupplementaires']['ficheTechniqueArtiste']) &&
                 empty($data['utilisateur']) &&
-                empty($data['reseau']) &&
-                empty($data['genreMusical']) &&
-                empty($data['artiste'])
+                empty($data['donneesSupplementaires']['reseau']) &&
+                empty($data['donneesSupplementaires']['genreMusical']) &&
+                empty($data['donneesSupplementaires']['artiste'])
                 )
             ) {
                 throw new \InvalidArgumentException("L'offre n'est pas complète.");
@@ -112,18 +112,18 @@ class OffreService
 
             // création de l'objet et instanciation des données de l'objet
             $offre = new Offre();
-            $offre->setTitleOffre($data['titleOffre']);
-            $offre->setDeadLine($data['dedaline']);
-            $offre->setDescrTournee($data['descrTournee']);
-            $offre->setDateMinProposee($data['dateMinProposee']);
-            $offre->setDateMaxProposee($data['dateMaxProposee']);
-            $offre->setVilleVisee($data['villeVisee']);
-            $offre->setRegionVisee($data['regionVisee']);
-            $offre->setPlacesMin($data['placesMin']);
-            $offre->setPlacesMax($data['placesMax']);
-            $offre->setNbArtistesConcernes($data['nbArtistesConcernes']);
-            $offre->setNbInvitesConcernes($data['nbInvitesConcernes']);
-            $offre->setLiensPromotionnels($data['liensPromotionnels']);
+            $offre->setTitleOffre($data['detailOffre']['titleOffre']);
+            $offre->setDeadLine($data['detailOffre']['dedaline']);
+            $offre->setDescrTournee($data['detailOffre']['descrTournee']);
+            $offre->setDateMinProposee($data['detailOffre']['dateMinProposee']);
+            $offre->setDateMaxProposee($data['detailOffre']['dateMaxProposee']);
+            $offre->setVilleVisee($data['detailOffre']['villeVisee']);
+            $offre->setRegionVisee($data['detailOffre']['regionVisee']);
+            $offre->setPlacesMin($data['detailOffre']['placesMin']);
+            $offre->setPlacesMax($data['detailOffre']['placesMax']);
+            $offre->setNbArtistesConcernes($data['detailOffre']['nbArtistesConcernes']);
+            $offre->setNbInvitesConcernes($data['detailOffre']['nbInvitesConcernes']);
+            $offre->setLiensPromotionnels($data['detailOffre']['liensPromotionnels']);
 
             $extras = new Extras();
             $extras->setDescrExtras($data['extras']['descrExtras']);

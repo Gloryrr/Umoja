@@ -12,11 +12,13 @@ interface DonneesSupplementairesFormProps {
             besoinScene: string;
             besoinSonorisation: string
         },
-        reseau: string;
-        genreMusical: string;
+        reseau: string[];
+        nbReseaux: number;
+        genreMusical: string[];
+        nbGenresMusicaux: number;
         artiste: string;
     };
-    onDonneesSupplementairesChange: (name: string, value: string) => void;
+    onDonneesSupplementairesChange: (name: string, value: any) => void;
     onFicheTechniqueChange: (name: string, value: string) => void;
 }
 
@@ -31,6 +33,7 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
     };
 
     const [genresMusicaux, setGenresMusicaux] = useState<Array<{ nomGenreMusical: string }>>([]);
+    const [selectedGenres, setSelectedGenres] = useState<string[]>(donneesSupplementaires.genreMusical);
 
     useEffect(() => {
         const fetchGenresMusicaux = async () => {
@@ -44,6 +47,18 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
         };
         fetchGenresMusicaux();
     }, []);
+
+    const handleGenreSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+
+        if (selectedOptions.length <= genresMusicaux.length) {
+            setSelectedGenres(selectedOptions);
+            onDonneesSupplementairesChange('genreMusical', selectedOptions);
+            onDonneesSupplementairesChange('nbGenresMusicaux', selectedOptions.length);
+        } else {
+            alert(`Vous pouvez sélectionner un maximum de ${genresMusicaux.length} genres.`);
+        }
+    };
 
     return (
         <div className="mx-auto w-full max-w bg-white rounded-lg shadow-md p-8">
@@ -92,18 +107,20 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                         <select
                             id="genreMusical"
                             name="genreMusical"
-                            value={donneesSupplementaires.genreMusical}
-                            onChange={handleDonneesSupplementairesChange}
-                            required
+                            value={selectedGenres}
+                            onChange={handleGenreSelectionChange}
+                            multiple
                             className="w-full mt-1 rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                         >
-                            <option value="" disabled>Choisir un genre musical</option>
                             {genresMusicaux.map((genre, index) => (
                                 <option key={index} value={genre.nomGenreMusical}>
                                     {genre.nomGenreMusical}
                                 </option>
                             ))}
                         </select>
+                        <p className="text-sm text-gray-500 mt-1">
+                            Vous pouvez sélectionner jusqu'à {genresMusicaux.length} genres.
+                        </p>
                     </div>
                 </div>
             </div>
