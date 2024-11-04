@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
 import { Dropdown, Avatar } from 'flowbite-react';
-import NavigationHandler from './router';
+import NavigationHandler from '../navigation/Router';
 
 
 const UserAvatar = () => {

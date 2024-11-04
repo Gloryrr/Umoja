@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 // import localFont from "next/font/local";
 import { Fredoka, Nunito } from "next/font/google";
-import "./globals.css";
-import NavbarApp from "./components/navbar";
-import Footer from "./components/footer";
+import "./styles/css/globals.css";
+import NavbarApp from "./components/Navbar";
+import Footer from "./components/Footer";
 
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",

@@ -1,9 +1,9 @@
 "use client"
 import React from 'react';
 import { FaUser, FaLock } from "react-icons/fa";
-import NavigationHandler from './router';
+import NavigationHandler from '../../navigation/Router';
 
-export default function connection_form() {
+export default function ConnectionForm() {
 
   return (
     <div className='w-[35vw] bg-transparent text-white rounded-lg p-8 font-nunito'>
