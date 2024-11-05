@@ -5,6 +5,7 @@ import ConditionsFinancieresForm from '@/app/components/Form/Offre/ConditionsFin
 import BudgetEstimatifForm from '@/app/components/Form/Offre/BudgetEstimatifForm';
 import DetailOffreForm from '@/app/components/Form/Offre/DetailOffreForm';
 import DonneesSupplementairesForm from '@/app/components/Form/Offre/DonneesSupplementairesForm';
+import { apiPost } from '@/app/services/internalApiClients';
 
 const OffreForm: React.FC = () => {
     const [etapeCourante, setEtapeCourante] = useState(1);
@@ -17,32 +18,36 @@ const OffreForm: React.FC = () => {
             dateMaxProposee: '',
             villeVisee: '',
             regionVisee: '',
-            placesMin: '',
-            placesMax: '',
-            nbArtistesConcernes: '',
-            nbInvitesConcernes: '',
+            placesMin: 0,
+            placesMax: 0,
+            nbArtistesConcernes: 0,
+            nbInvitesConcernes: 0,
             liensPromotionnels: ''
         },
         extras: {
             descrExtras: '',
-            coutExtras: '',
+            coutExtras: 0,
             exclusivite: '',
             exception: '',
             ordrePassage: '',
             clausesConfidentialites: ''
         },
-        etatOffre: '',
-        typeOffre: '',
+        etatOffre: {
+            nomEtatOffre: 'INITIAL'
+        },
+        typeOffre: {
+            nomTypeOffre: 'TYPE TOURNEE'
+        },
         conditionsFinancieres: {
-            minimumGaranti: '',
+            minimumGaranti: 0,
             conditionsPaiement: '',
-            pourcentageRecette: ''
+            pourcentageRecette: 0
         },
         budgetEstimatif: {
-            cachetArtiste: '',
-            fraisDeplacement: '',
-            fraisHebergement: '',
-            fraisRestauration: ''
+            cachetArtiste: 0,
+            fraisDeplacement: 0,
+            fraisHebergement: 0,
+            fraisRestauration: 0
         },
         donneesSupplementaires : {
             ficheTechniqueArtiste: {
@@ -56,22 +61,28 @@ const OffreForm: React.FC = () => {
             nbReseaux: 0,
             genreMusical: [],
             nbGenresMusicaux: 0,
-            artiste: ''
+            artiste: [],
+            nbArtistes: 0
         },
-        utilisateur: '',
+        utilisateur: {
+            username: 'username n° 1', // on utilisera la localStorage après
+            contact: 'utilisateur@gmail.com'
+        },
     });
+    const [offrePostee, setOffrePostee] = useState(false);
+    const [messageOffrePostee, setMessageOffrePostee] = useState("");
 
-    const handleSectionChange = (section: string, updatedData: any) => {
-        setFormData((prevData) => ({
-            ...prevData,
-            [section]: updatedData
-        }));
-    };    
-
-    const valideFormulaire = (e: React.FormEvent) => {
+    const valideFormulaire = async (e: React.FormEvent) => {
         e.preventDefault();
         console.log(formData);
-        // ajouter l'appel à l'API REST pour la création    
+        const dataReponsePostOffre = await apiPost('/offre/create', JSON.parse(JSON.stringify(formData)));
+        console.log(dataReponsePostOffre);
+        if (JSON.parse(dataReponsePostOffre.offre) != 'null') {
+            setOffrePostee(true);
+            setMessageOffrePostee("Votre offre a bien été postée !")
+        } else {
+            setMessageOffrePostee("Une erreur s'est produite durant le post de votre offre, merci de vérifier les erreurs décrites ci-dessus")
+        }
     };
 
     const accedeEtapeSuivante = () => {
@@ -175,6 +186,7 @@ const OffreForm: React.FC = () => {
 
     return (
         <div className="mt-10 mb-10 w-[60%] mx-auto">
+            {!offrePostee ? (
             <form onSubmit={valideFormulaire} className="w-full mx-auto bg-white shadow-md rounded-lg p-8 space-y-4">
                 <h2 className="text-3xl font-semibold text-center text-gray-800 mb-10">Formulaire d'Offre</h2>
 
@@ -231,7 +243,10 @@ const OffreForm: React.FC = () => {
                         </button>
                     )}
                 </div>
-            </form>
+            </form> 
+            ) : (
+                <p>{messageOffrePostee}</p>
+            )}
         </div>
     );
 };

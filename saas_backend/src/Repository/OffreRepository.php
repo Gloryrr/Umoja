@@ -28,11 +28,17 @@ class OffreRepository extends ServiceEntityRepository
     public function inscritOffre(Offre $offre): bool
     {
         try {
+            $this->getEntityManager()->persist($offre->getExtras());
+            $this->getEntityManager()->persist($offre->getEtatOffre());
+            $this->getEntityManager()->persist($offre->getTypeOffre());
+            $this->getEntityManager()->persist($offre->getConditionsFinancieres());
+            $this->getEntityManager()->persist($offre->getBudgetEstimatif());
+            $this->getEntityManager()->persist($offre->getFicheTechniqueArtiste());
             $this->getEntityManager()->persist($offre);
             $this->getEntityManager()->flush();
             return true;
         } catch (\Exception $e) {
-            throw new \RuntimeException("Erreur lors de l'enregistrement de l'offre : " . $e->getCode());
+            throw new \RuntimeException("Erreur lors de l'enregistrement de l'offre : " . $e->getCode() . $e->getMessage() . PHP_EOL . $e->getTraceAsString());
         }
     }
 

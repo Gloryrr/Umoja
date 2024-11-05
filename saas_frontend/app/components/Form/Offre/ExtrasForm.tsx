@@ -4,7 +4,7 @@ import React from 'react';
 interface ExtrasFormProps {
     extras: {
         descrExtras: string;
-        coutExtras: string;
+        coutExtras: number;
         exclusivite: string;
         exception: string;
         ordrePassage: string;
@@ -45,7 +45,7 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
                             type="number"
                             name="coutExtras"
                             id='coutExtras'
-                            value={extras.coutExtras}
+                            value={extras.coutExtras || 0}
                             onChange={handleExtrasChange}
                             placeholder="Coût des Extras"
                             className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"

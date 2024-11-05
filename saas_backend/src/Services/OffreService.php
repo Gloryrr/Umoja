@@ -48,10 +48,8 @@ class OffreService
         $OffresJSON = $serializer->serialize($Offres, 'json');
         return new JsonResponse([
             'Offres' => $OffresJSON,
-            'reponse' => Response::HTTP_OK,
-            'headers' => [],
             'serialized' => true
-        ]);
+        ], Response::HTTP_OK, ['Access-Control-Allow-Origin' => '*']);
     }
 
     /**
@@ -113,10 +111,10 @@ class OffreService
             // création de l'objet et instanciation des données de l'objet
             $offre = new Offre();
             $offre->setTitleOffre($data['detailOffre']['titleOffre']);
-            $offre->setDeadLine($data['detailOffre']['dedaline']);
+            $offre->setDeadLine(date_create($data['detailOffre']['deadLine']));
             $offre->setDescrTournee($data['detailOffre']['descrTournee']);
-            $offre->setDateMinProposee($data['detailOffre']['dateMinProposee']);
-            $offre->setDateMaxProposee($data['detailOffre']['dateMaxProposee']);
+            $offre->setDateMinProposee(date_create($data['detailOffre']['dateMinProposee']));
+            $offre->setDateMaxProposee(date_create($data['detailOffre']['dateMaxProposee']));
             $offre->setVilleVisee($data['detailOffre']['villeVisee']);
             $offre->setRegionVisee($data['detailOffre']['regionVisee']);
             $offre->setPlacesMin($data['detailOffre']['placesMin']);
@@ -128,7 +126,7 @@ class OffreService
             $extras = new Extras();
             $extras->setDescrExtras($data['extras']['descrExtras']);
             $extras->setCoutExtras($data['extras']['coutExtras']);
-            $extras->setExclusivite($data['extras']['exlusivite']);
+            $extras->setExclusivite($data['extras']['exclusivite']);
             $extras->setException($data['extras']['exception']);
             $extras->setOrdrePassage($data['extras']['ordrePassage']);
             $extras->setClausesConfidentialites($data['extras']['clausesConfidentialites']);
@@ -156,11 +154,11 @@ class OffreService
             $offre->setBudgetEstimatif($budgetEstimatif);
 
             $ficheTechniqueArtiste = new FicheTechniqueArtiste();
-            $ficheTechniqueArtiste->setBesoinBackline($data['ficheTechniqueArtiste']['besoinBackline']);
-            $ficheTechniqueArtiste->setBesoinEclairage($data['ficheTechniqueArtiste']['besoinEclairage']);
-            $ficheTechniqueArtiste->setBesoinEquipements($data['ficheTechniqueArtiste']['besoinEquipements']);
-            $ficheTechniqueArtiste->setBesoinScene($data['ficheTechniqueArtiste']['besoinScene']);
-            $ficheTechniqueArtiste->setBesoinSonorisation($data['ficheTechniqueArtiste']['besoinSonorisation']);
+            $ficheTechniqueArtiste->setBesoinBackline($data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinBackline']);
+            $ficheTechniqueArtiste->setBesoinEclairage($data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinEclairage']);
+            $ficheTechniqueArtiste->setBesoinEquipements($data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinEquipements']);
+            $ficheTechniqueArtiste->setBesoinScene($data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinScene']);
+            $ficheTechniqueArtiste->setBesoinSonorisation($data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinSonorisation']);
             $offre->setFicheTechniqueArtiste($ficheTechniqueArtiste);
 
             // ajout de l'offre en base de données
@@ -168,6 +166,7 @@ class OffreService
 
             // création de l'objet de l'utilisateur qui a mit en ligne l'offre
             $utilisateur = $utilisateurRepository->trouveUtilisateurByUsername($data['utilisateur']['username']);
+            print_r($utilisateur);
             $creer = new Creer();
             $creer->setContact($data['utilisateur']['contact']);
             $creer->setIdUtilisateur($utilisateur[0]);
@@ -175,29 +174,31 @@ class OffreService
             $creerRepository->ajouterCreer($creer);
 
             // ajoute l'offre sur le ou les réseau(x) indiqués
-            $nb_reseaux = $data['reseau']['nbReseaux'];
+            $nb_reseaux = $data['donneesSupplementaires']['nbReseaux'];
+            print_r($nb_reseaux);
             for ($i = 0; $i < $nb_reseaux; $i++) {
-                $reseau = $reseauRepository->trouveReseauByName($data['reseau'][$i]['nomReseau']);
+                $reseau = $reseauRepository->trouveReseauByName($data['donneesSupplementaires']['reseau'][$i]);
+                print_r($reseau);
                 $poster = new Poster();
                 $poster->setIdOffre($offre);
                 $poster->setIdReseau($reseau[0]);
                 $posterRepository->inscritPoster($poster);
             }
 
-            $nb_genres_musicaux = $data['genreMusical']['nbGenresMusicaux'];
+            $nb_genres_musicaux = $data['donneesSupplementaires']['nbGenresMusicaux'];
             for ($i = 0; $i < $nb_genres_musicaux; $i++) {
-                $genreMusical = $genreMusicalRepository->trouveGenreMusicalByName(
-                    $data['genreMusical'][$i]['nomGenreMusical']
-                );
+                $genreMusical = $genreMusicalRepository->trouveGenreMusicalByName($data['donneesSupplementaires']['genreMusical'][$i]);
+                print_r($genreMusical);
                 $rattacher = new Rattacher();
                 $rattacher->setIdOffre($offre);
                 $rattacher->setIdGenreMusical($genreMusical[0]);
                 $rattacherRepository->ajouterRattacher($rattacher);
             }
 
-            $nb_artistes = $data['artiste']['nbArtistes'];
+            $nb_artistes = $data['donneesSupplementaires']['nbArtistes'];
             for ($i = 0; $i < $nb_artistes; $i++) {
-                $artiste = $artisteRepository->trouveArtisteByName($data['artiste'][$i]['nomArtiste']);
+                $artiste = $artisteRepository->trouveArtisteByName($data['donneesSupplementaires']['artiste'][$i]);
+                print_r($artiste);
                 $concerner = new Concerner();
                 $concerner->setIdOffre($offre);
                 $concerner->setIdArtiste($artiste[0]);
@@ -211,18 +212,14 @@ class OffreService
                 return new JsonResponse([
                     'offre' => $offreJSON,
                     'message' => "Offre inscrite !",
-                    'reponse' => Response::HTTP_CREATED,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_CREATED, ['Access-Control-Allow-Origin' => '*']);
             }
             return new JsonResponse([
                 'offre' => null,
                 'message' => "Offre non inscrite, merci de regarder l'erreur décrite",
-                'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST, ['Access-Control-Allow-Origin' => '*']);
         } catch (\Exception $e) {
             throw new \RuntimeException("Erreur lors de la création de l'offre", $e->getMessage());
         }
@@ -256,7 +253,6 @@ class OffreService
                     'offre' => null,
                     'message' => 'offre non trouvée, merci de donner un identifiant valide !',
                     'reponse' => Response::HTTP_NOT_FOUND,
-                    'headers' => [],
                     'serialized' => true
                 ]);
             }
@@ -342,22 +338,22 @@ class OffreService
                 }
                 $offre->setBudgetEstimatif($budgetEstimatif);
             }
-            if (isset($data['ficheTechniqueArtiste'])) {
+            if (isset($data['donneesSupplementaires']['ficheTechniqueArtiste'])) {
                 $ficheTechniqueArtiste = new FicheTechniqueArtiste();
-                if (isset($data['ficheTechniqueArtiste']['besoinBackline'])) {
-                    $ficheTechniqueArtiste->setBesoinBackline($data['ficheTechniqueArtiste']['besoinBackline']);
+                if (isset($data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinBackline'])) {
+                    $ficheTechniqueArtiste->setBesoinBackline($data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinBackline']);
                 }
-                if (isset($data['ficheTechniqueArtiste']['besoinEclairage'])) {
-                    $ficheTechniqueArtiste->setBesoinEclairage($data['ficheTechniqueArtiste']['besoinEclairage']);
+                if (isset($data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinEclairage'])) {
+                    $ficheTechniqueArtiste->setBesoinEclairage($data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinEclairage']);
                 }
-                if (isset($data['ficheTechniqueArtiste']['besoinEquipements'])) {
-                    $ficheTechniqueArtiste->setBesoinEquipements($data['ficheTechniqueArtiste']['besoinEquipements']);
+                if (isset($data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinEquipements'])) {
+                    $ficheTechniqueArtiste->setBesoinEquipements($data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinEquipements']);
                 }
-                if (isset($data['ficheTechniqueArtiste']['besoinScene'])) {
-                    $ficheTechniqueArtiste->setBesoinScene($data['ficheTechniqueArtiste']['besoinScene']);
+                if (isset($data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinScene'])) {
+                    $ficheTechniqueArtiste->setBesoinScene($data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinScene']);
                 }
-                if (isset($data['ficheTechniqueArtiste']['besoinSonorisation'])) {
-                    $ficheTechniqueArtiste->setBesoinSonorisation($data['ficheTechniqueArtiste']['besoinSonorisation']);
+                if (isset($data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinSonorisation'])) {
+                    $ficheTechniqueArtiste->setBesoinSonorisation($data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinSonorisation']);
                 }
                 $offre->setFicheTechniqueArtiste($ficheTechniqueArtiste);
             }
@@ -373,7 +369,6 @@ class OffreService
                     'offre' => $offreJSON,
                     'message' => "Offre modifiée avec succès",
                     'reponse' => Response::HTTP_OK,
-                    'headers' => [],
                     'serialized' => true
                 ]);
             } else {
@@ -381,7 +376,6 @@ class OffreService
                     'offre' => null,
                     'message' => "Offre non modifiée, merci de vérifier l'erreur décrite",
                     'reponse' => Response::HTTP_BAD_REQUEST,
-                    'headers' => [],
                     'serialized' => false
                 ]);
             }
@@ -413,7 +407,6 @@ class OffreService
                 'offre' => null,
                 'message' => 'offre non trouvée, merci de fournir un identifiant valide',
                 'reponse' => Response::HTTP_NOT_FOUND,
-                'headers' => [],
                 'serialized' => false
             ]);
         }
@@ -428,7 +421,6 @@ class OffreService
                 'offre' => $offreJSON,
                 'message' => 'offre supprimée',
                 'reponse' => Response::HTTP_NO_CONTENT,
-                'headers' => [],
                 'serialized' => false
             ]);
         } else {
@@ -436,7 +428,6 @@ class OffreService
                 'offre' => null,
                 'message' => 'offre non supprimée !',
                 'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
             ]);
         }
@@ -470,7 +461,6 @@ class OffreService
                 'object' => null,
                 'message' => 'Artiste ou offre non trouvés, merci de fournir des identifiants valides',
                 'reponse' => Response::HTTP_NOT_FOUND,
-                'headers' => [],
                 'serialized' => false
             ]);
         }
@@ -488,7 +478,6 @@ class OffreService
                 'concerner' => $concernerJSON,
                 'message' => "Artiste ajouté à l'offre.",
                 'reponse' => Response::HTTP_NO_CONTENT,
-                'headers' => [],
                 'serialized' => false
             ]);
         } else {
@@ -496,7 +485,6 @@ class OffreService
                 'concerner' => null,
                 'message' => "Artiste non ajouté au à l'offre !",
                 'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
             ]);
         }
@@ -529,7 +517,6 @@ class OffreService
                 'object' => null,
                 'message' => 'Artiste ou offre non trouvés, merci de fournir des identifiants valides',
                 'reponse' => Response::HTTP_NOT_FOUND,
-                'headers' => [],
                 'serialized' => false
             ]);
         }
@@ -547,7 +534,6 @@ class OffreService
                 'concerner' => $concernerJSON,
                 'message' => "Artiste supprimé de l'offre.",
                 'reponse' => Response::HTTP_NO_CONTENT,
-                'headers' => [],
                 'serialized' => false
             ]);
         } else {
@@ -555,7 +541,6 @@ class OffreService
                 'concerner' => null,
                 'message' => "Artiste non supprimé de l'offre !",
                 'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
             ]);
         }
@@ -589,7 +574,6 @@ class OffreService
                 'object' => null,
                 'message' => 'Offre ou genre musical non trouvé, merci de fournir un identifiant valide',
                 'reponse' => Response::HTTP_NOT_FOUND,
-                'headers' => [],
                 'serialized' => false
             ]);
         }
@@ -607,7 +591,6 @@ class OffreService
                 'rattacher' => $rattacherJSON,
                 'message' => "Genre musical rattaché à l'offre",
                 'reponse' => Response::HTTP_NO_CONTENT,
-                'headers' => [],
                 'serialized' => false
             ]);
         } else {
@@ -615,7 +598,6 @@ class OffreService
                 'rattacher' => null,
                 'message' => "Genre musical non rattaché à l'offre !",
                 'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
             ]);
         }
@@ -649,7 +631,6 @@ class OffreService
                 'object' => null,
                 'message' => 'Offre ou genre musical non trouvé, merci de fournir un identifiant valide',
                 'reponse' => Response::HTTP_NOT_FOUND,
-                'headers' => [],
                 'serialized' => false
             ]);
         }
@@ -667,7 +648,6 @@ class OffreService
                 'rattacher' => $rattacherJSON,
                 'message' => "Genre musical supprimé de l'offre",
                 'reponse' => Response::HTTP_NO_CONTENT,
-                'headers' => [],
                 'serialized' => false
             ]);
         } else {
@@ -675,7 +655,6 @@ class OffreService
                 'rattacher' => null,
                 'message' => "Genre musical non supprimé de l'offre !",
                 'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
             ]);
         }

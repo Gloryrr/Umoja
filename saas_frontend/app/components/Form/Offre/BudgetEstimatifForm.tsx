@@ -3,12 +3,12 @@ import React from 'react';
 
 interface BudgetEstimatifFormProps {
     budgetEstimatif: {
-        cachetArtiste: string;
-        fraisDeplacement: string;
-        fraisHebergement: string;
-        fraisRestauration: string;
+        cachetArtiste: number;
+        fraisDeplacement: number;
+        fraisHebergement: number;
+        fraisRestauration: number;
     };
-    onBudgetEstimatifChange: (name: string, value: string) => void;
+    onBudgetEstimatifChange: (name: string, value: number) => void;
 }
 
 const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
@@ -17,7 +17,7 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
 }) => {
     const handleBudgetEstmatifChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        onBudgetEstimatifChange(name, value);
+        onBudgetEstimatifChange(name, Number(value));
     };
 
     return (
@@ -25,7 +25,6 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
             <div className="mx-auto w-full max-w bg-white rounded-lg shadow-md p-8">
                 <h3 className="text-2xl font-semibold text-[#07074D] mb-4">Budget Estimatif</h3>
                 
-                {/* Grouped Cachet Artiste and Frais de Déplacement */}
                 <div className="grid grid-cols-2 gap-4 mb-5">
                     <div>
                         <label htmlFor="cachetArtiste" className="text-gray-700">Cachet Artiste:</label>
@@ -33,7 +32,7 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
                             type="number"
                             id="cachetArtiste"
                             name="cachetArtiste"
-                            value={budgetEstimatif.cachetArtiste}
+                            value={budgetEstimatif.cachetArtiste || 0}
                             onChange={handleBudgetEstmatifChange}
                             required
                             placeholder="Cachet de l'artiste"
@@ -46,7 +45,7 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
                             type="number"
                             id="fraisDeplacement"
                             name="fraisDeplacement"
-                            value={budgetEstimatif.fraisDeplacement}
+                            value={budgetEstimatif.fraisDeplacement || 0}
                             onChange={handleBudgetEstmatifChange}
                             required
                             placeholder="Frais de déplacement"
@@ -55,7 +54,6 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
                     </div>
                 </div>
 
-                {/* Grouped Frais d'Hébergement and Frais de Restauration */}
                 <div className="grid grid-cols-2 gap-4 mb-5">
                     <div>
                         <label htmlFor="fraisHebergement" className="text-gray-700">Frais d'Hébergement:</label>
@@ -63,7 +61,7 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
                             type="number"
                             id="fraisHebergement"
                             name="fraisHebergement"
-                            value={budgetEstimatif.fraisHebergement}
+                            value={budgetEstimatif.fraisHebergement || 0}
                             onChange={handleBudgetEstmatifChange}
                             required
                             placeholder="Frais d'hébergement"
@@ -76,7 +74,7 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
                             type="number"
                             id="fraisRestauration"
                             name="fraisRestauration"
-                            value={budgetEstimatif.fraisRestauration}
+                            value={budgetEstimatif.fraisRestauration || 0}
                             onChange={handleBudgetEstmatifChange}
                             required
                             placeholder="Frais de restauration"
