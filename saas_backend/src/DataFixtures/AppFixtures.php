@@ -34,7 +34,6 @@ class AppFixtures extends Fixture
 
     public function createUtilisateur(): Utilisateur {
         $utilisateur = new Utilisateur();
-        $utilisateur->setEmailUtilisateur("");
         $utilisateur->setEmailUtilisateur("test@example.com");
         $utilisateur->setMdpUtilisateur("mot-de-passe-hashé");
         $utilisateur->setNumTelUtilisateur("0607080904");

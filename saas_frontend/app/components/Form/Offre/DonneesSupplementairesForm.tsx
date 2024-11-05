@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import FicheTechniqueArtisteForm from '@/app/components/Form/Offre/FicheTechniqueArtiste';
-import { apiGet } from '@/app/services/apiClients';
+import { apiGet, apiGetWithData, apiPost } from '@/app/services/apiClients';
 
 interface DonneesSupplementairesFormProps {
     donneesSupplementaires: {
@@ -35,6 +35,9 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
     const [genresMusicaux, setGenresMusicaux] = useState<Array<{ nomGenreMusical: string }>>([]);
     const [selectedGenres, setSelectedGenres] = useState<string[]>(donneesSupplementaires.genreMusical);
 
+    const [reseaux, setReseaux] = useState<Array<any>>([]);
+    const [selectedReseaux, setSelectedReseaux] = useState<string[]>(donneesSupplementaires.reseau);
+
     useEffect(() => {
         const fetchGenresMusicaux = async () => {
             try {
@@ -45,7 +48,19 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                 console.error("Erreur lors du chargement des genres musicaux :", error);
             }
         };
+        const fetchReseauUtilisateur = async () => {
+            try {
+                const data = {username: 'username n° 1'};
+                const datasUser = await apiPost('/utilisateur', JSON.parse(JSON.stringify(data)));
+                const reseauxListe: Array<any> = JSON.parse(datasUser.utilisateur)[0].membreDesReseaux;
+                setReseaux(reseauxListe);
+                console.log(reseauxListe);
+            } catch (error) {
+                console.error("Erreur lors du chargement des données utilisateurs :", error);
+            }
+        };
         fetchGenresMusicaux();
+        fetchReseauUtilisateur();
     }, []);
 
     const handleGenreSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -57,6 +72,18 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
             onDonneesSupplementairesChange('nbGenresMusicaux', selectedOptions.length);
         } else {
             alert(`Vous pouvez sélectionner un maximum de ${genresMusicaux.length} genres.`);
+        }
+    };
+
+    const handleReseauxSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+
+        if (selectedOptions.length <= reseaux.length) {
+            setSelectedReseaux(selectedOptions);
+            onDonneesSupplementairesChange('reseau', selectedOptions);
+            onDonneesSupplementairesChange('nbReseaux', selectedOptions.length);
+        } else {
+            alert(`Vous pouvez sélectionner un maximum de ${reseaux.length} genres.`);
         }
     };
 
@@ -90,16 +117,24 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                 <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col">
                         <label htmlFor="reseau" className="text-gray-700">Réseau:</label>
-                        <input
-                            type="text"
+                        <select
                             id="reseau"
                             name="reseau"
-                            value={donneesSupplementaires.reseau}
-                            onChange={handleDonneesSupplementairesChange}
+                            value={selectedReseaux}
+                            onChange={handleReseauxSelectionChange}
                             required
-                            placeholder="Les réseaux sur lesquels vous posterez votre offre"
+                            multiple
                             className="w-full mt-1 rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                        />
+                        >
+                            {reseaux.map((reseau, index) => (
+                                <option key={index} value={reseau.idReseau.nomReseau}>
+                                    {reseau.idReseau.nomReseau}
+                                </option>
+                            ))}
+                        </select>
+                        <p className="text-sm text-gray-500 mt-1">
+                            Vous pouvez sélectionner jusqu'à {reseaux.length} réseaux.
+                        </p>
                     </div>
 
                     <div className="flex flex-col">

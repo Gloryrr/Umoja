@@ -75,6 +75,62 @@ class UtilisateurService
     }
 
     /**
+     * Récupère un utilisateur par son nom et renvoie une réponse JSON.
+     *
+     * @param UtilisateurRepository $utilisateurRepository Le repository des utilisateurs.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     * @param mixed $data les données (username) de l'utilisateur à rechercher
+     *
+     * @return JsonResponse La réponse JSON contenant l'utilisateur.
+     */
+    public static function getUtilisateur(
+        UtilisateurRepository $utilisateurRepository,
+        AppartenirRepository $appartenirRepository,
+        PreferencerRepository $preferencerRepository,
+        mixed $data,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        // on récupère tous les utilisateurs
+        $utilisateurs = $utilisateurRepository->trouveUtilisateurByUsername($data['username']);
+        $arrayUtilisateursDTO = [];
+        foreach ($utilisateurs as $indUser => $utilisateur) {
+            $utilisateurDTO = new UtilisateurDTO(
+                $utilisateur->getIdUtilisateur(),
+                $utilisateur->getEmailUtilisateur(),
+                $utilisateur->getRoles(),
+                $utilisateur->getUsername(),
+                $utilisateur->getNomUtilisateur(),
+                $utilisateur->getPrenomUtilisateur()
+            );
+
+            $arrayReseaux = $appartenirRepository->trouveReseauxParIdUtilisateur(
+                $utilisateur->getIdUtilisateur()
+            );
+            $arrayGenresMusicaux = $preferencerRepository->trouveGenresMusicauxParIdUtilisateur(
+                $utilisateur->getIdUtilisateur()
+            );
+
+            foreach ($arrayReseaux as $indR => $reseau) {
+                array_push($utilisateurDTO->membreDesReseaux, $reseau);
+            }
+            foreach ($arrayGenresMusicaux as $indGM => $genreMusical) {
+                array_push($utilisateurDTO->genresMusicauxPreferes, $genreMusical);
+            }
+
+            array_push($arrayUtilisateursDTO, $utilisateurDTO);
+        }
+
+        $utilisateursJSON = $serializer->serialize($arrayUtilisateursDTO, 'json');
+        return new JsonResponse([
+            'utilisateur' => $utilisateursJSON,
+            'message' => "Utilisateur trouvé",
+            'reponse' => Response::HTTP_OK,
+            'headers' => [],
+            'serialized' => true
+        ]);
+    }
+
+    /**
      * Crée un nouvel utilisateur et renvoie une réponse JSON.
      *
      * @param UtilisateurRepository $utilisateurRepository Le repository des utilisateurs.

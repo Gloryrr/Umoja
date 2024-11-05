@@ -19,6 +19,18 @@ export const apiGet = async (endpoint: string) => {
     return renvoieReponsePromise(response);
 };
 
+// Fonction GET avec des données
+export const apiGetWithData = async (endpoint: string, data: JSON) => {
+    const response = await fetch(`${BASE_URL}${endpoint}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    });
+    return renvoieReponsePromise(response);
+};
+
 // Fonction POST
 export const apiPost = async (endpoint: string, data: JSON) => {
     const response = await fetch(`${BASE_URL}${endpoint}`, {

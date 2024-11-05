@@ -39,6 +39,31 @@ class UtilisateurController extends AbstractController
     }
 
     /**
+     * Récupère un utilisateur par son nom.
+     *
+     * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des utilisateurs
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/utilisateur', name: 'get_utilisateurs_by_name', methods: ['POST'])]
+    public function getUtilisateur(
+        Request $request,
+        UtilisateurRepository $utilisateurRepository,
+        AppartenirRepository $appartenirRepository,
+        PreferencerRepository $preferencerRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        return UtilisateurService::getUtilisateur(
+            $utilisateurRepository,
+            $appartenirRepository,
+            $preferencerRepository,
+            $data,
+            $serializer
+        );
+    }
+
+    /**
      * Crée un nouvel utilisateur.
      *
      * @param Request $request
