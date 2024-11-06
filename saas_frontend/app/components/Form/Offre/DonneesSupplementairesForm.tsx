@@ -109,7 +109,7 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
     };
 
     return (
-        <div className="mx-auto w-full max-w bg-white rounded-lg shadow-md p-8">
+        <div className="mx-auto w-full max-w bg-gray-800 rounded-lg p-8">
             <div>
                 <FicheTechniqueArtisteForm
                     ficheTechniqueArtiste={donneesSupplementaires.ficheTechniqueArtiste}
@@ -118,7 +118,7 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
             </div>
             <div className="flex flex-col rounded-lg mb-4">
                 <div className="mb-5">
-                    <h3 className="text-2xl font-semibold text-[#07074D] mb-4">Artistes Concernés</h3>
+                    <h3 className="text-2xl font-semibold text-white mb-4">Artistes Concernés</h3>
                     {artistes.map((artiste, index) => (
                         <div key={index} className="flex items-center mb-2">
                             <input
@@ -126,7 +126,7 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                                 value={artiste}
                                 onChange={(e) => handleArtisteChange(index, e.target.value)}
                                 placeholder="Nom de l&apos;artiste"
-                                className="w-full mt-1 rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                                className="w-full mt-1 rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                             />
                             <button
                                 type="button"
@@ -146,10 +146,10 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                     </button>
                 </div>
 
-                <h3 className="text-2xl font-semibold text-[#07074D] mb-4">Réseau et Genre Musical</h3>
+                <h3 className="text-2xl font-semibold text-white mb-4">Réseau et Genre Musical</h3>
                 <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col">
-                        <label htmlFor="reseau" className="text-gray-700">Réseau:</label>
+                        <label htmlFor="reseau" className="text-white">Réseau:</label>
                         <select
                             id="reseau"
                             name="reseau"
@@ -157,7 +157,7 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                             onChange={handleReseauxSelectionChange}
                             required
                             multiple
-                            className="w-full mt-1 rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            className="w-full mt-1 rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                         >
                             {reseaux.map((reseau, index) => (
                                 <option key={index} value={reseau.idReseau.nomReseau}>
@@ -165,20 +165,20 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                                 </option>
                             ))}
                         </select>
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-sm text-white mt-1">
                             Vous pouvez sélectionner jusqu&apos;&agrave; {reseaux.length} réseaux.
                         </p>
                     </div>
 
                     <div className="flex flex-col">
-                        <label htmlFor="genreMusical" className="text-gray-700">Genre Musical:</label>
+                        <label htmlFor="genreMusical" className="text-white">Genre Musical:</label>
                         <select
                             id="genreMusical"
                             name="genreMusical"
                             value={selectedGenres}
                             onChange={handleGenreSelectionChange}
                             multiple
-                            className="w-full mt-1 rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            className="w-full mt-1 rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                         >
                             {genresMusicaux.map((genre, index) => (
                                 <option key={index} value={genre.nomGenreMusical}>
@@ -186,7 +186,7 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                                 </option>
                             ))}
                         </select>
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-sm text-white mt-1">
                             Vous pouvez sélectionner jusqu&apos;&agrave; {genresMusicaux.length} genres musicaux.
                         </p>
                     </div>

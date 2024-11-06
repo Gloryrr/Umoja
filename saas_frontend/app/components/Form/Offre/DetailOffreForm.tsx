@@ -110,10 +110,10 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
 
     return (
         <div className="flex items-center justify-center">
-            <div className="mx-auto w-full max-w bg-white rounded-lg shadow-md p-8">
-                <h3 className="text-2xl font-semibold text-[#07074D] mb-6">Détails de l&apos;Offre</h3>
+            <div className="mx-auto w-full max-w bg-gray-800 rounded-lg p-8">
+                <h3 className="text-2xl font-semibold text-white mb-6">Détails de l&apos;Offre</h3>
                 <div className="mb-5">
-                    <label htmlFor="titleOffre" className="mb-3 block text-base font-medium text-[#07074D]">Titre de l&apos;Offre:</label>
+                    <label htmlFor="titleOffre" className="mb-3 block text-base font-medium text-white">Titre de l&apos;Offre:</label>
                     <input
                         type="text"
                         id="titleOffre"
@@ -122,12 +122,12 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         onChange={handleDetailOffreChange}
                         required
                         placeholder="Indiquer le titre de l'Offre"
-                        className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                        className="w-full rounded-md border border-grey-700 placeholder-grey-500 bg-gray-900 py-3 px-6 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                     />
                 </div>
 
                 <div className="mb-5">
-                    <label htmlFor="deadLine" className="mb-3 block text-base font-medium text-[#07074D]">Date de réponse maximale:</label>
+                    <label htmlFor="deadLine" className="mb-3 block text-base font-medium text-white">Date de réponse maximale:</label>
                     <input
                         type="date"
                         id="deadLine"
@@ -135,13 +135,13 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         value={detailOffre.deadLine || dateParDefaut}
                         onChange={handleDetailOffreChange}
                         required
-                        className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                        className="w-full rounded-md border border-grey-700 placeholder-grey-500 bg-gray-900 py-3 px-6 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                     />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-5">
                     <div>
-                        <label htmlFor="dateMinProposee" className="mb-3 block text-base font-medium text-[#07074D]">Date Min Proposée:</label>
+                        <label htmlFor="dateMinProposee" className="mb-3 block text-base font-medium text-white">Date Min Proposée:</label>
                         <input
                             type="date"
                             id="dateMinProposee"
@@ -150,12 +150,12 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                             onChange={handleDetailOffreChange}
                             required
                             min={detailOffre.deadLine}
-                            className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            className="w-full rounded-md border border-grey-700 placeholder-grey-500 bg-gray-900 py-3 px-6 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                         />
                     </div>
 
                     <div>
-                        <label htmlFor="dateMaxProposee" className="mb-3 block text-base font-medium text-[#07074D]">Date Max Proposée:</label>
+                        <label htmlFor="dateMaxProposee" className="mb-3 block text-base font-medium text-white">Date Max Proposée:</label>
                         <input
                             type="date"
                             id="dateMaxProposee"
@@ -164,13 +164,13 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                             onChange={handleDetailOffreChange}
                             required
                             min={detailOffre.dateMinProposee}
-                            className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            className="w-full rounded-md border border-grey-700 placeholder-grey-500 bg-gray-900 py-3 px-6 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                         />
                     </div>
                 </div>
 
                 <div className="mb-5">
-                    <label htmlFor="descrTournee" className="mb-3 block text-base font-medium text-[#07074D]">Description de la Tournée:</label>
+                    <label htmlFor="descrTournee" className="mb-3 block text-base font-medium text-white">Description de la Tournée:</label>
                     <textarea
                         id="descrTournee"
                         name="descrTournee"
@@ -178,13 +178,13 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         onChange={handleDetailOffreChange}
                         required
                         placeholder='La description de la tournée'
-                        className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                        className="w-full rounded-md border border-grey-700 placeholder-grey-500 bg-gray-900 py-3 px-6 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                     />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-5">
                     <div>
-                        <label htmlFor="villeVisee" className="mb-3 block text-base font-medium text-[#07074D]">Ville Visée:</label>
+                        <label htmlFor="villeVisee" className="mb-3 block text-base font-medium text-white">Ville Visée:</label>
                         <input
                             type="text"
                             id="villeVisee"
@@ -193,7 +193,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                             onChange={handleCityInputChange}
                             required
                             placeholder="Dans quelle ville se déroulera l'offre"
-                            className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            className="w-full rounded-md border border-grey-700 placeholder-grey-500 bg-gray-900 py-3 px-6 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                         />
                         {citySuggestions.length > 0 && (
                             <ul className="border border-gray-300 mt-1 rounded-md">
@@ -211,21 +211,21 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                     </div>
 
                     <div>
-                        <label htmlFor="regionVisee" className="mb-3 block text-base font-medium text-[#07074D]">Région Visée:</label>
+                        <label htmlFor="regionVisee" className="mb-3 block text-base font-medium text-white">Région Visée:</label>
                         <input
                             type="text"
                             id="regionVisee"
                             name="regionVisee"
                             value={detailOffre.regionVisee}
                             readOnly
-                            className="w-full rounded-md border border-[#e0e0e0] bg-gray-100 py-3 px-6 text-base font-medium text-[#6B7280] outline-none"
+                            className="w-full rounded-md border border-grey-700 bg-gray-700 py-3 px-6 text-base font-medium text-white outline-none"
                         />
                     </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-5">
                     <div>
-                        <label htmlFor="placesMin" className="mb-3 block text-base font-medium text-[#07074D]">Places Minimum:</label>
+                        <label htmlFor="placesMin" className="mb-3 block text-base font-medium text-white">Places Minimum:</label>
                         <input
                             type="number"
                             id="placesMin"
@@ -234,12 +234,12 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                             onChange={handleDetailOffreChange}
                             required
                             placeholder="Nombre de places minimum"
-                            className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            className="w-full rounded-md border border-grey-700 placeholder-grey-500 bg-gray-900 py-3 px-6 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                         />
                     </div>
 
                     <div>
-                        <label htmlFor="placesMax" className="mb-3 block text-base font-medium text-[#07074D]">Places Maximum:</label>
+                        <label htmlFor="placesMax" className="mb-3 block text-base font-medium text-white">Places Maximum:</label>
                         <input
                             type="number"
                             id="placesMax"
@@ -249,14 +249,14 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                             required
                             min={placesMin}
                             placeholder="Nombre de places maximum"
-                            className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            className="w-full rounded-md border border-grey-700 placeholder-grey-500 bg-gray-900 py-3 px-6 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                         />
                     </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-5">
                     <div>
-                        <label htmlFor="nbArtistesConcernes" className="mb-3 block text-base font-medium text-[#07074D]">Nombre d&apos;Artistes Concernés:</label>
+                        <label htmlFor="nbArtistesConcernes" className="mb-3 block text-base font-medium text-white">Nombre d&apos;Artistes Concernés:</label>
                         <input
                             type="number"
                             id="nbArtistesConcernes"
@@ -265,12 +265,12 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                             onChange={handleDetailOffreChange}
                             required
                             placeholder="Nombre d'artistes concernés"
-                            className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            className="w-full rounded-md border border-grey-700 placeholder-grey-500 bg-gray-900 py-3 px-6 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                         />
                     </div>
 
                     <div>
-                        <label htmlFor="nbInvitesConcernes" className="mb-3 block text-base font-medium text-[#07074D]">Nombre d&apos;Invités Concernés:</label>
+                        <label htmlFor="nbInvitesConcernes" className="mb-3 block text-base font-medium text-white">Nombre d&apos;Invités Concernés:</label>
                         <input
                             type="number"
                             id="nbInvitesConcernes"
@@ -279,14 +279,14 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                             onChange={handleDetailOffreChange}
                             required
                             placeholder="Nombre d'invités concernés"
-                            className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            className="w-full rounded-md border border-grey-700 placeholder-grey-500 bg-gray-900 py-3 px-6 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                         />
                     </div>
                 </div>
 
                 <div className="flex flex-col rounded-lg">
                     <div>
-                        <h3 className="text-2xl font-semibold text-[#07074D] mb-4">Liens Promotionnels:</h3>
+                        <h3 className="text-2xl font-semibold text-white mb-4">Liens Promotionnels:</h3>
                         {liensPromotionnels.map((lien, index) => (
                             <div key={index} className="flex items-center mb-2">
                                 <input
@@ -295,7 +295,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                                     onChange={(e) => handleLienChange(index, e.target.value)}
                                     required
                                     placeholder="Lien promotionnel de l'artiste"
-                                    className="w-full mt-1 rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                                    className="w-full mt-1 rounded-md border border-grey-700 placeholder-grey-500 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                                 />
                                 <button
                                     type="button"

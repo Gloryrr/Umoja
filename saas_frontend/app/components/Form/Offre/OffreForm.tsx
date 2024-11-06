@@ -188,68 +188,96 @@ const OffreForm: React.FC = () => {
     return (
         <div className="mt-10 mb-10 w-[60%] mx-auto">
             {!offrePostee ? (
-            <form onSubmit={valideFormulaire} className="w-full mx-auto bg-white shadow-md rounded-lg p-8 space-y-4">
-                <h2 className="text-3xl font-semibold text-center text-gray-800 mb-10">Formulaire d&apos;Offre</h2>
-
-                <div className="mb-8">
-                    <div className="flex justify-between mb-2">
-                        <span className={`text-xs font-bold inline-block py-2 px-4 rounded-full transition-all duration-300 ${0 < etapeCourante ? 'text-white bg-blue-600' : 'text-gray-500 bg-gray-300 opacity-75'}`} id="step1">
-                            Informations de base
-                        </span>
-                        <span className={`text-xs font-bold inline-block py-2 px-4 rounded-full transition-all duration-300 ${1 < etapeCourante ? 'text-white bg-blue-600' : 'text-gray-500 bg-gray-300 opacity-75'}`} id="step2">
-                            Extras
-                        </span>
-                        <span className={`text-xs font-bold inline-block py-2 px-4 rounded-full transition-all duration-300 ${2 < etapeCourante ? 'text-white bg-blue-600' : 'text-gray-500 bg-gray-300 opacity-75'}`} id="step3">
-                            Conditions Financières
-                        </span>
-                        <span className={`text-xs font-bold inline-block py-2 px-4 rounded-full transition-all duration-300 ${3 < etapeCourante ? 'text-white bg-blue-600' : 'text-gray-500 bg-gray-300 opacity-75'}`} id="step4">
-                            Budget Estimatif
-                        </span>
-                        <span className={`text-xs font-bold inline-block py-2 px-4 rounded-full transition-all duration-300 ${4 < etapeCourante ? 'text-white bg-blue-600' : 'text-gray-500 bg-gray-300 opacity-75'}`} id="step5">
-                            Données supplémentaires
-                        </span>
+                <form onSubmit={valideFormulaire} className="w-full mx-auto bg-gray-800 text-white shadow-md rounded-lg p-8 space-y-4 font-nunito">
+                    <h2 className="text-3xl font-semibold text-center text-white mb-10">Formulaire d&apos;Offre</h2>
+    
+                    <div className="mb-8">
+                        <div className="flex justify-between mb-2">
+                            <span
+                                className={`text-sm font-bold inline-block py-2 px-4 rounded-full transition-all duration-300 ${
+                                    0 < etapeCourante ? 'text-white bg-blue-600' : 'text-white bg-gray-700 opacity-75'
+                                }`}
+                                id="step1"
+                            >
+                                Informations de base
+                            </span>
+                            <span
+                                className={`text-sm font-bold inline-block py-2 px-4 rounded-full transition-all duration-300 ${
+                                    1 < etapeCourante ? 'text-white bg-blue-600' : 'text-white bg-gray-700 opacity-75'
+                                }`}
+                                id="step2"
+                            >
+                                Extras
+                            </span>
+                            <span
+                                className={`text-sm font-bold inline-block py-2 px-4 rounded-full transition-all duration-300 ${
+                                    2 < etapeCourante ? 'text-white bg-blue-600' : 'text-white bg-gray-700 opacity-75'
+                                }`}
+                                id="step3"
+                            >
+                                Conditions Financières
+                            </span>
+                            <span
+                                className={`text-sm font-bold inline-block py-2 px-4 rounded-full transition-all duration-300 ${
+                                    3 < etapeCourante ? 'text-white bg-blue-600' : 'text-white bg-gray-700 opacity-75'
+                                }`}
+                                id="step4"
+                            >
+                                Budget Estimatif
+                            </span>
+                            <span
+                                className={`text-sm font-bold inline-block py-2 px-4 rounded-full transition-all duration-300 ${
+                                    4 < etapeCourante ? 'text-white bg-blue-600' : 'text-white bg-gray-700 opacity-75'
+                                }`}
+                                id="step5"
+                            >
+                                Données supplémentaires
+                            </span>
+                        </div>
+                        <div className="overflow-hidden h-2 mb-4 flex text-sm rounded bg-white">
+                            <div
+                                className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-600 transition-all duration-300"
+                                style={{ width: `${(etapeCourante / 5) * 100}%` }}
+                            ></div>
+                        </div>
                     </div>
-                    <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-blue-200">
-                        <div className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-600 transition-all duration-300`} style={{ width: `${(etapeCourante / 5) * 100}%` }}></div>
+    
+                    {renderEtapeFormulaire()}
+    
+                    <div className="flex justify-between mt-8">
+                        {etapeCourante > 1 && (
+                            <button
+                                type="button"
+                                onClick={revientEtapePrecedente}
+                                className="px-5 py-3 bg-gray-700 text-white rounded-full transition-colors duration-300 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
+                            >
+                                Précédent
+                            </button>
+                        )}
+                        {etapeCourante < 5 && (
+                            <button
+                                type="button"
+                                onClick={accedeEtapeSuivante}
+                                className="px-5 py-3 bg-blue-600 text-white rounded-full transition-colors duration-300 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50"
+                            >
+                                Suivant
+                            </button>
+                        )}
+                        {etapeCourante === 5 && (
+                            <button
+                                type="submit"
+                                className="px-5 py-3 bg-blue-600 text-white rounded-full transition-colors duration-300 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
+                            >
+                                Poster l&apos;offre
+                            </button>
+                        )}
                     </div>
-                </div>
-
-                {renderEtapeFormulaire()}
-
-                <div className="flex justify-between mt-8">
-                    {etapeCourante > 1 && (
-                        <button
-                            type="button"
-                            onClick={revientEtapePrecedente}
-                            className="px-5 py-3 bg-gray-300 text-gray-800 rounded-lg transition-colors duration-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
-                        >
-                            Précédent
-                        </button>
-                    )}
-                    {etapeCourante < 5 && (
-                        <button
-                            type="button"
-                            onClick={accedeEtapeSuivante}
-                            className="px-5 py-3 bg-blue-500 text-white rounded-lg transition-colors duration-300 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50"
-                        >
-                            Suivant
-                        </button>
-                    )}
-                    {etapeCourante === 5 && (
-                        <button
-                            type="submit"
-                            className="px-5 py-3 bg-blue-500 text-white rounded-lg transition-colors duration-300 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
-                        >
-                            Poster l&apos;offre
-                        </button>
-                    )}
-                </div>
-            </form> 
+                </form>
             ) : (
-                <p>{messageOffrePostee}</p>
+                <p className="text-center text-lg text-white">{messageOffrePostee}</p>
             )}
         </div>
-    );
+    );        
 };
 
 export default OffreForm;

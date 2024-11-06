@@ -24,11 +24,11 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
 
     return (
         <div className="flex items-center justify-center">
-            <div className="mx-auto w-full max-w bg-white rounded-lg shadow-md p-8">
-                <h3 className="text-2xl font-semibold text-[#07074D] mb-4">Extras de l&apos;offre</h3>
+            <div className="mx-auto w-full max-w bg-gray-800 rounded-lg p-8">
+                <h3 className="text-2xl font-semibold text-white mb-4">Extras de l&apos;offre</h3>
                 <div className="grid grid-cols-2 gap-4 mb-5">
                     <div>
-                        <label htmlFor="descrExtras" className="text-gray-700">Description de l&apos;extras:</label>
+                        <label htmlFor="descrExtras" className="text-white">Description de l&apos;extras:</label>
                         <input
                             type="text"
                             id='descrExtras'
@@ -36,11 +36,11 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
                             value={extras.descrExtras}
                             onChange={handleExtrasChange}
                             placeholder="Description des Extras"
-                            className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            className="w-full rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                         />
                     </div>
                     <div>
-                        <label htmlFor="coutExtras" className="text-gray-700">Coût des extras:</label>
+                        <label htmlFor="coutExtras" className="text-white">Coût des extras:</label>
                         <input
                             type="number"
                             name="coutExtras"
@@ -48,14 +48,14 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
                             value={extras.coutExtras || 0}
                             onChange={handleExtrasChange}
                             placeholder="Coût des Extras"
-                            className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            className="w-full rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                         />
                     </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-5">
                     <div>
-                        <label htmlFor="exclusivite" className="text-gray-700">Exclusivité proposée:</label>
+                        <label htmlFor="exclusivite" className="text-white">Exclusivité proposée:</label>
                         <input
                             type="text"
                             id='exclusivite'
@@ -63,12 +63,12 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
                             value={extras.exclusivite}
                             onChange={handleExtrasChange}
                             placeholder="Exclusivité"
-                            className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            className="w-full rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                         />
                     </div>
 
                     <div>
-                        <label htmlFor="exception" className="text-gray-700">Exception de l&apos;extras:</label>
+                        <label htmlFor="exception" className="text-white">Exception de l&apos;extras:</label>
                         <input
                             type="text"
                             id='exception'
@@ -76,14 +76,14 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
                             value={extras.exception}
                             onChange={handleExtrasChange}
                             placeholder="Exceptions"
-                            className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            className="w-full rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                         />
                     </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-5">
                     <div>
-                        <label htmlFor="ordrePassage" className="text-gray-700">Ordre de passage:</label>
+                        <label htmlFor="ordrePassage" className="text-white">Ordre de passage:</label>
                         <input
                             type="text"
                             id='ordrePassage'
@@ -91,19 +91,19 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
                             value={extras.ordrePassage}
                             onChange={handleExtrasChange}
                             placeholder="Ordre de Passage"
-                            className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            className="w-full rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                         />
                     </div>
 
                     <div>
-                        <label htmlFor="clausesConfidentialites" className="text-gray-700">Clauses de confidentialité:</label>
+                        <label htmlFor="clausesConfidentialites" className="text-white">Clauses de confidentialité:</label>
                         <textarea
                             name="clausesConfidentialites"
                             id='clausesConfidentialites'
                             value={extras.clausesConfidentialites}
                             onChange={handleExtrasChange}
                             placeholder="Clauses de Confidentialité"
-                            className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            className="w-full rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                         />
                     </div>
                 </div>
