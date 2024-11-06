@@ -31,10 +31,10 @@ export const apiPost = async (endpoint: string, data: JSON) => {
     return renvoieReponsePromise(response);
 };
 
-// Fonction PUT
-export const apiPut = async (endpoint: string, data: JSON) => {
+// Fonction PATCH
+export const apiPatch = async (endpoint: string, data: JSON) => {
     const response = await fetch(`${BASE_URL}${endpoint}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
         },
