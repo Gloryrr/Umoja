@@ -117,15 +117,15 @@ class OffreService
             $offre->setDateMaxProposee(date_create($data['detailOffre']['dateMaxProposee']));
             $offre->setVilleVisee($data['detailOffre']['villeVisee']);
             $offre->setRegionVisee($data['detailOffre']['regionVisee']);
-            $offre->setPlacesMin($data['detailOffre']['placesMin']);
-            $offre->setPlacesMax($data['detailOffre']['placesMax']);
-            $offre->setNbArtistesConcernes($data['detailOffre']['nbArtistesConcernes']);
-            $offre->setNbInvitesConcernes($data['detailOffre']['nbInvitesConcernes']);
+            $offre->setPlacesMin(intval($data['detailOffre']['placesMin']));
+            $offre->setPlacesMax(intval($data['detailOffre']['placesMax']));
+            $offre->setNbArtistesConcernes(intval($data['detailOffre']['nbArtistesConcernes']));
+            $offre->setNbInvitesConcernes(intval($data['detailOffre']['nbInvitesConcernes']));
             $offre->setLiensPromotionnels($data['detailOffre']['liensPromotionnels']);
 
             $extras = new Extras();
             $extras->setDescrExtras($data['extras']['descrExtras']);
-            $extras->setCoutExtras($data['extras']['coutExtras']);
+            $extras->setCoutExtras(intval($data['extras']['coutExtras']));
             $extras->setExclusivite($data['extras']['exclusivite']);
             $extras->setException($data['extras']['exception']);
             $extras->setOrdrePassage($data['extras']['ordrePassage']);
@@ -141,16 +141,16 @@ class OffreService
             $offre->setTypeOffre($typeOffre);
 
             $conditionsFinancieres = new ConditionsFinancieres();
-            $conditionsFinancieres->setMinimunGaranti($data['conditionsFinancieres']['minimumGaranti']);
+            $conditionsFinancieres->setMinimunGaranti(intval($data['conditionsFinancieres']['minimumGaranti']));
             $conditionsFinancieres->setConditionsPaiement($data['conditionsFinancieres']['conditionsPaiement']);
-            $conditionsFinancieres->setPourcentageRecette($data['conditionsFinancieres']['pourcentageRecette']);
+            $conditionsFinancieres->setPourcentageRecette(floatval($data['conditionsFinancieres']['pourcentageRecette']));
             $offre->setConditionsFinancieres($conditionsFinancieres);
 
             $budgetEstimatif = new BudgetEstimatif();
-            $budgetEstimatif->setCachetArtiste($data['budgetEstimatif']['cachetArtiste']);
-            $budgetEstimatif->setFraisDeplacement($data['budgetEstimatif']['fraisDeplacement']);
-            $budgetEstimatif->setFraisHebergement($data['budgetEstimatif']['fraisHebergement']);
-            $budgetEstimatif->setFraisRestauration($data['budgetEstimatif']['fraisRestauration']);
+            $budgetEstimatif->setCachetArtiste(intval($data['budgetEstimatif']['cachetArtiste']));
+            $budgetEstimatif->setFraisDeplacement(intval($data['budgetEstimatif']['fraisDeplacement']));
+            $budgetEstimatif->setFraisHebergement(intval($data['budgetEstimatif']['fraisHebergement']));
+            $budgetEstimatif->setFraisRestauration(intval($data['budgetEstimatif']['fraisRestauration']));
             $offre->setBudgetEstimatif($budgetEstimatif);
 
             $ficheTechniqueArtiste = new FicheTechniqueArtiste();
@@ -174,7 +174,7 @@ class OffreService
             $creerRepository->ajouterCreer($creer);
 
             // ajoute l'offre sur le ou les réseau(x) indiqués
-            $nb_reseaux = $data['donneesSupplementaires']['nbReseaux'];
+            $nb_reseaux = intval($data['donneesSupplementaires']['nbReseaux']);
             print_r($nb_reseaux);
             for ($i = 0; $i < $nb_reseaux; $i++) {
                 $reseau = $reseauRepository->trouveReseauByName($data['donneesSupplementaires']['reseau'][$i]);
@@ -185,7 +185,7 @@ class OffreService
                 $posterRepository->inscritPoster($poster);
             }
 
-            $nb_genres_musicaux = $data['donneesSupplementaires']['nbGenresMusicaux'];
+            $nb_genres_musicaux = intval($data['donneesSupplementaires']['nbGenresMusicaux']);
             for ($i = 0; $i < $nb_genres_musicaux; $i++) {
                 $genreMusical = $genreMusicalRepository->trouveGenreMusicalByName($data['donneesSupplementaires']['genreMusical'][$i]);
                 print_r($genreMusical);
@@ -195,7 +195,7 @@ class OffreService
                 $rattacherRepository->ajouterRattacher($rattacher);
             }
 
-            $nb_artistes = $data['donneesSupplementaires']['nbArtistes'];
+            $nb_artistes = intval($data['donneesSupplementaires']['nbArtistes']);
             for ($i = 0; $i < $nb_artistes; $i++) {
                 $artiste = $artisteRepository->trouveArtisteByName($data['donneesSupplementaires']['artiste'][$i]);
                 print_r($artiste);
@@ -213,7 +213,7 @@ class OffreService
                     'offre' => $offreJSON,
                     'message' => "Offre inscrite !",
                     'serialized' => true
-                ], Response::HTTP_CREATED, ['Access-Control-Allow-Origin' => '*']);
+                ]);
             }
             return new JsonResponse([
                 'offre' => null,
