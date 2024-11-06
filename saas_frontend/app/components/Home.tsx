@@ -1,30 +1,33 @@
 "use client";
 import React, { useRef } from 'react';
 import NavigationHandler from '../navigation/Router';
+import Image from 'next/image';
 
 const Home = () => {
-    const scrollContainerRef = useRef(null);
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
 
     const handleScroll = () => {
         const container = scrollContainerRef.current;
-        const scrollWidth = container.scrollWidth;
-        const scrollLeft = container.scrollLeft;
-        const containerWidth = container.clientWidth;
+        if (container) {
+            const scrollWidth = container.scrollWidth;
+            const scrollLeft = container.scrollLeft;
+            const containerWidth = container.clientWidth;
 
-        if (scrollLeft + containerWidth >= scrollWidth) {
-            container.scrollLeft = 0;
+            if (scrollLeft + containerWidth >= scrollWidth) {
+                container.scrollLeft = 0;
+            }
         }
     };
 
     return (
         <div className="min-h-screen bg-white w-full">
-            {/* Section principale avec le bouton de création d'offre */}
+            {/* Section principale avec le bouton de création d&apos;offre */}
             <section className="container mx-auto px-6 py-12 flex items-center overflow-x-hidden mb-[10vh]">
                 {/* Texte à gauche */}
                 <div className="w-full md:w-1/2 ml-[15%]">
                     <h2 className="text-4xl font-bold text-black mb-4">Créez votre propre offre musicale</h2>
                     <p className="text-gray-700 mb-6">
-                        Lancez votre propre événement musical et partagez votre passion avec le monde entier. Créez une offre et commencez à attirer des participants dès aujourd'hui.
+                        Lancez votre propre événement musical et partagez votre passion avec le monde entier. Créez une offre et commencez à attirer des participants dès aujourd&apos;hui.
                     </p>
                     <NavigationHandler>
                         {(handleNavigation: (path: string) => void) => (
@@ -39,7 +42,9 @@ const Home = () => {
                 </div>
                 {/* Image à droite */}
                 <div className="hidden md:block w-full md:w-1/2 pl-8 mr-[15%]">
-                    <img src="/images/offer-creation.jpg" alt="Créer une offre" className="rounded-lg shadow-lg w-full h-auto" />
+                    <Image
+                        width={120}
+                        height={120} src="/images/offer-creation.jpg" alt="Créer une offre" className="rounded-lg shadow-lg w-full h-auto" />
                 </div>
             </section>
 
@@ -47,13 +52,13 @@ const Home = () => {
             <section className="relative min-h-[600px] flex flex-col justify-center">
                 {/* Title that crosses all sections */}
                 <h3 className="text-3xl text-black font-semibold text-center absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-8 z-10 px-4 py-2 rounded-full">
-                    Étapes pour créer votre projet d'événement musical
+                    Étapes pour créer votre projet d&apos;événement musical
                 </h3>
 
                 <div className="flex flex-col md:flex-row space-y-0 md:space-y-0 md:space-x-0 items-center justify-center">
                     {/* Step 1: Create an Offer */}
                     <div className="flex-1 bg-pink-100 min-h-[600px] p-6 flex flex-col justify-center items-center">
-                        <h4 className="text-2xl font-semibold text-pink-600 mb-4 text-center">1. Création d'une offre</h4>
+                        <h4 className="text-2xl font-semibold text-pink-600 mb-4 text-center">1. Création d&apos;une offre</h4>
                         <p className="text-gray-600 mb-6 text-center">
                             Commencez par créer une offre détaillée pour votre événement, incluant les informations essentielles pour attirer les participants.
                         </p>
@@ -91,7 +96,7 @@ const Home = () => {
                     <div className="flex-1 bg-green-100 min-h-[600px] p-6 flex flex-col justify-center items-center">
                         <h4 className="text-2xl font-semibold text-green-600 mb-4 text-center">3. Gestion des réponses</h4>
                         <p className="text-gray-600 mb-6 text-center">
-                            Gérez les réponses des participants et adaptez votre offre pour maximiser l'engagement.
+                            Gérez les réponses des participants et adaptez votre offre pour maximiser l&apos;engagement.
                         </p>
                         <NavigationHandler>
                             {(handleNavigation: (path: string) => void) => (
@@ -109,7 +114,7 @@ const Home = () => {
 
             {/* Section de bienvenue */}
             <section className="text-center py-16 bg-cover bg-center" style={{ backgroundImage: 'url(/images/banner.jpg)' }}>
-                <h2 className="text-4xl font-bold text-black">Financez des événements musicaux dès aujourd'hui</h2>
+                <h2 className="text-4xl font-bold text-black">Financez des événements musicaux dès aujourd&apos;hui</h2>
                 <p className="text-black mt-4">Découvrez les événements musicaux de vos réseaux.</p>
                 <NavigationHandler>
                     {(handleNavigation: (path: string) => void) => (
@@ -151,21 +156,23 @@ const Home = () => {
                                 key={index}
                                 className="flex-shrink-0 bg-white shadow-lg rounded-lg overflow-visible w-80 transform transition-all duration-300 hover:shadow-xl"
                             >
-                                <img
+                                <Image
+                                    width={120}
+                                    height={120}
                                     src={`/images/event-${index + 1}.jpg`}
                                     alt={event}
                                     className="w-full h-48 object-cover"
                                 />
                                 <div className="p-6">
                                     <h4 className="font-semibold text-xl mb-2">{event}</h4>
-                                    <p className="text-gray-600">Description brève de l'événement.</p>
+                                    <p className="text-gray-600">Description brève de l&apos;événement.</p>
                                     <NavigationHandler>
                                         {(handleNavigation: (path: string) => void) => (
                                             <button
                                                 onClick={() => handleNavigation(`/event/${index + 1}`)}
                                                 className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 font-semibold"
                                             >
-                                                Voir l'événement
+                                                Voir l&apos;événement
                                             </button>
                                         )}
                                     </NavigationHandler>
@@ -178,21 +185,23 @@ const Home = () => {
                                 key={`duplicate-${index}`}
                                 className="flex-shrink-0 bg-white shadow-lg rounded-lg overflow-visible w-80 transform transition-all duration-300 hover:shadow-xl"
                             >
-                                <img
+                                <Image
+                                    width={120}
+                                    height={120}
                                     src={`/images/event-${index + 1}.jpg`}
                                     alt={event}
                                     className="w-full h-48 object-cover"
                                 />
                                 <div className="p-6">
                                     <h4 className="font-semibold text-xl mb-2">{event}</h4>
-                                    <p className="text-gray-600">Description brève de l'événement.</p>
+                                    <p className="text-gray-600">Description brève de l&apos;événement.</p>
                                     <NavigationHandler>
                                         {(handleNavigation: (path: string) => void) => (
                                             <button
                                                 onClick={() => handleNavigation(`/event/${index + 1}`)}
                                                 className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 font-semibold"
                                             >
-                                                Voir l'événement
+                                                Voir l&apos;événement
                                             </button>
                                         )}
                                     </NavigationHandler>

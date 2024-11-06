@@ -10,8 +10,8 @@ interface DonneesSupplementairesFormProps {
             besoinEclairage: string;
             besoinEquipements: string;
             besoinScene: string;
-            besoinSonorisation: string
-        },
+            besoinSonorisation: string;
+        };
         reseau: string[];
         nbReseaux: number;
         genreMusical: string[];
@@ -19,7 +19,7 @@ interface DonneesSupplementairesFormProps {
         artiste: string[];
         nbArtistes: number;
     };
-    onDonneesSupplementairesChange: (name: string, value: any) => void;
+    onDonneesSupplementairesChange: (name: string, value: string|string[]|number) => void;
     onFicheTechniqueChange: (name: string, value: string) => void;
 }
 
@@ -28,15 +28,10 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
     onDonneesSupplementairesChange,
     onFicheTechniqueChange
 }) => {
-    const handleDonneesSupplementairesChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        onDonneesSupplementairesChange(name, value);
-    };
-
     const [genresMusicaux, setGenresMusicaux] = useState<Array<{ nomGenreMusical: string }>>([]);
     const [selectedGenres, setSelectedGenres] = useState<string[]>(donneesSupplementaires.genreMusical);
 
-    const [reseaux, setReseaux] = useState<Array<any>>([]);
+    const [reseaux, setReseaux] = useState<Array<{ idReseau: { nomReseau: string } }>>([]);
     const [selectedReseaux, setSelectedReseaux] = useState<string[]>(donneesSupplementaires.reseau);
 
     const [artistes, setArtistes] = useState<string[]>(donneesSupplementaires.artiste);
@@ -58,7 +53,7 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                     username: 'username n° 1' // utiliser localStorage plus tard
                 };
                 const datasUser = await apiPost('/utilisateur', JSON.parse(JSON.stringify(data)));
-                const reseauxListe: Array<any> = JSON.parse(datasUser.utilisateur)[0].membreDesReseaux;
+                const reseauxListe: Array<{ idReseau: { nomReseau: string } }> = JSON.parse(datasUser.utilisateur)[0].membreDesReseaux;
                 setReseaux(reseauxListe);
                 console.log(reseauxListe);
             } catch (error) {
@@ -130,7 +125,7 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                                 type="text"
                                 value={artiste}
                                 onChange={(e) => handleArtisteChange(index, e.target.value)}
-                                placeholder="Nom de l'artiste"
+                                placeholder="Nom de l&apos;artiste"
                                 className="w-full mt-1 rounded-md border border-[#e0e0e0] bg-white py-2 px-3 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                             />
                             <button
@@ -171,7 +166,7 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                             ))}
                         </select>
                         <p className="text-sm text-gray-500 mt-1">
-                            Vous pouvez sélectionner jusqu'à {reseaux.length} réseaux.
+                            Vous pouvez sélectionner jusqu&apos;&agrave; {reseaux.length} réseaux.
                         </p>
                     </div>
 
@@ -192,7 +187,7 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                             ))}
                         </select>
                         <p className="text-sm text-gray-500 mt-1">
-                            Vous pouvez sélectionner jusqu'à {genresMusicaux.length} genres.
+                            Vous pouvez sélectionner jusqu&apos;&agrave; {genresMusicaux.length} genres musicaux.
                         </p>
                     </div>
                 </div>

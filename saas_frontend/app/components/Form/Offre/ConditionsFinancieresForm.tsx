@@ -20,14 +20,14 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
         onConditionsFinancieresChange(name, value);
     };
 
-    const [conditionsPaiement, setConditionsPaiement] = useState<Array<any>>([]);
+    const [conditionsPaiement, setConditionsPaiement] = useState<string[]>([]);
 
     useEffect(() => {
         const fetchMonnaieExistantes = async () => {
             try {
-                const data = await apiGet('https://restcountries.com/v3.1/all');
+                const data: { currencies: Record<string, unknown> }[] = await apiGet('https://restcountries.com/v3.1/all');
                 const monnaieList = Array.from(
-                    new Set(data.flatMap((country: any) => Object.keys(country.currencies || {})))
+                    new Set(data.flatMap((country) => Object.keys(country.currencies || {})))
                 );
                 setConditionsPaiement(monnaieList);
             } catch (error) {

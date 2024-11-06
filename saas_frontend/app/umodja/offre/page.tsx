@@ -13,7 +13,7 @@ export default function Offre() {
                             onClick={() => handleNavigation('/home')}
                             className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 font-semibold"
                         >
-                            Retour à l'accueil
+                            Retour à l&apos;accueil
                         </button>
                     )}
                 </NavigationHandler>

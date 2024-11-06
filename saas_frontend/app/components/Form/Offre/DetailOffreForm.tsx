@@ -2,6 +2,12 @@
 import React, { useState } from 'react';
 import { apiGet } from '@/app/services/externalApiClients';
 
+interface Feature {
+    properties: {
+        city: string;
+    };
+}
+
 interface DetailOffreFormProps {
     detailOffre : {
         titleOffre: string;
@@ -26,7 +32,6 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
 }) => {
     const [liensPromotionnels, setLiensPromotionnels] = useState<string[]>(['']);
     const [citySuggestions, setCitySuggestions] = useState<string[]>([]);
-    const [selectedCity, setSelectedCity] = useState<string>("");
     const [placesMin, setPlacesMin] = useState(detailOffre.placesMin);
     const [placesMax, setPlacesMax] = useState(detailOffre.placesMax);
 
@@ -82,17 +87,19 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
     const handleCityInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
         onDetailOffreChange("villeVisee", value);
-
+    
         if (value.length > 2) {
             const correspondancesTrouvees = await apiGet(`https://api-adresse.data.gouv.fr/search/?q=${value}&type=municipality`);
-            setCitySuggestions(correspondancesTrouvees.features.map((feature: any) => feature.properties.city));
+            setCitySuggestions(
+                correspondancesTrouvees.features.map((feature: Feature) => feature.properties.city)
+            );
         } else {
             setCitySuggestions([]);
         }
     };
 
     const handleCitySelect = async (city: string) => {
-        setSelectedCity(city);
+        // setSelectedCity(city);
         onDetailOffreChange("villeVisee", city);
 
         const correspondancesTrouvees = await apiGet(`https://api-adresse.data.gouv.fr/search/?q=${city}&type=municipality`);
@@ -104,9 +111,9 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
     return (
         <div className="flex items-center justify-center">
             <div className="mx-auto w-full max-w bg-white rounded-lg shadow-md p-8">
-                <h3 className="text-2xl font-semibold text-[#07074D] mb-6">Détails de l'Offre</h3>
+                <h3 className="text-2xl font-semibold text-[#07074D] mb-6">Détails de l&apos;Offre</h3>
                 <div className="mb-5">
-                    <label htmlFor="titleOffre" className="mb-3 block text-base font-medium text-[#07074D]">Titre de l'Offre:</label>
+                    <label htmlFor="titleOffre" className="mb-3 block text-base font-medium text-[#07074D]">Titre de l&apos;Offre:</label>
                     <input
                         type="text"
                         id="titleOffre"
@@ -249,7 +256,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
 
                 <div className="grid grid-cols-2 gap-4 mb-5">
                     <div>
-                        <label htmlFor="nbArtistesConcernes" className="mb-3 block text-base font-medium text-[#07074D]">Nombre d'Artistes Concernés:</label>
+                        <label htmlFor="nbArtistesConcernes" className="mb-3 block text-base font-medium text-[#07074D]">Nombre d&apos;Artistes Concernés:</label>
                         <input
                             type="number"
                             id="nbArtistesConcernes"
@@ -263,7 +270,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                     </div>
 
                     <div>
-                        <label htmlFor="nbInvitesConcernes" className="mb-3 block text-base font-medium text-[#07074D]">Nombre d'Invités Concernés:</label>
+                        <label htmlFor="nbInvitesConcernes" className="mb-3 block text-base font-medium text-[#07074D]">Nombre d&apos;Invités Concernés:</label>
                         <input
                             type="number"
                             id="nbInvitesConcernes"

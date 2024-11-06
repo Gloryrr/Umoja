@@ -25,10 +25,10 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
     return (
         <div className="flex items-center justify-center">
             <div className="mx-auto w-full max-w bg-white rounded-lg shadow-md p-8">
-                <h3 className="text-2xl font-semibold text-[#07074D] mb-4">Extras de l'offre</h3>
+                <h3 className="text-2xl font-semibold text-[#07074D] mb-4">Extras de l&apos;offre</h3>
                 <div className="grid grid-cols-2 gap-4 mb-5">
                     <div>
-                        <label htmlFor="descrExtras" className="text-gray-700">Description de l'extras:</label>
+                        <label htmlFor="descrExtras" className="text-gray-700">Description de l&apos;extras:</label>
                         <input
                             type="text"
                             id='descrExtras'
@@ -68,7 +68,7 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
                     </div>
 
                     <div>
-                        <label htmlFor="exception" className="text-gray-700">Exception de l'extras:</label>
+                        <label htmlFor="exception" className="text-gray-700">Exception de l&apos;extras:</label>
                         <input
                             type="text"
                             id='exception'

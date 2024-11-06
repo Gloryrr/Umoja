@@ -96,6 +96,7 @@ const OffreForm: React.FC = () => {
     };
 
     const valideEtape = (step: number) => {
+        console.log(step);
         return true;
     };
 
@@ -188,7 +189,7 @@ const OffreForm: React.FC = () => {
         <div className="mt-10 mb-10 w-[60%] mx-auto">
             {!offrePostee ? (
             <form onSubmit={valideFormulaire} className="w-full mx-auto bg-white shadow-md rounded-lg p-8 space-y-4">
-                <h2 className="text-3xl font-semibold text-center text-gray-800 mb-10">Formulaire d'Offre</h2>
+                <h2 className="text-3xl font-semibold text-center text-gray-800 mb-10">Formulaire d&apos;Offre</h2>
 
                 <div className="mb-8">
                     <div className="flex justify-between mb-2">
@@ -239,7 +240,7 @@ const OffreForm: React.FC = () => {
                             type="submit"
                             className="px-5 py-3 bg-blue-500 text-white rounded-lg transition-colors duration-300 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
                         >
-                            Poster l'offre
+                            Poster l&apos;offre
                         </button>
                     )}
                 </div>
