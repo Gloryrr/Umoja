@@ -1,7 +1,7 @@
 "use client"
 import { useState } from 'react';
 import { FaUser } from "react-icons/fa";
-import NavigationHandler from './router';
+import NavigationHandler from '../../navigation/Router';
 
 
 const InscriptionForm = () => {
