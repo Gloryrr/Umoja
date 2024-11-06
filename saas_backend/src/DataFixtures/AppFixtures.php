@@ -29,10 +29,10 @@ class AppFixtures extends Fixture
 
         $manager->persist($this->createAppartenance($user, $reseau));
         $manager->flush();
-
     }
 
-    public function createUtilisateur(): Utilisateur {
+    public function createUtilisateur(): Utilisateur
+    {
         $utilisateur = new Utilisateur();
         $utilisateur->setEmailUtilisateur("test@example.com");
         $utilisateur->setMdpUtilisateur("mot-de-passe-hashé");
@@ -45,21 +45,24 @@ class AppFixtures extends Fixture
         return $utilisateur;
     }
 
-    public function createGenreMusical(string $nomGenreMusical): GenreMusical {
+    public function createGenreMusical(string $nomGenreMusical): GenreMusical
+    {
         $genreMusical = new GenreMusical();
         $genreMusical->setNomGenreMusical($nomGenreMusical);
 
         return $genreMusical;
     }
 
-    public function createReseau() {
+    public function createReseau()
+    {
         $reseau = new Reseau();
         $reseau->setNomReseau("Facebook");
 
         return $reseau;
     }
 
-    public function createAppartenance(Utilisateur $user, Reseau $reseau): Appartenir {
+    public function createAppartenance(Utilisateur $user, Reseau $reseau): Appartenir
+    {
         $appartenir = new Appartenir();
         $appartenir->setIdReseau($reseau);
         $appartenir->setIdUtilisateur($user);

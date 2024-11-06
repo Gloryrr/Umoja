@@ -38,7 +38,7 @@ class OffreRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
             return true;
         } catch (\Exception $e) {
-            throw new \RuntimeException("Erreur lors de l'enregistrement de l'offre : " . $e->getCode() . $e->getMessage() . PHP_EOL . $e->getTraceAsString());
+            throw new \RuntimeException("Erreur lors de l'enregistrement de l'offre : " . $e->getCode());
         }
     }
 
