@@ -14,7 +14,7 @@ const NavigationHandler: React.FC<NavigationHandlerProps> = ({ children }) => {
     // Précharge la page sans changer immédiatement
     // await router.prefetch(path); await inutil ???
 
-    // router.prefetch(path);
+    router.prefetch(path);
 
     // Attendre que l'animation de fermeture soit terminée (ajuster le délai selon l'animation)
     // await new Promise(resolve => setTimeout(resolve, 400));
