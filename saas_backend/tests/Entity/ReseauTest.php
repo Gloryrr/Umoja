@@ -54,7 +54,7 @@ class ReseauTest extends TestCase
      */
     public function testGetIdInitial()
     {
-        $this->assertNull($this->reseau->getIdReseau());
+        $this->assertNull($this->reseau->getId());
     }
 
     /**
@@ -66,10 +66,10 @@ class ReseauTest extends TestCase
     {
         // Utilisation de reflection pour accéder à l'attribut privé
         $reflection = new \ReflectionClass($this->reseau);
-        $property = $reflection->getProperty('idReseau');
+        $property = $reflection->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->reseau, 1);
 
-        $this->assertEquals(1, $this->reseau->getIdReseau());
+        $this->assertEquals(1, $this->reseau->getId());
     }
 }

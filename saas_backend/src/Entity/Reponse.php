@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ReponseRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Classe Reponse
@@ -17,49 +18,71 @@ use Doctrine\ORM\Mapping as ORM;
 class Reponse
 {
     /**
-     * @var int|null $idR
      * L'identifiant unique de la réponse.
+     *
+     * @var int|null
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $idR = null;
+    #[Groups(['reponse:read'])]
+    private ?int $id = null;
 
     /**
-     * @var EtatReponse|null $idEtatReponse
-     * L'état actuel de la réponse.
+     * L'état de la réponse.
+     *
+     * @var EtatReponse|null
      */
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: EtatReponse::class, inversedBy: "reponses")]
     #[ORM\JoinColumn(nullable: false)]
-    private ?EtatReponse $idEtatReponse = null;
+    #[Groups(['reponse:read', 'reponse:write'])]
+    private ?EtatReponse $etatReponse = null;
 
     /**
-     * @var Offre|null $idOffre
-     * L'offre à laquelle cette réponse est liée.
+     * L'offre associée à la réponse.
+     *
+     * @var Offre|null
      */
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: Offre::class, inversedBy: "reponses")]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Offre $idOffre = null;
+    #[Groups(['reponse:read', 'reponse:write'])]
+    private ?Offre $offre = null;
 
     /**
-     * @var \DateTimeInterface|null $dateDebut
+     * L'utilisateur qui a fait la réponse.
+     *
+     * @var Utilisateur|null
+     */
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: "reponses")]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
+    #[Groups(['reponse:read', 'reponse:write'])]
+    private ?Utilisateur $utilisateur = null;
+
+    /**
      * La date de début de la participation à l'offre.
+     *
+     * @var \DateTimeInterface|null
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['reponse:read', 'reponse:write'])]
     private ?\DateTimeInterface $dateDebut = null;
 
     /**
-     * @var \DateTimeInterface|null $dateFin
      * La date de fin de la participation à l'offre.
+     *
+     * @var \DateTimeInterface|null
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['reponse:read', 'reponse:write'])]
     private ?\DateTimeInterface $dateFin = null;
 
     /**
-     * @var float|null $prixParticipation
      * Le montant du prix de participation à l'offre.
+     *
+     * @var float|null
      */
     #[ORM\Column]
+    #[Groups(['reponse:read', 'reponse:write'])]
     private ?float $prixParticipation = null;
 
     /**
@@ -68,9 +91,9 @@ class Reponse
      * @return int|null
      * L'identifiant unique de la réponse.
      */
-    public function getIdR(): ?int
+    public function getId(): ?int
     {
-        return $this->idR;
+        return $this->id;
     }
 
     /**
@@ -79,9 +102,9 @@ class Reponse
      * @return EtatReponse|null
      * L'état associé à cette réponse.
      */
-    public function getIdEtatReponse(): ?EtatReponse
+    public function getEtatReponse(): ?EtatReponse
     {
-        return $this->idEtatReponse;
+        return $this->etatReponse;
     }
 
     /**
@@ -92,9 +115,9 @@ class Reponse
      *
      * @return static
      */
-    public function setIdEtatReponse(?EtatReponse $idEtatReponse): static
+    public function setEtatReponse(?EtatReponse $etatReponse): static
     {
-        $this->idEtatReponse = $idEtatReponse;
+        $this->etatReponse = $etatReponse;
 
         return $this;
     }
@@ -105,9 +128,9 @@ class Reponse
      * @return Offre|null
      * L'offre à laquelle cette réponse est liée.
      */
-    public function getIdOffre(): ?Offre
+    public function getOffre(): ?Offre
     {
-        return $this->idOffre;
+        return $this->offre;
     }
 
     /**
@@ -118,9 +141,35 @@ class Reponse
      *
      * @return static
      */
-    public function setIdOffre(?Offre $idOffre): static
+    public function setOffre(?Offre $offre): static
     {
-        $this->idOffre = $idOffre;
+        $this->offre = $offre;
+
+        return $this;
+    }
+
+    /**
+     * Retourne l'offre associée à cette réponse.
+     *
+     * @return Utilisateur|null
+     * L'offre à laquelle cette réponse est liée.
+     */
+    public function getUtilisateur(): ?Utilisateur
+    {
+        return $this->utilisateur;
+    }
+
+    /**
+     * Définit l'offre associée à cette réponse.
+     *
+     * @param Utilisateur|null $idOffre
+     * L'offre à laquelle cette réponse sera liée.
+     *
+     * @return static
+     */
+    public function setUtilisateur(?Utilisateur $utilisateur): static
+    {
+        $this->utilisateur = $utilisateur;
 
         return $this;
     }

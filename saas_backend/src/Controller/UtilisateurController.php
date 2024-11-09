@@ -2,9 +2,7 @@
 
 namespace App\Controller;
 
-use App\Repository\AppartenirRepository;
 use App\Repository\GenreMusicalRepository;
-use App\Repository\PreferencerRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -26,14 +24,10 @@ class UtilisateurController extends AbstractController
     #[Route('/api/v1/utilisateurs', name: 'get_utilisateurs', methods: ['GET'])]
     public function getUtilisateurs(
         UtilisateurRepository $utilisateurRepository,
-        AppartenirRepository $appartenirRepository,
-        PreferencerRepository $preferencerRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         return UtilisateurService::getUtilisateurs(
             $utilisateurRepository,
-            $appartenirRepository,
-            $preferencerRepository,
             $serializer
         );
     }
@@ -49,15 +43,11 @@ class UtilisateurController extends AbstractController
     public function getUtilisateur(
         Request $request,
         UtilisateurRepository $utilisateurRepository,
-        AppartenirRepository $appartenirRepository,
-        PreferencerRepository $preferencerRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
         return UtilisateurService::getUtilisateur(
             $utilisateurRepository,
-            $appartenirRepository,
-            $preferencerRepository,
             $data,
             $serializer
         );
@@ -137,7 +127,7 @@ class UtilisateurController extends AbstractController
      *
      * @param Request $requete, la requête avec les données d'ajout
      * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des utilisateurs
-     * @param PreferencerRepository $preferencerRepository, CRUD des utilisateurs qui ont des genres préférés
+     *  CRUD des utilisateurs qui ont des genres préférés
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
@@ -145,7 +135,6 @@ class UtilisateurController extends AbstractController
     public function ajouteGenreMusicalUtilisateur(
         Request $request,
         UtilisateurRepository $utilisateurRepository,
-        PreferencerRepository $preferencerRepository,
         GenreMusicalRepository $genreMusicalRepository,
         SerializerInterface $serializer
     ): JsonResponse {
@@ -153,7 +142,6 @@ class UtilisateurController extends AbstractController
         return UtilisateurService::ajouteGenreMusicalUtilisateur(
             $data,
             $utilisateurRepository,
-            $preferencerRepository,
             $genreMusicalRepository,
             $serializer
         );
@@ -164,7 +152,7 @@ class UtilisateurController extends AbstractController
      *
      * @param Request $requete, la requête avec les données d'ajout
      * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des utilisateurs
-     * @param PreferencerRepository $preferencerRepository, CRUD des utilisateurs qui ont des genres préférés
+     *  CRUD des utilisateurs qui ont des genres préférés
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
@@ -172,7 +160,6 @@ class UtilisateurController extends AbstractController
     public function retireGenreMusicalUtilisateur(
         Request $request,
         UtilisateurRepository $utilisateurRepository,
-        PreferencerRepository $preferencerRepository,
         GenreMusicalRepository $genreMusicalRepository,
         SerializerInterface $serializer
     ): JsonResponse {
@@ -180,7 +167,6 @@ class UtilisateurController extends AbstractController
         return UtilisateurService::retireGenreMusicalUtilisateur(
             $data,
             $utilisateurRepository,
-            $preferencerRepository,
             $genreMusicalRepository,
             $serializer
         );

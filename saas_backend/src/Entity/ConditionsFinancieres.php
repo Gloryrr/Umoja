@@ -5,6 +5,9 @@ namespace App\Entity;
 use App\Repository\ConditionsFinancieresRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Classe représentant les conditions financières d'une salle ou d'un contrat.
@@ -14,41 +17,47 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ConditionsFinancieresRepository::class)]
 class ConditionsFinancieres
 {
-    /**
-     * @var int|null L'identifiant unique des conditions financières.
-     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $idCF = null;
+    #[Groups(['conditions_financieres:read'])]
+    private ?int $id = null;
 
-    /**
-     * @var int|null Le montant minimum garanti pour une transaction ou un contrat.
-     */
     #[ORM\Column]
+    #[Groups(['conditions_financieres:read', 'conditions_financieres:write'])]
     private ?int $minimunGaranti = null;
 
-    /**
-     * @var string|null Les conditions de paiement associées.
-     * Peut contenir des détails sur les délais de paiement, les modalités, etc.
-     */
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['conditions_financieres:read', 'conditions_financieres:write'])]
     private ?string $conditionsPaiement = null;
 
-    /**
-     * @var float|null Le pourcentage de recette appliqué sur les transactions.
-     */
     #[ORM\Column]
+    #[Groups(['conditions_financieres:read', 'conditions_financieres:write'])]
     private ?float $pourcentageRecette = null;
+
+    #[ORM\OneToMany(
+        targetEntity: Offre::class,
+        mappedBy: "conditionsFinancieres",
+        orphanRemoval: true,
+        cascade: ["remove"]
+    )]
+    #[Groups(['conditions_financieres:read'])]
+    private Collection $offres;
+
+
+    public function __construct()
+    {
+        $this->offres = new ArrayCollection();
+    }
 
     /**
      * Récupère l'identifiant unique des conditions financières.
      *
      * @return int|null
      */
-    public function getIdCF(): ?int
+    public function getId(): ?int
     {
-        return $this->idCF;
+        return $this->id;
     }
 
     /**
@@ -117,6 +126,30 @@ class ConditionsFinancieres
     {
         $this->pourcentageRecette = $pourcentageRecette;
 
+        return $this;
+    }
+
+    public function getOffres(): Collection
+    {
+        return $this->offres;
+    }
+
+    public function addOffre(Offre $offre): self
+    {
+        if (!$this->offres->contains($offre)) {
+            $this->offres[] = $offre;
+            $offre->setConditionsFinancieres($this);
+        }
+        return $this;
+    }
+
+    public function removeOffre(Offre $offre): self
+    {
+        if ($this->offres->removeElement($offre)) {
+            if ($offre->getConditionsFinancieres() === $this) {
+                $offre->setConditionsFinancieres(null);
+            }
+        }
         return $this;
     }
 }

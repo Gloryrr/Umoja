@@ -2,11 +2,8 @@
 
 namespace App\Services;
 
-use App\DTO\UtilisateurDTO;
-use App\Entity\Preferencer;
-use App\Repository\AppartenirRepository;
 use App\Repository\GenreMusicalRepository;
-use App\Repository\PreferencerRepository;
+use App\Repository\OffreRepository;
 use App\Repository\UtilisateurRepository;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -30,48 +27,20 @@ class UtilisateurService
      */
     public static function getUtilisateurs(
         UtilisateurRepository $utilisateurRepository,
-        AppartenirRepository $appartenirRepository,
-        PreferencerRepository $preferencerRepository,
         SerializerInterface $serializer
     ): JsonResponse {
-        // on récupère tous les utilisateurs
-        $utilisateurs = $utilisateurRepository->findAll();
-        $arrayUtilisateursDTO = [];
-        foreach ($utilisateurs as $indUser => $utilisateur) {
-            $utilisateurDTO = new UtilisateurDTO(
-                $utilisateur->getIdUtilisateur(),
-                $utilisateur->getEmailUtilisateur(),
-                $utilisateur->getRoles(),
-                $utilisateur->getUsername(),
-                $utilisateur->getNomUtilisateur(),
-                $utilisateur->getPrenomUtilisateur()
-            );
-
-            $arrayReseaux = $appartenirRepository->trouveReseauxParIdUtilisateur(
-                $utilisateur->getIdUtilisateur()
-            );
-            $arrayGenresMusicaux = $preferencerRepository->trouveGenresMusicauxParIdUtilisateur(
-                $utilisateur->getIdUtilisateur()
-            );
-
-            foreach ($arrayReseaux as $indR => $reseau) {
-                array_push($utilisateurDTO->membreDesReseaux, $reseau);
-            }
-            foreach ($arrayGenresMusicaux as $indGM => $genreMusical) {
-                array_push($utilisateurDTO->genresMusicauxPreferes, $genreMusical);
-            }
-
-            array_push($arrayUtilisateursDTO, $utilisateurDTO);
+        try {
+            // on récupère tous les utilisateurs
+            $utilisateurs = $utilisateurRepository->findAll();
+            $utilisateursJSON = $serializer->serialize($utilisateurs, 'json', ['groups' => ['utilisateur:read']]);
+            return new JsonResponse([
+                'utilisateurs' => $utilisateursJSON,
+                'message' => "Liste des utilisateurs",
+                'serialized' => true
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            throw new \RuntimeException("ERREUR " . $e->getMessage());
         }
-
-        $utilisateursJSON = $serializer->serialize($arrayUtilisateursDTO, 'json');
-        return new JsonResponse([
-            'utilisateurs' => $utilisateursJSON,
-            'message' => "Liste des utilisateurs",
-            'reponse' => Response::HTTP_OK,
-            'headers' => [],
-            'serialized' => true
-        ]);
     }
 
     /**
@@ -85,49 +54,21 @@ class UtilisateurService
      */
     public static function getUtilisateur(
         UtilisateurRepository $utilisateurRepository,
-        AppartenirRepository $appartenirRepository,
-        PreferencerRepository $preferencerRepository,
         mixed $data,
         SerializerInterface $serializer
     ): JsonResponse {
         // on récupère tous les utilisateurs
         $utilisateurs = $utilisateurRepository->trouveUtilisateurByUsername($data['username']);
-        $arrayUtilisateursDTO = [];
-        foreach ($utilisateurs as $indUser => $utilisateur) {
-            $utilisateurDTO = new UtilisateurDTO(
-                $utilisateur->getIdUtilisateur(),
-                $utilisateur->getEmailUtilisateur(),
-                $utilisateur->getRoles(),
-                $utilisateur->getUsername(),
-                $utilisateur->getNomUtilisateur(),
-                $utilisateur->getPrenomUtilisateur()
-            );
-
-            $arrayReseaux = $appartenirRepository->trouveReseauxParIdUtilisateur(
-                $utilisateur->getIdUtilisateur()
-            );
-            $arrayGenresMusicaux = $preferencerRepository->trouveGenresMusicauxParIdUtilisateur(
-                $utilisateur->getIdUtilisateur()
-            );
-
-            foreach ($arrayReseaux as $indR => $reseau) {
-                array_push($utilisateurDTO->membreDesReseaux, $reseau);
-            }
-            foreach ($arrayGenresMusicaux as $indGM => $genreMusical) {
-                array_push($utilisateurDTO->genresMusicauxPreferes, $genreMusical);
-            }
-
-            array_push($arrayUtilisateursDTO, $utilisateurDTO);
-        }
-
-        $utilisateursJSON = $serializer->serialize($arrayUtilisateursDTO, 'json');
+        $utilisateursJSON = $serializer->serialize(
+            $utilisateurs,
+            'json',
+            ['groups' => ['utilisateur:read']]
+        );
         return new JsonResponse([
             'utilisateur' => $utilisateursJSON,
             'message' => "Utilisateur trouvé",
-            'reponse' => Response::HTTP_OK,
-            'headers' => [],
             'serialized' => true
-        ]);
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -177,33 +118,24 @@ class UtilisateurService
             // ajout de l'utilisateur en base de données
             $rep = $utilisateurRepository->inscritUtilisateur($utilisateur);
 
-            $utilisateurDTO = new UtilisateurDTO(
-                $utilisateur->getIdUtilisateur(),
-                $utilisateur->getEmailUtilisateur(),
-                $utilisateur->getRoles(),
-                $utilisateur->getUsername(),
-                $utilisateur->getNomUtilisateur(),
-                $utilisateur->getPrenomUtilisateur()
-            );
-
             // vérification de l'action en BDD
             if ($rep) {
-                $utilisateurJSON = $serializer->serialize($utilisateurDTO, 'json');
+                $utilisateurJSON = $serializer->serialize(
+                    $utilisateur,
+                    'json',
+                    ['groups' => ['utilisateur:write']]
+                );
                 return new JsonResponse([
                     'utilisateur' => $utilisateurJSON,
                     'message' => "Utilisateur inscrit !",
-                    'reponse' => Response::HTTP_CREATED,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_CREATED);
             }
             return new JsonResponse([
                 'utilisateur' => null,
                 'message' => "Utilisateur non inscrit, merci de regarder l'erreur décrite",
-                'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
             throw new \RuntimeException("Erreur lors de la création de l'utilisateur", $e->getMessage());
         }
@@ -236,10 +168,8 @@ class UtilisateurService
                 return new JsonResponse([
                     'utilisateur' => null,
                     'message' => 'Utilisateur non trouvé, merci de donner un identifiant valide !',
-                    'reponse' => Response::HTTP_NOT_FOUND,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_NOT_FOUND);
             }
 
             // on vérifie qu'aucune données ne manque pour la mise à jour
@@ -271,23 +201,23 @@ class UtilisateurService
 
             // si l'action à réussi
             if ($rep) {
-                $utilisateurJSON = $serializer->serialize($utilisateur, 'json');
+                $utilisateurJSON = $serializer->serialize(
+                    $utilisateur,
+                    'json',
+                    ['groups' => ['utilisateur:read']]
+                );
 
                 return new JsonResponse([
                     'utilisateur' => $utilisateurJSON,
                     'message' => "Utilisateur modifié avec succès",
-                    'reponse' => Response::HTTP_OK,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_OK);
             } else {
                 return new JsonResponse([
                     'utilisateur' => null,
                     'message' => "Utilisateur non modifié, merci de vérifier l'erreur décrite",
-                    'reponse' => Response::HTTP_BAD_REQUEST,
-                    'headers' => [],
                     'serialized' => false
-                ]);
+                ], Response::HTTP_BAD_REQUEST);
             }
         } catch (\Exception $e) {
             throw new \RuntimeException("Erreur lors de la mise à jour de l'utilisateur", $e->getMessage());
@@ -316,10 +246,8 @@ class UtilisateurService
             return new JsonResponse([
                 'utilisateur' => null,
                 'message' => 'Utilisateur non trouvé, merci de fournir un identifiant valide',
-                'reponse' => Response::HTTP_NOT_FOUND,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         // suppression de l'utilisateur en BDD
@@ -331,35 +259,29 @@ class UtilisateurService
             return new JsonResponse([
                 'utilisateur' => $utilisateurJSON,
                 'message' => 'Utilisateur supprimé',
-                'reponse' => Response::HTTP_NO_CONTENT,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NO_CONTENT);
         } else {
             return new JsonResponse([
                 'utilisateur' => null,
                 'message' => 'Utilisateur non supprimé !',
-                'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
     /**
-     * Ajoute un genre musical préférée à un utilisateur et renvoie une réponse JSON.
+     * Ajoute un offre à un utilisateur et renvoie une réponse JSON.
      *
      * @param mixed $data Les données requises pour ajouter un genre musical préféré.
      * @param UtilisateurRepository $utilisateurRepository Le repository des utilisateurs.
-     * @param PreferencerRepository $preferencerRepository Le repository des préférences de genres musicaux.
      * @param SerializerInterface $serializer Le service de sérialisation.
      *
-     * @return JsonResponse La réponse JSON après tentatives d'ajout d'un membre au réseau.
+     * @return JsonResponse La réponse JSON après tentatives d'ajout d'un membre au offre.
      */
     public static function ajouteGenreMusicalUtilisateur(
         mixed $data,
         UtilisateurRepository $utilisateurRepository,
-        PreferencerRepository $preferencerRepository,
         GenreMusicalRepository $genreMusicalRepository,
         SerializerInterface $serializer,
     ): JsonResponse {
@@ -372,36 +294,32 @@ class UtilisateurService
             return new JsonResponse([
                 'object' => null,
                 'message' => 'genre musical ou utilisateur non trouvé, merci de fournir un identifiant valide',
-                'reponse' => Response::HTTP_NOT_FOUND,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         // ajout de l'objet en BDD
-        $preferencerObject = new Preferencer();
-        $preferencerObject->setIdGenreMusical($genreMusical);
-        $preferencerObject->setIdUtilisateur($utilisateur);
-        $rep = $preferencerRepository->ajouteGenreMusicalUtilisateur($preferencerObject);
+        $utilisateur->addGenreMusical($genreMusical);
+        $rep = $utilisateurRepository->updateUtilisateur($utilisateur);
 
         // si l'action à réussi
         if ($rep) {
-            $utilisateurJSON = $serializer->serialize($utilisateur, 'json');
+            $utilisateurJSON = $serializer->serialize(
+                $utilisateur,
+                'json',
+                ['groups' => ['utilisateur:read']]
+            );
             return new JsonResponse([
                 'object' => $utilisateurJSON,
                 'message' => "genre musical ajouté aux préférences de l'utilisateur.",
-                'reponse' => Response::HTTP_NO_CONTENT,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NO_CONTENT);
         } else {
             return new JsonResponse([
                 'object' => null,
                 'message' => "genre musical non ajouté aux préférences de l'utilisateur !",
-                'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -410,7 +328,6 @@ class UtilisateurService
      *
      * @param mixed $data Les données requises pour retirer un genre musical préféré.
      * @param UtilisateurRepository $utilisateurRepository Le repository des utilisateurs.
-     * @param PreferencerRepository $preferencerRepository Le repository des préférences de genres musicaux.
      * @param SerializerInterface $serializer Le service de sérialisation.
      *
      * @return JsonResponse La réponse JSON après tentatives de suppression de préférence.
@@ -418,7 +335,6 @@ class UtilisateurService
     public static function retireGenreMusicalUtilisateur(
         mixed $data,
         UtilisateurRepository $utilisateurRepository,
-        PreferencerRepository $preferencerRepository,
         GenreMusicalRepository $genreMusicalRepository,
         SerializerInterface $serializer,
     ): JsonResponse {
@@ -431,36 +347,140 @@ class UtilisateurService
             return new JsonResponse([
                 'object' => null,
                 'message' => 'genre musical ou utilisateur non trouvé, merci de fournir un identifiant valide',
-                'reponse' => Response::HTTP_NOT_FOUND,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         // ajout de l'objet en BDD
-        $preferencerObject = new Preferencer();
-        $preferencerObject->setIdGenreMusical($genreMusical);
-        $preferencerObject->setIdUtilisateur($utilisateur);
-        $rep = $preferencerRepository->retireGenreMusicalUtilisateur($preferencerObject);
+        $utilisateur->removeGenreMusical($genreMusical);
+        $rep = $utilisateurRepository->updateUtilisateur($utilisateur);
 
         // si l'action à réussi
         if ($rep) {
-            $utilisateurJSON = $serializer->serialize($utilisateur, 'json');
+            $utilisateurJSON = $serializer->serialize(
+                $utilisateur,
+                'json',
+                ['groups' => ['utilisateur:read']]
+            );
             return new JsonResponse([
                 'object' => $utilisateurJSON,
                 'message' => "genre musical retiré aux préférences de l'utilisateur.",
-                'reponse' => Response::HTTP_NO_CONTENT,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NO_CONTENT);
         } else {
             return new JsonResponse([
                 'object' => null,
                 'message' => "genre musical non retiré aux préférences de l'utilisateur !",
-                'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Ajoute une offre à un utilisateur et renvoie une réponse JSON.
+     *
+     * @param mixed $data Les données requises pour ajouter un genre musical préféré.
+     * @param UtilisateurRepository $utilisateurRepository Le repository des utilisateurs.
+     * @param OffreRepository $offreRepository Le repository des offres.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après tentatives d'ajout d'une offre à un utilisateur.
+     */
+    public static function ajouteOffreUtilisateur(
+        mixed $data,
+        UtilisateurRepository $utilisateurRepository,
+        OffreRepository $offreRepository,
+        SerializerInterface $serializer,
+    ): JsonResponse {
+        // récupération de l'offre et de l'utilisateur ciblé
+        $offre = $offreRepository->find($data['diOffre']);
+        $utilisateur = $utilisateurRepository->find($data['idUtilisateur']);
+
+        // si pas d'offre OU d'utilisateur trouvé(e)
+        if ($offre == null || $utilisateur == null) {
+            return new JsonResponse([
+                'object' => null,
+                'message' => 'Offre ou utilisateur non trouvé, merci de fournir un identifiant valide',
+                'serialized' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // ajout de l'objet en BDD
+        $utilisateur->addOffre($offre);
+        $rep = $utilisateurRepository->updateUtilisateur($utilisateur);
+
+        // si l'action à réussi
+        if ($rep) {
+            $utilisateurJSON = $serializer->serialize(
+                $utilisateur,
+                'json',
+                ['groups' => ['utilisateur:read']]
+            );
+            return new JsonResponse([
+                'object' => $utilisateurJSON,
+                'message' => "Offre ajoutée aux créations de l'utilisateur.",
+                'serialized' => false
+            ], Response::HTTP_NO_CONTENT);
+        } else {
+            return new JsonResponse([
+                'object' => null,
+                'message' => "Offre non ajoutée aux créations de l'utilisateur !",
+                'serialized' => false
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Retire une offre à un utilisateur et renvoie une réponse JSON.
+     *
+     * @param mixed $data Les données requises pour retirer un offre à l'utilisateur.
+     * @param UtilisateurRepository $utilisateurRepository Le repository des utilisateurs.
+     * @param OffreRepository $offreRepository Le repository des offres.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après tentatives de suppression de préférence.
+     */
+    public static function retireOffreUtilisateur(
+        mixed $data,
+        UtilisateurRepository $utilisateurRepository,
+        OffreRepository $offreRepository,
+        SerializerInterface $serializer,
+    ): JsonResponse {
+        // récupération du offre et de l'utilisateur ciblé
+        $offre = $offreRepository->find($data['idOffre']);
+        $utilisateur = $utilisateurRepository->find($data['idUtilisateur']);
+
+        // si pas de offre OU de l'utilisateur trouvé
+        if ($offre == null || $utilisateur == null) {
+            return new JsonResponse([
+                'object' => null,
+                'message' => 'offre ou utilisateur non trouvé, merci de fournir un identifiant valide',
+                'serialized' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // suppression de l'objet en BDD
+        $utilisateur->removeOffre($offre);
+        $rep = $utilisateurRepository->updateUtilisateur($utilisateur);
+
+        // si l'action à réussi
+        if ($rep) {
+            $utilisateurJSON = $serializer->serialize(
+                $utilisateur,
+                'json',
+                ['groups' => ['utilisateur:read']]
+            );
+            return new JsonResponse([
+                'object' => $utilisateurJSON,
+                'message' => "offre retiré aux préférences de l'utilisateur.",
+                'serialized' => false
+            ], Response::HTTP_NO_CONTENT);
+        } else {
+            return new JsonResponse([
+                'object' => null,
+                'message' => "offre non retiré aux préférences de l'utilisateur !",
+                'serialized' => false
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 }

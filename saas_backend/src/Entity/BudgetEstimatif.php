@@ -4,60 +4,53 @@ namespace App\Entity;
 
 use App\Repository\BudgetEstimatifRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: BudgetEstimatifRepository::class)]
 class BudgetEstimatif
 {
-    /**
-     * Identifiant unique du budget estimatif.
-     *
-     * @var int|null
-     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $idBE = null;
+    #[Groups(['budget_estimatif:read'])]
+    private ?int $id = null;
 
-    /**
-     * Montant du cachet de l'artiste.
-     *
-     * @var int|null
-     */
     #[ORM\Column]
+    #[Groups(['budget_estimatif:read', 'budget_estimatif:write'])]
     private ?int $cachetArtiste = null;
 
-    /**
-     * Montant des frais de déplacement.
-     *
-     * @var int|null
-     */
     #[ORM\Column]
+    #[Groups(['budget_estimatif:read', 'budget_estimatif:write'])]
     private ?int $fraisDeplacement = null;
 
-    /**
-     * Montant des frais d'hébergement.
-     *
-     * @var int|null
-     */
     #[ORM\Column]
+    #[Groups(['budget_estimatif:read', 'budget_estimatif:write'])]
     private ?int $fraisHebergement = null;
 
-    /**
-     * Montant des frais de restauration.
-     *
-     * @var int|null
-     */
     #[ORM\Column]
+    #[Groups(['budget_estimatif:read', 'budget_estimatif:write'])]
     private ?int $fraisRestauration = null;
+
+    #[ORM\OneToMany(targetEntity: Offre::class, mappedBy: "budgetEstimatif", orphanRemoval: true, cascade: ["remove"])]
+    #[Groups(['budget_estimatif:read'])]
+    private Collection $offres;
+
+
+    public function __construct()
+    {
+        $this->offres = new ArrayCollection();
+    }
 
     /**
      * Récupère l'identifiant du budget estimatif.
      *
      * @return int|null
      */
-    public function getIdBE(): ?int
+    public function getId(): ?int
     {
-        return $this->idBE;
+        return $this->id;
     }
 
     /**
@@ -65,9 +58,9 @@ class BudgetEstimatif
      *
      * @return int|null
      */
-    public function setIdBE(int $idBE): ?int
+    public function setId(int $id): ?int
     {
-        return $this->idBE = $idBE;
+        return $this->id = $id;
     }
 
     /**
@@ -159,6 +152,30 @@ class BudgetEstimatif
     {
         $this->fraisRestauration = $fraisRestauration;
 
+        return $this;
+    }
+
+    public function getOffres(): Collection
+    {
+        return $this->offres;
+    }
+
+    public function addOffre(Offre $offre): self
+    {
+        if (!$this->offres->contains($offre)) {
+            $this->offres[] = $offre;
+            $offre->setBudgetEstimatif($this);
+        }
+        return $this;
+    }
+
+    public function removeOffre(Offre $offre): self
+    {
+        if ($this->offres->removeElement($offre)) {
+            if ($offre->getBudgetEstimatif() === $this) {
+                $offre->setBudgetEstimatif(null);
+            }
+        }
         return $this;
     }
 }
