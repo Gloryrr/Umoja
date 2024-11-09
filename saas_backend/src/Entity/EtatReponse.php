@@ -21,20 +21,21 @@ class EtatReponse
     #[ORM\Column(type: "integer")]
     #[Groups(['etat_reponse:read'])]
     private ?int $id = null;
-    
+
     #[ORM\Column(type: "string", length: 100)]
     #[Groups(['etat_reponse:read', 'etat_reponse:write'])]
     private ?string $nomEtatReponse = null;
-    
+
     #[ORM\Column(type: "string", length: 255)]
     #[Groups(['etat_reponse:read', 'etat_reponse:write'])]
     private ?string $descriptionEtatReponse = null;
-    
+
     #[ORM\OneToMany(targetEntity: Reponse::class, mappedBy: "etatReponse", orphanRemoval: true, cascade: ["remove"])]
     #[Groups(['etat_reponse:read'])]
-    private Collection $reponses;    
+    private Collection $reponses;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->reponses = new ArrayCollection();
     }
 

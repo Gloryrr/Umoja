@@ -30,7 +30,7 @@ class EtatReponseService
         // on récupère tous les états
         $etatsReponse = $etatReponseRepository->findAll();
         $etatsReponseJSON = $serializer->serialize(
-            $etatsReponse, 
+            $etatsReponse,
             'json',
             ['groups' => ['etat_reponse:read']]
         );
@@ -75,7 +75,7 @@ class EtatReponseService
             // vérification de l'action en BDD
             if ($rep) {
                 $etatReponseJSON = $serializer->serialize(
-                    $etatReponse, 
+                    $etatReponse,
                     'json',
                     ['groups' => ['etat_reponse:read']]
                 );
@@ -140,7 +140,7 @@ class EtatReponseService
             // réponse après la mise à jour
             if ($rep) {
                 $etatReponse = $serializer->serialize(
-                    $etatReponse, 
+                    $etatReponse,
                     'json',
                     ['groups' => ['etat_reponse:read']]
                 );
@@ -193,7 +193,7 @@ class EtatReponseService
         // réponse après suppression
         if ($rep) {
             $etatReponseJSON = $serializer->serialize(
-                $etatReponse, 
+                $etatReponse,
                 'json',
                 ['groups' => ['etat_reponse:read']]
             );
@@ -231,7 +231,7 @@ class EtatReponseService
         $reponse = $reponseRepository->find(intval($data['idReponse']));
 
         // si pas trouvée
-        if ($etatReponse == null || $reponse == null) { 
+        if ($etatReponse == null || $reponse == null) {
             return new JsonResponse([
                 'etats_reponses' => null,
                 'message' => "etat de réponse ou réponse non trouvée, merci de fournir un identifiant valide",
@@ -246,7 +246,7 @@ class EtatReponseService
         // réponse après suppression
         if ($rep) {
             $etatReponseJSON = $serializer->serialize(
-                $etatReponse, 
+                $etatReponse,
                 'json',
                 ['groups' => ['etat_reponse:read']]
             );
@@ -285,7 +285,7 @@ class EtatReponseService
         $reponse = $reponseRepository->find(intval($data['idReponse']));
 
         // si pas trouvé
-        if ($etatReponse == null || $reponse == null) { 
+        if ($etatReponse == null || $reponse == null) {
             return new JsonResponse([
                 'etats_reponses' => null,
                 'message' => "etat de réponse ou réponse non trouvée, merci de fournir un identifiant valide",
@@ -300,7 +300,7 @@ class EtatReponseService
         // réponse après suppression
         if ($rep) {
             $etatReponseJSON = $serializer->serialize(
-                $etatReponse, 
+                $etatReponse,
                 'json',
                 ['groups' => ['etat_reponse:read']]
             );

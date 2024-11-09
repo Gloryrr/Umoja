@@ -30,7 +30,7 @@ class EtatOffreService
         // on récupère tous les états
         $etatsOffre = $etatOffreRepository->findAll();
         $etatsOffreJSON = $serializer->serialize(
-            $etatsOffre, 
+            $etatsOffre,
             'json',
             ['groups' => ['etat_offre:read']]
         );
@@ -74,7 +74,7 @@ class EtatOffreService
             // vérification de l'action en BDD
             if ($rep) {
                 $etatOffreJSON = $serializer->serialize(
-                    $etatOffre, 
+                    $etatOffre,
                     'json',
                     ['groups' => ['etat_offre:read']]
                 );
@@ -137,7 +137,7 @@ class EtatOffreService
             // si l'action à réussi
             if ($rep) {
                 $etatOffre = $serializer->serialize(
-                    $etatOffre, 
+                    $etatOffre,
                     'json',
                     ['groups' => ['etat_offre:read']]
                 );
@@ -191,7 +191,7 @@ class EtatOffreService
         // si l'action à réussi
         if ($rep) {
             $etatOffreJSON = $serializer->serialize(
-                $etatOffre, 
+                $etatOffre,
                 'json',
                 ['groups' => ['etat_offre:read']]
             );
@@ -229,7 +229,7 @@ class EtatOffreService
         $offre = $offreRepository->find(intval($data['idOffre']));
 
         // si pas trouvée
-        if ($etatOffre == null || $offre == null) { 
+        if ($etatOffre == null || $offre == null) {
             return new JsonResponse([
                 'etat_offre' => null,
                 'message' => "etat d'offre ou offre non trouvée, merci de fournir un identifiant valide",
@@ -244,7 +244,7 @@ class EtatOffreService
         // réponse après suppression
         if ($rep) {
             $etatOffreJSON = $serializer->serialize(
-                $etatOffre, 
+                $etatOffre,
                 'json',
                 ['groups' => ['etat_offre:read']]
             );
@@ -283,7 +283,7 @@ class EtatOffreService
         $offre = $offreRepository->find(intval($data['idOffre']));
 
         // si pas trouvé
-        if ($etatOffre == null || $offre == null) { 
+        if ($etatOffre == null || $offre == null) {
             return new JsonResponse([
                 'etat_offre' => null,
                 'message' => "etat d'offre ou offre non trouvée, merci de fournir un identifiant valide",
@@ -298,7 +298,7 @@ class EtatOffreService
         // réponse après suppression
         if ($rep) {
             $etatOffreJSON = $serializer->serialize(
-                $etatOffre, 
+                $etatOffre,
                 'json',
                 ['groups' => ['etat_offre:read']]
             );

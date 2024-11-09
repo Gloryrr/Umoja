@@ -16,29 +16,30 @@ class BudgetEstimatif
     #[ORM\Column]
     #[Groups(['budget_estimatif:read'])]
     private ?int $id = null;
-    
+
     #[ORM\Column]
     #[Groups(['budget_estimatif:read', 'budget_estimatif:write'])]
     private ?int $cachetArtiste = null;
-    
+
     #[ORM\Column]
     #[Groups(['budget_estimatif:read', 'budget_estimatif:write'])]
     private ?int $fraisDeplacement = null;
-    
+
     #[ORM\Column]
     #[Groups(['budget_estimatif:read', 'budget_estimatif:write'])]
     private ?int $fraisHebergement = null;
-    
+
     #[ORM\Column]
     #[Groups(['budget_estimatif:read', 'budget_estimatif:write'])]
     private ?int $fraisRestauration = null;
-    
+
     #[ORM\OneToMany(targetEntity: Offre::class, mappedBy: "budgetEstimatif", orphanRemoval: true, cascade: ["remove"])]
     #[Groups(['budget_estimatif:read'])]
     private Collection $offres;
-    
 
-    public function __construct() {
+
+    public function __construct()
+    {
         $this->offres = new ArrayCollection();
     }
 

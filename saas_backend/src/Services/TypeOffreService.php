@@ -30,10 +30,10 @@ class TypeOffreService
         // on récupère tous les types d'offre
         $typesOffre = $typeOffreRepository->findAll();
         $typesOffreJSON = $serializer->serialize(
-            $typesOffre, 
-            'json', 
+            $typesOffre,
+            'json',
             ['groups' => ['typeOffre:read']]
-    );
+        );
         return new JsonResponse([
             'types_offre' => $typesOffreJSON,
             'message' => "Liste des types d'offre",
@@ -74,10 +74,10 @@ class TypeOffreService
             // vérification de l'action en BDD
             if ($rep) {
                 $typeOffreJSON = $serializer->serialize(
-                    $typeOffre, 
-                    'json', 
+                    $typeOffre,
+                    'json',
                     ['groups' => ['typeOffre:read']]
-            );
+                );
                 return new JsonResponse([
                     'type_offre' => $typeOffreJSON,
                     'message' => "Type d'offre ajouté !",
@@ -136,10 +136,10 @@ class TypeOffreService
             // réponse après la mise à jour
             if ($rep) {
                 $typeOffre = $serializer->serialize(
-                    $typeOffre, 
-                    'json', 
+                    $typeOffre,
+                    'json',
                     ['groups' => ['typeOffre:read']]
-            );
+                );
                 return new JsonResponse([
                     'type_offre' => $typeOffre,
                     'message' => "Type d'offre modifié avec succès",
@@ -189,10 +189,10 @@ class TypeOffreService
         // réponse après suppression
         if ($rep) {
             $typeOffreJSON = $serializer->serialize(
-                $typeOffre, 
-                'json', 
+                $typeOffre,
+                'json',
                 ['groups' => ['typeOffre:read']]
-        );
+            );
             return new JsonResponse([
                 'type_offre' => $typeOffreJSON,
                 'message' => "Type d'offre supprimé",
@@ -227,7 +227,7 @@ class TypeOffreService
         $offre = $offreRepository->find(intval($data['idOffre']));
 
         // si pas trouvé
-        if ($typeOffre == null || $offre == null) { 
+        if ($typeOffre == null || $offre == null) {
             return new JsonResponse([
                 'type_offre' => null,
                 'message' => "Type d'offre ou offre non trouvée, merci de fournir un identifiant valide",
@@ -242,10 +242,10 @@ class TypeOffreService
         // réponse après suppression
         if ($rep) {
             $typeOffreJSON = $serializer->serialize(
-                $typeOffre, 
-                'json', 
+                $typeOffre,
+                'json',
                 ['groups' => ['typeOffre:read']]
-        );
+            );
             return new JsonResponse([
                 'type_offre' => $typeOffreJSON,
                 'message' => "Type d'offre supprimé",
@@ -280,7 +280,7 @@ class TypeOffreService
         $offre = $offreRepository->find(intval($data['idOffre']));
 
         // si pas trouvé
-        if ($typeOffre == null || $offre == null) { 
+        if ($typeOffre == null || $offre == null) {
             return new JsonResponse([
                 'type_offre' => null,
                 'message' => "Type d'offre ou offre non trouvée, merci de fournir un identifiant valide",
@@ -295,10 +295,10 @@ class TypeOffreService
         // réponse après suppression
         if ($rep) {
             $typeOffreJSON = $serializer->serialize(
-                $typeOffre, 
-                'json', 
+                $typeOffre,
+                'json',
                 ['groups' => ['typeOffre:read']]
-        );
+            );
             return new JsonResponse([
                 'type_offre' => $typeOffreJSON,
                 'message' => "Type d'offre supprimé",

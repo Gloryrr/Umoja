@@ -68,9 +68,10 @@ class Reseau
     #[ORM\JoinColumn(name: "reseau_id", onDelete: "CASCADE")]
     #[ORM\InverseJoinColumn(name: "offre_id", onDelete: "CASCADE")]
     #[Groups(['reseau:read', 'reseau:write'])]
-    private Collection $offres;    
+    private Collection $offres;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->utilisateurs = new ArrayCollection();
         $this->genresMusicaux = new ArrayCollection();
         $this->offres = new ArrayCollection();

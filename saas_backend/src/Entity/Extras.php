@@ -21,36 +21,37 @@ class Extras
     #[ORM\Column]
     #[Groups(['extras:read'])]
     private ?int $id = null;
-    
+
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['extras:read', 'extras:write'])]
     private ?string $descrExtras = null;
-    
+
     #[ORM\Column(nullable: true)]
     #[Groups(['extras:read', 'extras:write'])]
     private ?int $coutExtras = null;
-    
+
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['extras:read', 'extras:write'])]
     private ?string $exclusivite = null;
-    
+
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['extras:read', 'extras:write'])]
     private ?string $exception = null;
-    
+
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['extras:read', 'extras:write'])]
     private ?string $ordrePassage = null;
-    
+
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['extras:read', 'extras:write'])]
     private ?string $clausesConfidentialites = null;
-    
+
     #[ORM\OneToMany(targetEntity: Offre::class, mappedBy: "extras", orphanRemoval: true, cascade: ["remove"])]
     #[Groups(['extras:read'])]
-    private Collection $offres;    
+    private Collection $offres;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->offres = new ArrayCollection();
     }
 

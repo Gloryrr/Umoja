@@ -69,7 +69,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['utilisateur:read'])]
     private Collection $offres;
 
-    #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: "utilisateur", orphanRemoval: true, cascade: ["remove"])]
+    #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: "utilisateur", orphanRemoval: true, cascade:["remove"])]
     #[Groups(['utilisateur:read'])]
     private Collection $offresCommentees;
 
@@ -80,7 +80,8 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Constructeur de la classe.
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->genresMusicaux = new ArrayCollection();
         $this->reseaux = new ArrayCollection();
         $this->offres = new ArrayCollection();
@@ -104,7 +105,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      * @param int $id
      * @return static
      */
-    public function setid(int $id): static
+    public function setId(int $id): static
     {
         $this->id = $id;
 

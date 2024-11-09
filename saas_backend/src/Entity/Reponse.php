@@ -83,7 +83,7 @@ class Reponse
      */
     #[ORM\Column]
     #[Groups(['reponse:read', 'reponse:write'])]
-    private ?float $prixParticipation = null;    
+    private ?float $prixParticipation = null;
 
     /**
      * Retourne l'identifiant de la réponse.

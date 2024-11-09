@@ -21,17 +21,18 @@ class EtatOffre
     #[ORM\Column]
     #[Groups(['etat_offre:read'])]
     private ?int $id = null;
-    
+
     #[ORM\Column(length: 50)]
     #[Groups(['etat_offre:read', 'etat_offre:write'])]
     private ?string $nomEtat = null;
-    
+
     #[ORM\OneToMany(targetEntity: Offre::class, mappedBy: "etatOffre", orphanRemoval: true, cascade: ["remove"])]
     #[Groups(['etat_offre:read'])]
     private Collection $offres;
-    
 
-    public function __construct() {
+
+    public function __construct()
+    {
         $this->offres = new ArrayCollection();
     }
 

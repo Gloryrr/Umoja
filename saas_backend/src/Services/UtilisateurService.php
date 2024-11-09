@@ -39,7 +39,7 @@ class UtilisateurService
                 'serialized' => true
             ], Response::HTTP_OK);
         } catch (\Exception $e) {
-            throw new \RuntimeException("ERREUR ". $e->getMessage());
+            throw new \RuntimeException("ERREUR " . $e->getMessage());
         }
     }
 
@@ -60,7 +60,7 @@ class UtilisateurService
         // on récupère tous les utilisateurs
         $utilisateurs = $utilisateurRepository->trouveUtilisateurByUsername($data['username']);
         $utilisateursJSON = $serializer->serialize(
-            $utilisateurs, 
+            $utilisateurs,
             'json',
             ['groups' => ['utilisateur:read']]
         );
@@ -121,8 +121,8 @@ class UtilisateurService
             // vérification de l'action en BDD
             if ($rep) {
                 $utilisateurJSON = $serializer->serialize(
-                    $utilisateur, 
-                    'json', 
+                    $utilisateur,
+                    'json',
                     ['groups' => ['utilisateur:write']]
                 );
                 return new JsonResponse([
@@ -202,7 +202,7 @@ class UtilisateurService
             // si l'action à réussi
             if ($rep) {
                 $utilisateurJSON = $serializer->serialize(
-                    $utilisateur, 
+                    $utilisateur,
                     'json',
                     ['groups' => ['utilisateur:read']]
                 );
@@ -305,8 +305,8 @@ class UtilisateurService
         // si l'action à réussi
         if ($rep) {
             $utilisateurJSON = $serializer->serialize(
-                $utilisateur, 
-                'json', 
+                $utilisateur,
+                'json',
                 ['groups' => ['utilisateur:read']]
             );
             return new JsonResponse([
@@ -412,7 +412,7 @@ class UtilisateurService
         // si l'action à réussi
         if ($rep) {
             $utilisateurJSON = $serializer->serialize(
-                $utilisateur, 
+                $utilisateur,
                 'json',
                 ['groups' => ['utilisateur:read']]
             );
@@ -466,7 +466,7 @@ class UtilisateurService
         // si l'action à réussi
         if ($rep) {
             $utilisateurJSON = $serializer->serialize(
-                $utilisateur, 
+                $utilisateur,
                 'json',
                 ['groups' => ['utilisateur:read']]
             );

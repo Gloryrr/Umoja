@@ -31,7 +31,7 @@ class CommentaireService
         // on récupère tous les Commentaires
         $commentaires = $commentaireRepository->findAll();
         $commentairesJSON = $serializer->serialize(
-            $commentaires, 
+            $commentaires,
             'json',
             ['groups' => ['commentaire:read']]
         );
@@ -84,7 +84,7 @@ class CommentaireService
             // vérification de l'action en BDD
             if ($rep) {
                 $commentaireJSON = $serializer->serialize(
-                    $commentaire, 
+                    $commentaire,
                     'json',
                     ['groups' => ['commentaire:read']]
                 );
@@ -147,7 +147,7 @@ class CommentaireService
             // si l'action à réussi
             if ($rep) {
                 $commentaire = $serializer->serialize(
-                    $commentaire, 
+                    $commentaire,
                     'json',
                     ['groups' => ['commentaire:read']]
                 );
@@ -201,7 +201,7 @@ class CommentaireService
         // si l'action à réussi
         if ($rep) {
             $commentaireJSON = $serializer->serialize(
-                $commentaire, 
+                $commentaire,
                 'json',
                 ['groups' => ['commentaire:read']]
             );

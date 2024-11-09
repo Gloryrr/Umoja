@@ -42,7 +42,7 @@ class LoginService
             // si utilisateur trouvé, alors on renvoie les infos utilisateurs
             if ($authentification_valide) {
                 $utilisateurJSON = $serializer->serialize(
-                    $user, 
+                    $user,
                     'json',
                     ['groups' => ['utilisateur:read']]
                 );

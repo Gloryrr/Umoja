@@ -32,8 +32,8 @@ class ReponseService
         // On récupère toutes les réponses
         $reponses = $reponseRepository->findAll();
         $reponsesJSON = $serializer->serialize(
-            $reponses, 
-            'json', 
+            $reponses,
+            'json',
             ['groups' => ['reponse:read']]
         );
         return new JsonResponse([
@@ -65,14 +65,15 @@ class ReponseService
     ): JsonResponse {
         try {
             // Vérifie que les données nécessaires sont présentes
-            if ((
+            if (
+                (
                     empty($data['idEtatReponse']) ||
                     empty($data['idOffre']) ||
                     empty($data['dateDebut']) ||
                     empty($data['dateFin']) ||
-                    empty($data['prixParticipation']) || 
-                    empty($data['utilisateur']) || 
-                    empty($data['offre']) || 
+                    empty($data['prixParticipation']) ||
+                    empty($data['utilisateur']) ||
+                    empty($data['offre']) ||
                     empty($data['etatReponse'])
                 )
             ) {
@@ -104,7 +105,7 @@ class ReponseService
                 ], Response::HTTP_BAD_REQUEST);
             }
             $reponse->setOffre($offre);
-            
+
             $etatReponse = $etatReponseRepository->find(intval($data['etatReponse']['nomEtatReponse']));
             if ($etatReponse === null) {
                 return new JsonResponse([
@@ -122,8 +123,8 @@ class ReponseService
             // Vérification de l'insertion en BDD
             if ($rep) {
                 $reponseJSON = $serializer->serialize(
-                    $reponse, 
-                    'json', 
+                    $reponse,
+                    'json',
                     ['groups' => ['reponse:read']]
                 );
                 return new JsonResponse([
@@ -202,8 +203,8 @@ class ReponseService
             // Si la mise à jour a réussi
             if ($rep) {
                 $reponseJSON = $serializer->serialize(
-                    $reponse, 
-                    'json', 
+                    $reponse,
+                    'json',
                     ['groups' => ['reponse:read']]
                 );
                 return new JsonResponse([
@@ -255,8 +256,8 @@ class ReponseService
         // Si la suppression a réussi
         if ($rep) {
             $reponseJSON = $serializer->serialize(
-                $reponse, 
-                'json', 
+                $reponse,
+                'json',
                 ['groups' => ['reponse:read']]
             );
             return new JsonResponse([

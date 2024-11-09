@@ -30,7 +30,7 @@ class ConditionsFinancieresService
         // on récupère tous les budgets définis
         $conditionsFinancieres = $conditionsFinancieresRepository->findAll();
         $conditionsFinancieresJSON = $serializer->serialize(
-            $conditionsFinancieres, 
+            $conditionsFinancieres,
             'json',
             ['groups' => ['conditions_financieres:read']]
         );
@@ -77,7 +77,7 @@ class ConditionsFinancieresService
             // vérification de l'action en BDD
             if ($rep) {
                 $conditionsFinancieresJSON = $serializer->serialize(
-                    $conditionsFinancieres, 
+                    $conditionsFinancieres,
                     'json',
                     ['groups' => ['conditions_financieres:read']]
                 );
@@ -146,7 +146,7 @@ class ConditionsFinancieresService
             // si l'action à réussi
             if ($rep) {
                 $conditionsFinancieres = $serializer->serialize(
-                    $conditionsFinancieres, 
+                    $conditionsFinancieres,
                     'json',
                     ['groups' => ['conditions_financieres:read']]
                 );
@@ -200,7 +200,7 @@ class ConditionsFinancieresService
         // si l'action à réussi
         if ($rep) {
             $conditionsFinancieresJSON = $serializer->serialize(
-                $conditionsFinancieres, 
+                $conditionsFinancieres,
                 'json',
                 ['groups' => ['conditions_financieres:read']]
             );
@@ -238,7 +238,7 @@ class ConditionsFinancieresService
         $offre = $offreRepository->find(intval($data['idOffre']));
 
         // si pas trouvée
-        if ($conditionsFinancieres == null || $offre == null) { 
+        if ($conditionsFinancieres == null || $offre == null) {
             return new JsonResponse([
                 'conditions_financieres' => null,
                 'message' => "conditions financières ou offre non trouvée, merci de fournir un identifiant valide",
@@ -253,7 +253,7 @@ class ConditionsFinancieresService
         // réponse après suppression
         if ($rep) {
             $conditionsFinancieresJSON = $serializer->serialize(
-                $conditionsFinancieres, 
+                $conditionsFinancieres,
                 'json',
                 ['groups' => ['conditions_financieres:read']]
             );
@@ -292,7 +292,7 @@ class ConditionsFinancieresService
         $offre = $offreRepository->find(intval($data['idOffre']));
 
         // si pas trouvé
-        if ($conditionsFinancieres == null || $offre == null) { 
+        if ($conditionsFinancieres == null || $offre == null) {
             return new JsonResponse([
                 'conditions_financieres' => null,
                 'message' => "conditions financières ou offre non trouvée, merci de fournir un identifiant valide",
@@ -307,7 +307,7 @@ class ConditionsFinancieresService
         // réponse après suppression
         if ($rep) {
             $conditionsFinancieresJSON = $serializer->serialize(
-                $conditionsFinancieres, 
+                $conditionsFinancieres,
                 'json',
                 ['groups' => ['conditions_financieres:read']]
             );

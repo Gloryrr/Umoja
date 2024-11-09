@@ -22,25 +22,31 @@ class ConditionsFinancieres
     #[ORM\Column]
     #[Groups(['conditions_financieres:read'])]
     private ?int $id = null;
-    
+
     #[ORM\Column]
     #[Groups(['conditions_financieres:read', 'conditions_financieres:write'])]
     private ?int $minimunGaranti = null;
-    
+
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['conditions_financieres:read', 'conditions_financieres:write'])]
     private ?string $conditionsPaiement = null;
-    
+
     #[ORM\Column]
     #[Groups(['conditions_financieres:read', 'conditions_financieres:write'])]
     private ?float $pourcentageRecette = null;
-    
-    #[ORM\OneToMany(targetEntity: Offre::class, mappedBy: "conditionsFinancieres", orphanRemoval: true, cascade: ["remove"])]
+
+    #[ORM\OneToMany(
+        targetEntity: Offre::class,
+        mappedBy: "conditionsFinancieres",
+        orphanRemoval: true,
+        cascade: ["remove"]
+    )]
     #[Groups(['conditions_financieres:read'])]
     private Collection $offres;
-    
 
-    public function __construct() {
+
+    public function __construct()
+    {
         $this->offres = new ArrayCollection();
     }
 

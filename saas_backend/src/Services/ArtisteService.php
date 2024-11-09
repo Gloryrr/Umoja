@@ -220,7 +220,7 @@ class ArtisteService
         $genreMusical = $genreMusicalRepository->find(intval($data['idGenreMusical']));
 
         // si pas trouvé
-        if ($artiste == null || $genreMusical == null) { 
+        if ($artiste == null || $genreMusical == null) {
             return new JsonResponse([
                 'artiste' => null,
                 'message' => "artiste ou genre musical non trouvée, merci de fournir un identifiant valide",
@@ -270,7 +270,7 @@ class ArtisteService
         $genreMusical = $genreMusicalRepository->find(intval($data['idGenreMusical']));
 
         // si pas trouvé
-        if ($artiste == null || $genreMusical == null) { 
+        if ($artiste == null || $genreMusical == null) {
             return new JsonResponse([
                 'artiste' => null,
                 'message' => "artiste ou genre musical non trouvée, merci de fournir un identifiant valide",
@@ -320,7 +320,7 @@ class ArtisteService
         $offre = $offreRepository->find(intval($data['idOffre']));
 
         // si pas trouvé
-        if ($artiste == null || $offre == null) { 
+        if ($artiste == null || $offre == null) {
             return new JsonResponse([
                 'artiste' => null,
                 'message' => "artiste ou genre musical non trouvée, merci de fournir un identifiant valide",
@@ -370,7 +370,7 @@ class ArtisteService
         $offre = $offreRepository->find(intval($data['idOffre']));
 
         // si pas trouvé
-        if ($artiste == null || $offre == null) { 
+        if ($artiste == null || $offre == null) {
             return new JsonResponse([
                 'artiste' => null,
                 'message' => "artiste ou genre musical non trouvée, merci de fournir un identifiant valide",

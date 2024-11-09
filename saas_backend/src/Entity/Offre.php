@@ -128,7 +128,8 @@ class Offre
     #[Groups(['offre:read', 'offre:write'])]
     private Collection $reponses;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->artistes = new ArrayCollection();
         $this->reseaux = new ArrayCollection();
         $this->genresMusicaux = new ArrayCollection();
@@ -138,7 +139,7 @@ class Offre
 
     /**
      * Obtient l'id de l'offre
-     * 
+     *
      * @return int
      */
     public function getId(): int

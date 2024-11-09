@@ -33,8 +33,8 @@ class GenreMusicalService
         // on récupère tous les genresMusicaux
         $genresMusicaux = $genreMusicalRepository->findAll();
         $genresMusicauxJSON = $serializer->serialize(
-            $genresMusicaux, 
-            'json', 
+            $genresMusicaux,
+            'json',
             ['groups' => ['genreMusical:read']]
         );
         return new JsonResponse([
@@ -77,8 +77,8 @@ class GenreMusicalService
             // vérification de l'action en BDD
             if ($rep) {
                 $genreMusicalJSON = $serializer->serialize(
-                    $genreMusical, 
-                    'json', 
+                    $genreMusical,
+                    'json',
                     ['groups' => ['genreMusical:read']]
                 );
                 return new JsonResponse([
@@ -140,8 +140,8 @@ class GenreMusicalService
             // si l'action à réussi
             if ($rep) {
                 $genreMusical = $serializer->serialize(
-                    $genreMusical, 
-                    'json', 
+                    $genreMusical,
+                    'json',
                     ['groups' => ['genreMusical:read']]
                 );
 
@@ -194,8 +194,8 @@ class GenreMusicalService
         // si l'action à réussi
         if ($rep) {
             $GenreMusicalJSON = $serializer->serialize(
-                $genreMusical, 
-                'json', 
+                $genreMusical,
+                'json',
                 ['groups' => ['genreMusical:read']]
             );
             return new JsonResponse([
@@ -232,7 +232,7 @@ class GenreMusicalService
         $utilisateur = $utilisateurRepository->find(intval($data['idUtilisateur']));
 
         // si pas trouvé
-        if ($genreMusical == null || $utilisateur == null) { 
+        if ($genreMusical == null || $utilisateur == null) {
             return new JsonResponse([
                 'genre_musical' => null,
                 'message' => "genre musical ou utilisateur non trouvé, merci de fournir un identifiant valide",
@@ -247,8 +247,8 @@ class GenreMusicalService
         // réponse après suppression
         if ($rep) {
             $genreMusicalJSON = $serializer->serialize(
-                $genreMusical, 
-                'json', 
+                $genreMusical,
+                'json',
                 ['groups' => ['genreMusical:read']]
             );
             return new JsonResponse([
@@ -285,7 +285,7 @@ class GenreMusicalService
         $utilisateur = $utilisateurRepository->find(intval($data['idUtilisateur']));
 
         // si pas trouvé
-        if ($genreMusical == null || $utilisateur == null) { 
+        if ($genreMusical == null || $utilisateur == null) {
             return new JsonResponse([
                 'genre_musical' => null,
                 'message' => "genre musical ou utilisateur non trouvé, merci de fournir un identifiant valide",
@@ -300,8 +300,8 @@ class GenreMusicalService
         // réponse après suppression
         if ($rep) {
             $genreMusicalJSON = $serializer->serialize(
-                $genreMusical, 
-                'json', 
+                $genreMusical,
+                'json',
                 ['groups' => ['genreMusical:read']]
             );
             return new JsonResponse([
@@ -339,7 +339,7 @@ class GenreMusicalService
         $artiste = $artisteRepository->find(intval($data['idArtiste']));
 
         // si pas trouvé
-        if ($genreMusical == null || $artiste == null) { 
+        if ($genreMusical == null || $artiste == null) {
             return new JsonResponse([
                 'genre_musical' => null,
                 'message' => "genre musical ou artiste non trouvé, merci de fournir un identifiant valide",
@@ -354,8 +354,8 @@ class GenreMusicalService
         // réponse après ajout
         if ($rep) {
             $genreMusicalJSON = $serializer->serialize(
-                $genreMusical, 
-                'json', 
+                $genreMusical,
+                'json',
                 ['groups' => ['genreMusical:read']]
             );
             return new JsonResponse([
@@ -392,7 +392,7 @@ class GenreMusicalService
         $artiste = $artisteRepository->find(intval($data['idArtiste']));
 
         // si pas trouvé
-        if ($genreMusical == null || $artiste == null) { 
+        if ($genreMusical == null || $artiste == null) {
             return new JsonResponse([
                 'genre_musical' => null,
                 'message' => "genre musical ou artiste non trouvé, merci de fournir un identifiant valide",
@@ -407,8 +407,8 @@ class GenreMusicalService
         // réponse après suppression
         if ($rep) {
             $genreMusicalJSON = $serializer->serialize(
-                $genreMusical, 
-                'json', 
+                $genreMusical,
+                'json',
                 ['groups' => ['genreMusical:read']]
             );
             return new JsonResponse([
@@ -445,7 +445,7 @@ class GenreMusicalService
         $reseau = $reseauRepository->find(intval($data['idReseau']));
 
         // si pas trouvé
-        if ($genreMusical == null || $reseau == null) { 
+        if ($genreMusical == null || $reseau == null) {
             return new JsonResponse([
                 'genre_musical' => null,
                 'message' => "genre musical ou réseau non trouvé, merci de fournir un identifiant valide",
@@ -460,8 +460,8 @@ class GenreMusicalService
         // réponse après ajout
         if ($rep) {
             $genreMusicalJSON = $serializer->serialize(
-                $genreMusical, 
-                'json', 
+                $genreMusical,
+                'json',
                 ['groups' => ['genreMusical:read']]
             );
             return new JsonResponse([
@@ -498,7 +498,7 @@ class GenreMusicalService
         $reseau = $reseauRepository->find(intval($data['idReseau']));
 
         // si pas trouvé
-        if ($genreMusical == null || $reseau == null) { 
+        if ($genreMusical == null || $reseau == null) {
             return new JsonResponse([
                 'genre_musical' => null,
                 'message' => "genre musical ou réseau non trouvé, merci de fournir un identifiant valide",
@@ -513,8 +513,8 @@ class GenreMusicalService
         // réponse après suppression
         if ($rep) {
             $genreMusicalJSON = $serializer->serialize(
-                $genreMusical, 
-                'json', 
+                $genreMusical,
+                'json',
                 ['groups' => ['genreMusical:read']]
             );
             return new JsonResponse([
@@ -551,7 +551,7 @@ class GenreMusicalService
         $offre = $offreRepository->find(intval($data['idOffre']));
 
         // si pas trouvé
-        if ($genreMusical == null || $offre == null) { 
+        if ($genreMusical == null || $offre == null) {
             return new JsonResponse([
                 'genre_musical' => null,
                 'message' => "genre musical ou offre non trouvé(e), merci de fournir un identifiant valide",
@@ -566,8 +566,8 @@ class GenreMusicalService
         // réponse après ajout
         if ($rep) {
             $genreMusicalJSON = $serializer->serialize(
-                $genreMusical, 
-                'json', 
+                $genreMusical,
+                'json',
                 ['groups' => ['genreMusical:read']]
             );
             return new JsonResponse([
@@ -605,7 +605,7 @@ class GenreMusicalService
         $offre = $offreRepository->find(intval($data['idOffre']));
 
         // si pas trouvé
-        if ($genreMusical == null || $offre == null) { 
+        if ($genreMusical == null || $offre == null) {
             return new JsonResponse([
                 'genre_musical' => null,
                 'message' => "genre musical ou offre non trouvé, merci de fournir un identifiant valide",
@@ -620,8 +620,8 @@ class GenreMusicalService
         // réponse après suppression
         if ($rep) {
             $genreMusicalJSON = $serializer->serialize(
-                $genreMusical, 
-                'json', 
+                $genreMusical,
+                'json',
                 ['groups' => ['genreMusical:read']]
             );
             return new JsonResponse([

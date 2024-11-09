@@ -41,7 +41,8 @@ class TypeOffre
     #[Groups(['typeOffre:read'])]
     private Collection $offres;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->offres = new ArrayCollection();
     }
 

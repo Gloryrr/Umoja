@@ -39,7 +39,8 @@ class Artiste
     #[Groups(['artiste:read'])]
     private Collection $offres;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->genresMusicaux = new ArrayCollection();
         $this->offres = new ArrayCollection();
     }

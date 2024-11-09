@@ -66,7 +66,7 @@ class EtatOffreTest extends TestCase
     {
         // Utilisation de reflection pour accéder à l'attribut privé
         $reflection = new \ReflectionClass($this->etatOffre);
-        $property = $reflection->getProperty('idEtatOffre');
+        $property = $reflection->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->etatOffre, 1);
 

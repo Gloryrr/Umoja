@@ -43,8 +43,8 @@ class OffreService
     ): JsonResponse {
         $offres = $offreRepository->findAll();
         $offresJSON = $serializer->serialize(
-            $offres, 
-            'json', 
+            $offres,
+            'json',
             ['groups' => ['offre:read']]
         );
         return new JsonResponse([
@@ -204,8 +204,8 @@ class OffreService
             // vérification de l'action en BDD
             if ($rep) {
                 $offreJSON = $serializer->serialize(
-                    $offre, 
-                    'json', 
+                    $offre,
+                    'json',
                     ['groups' => ['offre:read']]
                 );
                 return new JsonResponse([
@@ -372,8 +372,8 @@ class OffreService
             // si l'action à réussi
             if ($rep) {
                 $offreJSON = $serializer->serialize(
-                    $offre, 
-                    'json', 
+                    $offre,
+                    'json',
                     ['groups' => ['offre:read']]
                 );
 
@@ -426,8 +426,8 @@ class OffreService
         // si l'action à réussi
         if ($rep) {
             $offreJSON = $serializer->serialize(
-                $offre, 
-                'json', 
+                $offre,
+                'json',
                 ['groups' => ['offre:read']]
             );
             return new JsonResponse([
@@ -480,8 +480,8 @@ class OffreService
         // si l'action à réussi
         if ($rep) {
             $offreJSON = $serializer->serialize(
-                $offre, 
-                'json', 
+                $offre,
+                'json',
                 ['groups' => ['offre:read']]
             );
             return new JsonResponse([
@@ -533,8 +533,8 @@ class OffreService
         // si l'action à réussi
         if ($rep) {
             $offreJSON = $serializer->serialize(
-                $offre, 
-                'json', 
+                $offre,
+                'json',
                 ['groups' => ['offre:read']]
             );
             return new JsonResponse([
@@ -587,8 +587,8 @@ class OffreService
         // si l'action à réussi
         if ($rep) {
             $offreJSON = $serializer->serialize(
-                $offre, 
-                'json', 
+                $offre,
+                'json',
                 ['groups' => ['offre:read']]
             );
             return new JsonResponse([
@@ -641,8 +641,8 @@ class OffreService
         // si l'action à réussi
         if ($rep) {
             $offreJSON = $serializer->serialize(
-                $offre, 
-                'json', 
+                $offre,
+                'json',
                 ['groups' => ['offre:read']]
             );
             return new JsonResponse([
@@ -695,8 +695,8 @@ class OffreService
         // si l'action à réussi
         if ($rep) {
             $offreJSON = $serializer->serialize(
-                $offre, 
-                'json', 
+                $offre,
+                'json',
                 ['groups' => ['offre:read']]
             );
             return new JsonResponse([
@@ -748,8 +748,8 @@ class OffreService
         // si l'action à réussi
         if ($rep) {
             $offreJSON = $serializer->serialize(
-                $offre, 
-                'json', 
+                $offre,
+                'json',
                 ['groups' => ['offre:read']]
             );
             return new JsonResponse([
@@ -819,8 +819,8 @@ class OffreService
         // si l'action à réussi
         if ($rep) {
             $offreJSON = $serializer->serialize(
-                $offre, 
-                'json', 
+                $offre,
+                'json',
                 ['groups' => ['offre:read']]
             );
             return new JsonResponse([
@@ -886,8 +886,8 @@ class OffreService
         // si l'action à réussi
         if ($rep) {
             $offreJSON = $serializer->serialize(
-                $offre, 
-                'json', 
+                $offre,
+                'json',
                 ['groups' => ['offre:read']]
             );
             return new JsonResponse([
@@ -933,7 +933,7 @@ class OffreService
         if ($offre == null || $utilisateur == null || $etatReponse == null) {
             return new JsonResponse([
                 'object' => null,
-                'message' => 'Offre ou utilisateur ou état réponse non trouvé(e), merci de fournir un identifiant valide',
+                'message' => 'Offre, utilisateur ou état réponse non trouvé(e), merci de fournir un identifiant valide',
                 'serialized' => false
             ], Response::HTTP_NOT_FOUND);
         }
@@ -952,8 +952,8 @@ class OffreService
         // si l'action à réussi
         if ($rep) {
             $offreJSON = $serializer->serialize(
-                $offre, 
-                'json', 
+                $offre,
+                'json',
                 ['groups' => ['offre:read']]
             );
             return new JsonResponse([
@@ -1006,8 +1006,8 @@ class OffreService
         // si l'action à réussi
         if ($rep) {
             $offreJSON = $serializer->serialize(
-                $offre, 
-                'json', 
+                $offre,
+                'json',
                 ['groups' => ['offre:read']]
             );
             return new JsonResponse([

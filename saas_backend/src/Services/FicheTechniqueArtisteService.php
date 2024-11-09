@@ -30,8 +30,8 @@ class FicheTechniqueArtisteService
         // on récupère toutes les fiches techniques
         $fichesTechniquesArtiste = $ficheTechniqueArtisteRepository->findAll();
         $fichesTechniquesArtisteJSON = $serializer->serialize(
-            $fichesTechniquesArtiste, 
-            'json', 
+            $fichesTechniquesArtiste,
+            'json',
             ['groups' => ['ficheTechniqueArtiste:read']]
         );
         return new JsonResponse([
@@ -62,28 +62,28 @@ class FicheTechniqueArtisteService
             // création de l'objet et instanciation des données de l'objet
             $ficheTechniqueArtiste = new FicheTechniqueArtiste();
             $ficheTechniqueArtiste->setBesoinSonorisation(
-                !(empty($data['ficheTechniqueArtiste']['besoinSonorisation'])) ? 
-                    $data['ficheTechniqueArtiste']['besoinSonorisation'] : 
+                !(empty($data['ficheTechniqueArtiste']['besoinSonorisation'])) ?
+                    $data['ficheTechniqueArtiste']['besoinSonorisation'] :
                     null
             );
             $ficheTechniqueArtiste->setBesoinEclairage(
-                !(empty($data['ficheTechniqueArtiste']['besoinEclairage'])) ? 
-                    $data['ficheTechniqueArtiste']['besoinEclairage'] : 
+                !(empty($data['ficheTechniqueArtiste']['besoinEclairage'])) ?
+                    $data['ficheTechniqueArtiste']['besoinEclairage'] :
                     null
             );
             $ficheTechniqueArtiste->setBesoinScene(
-                !(empty($data['ficheTechniqueArtiste']['besoinScene'])) ? 
-                    $data['ficheTechniqueArtiste']['besoinScene'] : 
+                !(empty($data['ficheTechniqueArtiste']['besoinScene'])) ?
+                    $data['ficheTechniqueArtiste']['besoinScene'] :
                     null
             );
             $ficheTechniqueArtiste->setBesoinBackline(
-                !(empty($data['ficheTechniqueArtiste']['besoinBackline'])) ? 
-                    $data['ficheTechniqueArtiste']['besoinBackline'] : 
+                !(empty($data['ficheTechniqueArtiste']['besoinBackline'])) ?
+                    $data['ficheTechniqueArtiste']['besoinBackline'] :
                     null
             );
             $ficheTechniqueArtiste->setBesoinEquipements(
-                !(empty($data['ficheTechniqueArtiste']['besoinEquipements'])) ? 
-                    $data['ficheTechniqueArtiste']['besoinEquipements'] : 
+                !(empty($data['ficheTechniqueArtiste']['besoinEquipements'])) ?
+                    $data['ficheTechniqueArtiste']['besoinEquipements'] :
                     null
             );
 
@@ -93,8 +93,8 @@ class FicheTechniqueArtisteService
             // vérification de l'action en BDD
             if ($rep) {
                 $ficheTechniqueArtisteJSON = $serializer->serialize(
-                    $ficheTechniqueArtiste, 
-                    'json', 
+                    $ficheTechniqueArtiste,
+                    'json',
                     ['groups' => ['ficheTechniqueArtiste:read']]
                 );
                 return new JsonResponse([
@@ -168,8 +168,8 @@ class FicheTechniqueArtisteService
             // si l'action à réussi
             if ($rep) {
                 $ficheTechniqueArtisteJSON = $serializer->serialize(
-                    $ficheTechniqueArtiste, 
-                    'json', 
+                    $ficheTechniqueArtiste,
+                    'json',
                     ['groups' => ['ficheTechniqueArtiste:read']]
                 );
 
@@ -222,8 +222,8 @@ class FicheTechniqueArtisteService
         // si l'action à réussi
         if ($rep) {
             $ficheTechniqueArtisteJSON = $serializer->serialize(
-                $ficheTechniqueArtiste, 
-                'json', 
+                $ficheTechniqueArtiste,
+                'json',
                 ['groups' => ['ficheTechniqueArtiste:read']]
             );
             return new JsonResponse([
@@ -243,7 +243,7 @@ class FicheTechniqueArtisteService
     /**
      * Ajoute une offre à la fiche technique de l'artiste et renvoie une réponse JSON.
      *
-     * @param FicheTechniqueArtisteRepository $ficheTechniqueArtisteRepository Le repository de la fiche technique de l'artiste.
+     * @param FicheTechniqueArtisteRepository $ficheTechniqueArtisteRepository Le repository de la fiche de l'artiste.
      * @param OffreRepository $offreRepository Le repository des offres .
      * @param SerializerInterface $serializer Le service de sérialisation.
      *
@@ -260,10 +260,10 @@ class FicheTechniqueArtisteService
         $offre = $offreRepository->find(intval($data['idOffre']));
 
         // si pas trouvée
-        if ($ficheTechniqueArtiste == null || $offre == null) { 
+        if ($ficheTechniqueArtiste == null || $offre == null) {
             return new JsonResponse([
                 'fiche_technique_artiste' => null,
-                'message' => "fiche tehcnique de l'artiste ou offre non trouvée, merci de fournir un identifiant valide",
+                'message' => "fiche de l'artiste ou offre non trouvée, merci de fournir un identifiant valide",
                 'serialized' => false
             ], Response::HTTP_NOT_FOUND);
         }
@@ -275,8 +275,8 @@ class FicheTechniqueArtisteService
         // réponse après suppression
         if ($rep) {
             $ficheTechniqueArtisteJSON = $serializer->serialize(
-                $ficheTechniqueArtiste, 
-                'json', 
+                $ficheTechniqueArtiste,
+                'json',
                 ['groups' => ['ficheTechniqueArtiste:read']]
             );
             return new JsonResponse([
@@ -297,7 +297,7 @@ class FicheTechniqueArtisteService
      * Retire une offre à la fiche technique de l'artiste et renvoie une réponse JSON.
      *
      * @param int $id L'identifiant de la fiche technique de l'artiste.
-     * @param FicheTechniqueArtisteRepository $ficheTechniqueArtisteRepository Le repository de la fiche technique de l'artiste.
+     * @param FicheTechniqueArtisteRepository $ficheTechniqueArtisteRepository Le repository de la fiche de l'artiste.
      * @param OffreRepository $offreRepository Le repository desoffres .
      * @param SerializerInterface $serializer Le service de sérialisation.
      *
@@ -314,10 +314,10 @@ class FicheTechniqueArtisteService
         $offre = $offreRepository->find(intval($data['idOffre']));
 
         // si pas trouvé
-        if ($ficheTechniqueArtiste == null || $offre == null) { 
+        if ($ficheTechniqueArtiste == null || $offre == null) {
             return new JsonResponse([
                 'fiche_technique_artiste' => null,
-                'message' => "fiche tehcnique de l'artiste ou offre non trouvée, merci de fournir un identifiant valide",
+                'message' => "fiche de l'artiste ou offre non trouvée, merci de fournir un identifiant valide",
                 'serialized' => false
             ], Response::HTTP_NOT_FOUND);
         }
@@ -329,8 +329,8 @@ class FicheTechniqueArtisteService
         // réponse après suppression
         if ($rep) {
             $ficheTechniqueArtisteJSON = $serializer->serialize(
-                $ficheTechniqueArtiste, 
-                'json', 
+                $ficheTechniqueArtiste,
+                'json',
                 ['groups' => ['ficheTechniqueArtiste:read']]
             );
             return new JsonResponse([

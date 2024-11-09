@@ -38,11 +38,17 @@ class FicheTechniqueArtiste
     #[Groups(['ficheTechniqueArtiste:read', 'ficheTechniqueArtiste:write'])]
     private ?string $besoinEquipements = null;
 
-    #[ORM\OneToMany(targetEntity: Offre::class, mappedBy: "ficheTechniqueArtiste", orphanRemoval: true, cascade: ["remove"])]
+    #[ORM\OneToMany(
+        targetEntity: Offre::class,
+        mappedBy: "ficheTechniqueArtiste",
+        orphanRemoval: true,
+        cascade: ["remove"]
+    )]
     #[Groups(['ficheTechniqueArtiste:read'])]
     private Collection $offres;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->offres = new ArrayCollection();
     }
 

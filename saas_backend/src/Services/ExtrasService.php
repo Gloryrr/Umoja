@@ -30,8 +30,8 @@ class ExtrasService
         // Récupère tous les extras.
         $extras = $extrasRepository->findAll();
         $extrasJSON = $serializer->serialize(
-            $extras, 
-            'json', 
+            $extras,
+            'json',
             ['groups' => ['extras:read']]
         );
 
@@ -79,8 +79,8 @@ class ExtrasService
 
             if ($rep) {
                 $extraJSON = $serializer->serialize(
-                    $extra, 
-                    'json', 
+                    $extra,
+                    'json',
                     ['groups' => ['extras:read']]
                 );
                 return new JsonResponse([
@@ -155,8 +155,8 @@ class ExtrasService
 
             if ($rep) {
                 $extraJSON = $serializer->serialize(
-                    $extra, 
-                    'json', 
+                    $extra,
+                    'json',
                     ['groups' => ['extras:read']]
                 );
                 return new JsonResponse([
@@ -206,8 +206,8 @@ class ExtrasService
 
         if ($rep) {
             $extraJSON = $serializer->serialize(
-                $extra, 
-                'json', 
+                $extra,
+                'json',
                 ['groups' => ['extras:read']]
             );
             return new JsonResponse([
@@ -244,7 +244,7 @@ class ExtrasService
         $offre = $offreRepository->find(intval($data['idOffre']));
 
         // si pas trouvée
-        if ($extras == null || $offre == null) { 
+        if ($extras == null || $offre == null) {
             return new JsonResponse([
                 'extras' => null,
                 'message' => "extras ou offre non trouvée, merci de fournir un identifiant valide",
@@ -259,8 +259,8 @@ class ExtrasService
         // réponse après suppression
         if ($rep) {
             $extrasJSON = $serializer->serialize(
-                $extras, 
-                'json', 
+                $extras,
+                'json',
                 ['groups' => ['extras:read']]
             );
             return new JsonResponse([
@@ -298,7 +298,7 @@ class ExtrasService
         $offre = $offreRepository->find(intval($data['idOffre']));
 
         // si pas trouvé
-        if ($extras == null || $offre == null) { 
+        if ($extras == null || $offre == null) {
             return new JsonResponse([
                 'extras' => null,
                 'message' => "extras ou offre non trouvée, merci de fournir un identifiant valide",
@@ -313,8 +313,8 @@ class ExtrasService
         // réponse après suppression
         if ($rep) {
             $extrasJSON = $serializer->serialize(
-                $extras, 
-                'json', 
+                $extras,
+                'json',
                 ['groups' => ['extras:read']]
             );
             return new JsonResponse([

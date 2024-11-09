@@ -25,14 +25,14 @@ class ReseauService
      * @return JsonResponse La réponse JSON contenant les réseaux listés.
      */
     public static function getReseaux(
-        ReseauRepository $reseauRepository, 
+        ReseauRepository $reseauRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         // on récupère tous les reseaux existants
         $reseaux = $reseauRepository->findAll();
         $reseauxJSON = $serializer->serialize(
-            $reseaux, 
-            'json', 
+            $reseaux,
+            'json',
             ['groups' => ['reseau:read']]
         );
         return new JsonResponse([
@@ -75,8 +75,8 @@ class ReseauService
             // vérification de l'action en BDD
             if ($rep) {
                 $reseauJSON = $serializer->serialize(
-                    $reseau, 
-                    'json', 
+                    $reseau,
+                    'json',
                     ['groups' => ['reseau:read']]
                 );
                 return new JsonResponse([
@@ -138,8 +138,8 @@ class ReseauService
             // si l'action à réussi
             if ($rep) {
                 $reseau = $serializer->serialize(
-                    $reseau, 
-                    'json', 
+                    $reseau,
+                    'json',
                     ['groups' => ['reseau:read']]
                 );
 
@@ -192,8 +192,8 @@ class ReseauService
         // si l'action à réussi
         if ($rep) {
             $reseauJSON = $serializer->serialize(
-                $reseau, 
-                'json', 
+                $reseau,
+                'json',
                 ['groups' => ['reseau:read']]
             );
             return new JsonResponse([
@@ -246,8 +246,8 @@ class ReseauService
         // si l'action à réussi
         if ($rep) {
             $reseauJSON = $serializer->serialize(
-                $reseau, 
-                'json', 
+                $reseau,
+                'json',
                 ['groups' => ['reseau:read']]
             );
             return new JsonResponse([
@@ -300,8 +300,8 @@ class ReseauService
         // si l'action à réussi
         if ($rep) {
             $reseauJSON = $serializer->serialize(
-                $reseau, 
-                'json', 
+                $reseau,
+                'json',
                 ['groups' => ['reseau:read']]
             );
             return new JsonResponse([
@@ -354,8 +354,8 @@ class ReseauService
         // si l'action à réussi
         if ($rep) {
             $reseauJSON = $serializer->serialize(
-                $reseau, 
-                'json', 
+                $reseau,
+                'json',
                 ['groups' => ['reseau:read']]
             );
             return new JsonResponse([
@@ -408,8 +408,8 @@ class ReseauService
         // si l'action à réussi
         if ($rep) {
             $reseauJSON = $serializer->serialize(
-                $reseau, 
-                'json', 
+                $reseau,
+                'json',
                 ['groups' => ['reseau:read']]
             );
             return new JsonResponse([

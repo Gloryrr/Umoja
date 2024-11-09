@@ -30,8 +30,8 @@ class BudgetEstimatifService
         // on récupère tous les budgets définis
         $budgetsEstimatifs = $budgetEstimatifRepository->findAll();
         $budgetsEstimatifsJSON = $serializer->serialize(
-            $budgetsEstimatifs, 
-            'json', 
+            $budgetsEstimatifs,
+            'json',
             ['groups' => ['budget_estimatif:read']]
         );
         return new JsonResponse([
@@ -80,8 +80,8 @@ class BudgetEstimatifService
             // vérification de l'action en BDD
             if ($rep) {
                 $budgetEstimatifJSON = $serializer->serialize(
-                    $budgetEstimatif, 
-                    'json', 
+                    $budgetEstimatif,
+                    'json',
                     ['groups' => ['budget_estimatif:read']]
                 );
                 return new JsonResponse([
@@ -152,8 +152,8 @@ class BudgetEstimatifService
             // si l'action à réussi
             if ($rep) {
                 $budgetEstimatif = $serializer->serialize(
-                    $budgetEstimatif, 
-                    'json', 
+                    $budgetEstimatif,
+                    'json',
                     ['groups' => ['budget_estimatif:read']]
                 );
 
@@ -206,8 +206,8 @@ class BudgetEstimatifService
         // si l'action à réussi
         if ($rep) {
             $budgetEstimatifJSON = $serializer->serialize(
-                $budgetEstimatif, 
-                'json', 
+                $budgetEstimatif,
+                'json',
                 ['groups' => ['budget_estimatif:read']]
             );
             return new JsonResponse([
@@ -244,7 +244,7 @@ class BudgetEstimatifService
         $offre = $offreRepository->find(intval($data['idOffre']));
 
         // si pas trouvé
-        if ($budgetEstimatif == null || $offre == null) { 
+        if ($budgetEstimatif == null || $offre == null) {
             return new JsonResponse([
                 'budget_estimatif' => null,
                 'message' => "budget estimatif ou offre non trouvée, merci de fournir un identifiant valide",
@@ -259,8 +259,8 @@ class BudgetEstimatifService
         // réponse après suppression
         if ($rep) {
             $budgetEstimatifJSON = $serializer->serialize(
-                $budgetEstimatif, 
-                'json', 
+                $budgetEstimatif,
+                'json',
                 ['groups' => ['budget_estimatif:read']]
             );
             return new JsonResponse([
@@ -298,7 +298,7 @@ class BudgetEstimatifService
         $offre = $offreRepository->find(intval($data['idOffre']));
 
         // si pas trouvé
-        if ($budgetEstimatif == null || $offre == null) { 
+        if ($budgetEstimatif == null || $offre == null) {
             return new JsonResponse([
                 'budget_estimatif' => null,
                 'message' => "budget estimatif ou offre non trouvée, merci de fournir un identifiant valide",
@@ -313,8 +313,8 @@ class BudgetEstimatifService
         // réponse après suppression
         if ($rep) {
             $budgetEstimatifJSON = $serializer->serialize(
-                $budgetEstimatif, 
-                'json', 
+                $budgetEstimatif,
+                'json',
                 ['groups' => ['budget_estimatif:read']]
             );
             return new JsonResponse([

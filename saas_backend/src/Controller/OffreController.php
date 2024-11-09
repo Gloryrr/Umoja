@@ -181,7 +181,6 @@ class OffreController extends AbstractController
             $data,
             $offreRepository,
             $genreMusicalRepository,
-
             $serializer
         );
     }
@@ -207,7 +206,6 @@ class OffreController extends AbstractController
             $data,
             $offreRepository,
             $genreMusicalRepository,
-
             $serializer
         );
     }

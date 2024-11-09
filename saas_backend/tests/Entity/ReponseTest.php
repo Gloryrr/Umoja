@@ -34,39 +34,39 @@ class ReponseTest extends TestCase
     }
 
     /**
-     * Test de la méthode getIdR().
+     * Test de la méthode getId().
      *
      * Vérifie si l'identifiant d'une réponse peut être récupéré.
      */
-    public function testGetIdR()
+    public function testGetId()
     {
-        $this->assertNull($this->reponse->getIdR());
+        $this->assertNull($this->reponse->getId());
     }
 
     /**
-     * Test de la méthode getIdEtatReponse() et setIdEtatReponse().
+     * Test de la méthode getEtatReponse() et setEtatReponse().
      *
      * Vérifie si l'état d'une réponse peut être correctement défini et récupéré.
      */
-    public function testIdEtatReponse()
+    public function testEtatReponse()
     {
         $etatReponse = new EtatReponse();
-        $this->reponse->setIdEtatReponse($etatReponse);
+        $this->reponse->setEtatReponse($etatReponse);
 
-        $this->assertSame($etatReponse, $this->reponse->getIdEtatReponse());
+        $this->assertSame($etatReponse, $this->reponse->getEtatReponse());
     }
 
     /**
-     * Test de la méthode getIdOffre() et setIdOffre().
+     * Test de la méthode getOffre() et setOffre().
      *
      * Vérifie si l'offre associée à une réponse peut être correctement définie et récupérée.
      */
-    public function testIdOffre()
+    public function testOffre()
     {
         $offre = new Offre();
-        $this->reponse->setIdOffre($offre);
+        $this->reponse->setOffre($offre);
 
-        $this->assertSame($offre, $this->reponse->getIdOffre());
+        $this->assertSame($offre, $this->reponse->getOffre());
     }
 
     /**

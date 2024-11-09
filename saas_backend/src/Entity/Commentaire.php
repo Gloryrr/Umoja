@@ -20,20 +20,20 @@ class Commentaire
     #[ORM\Column]
     #[Groups(['commentaire:read'])]
     private ?int $id = null;
-    
+
     #[ORM\Column(length: 500)]
     #[Groups(['commentaire:read', 'commentaire:write'])]
     private ?string $commentaire = null;
-    
+
     #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: "offresCommentees")]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['commentaire:read'])]
     private ?Utilisateur $utilisateur = null;
-    
+
     #[ORM\ManyToOne(targetEntity: Offre::class, inversedBy: "commenteesPar")]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['commentaire:read'])]
-    private ?Offre $offre = null;    
+    private ?Offre $offre = null;
 
     /**
      * Récupère l'identifiant du commentaire.
