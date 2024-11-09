@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use App\Repository\ArtisteRepository;
+use App\Repository\GenreMusicalRepository;
+use App\Repository\OffreRepository;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use App\Entity\artiste;
+use App\Entity\Artiste;
 
 /**
  * Class ArtisteService
@@ -28,14 +30,12 @@ class ArtisteService
     ): JsonResponse {
         // on récupère tous les artistes
         $artistes = $artisteRepository->findAll();
-        $artistesJSON = $serializer->serialize($artistes, 'json');
+        $artistesJSON = $serializer->serialize($artistes, 'json', ['groups' => ['artiste:read']]);
         return new JsonResponse([
             'artistes' => $artistesJSON,
             'message' => "Liste des artistes",
-            'reponse' => Response::HTTP_OK,
-            'headers' => [],
             'serialized' => true
-        ]);
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -62,31 +62,27 @@ class ArtisteService
             }
 
             // création de l'objet et instanciation des données de l'objet
-            $artiste = new artiste();
+            $artiste = new Artiste();
             $artiste->setNomArtiste($data['nomArtiste']);
             $artiste->setDescrArtiste($data['descrArtiste']);
 
             // ajout de l'artiste en base de données
-            $rep = $artisteRepository->inscritartiste($artiste);
+            $rep = $artisteRepository->inscritArtiste($artiste);
 
             // vérification de l'action en BDD
             if ($rep) {
-                $artisteJSON = $serializer->serialize($artiste, 'json');
+                $artisteJSON = $serializer->serialize($artiste, 'json', ['groups' => ['artiste:read']]);
                 return new JsonResponse([
                     'artiste' => $artisteJSON,
                     'message' => "artiste inscrit !",
-                    'reponse' => Response::HTTP_CREATED,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_CREATED);
             }
             return new JsonResponse([
                 'artiste' => null,
                 'message' => "artiste non inscrit, merci de regarder l'erreur décrite",
-                'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
             throw new \RuntimeException("Erreur lors de la création de l'artiste", $e->getCode());
         }
@@ -119,10 +115,8 @@ class ArtisteService
                 return new JsonResponse([
                     'artiste' => null,
                     'message' => 'artiste non trouvé, merci de donner un identifiant valide !',
-                    'reponse' => Response::HTTP_NOT_FOUND,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_NOT_FOUND);
             }
 
             // on vérifie qu'aucune données ne manque pour la mise à jour
@@ -140,23 +134,19 @@ class ArtisteService
 
             // si l'action à réussi
             if ($rep) {
-                $artiste = $serializer->serialize($artiste, 'json');
+                $artiste = $serializer->serialize($artiste, 'json', ['groups' => ['artiste:read']]);
 
                 return new JsonResponse([
                     'artiste' => $artiste,
                     'message' => "artiste modifié avec succès",
-                    'reponse' => Response::HTTP_OK,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_OK);
             } else {
                 return new JsonResponse([
                     'artiste' => null,
                     'message' => "artiste non modifié, merci de vérifier l'erreur décrite",
-                    'reponse' => Response::HTTP_BAD_REQUEST,
-                    'headers' => [],
                     'serialized' => false
-                ]);
+                ], Response::HTTP_BAD_REQUEST);
             }
         } catch (\Exception $e) {
             throw new \RuntimeException("Erreur lors de la mise à jour de l'artiste", $e->getCode());
@@ -185,10 +175,8 @@ class ArtisteService
             return new JsonResponse([
                 'artiste' => null,
                 'message' => 'artiste non trouvé, merci de fournir un identifiant valide',
-                'reponse' => Response::HTTP_NOT_FOUND,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         // suppression de l'artiste en BDD
@@ -196,22 +184,218 @@ class ArtisteService
 
         // si l'action à réussi
         if ($rep) {
-            $artisteJSON = $serializer->serialize($artiste, 'json');
+            $artisteJSON = $serializer->serialize($artiste, 'json', ['groups' => ['artiste:read']]);
             return new JsonResponse([
                 'artiste' => $artisteJSON,
                 'message' => 'artiste supprimé',
-                'reponse' => Response::HTTP_NO_CONTENT,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NO_CONTENT);
         } else {
             return new JsonResponse([
                 'artiste' => null,
                 'message' => 'artiste non supprimé !',
-                'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Ajoute un genre musical à l'artiste et renvoie une réponse JSON.
+     *
+     * @param int $id L'identifiant de l'artiste.
+     * @param ArtisteRepository $artisteRepository Le repository des artistes.
+     * @param GenreMusicalRepository $genreMusicalRepository Le repository des genres musicaux.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après la suppression de l'artiste.
+     */
+    public static function ajouteGenreMusicalArtiste(
+        ArtisteRepository $artisteRepository,
+        GenreMusicalRepository $genreMusicalRepository,
+        SerializerInterface $serializer,
+        mixed $data
+    ): JsonResponse {
+        // récupération de l'artiste à supprimer
+        $artiste = $artisteRepository->find(intval($data['idArtiste']));
+        $genreMusical = $genreMusicalRepository->find(intval($data['idGenreMusical']));
+
+        // si pas trouvé
+        if ($artiste == null || $genreMusical == null) { 
+            return new JsonResponse([
+                'artiste' => null,
+                'message' => "artiste ou genre musical non trouvée, merci de fournir un identifiant valide",
+                'serialized' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // suppression en BDD
+        $artiste->addGenreMusical($genreMusical);
+        $rep = $artisteRepository->updateArtiste($artiste);
+
+        // réponse après suppression
+        if ($rep) {
+            $artisteJSON = $serializer->serialize($artiste, 'json', ['groups' => ['artiste:read']]);
+            return new JsonResponse([
+                'artiste' => $artisteJSON,
+                'message' => "Type d'offre supprimé",
+                'serialized' => false
+            ], Response::HTTP_NO_CONTENT);
+        } else {
+            return new JsonResponse([
+                'artiste' => null,
+                'message' => "Type d'offre non supprimé !",
+                'serialized' => false
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Retire un genre musical à l'artiste et renvoie une réponse JSON.
+     *
+     * @param int $id L'identifiant de l'artiste.
+     * @param ArtisteRepository $artisteRepository Le repository des artistes.
+     * @param GenreMusicalRepository $genreMusicalRepository Le repository des genres musicaux.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après la suppression de l'artiste.
+     */
+    public static function retireGenreMusicalArtiste(
+        ArtisteRepository $artisteRepository,
+        GenreMusicalRepository $genreMusicalRepository,
+        SerializerInterface $serializer,
+        mixed $data
+    ): JsonResponse {
+        // récupération de l'artiste à supprimer
+        $artiste = $artisteRepository->find(intval($data['idArtiste']));
+        $genreMusical = $genreMusicalRepository->find(intval($data['idGenreMusical']));
+
+        // si pas trouvé
+        if ($artiste == null || $genreMusical == null) { 
+            return new JsonResponse([
+                'artiste' => null,
+                'message' => "artiste ou genre musical non trouvée, merci de fournir un identifiant valide",
+                'serialized' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // suppression en BDD
+        $artiste->removeGenreMusical($genreMusical);
+        $rep = $artisteRepository->updateArtiste($artiste);
+
+        // réponse après suppression
+        if ($rep) {
+            $artisteJSON = $serializer->serialize($artiste, 'json', ['groups' => ['artiste:read']]);
+            return new JsonResponse([
+                'artiste' => $artisteJSON,
+                'message' => "Type d'offre supprimé",
+                'serialized' => false
+            ], Response::HTTP_NO_CONTENT);
+        } else {
+            return new JsonResponse([
+                'artiste' => null,
+                'message' => "Type d'offre non supprimé !",
+                'serialized' => false
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Ajoute une offre à l'artiste et renvoie une réponse JSON.
+     *
+     * @param int $id L'identifiant de l'artiste.
+     * @param ArtisteRepository $artisteRepository Le repository des artistes.
+     * @param OffreRepository $offreRepository Le repository des genres musicaux.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après la suppression de l'artiste.
+     */
+    public static function ajouteOffreArtiste(
+        ArtisteRepository $artisteRepository,
+        OffreRepository $offreRepository,
+        SerializerInterface $serializer,
+        mixed $data
+    ): JsonResponse {
+        // récupération de l'artiste à supprimer
+        $artiste = $artisteRepository->find(intval($data['idArtiste']));
+        $offre = $offreRepository->find(intval($data['idOffre']));
+
+        // si pas trouvé
+        if ($artiste == null || $offre == null) { 
+            return new JsonResponse([
+                'artiste' => null,
+                'message' => "artiste ou genre musical non trouvée, merci de fournir un identifiant valide",
+                'serialized' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // suppression en BDD
+        $artiste->addOffre($offre);
+        $rep = $artisteRepository->updateArtiste($artiste);
+
+        // réponse après suppression
+        if ($rep) {
+            $artisteJSON = $serializer->serialize($artiste, 'json', ['groups' => ['artiste:read']]);
+            return new JsonResponse([
+                'artiste' => $artisteJSON,
+                'message' => "Type d'offre supprimé",
+                'serialized' => false
+            ], Response::HTTP_NO_CONTENT);
+        } else {
+            return new JsonResponse([
+                'artiste' => null,
+                'message' => "Type d'offre non supprimé !",
+                'serialized' => false
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Retire une offre à l'artiste et renvoie une réponse JSON.
+     *
+     * @param int $id L'identifiant de l'artiste.
+     * @param ArtisteRepository $artisteRepository Le repository des artistes.
+     * @param OffreRepository $offreRepository Le repository des genres musicaux.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après la suppression de l'artiste.
+     */
+    public static function retireOffreArtiste(
+        ArtisteRepository $artisteRepository,
+        OffreRepository $offreRepository,
+        SerializerInterface $serializer,
+        mixed $data
+    ): JsonResponse {
+        // récupération de l'artiste à supprimer
+        $artiste = $artisteRepository->find(intval($data['idArtiste']));
+        $offre = $offreRepository->find(intval($data['idOffre']));
+
+        // si pas trouvé
+        if ($artiste == null || $offre == null) { 
+            return new JsonResponse([
+                'artiste' => null,
+                'message' => "artiste ou genre musical non trouvée, merci de fournir un identifiant valide",
+                'serialized' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // suppression en BDD
+        $artiste->removeOffre($offre);
+        $rep = $artisteRepository->updateArtiste($artiste);
+
+        // réponse après suppression
+        if ($rep) {
+            $artisteJSON = $serializer->serialize($artiste, 'json', ['groups' => ['artiste:read']]);
+            return new JsonResponse([
+                'artiste' => $artisteJSON,
+                'message' => "Type d'offre supprimé",
+                'serialized' => false
+            ], Response::HTTP_NO_CONTENT);
+        } else {
+            return new JsonResponse([
+                'artiste' => null,
+                'message' => "Type d'offre non supprimé !",
+                'serialized' => false
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 }

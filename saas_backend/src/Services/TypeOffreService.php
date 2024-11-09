@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Repository\OffreRepository;
 use App\Repository\TypeOffreRepository;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,14 +29,16 @@ class TypeOffreService
     ): JsonResponse {
         // on récupère tous les types d'offre
         $typesOffre = $typeOffreRepository->findAll();
-        $typesOffreJSON = $serializer->serialize($typesOffre, 'json');
+        $typesOffreJSON = $serializer->serialize(
+            $typesOffre, 
+            'json', 
+            ['groups' => ['typeOffre:read']]
+    );
         return new JsonResponse([
             'types_offre' => $typesOffreJSON,
             'message' => "Liste des types d'offre",
-            'reponse' => Response::HTTP_OK,
-            'headers' => [],
             'serialized' => true
-        ]);
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -70,22 +73,22 @@ class TypeOffreService
 
             // vérification de l'action en BDD
             if ($rep) {
-                $typeOffreJSON = $serializer->serialize($typeOffre, 'json');
+                $typeOffreJSON = $serializer->serialize(
+                    $typeOffre, 
+                    'json', 
+                    ['groups' => ['typeOffre:read']]
+            );
                 return new JsonResponse([
                     'type_offre' => $typeOffreJSON,
                     'message' => "Type d'offre ajouté !",
-                    'reponse' => Response::HTTP_CREATED,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_CREATED);
             }
             return new JsonResponse([
                 'type_offre' => null,
                 'message' => "Type d'offre non inscrit, merci de vérifier l'erreur décrite",
-                'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
             throw new \RuntimeException("Erreur lors de la création du type d'offre", $e->getCode());
         }
@@ -118,10 +121,8 @@ class TypeOffreService
                 return new JsonResponse([
                     'type_offre' => null,
                     'message' => "Type d'offre non trouvé, merci de donner un identifiant valide !",
-                    'reponse' => Response::HTTP_NOT_FOUND,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_NOT_FOUND);
             }
 
             // mise à jour des données
@@ -134,22 +135,22 @@ class TypeOffreService
 
             // réponse après la mise à jour
             if ($rep) {
-                $typeOffre = $serializer->serialize($typeOffre, 'json');
+                $typeOffre = $serializer->serialize(
+                    $typeOffre, 
+                    'json', 
+                    ['groups' => ['typeOffre:read']]
+            );
                 return new JsonResponse([
                     'type_offre' => $typeOffre,
                     'message' => "Type d'offre modifié avec succès",
-                    'reponse' => Response::HTTP_OK,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_OK);
             } else {
                 return new JsonResponse([
                     'type_offre' => null,
                     'message' => "Type d'offre non modifié, merci de vérifier l'erreur décrite",
-                    'reponse' => Response::HTTP_BAD_REQUEST,
-                    'headers' => [],
                     'serialized' => false
-                ]);
+                ], Response::HTTP_BAD_REQUEST);
             }
         } catch (\Exception $e) {
             throw new \RuntimeException("Erreur lors de la mise à jour du type d'offre", $e->getCode());
@@ -178,10 +179,8 @@ class TypeOffreService
             return new JsonResponse([
                 'type_offre' => null,
                 'message' => "Type d'offre non trouvé, merci de fournir un identifiant valide",
-                'reponse' => Response::HTTP_NOT_FOUND,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         // suppression en BDD
@@ -189,22 +188,128 @@ class TypeOffreService
 
         // réponse après suppression
         if ($rep) {
-            $typeOffreJSON = $serializer->serialize($typeOffre, 'json');
+            $typeOffreJSON = $serializer->serialize(
+                $typeOffre, 
+                'json', 
+                ['groups' => ['typeOffre:read']]
+        );
             return new JsonResponse([
                 'type_offre' => $typeOffreJSON,
                 'message' => "Type d'offre supprimé",
-                'reponse' => Response::HTTP_NO_CONTENT,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NO_CONTENT);
         } else {
             return new JsonResponse([
                 'type_offre' => null,
                 'message' => "Type d'offre non supprimé !",
-                'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Ajoute une offre au type d'offre et renvoie une réponse JSON.
+     *
+     * @param int $id L'identifiant du type d'offre à supprimer.
+     * @param TypeOffreRepository $typeOffreRepository Le repository des types d'offre.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après la suppression du type d'offre.
+     */
+    public static function ajouteOffreTypeOffre(
+        TypeOffreRepository $typeOffreRepository,
+        OffreRepository $offreRepository,
+        SerializerInterface $serializer,
+        mixed $data
+    ): JsonResponse {
+        // récupération du type d'offre à supprimer
+        $typeOffre = $typeOffreRepository->find(intval($data['idTypeOffre']));
+        $offre = $offreRepository->find(intval($data['idOffre']));
+
+        // si pas trouvé
+        if ($typeOffre == null || $offre == null) { 
+            return new JsonResponse([
+                'type_offre' => null,
+                'message' => "Type d'offre ou offre non trouvée, merci de fournir un identifiant valide",
+                'serialized' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // suppression en BDD
+        $typeOffre->addOffre($offre);
+        $rep = $typeOffreRepository->updateTypeOffre($typeOffre);
+
+        // réponse après suppression
+        if ($rep) {
+            $typeOffreJSON = $serializer->serialize(
+                $typeOffre, 
+                'json', 
+                ['groups' => ['typeOffre:read']]
+        );
+            return new JsonResponse([
+                'type_offre' => $typeOffreJSON,
+                'message' => "Type d'offre supprimé",
+                'serialized' => false
+            ], Response::HTTP_NO_CONTENT);
+        } else {
+            return new JsonResponse([
+                'type_offre' => null,
+                'message' => "Type d'offre non supprimé !",
+                'serialized' => false
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Retire une offre au type d'offre et renvoie une réponse JSON.
+     *
+     * @param int $id L'identifiant du type d'offre à supprimer.
+     * @param TypeOffreRepository $typeOffreRepository Le repository des types d'offre.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après la suppression du type d'offre.
+     */
+    public static function retirerOffreTypeOffre(
+        TypeOffreRepository $typeOffreRepository,
+        OffreRepository $offreRepository,
+        SerializerInterface $serializer,
+        mixed $data
+    ): JsonResponse {
+        // récupération du type d'offre à supprimer
+        $typeOffre = $typeOffreRepository->find(intval($data['idTypeOffre']));
+        $offre = $offreRepository->find(intval($data['idOffre']));
+
+        // si pas trouvé
+        if ($typeOffre == null || $offre == null) { 
+            return new JsonResponse([
+                'type_offre' => null,
+                'message' => "Type d'offre ou offre non trouvée, merci de fournir un identifiant valide",
+                'serialized' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // suppression en BDD
+        $typeOffre->removeOffre($offre);
+        $rep = $typeOffreRepository->updateTypeOffre($typeOffre);
+
+        // réponse après suppression
+        if ($rep) {
+            $typeOffreJSON = $serializer->serialize(
+                $typeOffre, 
+                'json', 
+                ['groups' => ['typeOffre:read']]
+        );
+            return new JsonResponse([
+                'type_offre' => $typeOffreJSON,
+                'message' => "Type d'offre supprimé",
+                'serialized' => false
+            ], Response::HTTP_NO_CONTENT);
+        } else {
+            return new JsonResponse([
+                'type_offre' => null,
+                'message' => "Type d'offre non supprimé !",
+                'serialized' => false
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 }

@@ -7,7 +7,6 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use App\DTO\UtilisateurDTO;
 
 /**
  * Class LoginService
@@ -25,41 +24,42 @@ class LoginService
             // on cherche l'utilisateur par son username
             $authentification_valide = false;
             if (isset($data_login['username']) && isset($data_login['mdpUtilisateur'])) {
-                $user = $utilisateurRepository->trouveUtilisateurByUsername(
-                    $data_login['username']
-                );
+                $user = $utilisateurRepository->trouveUtilisateurByUsername($data_login['username']);
+                if (empty($user)) {
+                    return new JsonResponse([
+                        'utilisateur' => null,
+                        'message' => 'Utilisateur non trouvé, merci de fournir un identifiant correct',
+                        'headers' => [],
+                        'serialized' => true
+                    ], Response::HTTP_NOT_FOUND);
+                }
                 if ($passwordHasher->isPasswordValid($user[0], $data_login['mdpUtilisateur'])) {
                     $authentification_valide = true;
                 }
             }
 
-            $utilisateurDTO = new UtilisateurDTO(
-                $user[0]->getIdUtilisateur(),
-                $user[0]->getEmailUtilisateur(),
-                $user[0]->getRoles(),
-                $user[0]->getUsername(),
-                $user[0]->getNomUtilisateur(),
-                $user[0]->getPrenomUtilisateur()
-            );
-
             // vérification du mode de connexion (par mail ou username)
             // si utilisateur trouvé, alors on renvoie les infos utilisateurs
             if ($authentification_valide) {
-                $utilisateurJSON = $serializer->serialize($utilisateurDTO, 'json');
+                $utilisateurJSON = $serializer->serialize(
+                    $user, 
+                    'json',
+                    ['groups' => ['utilisateur:read']]
+                );
                 return new JsonResponse([
                     'utilisateur' => $utilisateurJSON,
-                    'reponse' => Response::HTTP_OK,
+                    'message' => 'Utilisateur connecté',
                     'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_OK);
             }
             // sinon, on renvoie un JSON d'erreur
             return new JsonResponse([
                 'utilisateur' => null,
-                'reponse' => Response::HTTP_NOT_FOUND,
+                'message' => 'Données manquantes, merci de spécifier le username et mdpUtilisateur',
                 'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NOT_FOUND);
         } catch (\Exception $e) {
             throw new \Exception("Erreur lors de la connexion", $e->getCode());
         }

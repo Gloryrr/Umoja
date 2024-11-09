@@ -3,11 +3,11 @@
 namespace App\Services;
 
 use App\Repository\BudgetEstimatifRepository;
+use App\Repository\OffreRepository;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\BudgetEstimatif;
-use App\DTO\BudgetEstimatifDTO;
 
 /**
  * Class BudgetEstimatifService
@@ -29,27 +29,16 @@ class BudgetEstimatifService
     ): JsonResponse {
         // on récupère tous les budgets définis
         $budgetsEstimatifs = $budgetEstimatifRepository->findAll();
-        $arrayBudgetsEstimatifsDTO = [];
-        foreach ($budgetsEstimatifs as $indFT => $budgetEstimatif) {
-            $budgetEstimatifDTO = new budgetEstimatifDTO(
-                $budgetEstimatif->getIdBE(),
-                $budgetEstimatif->getCachetArtiste(),
-                $budgetEstimatif->getFraisDeplacement(),
-                $budgetEstimatif->getFraisHebergement(),
-                $budgetEstimatif->getFraisRestauration(),
-            );
-
-            array_push($arrayBudgetsEstimatifsDTO, $budgetEstimatifDTO);
-        }
-
-        $budgetsEstimatifsJSON = $serializer->serialize($arrayBudgetsEstimatifsDTO, 'json');
+        $budgetsEstimatifsJSON = $serializer->serialize(
+            $budgetsEstimatifs, 
+            'json', 
+            ['groups' => ['budget_estimatif:read']]
+        );
         return new JsonResponse([
             'budget estimatifs_musicaux' => $budgetsEstimatifsJSON,
             'message' => "Liste des budgets estimatifs",
-            'reponse' => Response::HTTP_OK,
-            'headers' => [],
             'serialized' => true
-        ]);
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -90,22 +79,22 @@ class BudgetEstimatifService
 
             // vérification de l'action en BDD
             if ($rep) {
-                $budgetEstimatifJSON = $serializer->serialize($budgetEstimatif, 'json');
+                $budgetEstimatifJSON = $serializer->serialize(
+                    $budgetEstimatif, 
+                    'json', 
+                    ['groups' => ['budget_estimatif:read']]
+                );
                 return new JsonResponse([
                     'budget_estimatif' => $budgetEstimatifJSON,
                     'message' => "budget estimatif inscrit !",
-                    'reponse' => Response::HTTP_CREATED,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_CREATED);
             }
             return new JsonResponse([
                 'budget_estimatif' => null,
                 'message' => "budget estimatif non inscrit, merci de regarder l'erreur décrite",
-                'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
             throw new \RuntimeException("Erreur lors de la création du budget estimatif", $e->getCode());
         }
@@ -138,10 +127,8 @@ class BudgetEstimatifService
                 return new JsonResponse([
                     'budget_estimatif' => null,
                     'message' => 'budget estimatif non trouvé, merci de donner un identifiant valide !',
-                    'reponse' => Response::HTTP_NOT_FOUND,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_NOT_FOUND);
             }
 
             // on vérifie qu'aucune données ne manque pour la mise à jour
@@ -164,23 +151,23 @@ class BudgetEstimatifService
 
             // si l'action à réussi
             if ($rep) {
-                $budgetEstimatif = $serializer->serialize($budgetEstimatif, 'json');
+                $budgetEstimatif = $serializer->serialize(
+                    $budgetEstimatif, 
+                    'json', 
+                    ['groups' => ['budget_estimatif:read']]
+                );
 
                 return new JsonResponse([
                     'budget_estimatif' => $budgetEstimatif,
                     'message' => "budget estimatif modifié avec succès",
-                    'reponse' => Response::HTTP_OK,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_OK);
             } else {
                 return new JsonResponse([
                     'budget_estimatif' => null,
                     'message' => "budget estimatif non modifié, merci de vérifier l'erreur décrite",
-                    'reponse' => Response::HTTP_BAD_REQUEST,
-                    'headers' => [],
                     'serialized' => false
-                ]);
+                ], Response::HTTP_BAD_REQUEST);
             }
         } catch (\Exception $e) {
             throw new \RuntimeException("Erreur lors de la mise à jour du budget estimatif", $e->getCode());
@@ -209,10 +196,8 @@ class BudgetEstimatifService
             return new JsonResponse([
                 'budget_estimatif' => null,
                 'message' => 'budget estimatif non trouvé, merci de fournir un identifiant valide',
-                'reponse' => Response::HTTP_NOT_FOUND,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         // suppression du budget estimatif en BDD
@@ -220,22 +205,129 @@ class BudgetEstimatifService
 
         // si l'action à réussi
         if ($rep) {
-            $budgetEstimatifJSON = $serializer->serialize($budgetEstimatif, 'json');
+            $budgetEstimatifJSON = $serializer->serialize(
+                $budgetEstimatif, 
+                'json', 
+                ['groups' => ['budget_estimatif:read']]
+            );
             return new JsonResponse([
                 'budget_estimatif' => $budgetEstimatifJSON,
                 'message' => 'budget estimatif supprimé',
-                'reponse' => Response::HTTP_NO_CONTENT,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NO_CONTENT);
         } else {
             return new JsonResponse([
                 'budget_estimatif' => null,
                 'message' => 'budget estimatif non supprimé !',
-                'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Ajoute une offre au budget et renvoie une réponse JSON.
+     *
+     * @param BudgetEstimatifRepository $budgetEstimatifRepository Le repository des artistes.
+     * @param OffreRepository $offreRepository Le repository des genres musicaux.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après la suppression de l'artiste.
+     */
+    public static function ajouteOffreArtiste(
+        BudgetEstimatifRepository $budgetEstimatifRepository,
+        OffreRepository $offreRepository,
+        SerializerInterface $serializer,
+        mixed $data
+    ): JsonResponse {
+        // récupération de l'artiste à supprimer
+        $budgetEstimatif = $budgetEstimatifRepository->find(intval($data['idBudgetEstimatif']));
+        $offre = $offreRepository->find(intval($data['idOffre']));
+
+        // si pas trouvé
+        if ($budgetEstimatif == null || $offre == null) { 
+            return new JsonResponse([
+                'budget_estimatif' => null,
+                'message' => "budget estimatif ou offre non trouvée, merci de fournir un identifiant valide",
+                'serialized' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // suppression en BDD
+        $budgetEstimatif->addOffre($offre);
+        $rep = $budgetEstimatifRepository->updateBudgetEstimatif($budgetEstimatif);
+
+        // réponse après suppression
+        if ($rep) {
+            $budgetEstimatifJSON = $serializer->serialize(
+                $budgetEstimatif, 
+                'json', 
+                ['groups' => ['budget_estimatif:read']]
+            );
+            return new JsonResponse([
+                'budget_estimatif' => $budgetEstimatifJSON,
+                'message' => "Type d'offre supprimé",
+                'serialized' => false
+            ], Response::HTTP_NO_CONTENT);
+        } else {
+            return new JsonResponse([
+                'budget_estimatif' => null,
+                'message' => "Type d'offre non supprimé !",
+                'serialized' => false
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Retire une offre au budget et renvoie une réponse JSON.
+     *
+     * @param int $id L'identifiant de l'artiste.
+     * @param BudgetEstimatifRepository $budgetEstimatifRepository Le repository des artistes.
+     * @param OffreRepository $offreRepository Le repository des genres musicaux.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après la suppression de l'artiste.
+     */
+    public static function retireOffreArtiste(
+        BudgetEstimatifRepository $budgetEstimatifRepository,
+        OffreRepository $offreRepository,
+        SerializerInterface $serializer,
+        mixed $data
+    ): JsonResponse {
+        // récupération de l'artiste à supprimer
+        $budgetEstimatif = $budgetEstimatifRepository->find(intval($data['idBudgetEstimatif']));
+        $offre = $offreRepository->find(intval($data['idOffre']));
+
+        // si pas trouvé
+        if ($budgetEstimatif == null || $offre == null) { 
+            return new JsonResponse([
+                'budget_estimatif' => null,
+                'message' => "budget estimatif ou offre non trouvée, merci de fournir un identifiant valide",
+                'serialized' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // suppression en BDD
+        $budgetEstimatif->removeOffre($offre);
+        $rep = $budgetEstimatifRepository->updateBudgetEstimatif($budgetEstimatif);
+
+        // réponse après suppression
+        if ($rep) {
+            $budgetEstimatifJSON = $serializer->serialize(
+                $budgetEstimatif, 
+                'json', 
+                ['groups' => ['budget_estimatif:read']]
+            );
+            return new JsonResponse([
+                'budget_estimatif' => $budgetEstimatifJSON,
+                'message' => "Type d'offre supprimé",
+                'serialized' => false
+            ], Response::HTTP_NO_CONTENT);
+        } else {
+            return new JsonResponse([
+                'budget_estimatif' => null,
+                'message' => "Type d'offre non supprimé !",
+                'serialized' => false
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 }

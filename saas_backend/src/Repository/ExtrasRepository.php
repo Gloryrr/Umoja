@@ -16,28 +16,60 @@ class ExtrasRepository extends ServiceEntityRepository
         parent::__construct($registry, Extras::class);
     }
 
-//    /**
-//     * @return Extras[] Returns an array of Extras objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('e.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * Ajoute un nouvel extra dans la base de données.
+     *
+     * @param Extras $extras L'objet de l'extra à persister.
+     * @return bool Indique si l'insertion a réussi.
+     *
+     * @throws \RuntimeException Si une erreur survient lors de l'enregistrement.
+     */
+    public function ajouterExtras(Extras $extras): bool
+    {
+        try {
+            $this->getEntityManager()->persist($extras);
+            $this->getEntityManager()->flush();
+            return true;
+        } catch (\Exception $e) {
+            throw new \RuntimeException("Erreur lors de l'enregistrement de l'extra : " . $e->getMessage());
+        }
+    }
 
-//    public function findOneBySomeField($value): ?Extras
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * Met à jour un extra existant dans la base de données.
+     *
+     * @param Extras $extras L'objet de l'extra à mettre à jour.
+     * @return bool|null Indique si la mise à jour a réussi.
+     *
+     * @throws \Exception Si une erreur survient lors de la mise à jour.
+     */
+    public function modifierExtras(Extras $extras): ?bool
+    {
+        try {
+            $this->getEntityManager()->persist($extras);
+            $this->getEntityManager()->flush();
+            return true;
+        } catch (\Exception $e) {
+            throw new \Exception("Erreur lors de la mise à jour de l'extra : " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Supprime un extra de la base de données.
+     *
+     * @param Extras $extras L'extra à supprimer.
+     * @return bool|null Indique si la suppression a réussi.
+     *
+     * @throws \RuntimeException Si une erreur survient lors de la suppression.
+     */
+    public function supprimerExtras(Extras $extras): ?bool
+    {
+        try {
+            $this->getEntityManager()->remove($extras);
+            $this->getEntityManager()->flush();
+            return true;
+        } catch (\Exception $e) {
+            throw new \RuntimeException("Erreur lors de la suppression de l'extra : " . $e->getMessage());
+        }
+    }
 }

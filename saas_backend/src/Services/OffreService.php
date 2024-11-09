@@ -3,25 +3,22 @@
 namespace App\Services;
 
 use App\Entity\BudgetEstimatif;
-use App\Entity\Concerner;
+use App\Entity\Commentaire;
 use App\Entity\ConditionsFinancieres;
-use App\Entity\Creer;
 use App\Entity\EtatOffre;
 use App\Entity\Extras;
 use App\Entity\FicheTechniqueArtiste;
-use App\Entity\Rattacher;
+use App\Entity\Reponse;
 use App\Entity\TypeOffre;
 use App\Entity\Offre;
-use App\Entity\Poster;
+use App\Repository\CommentaireRepository;
+use App\Repository\EtatReponseRepository;
+use App\Repository\ReponseRepository;
 use App\Repository\OffreRepository;
 use App\Repository\UtilisateurRepository;
-use App\Repository\CreerRepository;
 use App\Repository\ReseauRepository;
-use App\Repository\PosterRepository;
 use App\Repository\GenreMusicalRepository;
-use App\Repository\RattacherRepository;
 use App\Repository\ArtisteRepository;
-use App\Repository\ConcernerRepository;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,10 +41,14 @@ class OffreService
         OffreRepository $offreRepository,
         SerializerInterface $serializer
     ): JsonResponse {
-        $Offres = $offreRepository->findAll();
-        $OffresJSON = $serializer->serialize($Offres, 'json');
+        $offres = $offreRepository->findAll();
+        $offresJSON = $serializer->serialize(
+            $offres, 
+            'json', 
+            ['groups' => ['offre:read']]
+        );
         return new JsonResponse([
-            'Offres' => $OffresJSON,
+            'offres' => $offresJSON,
             'serialized' => true
         ], Response::HTTP_OK, ['Access-Control-Allow-Origin' => '*']);
     }
@@ -67,13 +68,9 @@ class OffreService
     public static function createOffre(
         OffreRepository $offreRepository,
         UtilisateurRepository $utilisateurRepository,
-        CreerRepository $creerRepository,
         ReseauRepository $reseauRepository,
-        PosterRepository $posterRepository,
-        RattacherRepository $rattacherRepository,
         GenreMusicalRepository $genreMusicalRepository,
         ArtisteRepository $artisteRepository,
-        ConcernerRepository $concernerRepository,
         SerializerInterface $serializer,
         mixed $data
     ): JsonResponse {
@@ -175,28 +172,15 @@ class OffreService
             );
             $offre->setFicheTechniqueArtiste($ficheTechniqueArtiste);
 
-            // ajout de l'offre en base de données
-            $rep = $offreRepository->inscritOffre($offre);
-
             // création de l'objet de l'utilisateur qui a mit en ligne l'offre
             $utilisateur = $utilisateurRepository->trouveUtilisateurByUsername($data['utilisateur']['username']);
-            print_r($utilisateur);
-            $creer = new Creer();
-            $creer->setContact($data['utilisateur']['contact']);
-            $creer->setIdUtilisateur($utilisateur[0]);
-            $creer->setIdOffre($offre);
-            $creerRepository->ajouterCreer($creer);
+            $offre->setUtilisateur($utilisateur[0]);
 
             // ajoute l'offre sur le ou les réseau(x) indiqués
             $nb_reseaux = intval($data['donneesSupplementaires']['nbReseaux']);
-            print_r($nb_reseaux);
             for ($i = 0; $i < $nb_reseaux; $i++) {
                 $reseau = $reseauRepository->trouveReseauByName($data['donneesSupplementaires']['reseau'][$i]);
-                print_r($reseau);
-                $poster = new Poster();
-                $poster->setIdOffre($offre);
-                $poster->setIdReseau($reseau[0]);
-                $posterRepository->inscritPoster($poster);
+                $offre->addReseau($reseau[0]);
             }
 
             $nb_genres_musicaux = intval($data['donneesSupplementaires']['nbGenresMusicaux']);
@@ -204,32 +188,31 @@ class OffreService
                 $genreMusical = $genreMusicalRepository->trouveGenreMusicalByName(
                     $data['donneesSupplementaires']['genreMusical'][$i]
                 );
-                print_r($genreMusical);
-                $rattacher = new Rattacher();
-                $rattacher->setIdOffre($offre);
-                $rattacher->setIdGenreMusical($genreMusical[0]);
-                $rattacherRepository->ajouterRattacher($rattacher);
+                $offre->addGenreMusical($genreMusical[0]);
             }
 
             $nb_artistes = intval($data['donneesSupplementaires']['nbArtistes']);
             for ($i = 0; $i < $nb_artistes; $i++) {
                 $artiste = $artisteRepository->trouveArtisteByName($data['donneesSupplementaires']['artiste'][$i]);
-                print_r($artiste);
-                $concerner = new Concerner();
-                $concerner->setIdOffre($offre);
-                $concerner->setIdArtiste($artiste[0]);
-                $concernerRepository->ajouterConcerner($concerner);
+                $offre->addArtiste($artiste[0]);
             }
+
+            // ajout de l'offre en base de données
+            $rep = $offreRepository->inscritOffre($offre);
 
 
             // vérification de l'action en BDD
             if ($rep) {
-                $offreJSON = $serializer->serialize($offre, 'json');
+                $offreJSON = $serializer->serialize(
+                    $offre, 
+                    'json', 
+                    ['groups' => ['offre:read']]
+                );
                 return new JsonResponse([
                     'offre' => $offreJSON,
                     'message' => "Offre inscrite !",
                     'serialized' => true
-                ]);
+                ], Response::HTTP_OK, ['Access-Control-Allow-Origin' => '*']);
             }
             return new JsonResponse([
                 'offre' => null,
@@ -268,48 +251,47 @@ class OffreService
                 return new JsonResponse([
                     'offre' => null,
                     'message' => 'offre non trouvée, merci de donner un identifiant valide !',
-                    'reponse' => Response::HTTP_NOT_FOUND,
                     'serialized' => true
-                ]);
+                ], Response::HTTP_NOT_FOUND);
             }
 
             // on vérifie qu'aucune données ne manque pour la mise à jour
             // et on instancie les données dans l'objet
-            if (isset($data['titleOffre'])) {
-                $offre->setTitleOffre($data['titleOffre']);
+            if (isset($data['detailOffre']['titleOffre'])) {
+                $offre->setTitleOffre($data['detailOffre']['titleOffre']);
             }
-            if (isset($data['deadline'])) {
-                $offre->setDeadline($data['deadline']);
+            if (isset($data['detailOffre']['deadline'])) {
+                $offre->setDeadline($data['detailOffre']['deadline']);
             }
-            if (isset($data['descrTournee'])) {
-                $offre->setDescrTournee($data['descrTournee']);
+            if (isset($data['detailOffre']['descrTournee'])) {
+                $offre->setDescrTournee($data['detailOffre']['descrTournee']);
             }
-            if (isset($data['dateMinProposee'])) {
-                $offre->setDateMinProposee($data['dateMinProposee']);
+            if (isset($data['detailOffre']['dateMinProposee'])) {
+                $offre->setDateMinProposee($data['detailOffre']['dateMinProposee']);
             }
-            if (isset($data['dateMaxProposee'])) {
-                $offre->setDateMaxProposee($data['dateMaxProposee']);
+            if (isset($data['detailOffre']['dateMaxProposee'])) {
+                $offre->setDateMaxProposee($data['detailOffre']['dateMaxProposee']);
             }
-            if (isset($data['villeVisee'])) {
-                $offre->setVilleVisee($data['villeVisee']);
+            if (isset($data['detailOffre']['villeVisee'])) {
+                $offre->setVilleVisee($data['detailOffre']['villeVisee']);
             }
-            if (isset($data['regionVisee'])) {
-                $offre->setRegionVisee($data['regionVisee']);
+            if (isset($data['detailOffre']['regionVisee'])) {
+                $offre->setRegionVisee($data['detailOffre']['regionVisee']);
             }
-            if (isset($data['placesMin'])) {
-                $offre->setPlacesMin($data['placesMin']);
+            if (isset($data['detailOffre']['placesMin'])) {
+                $offre->setPlacesMin($data['detailOffre']['placesMin']);
             }
-            if (isset($data['placesMax'])) {
-                $offre->setPlacesMax($data['placesMax']);
+            if (isset($data['detailOffre']['placesMax'])) {
+                $offre->setPlacesMax($data['detailOffre']['placesMax']);
             }
-            if (isset($data['nbArtistesConcernes'])) {
-                $offre->setNbArtistesConcernes($data['nbArtistesConcernes']);
+            if (isset($data['detailOffre']['nbArtistesConcernes'])) {
+                $offre->setNbArtistesConcernes($data['detailOffre']['nbArtistesConcernes']);
             }
-            if (isset($data['nbInvitesConcernes'])) {
-                $offre->setNbInvitesConcernes($data['nbInvitesConcernes']);
+            if (isset($data['detailOffre']['nbInvitesConcernes'])) {
+                $offre->setNbInvitesConcernes($data['detailOffre']['nbInvitesConcernes']);
             }
-            if (isset($data['liensPromotionnels'])) {
-                $offre->setLiensPromotionnels($data['liensPromotionnels']);
+            if (isset($data['detailOffre']['liensPromotionnels'])) {
+                $offre->setLiensPromotionnels($data['detailOffre']['liensPromotionnels']);
             }
             if (isset($data['etatOffre'])) {
                 $etatOffre = new EtatOffre();
@@ -389,21 +371,23 @@ class OffreService
 
             // si l'action à réussi
             if ($rep) {
-                $offreJSON = $serializer->serialize($offre, 'json');
+                $offreJSON = $serializer->serialize(
+                    $offre, 
+                    'json', 
+                    ['groups' => ['offre:read']]
+                );
 
                 return new JsonResponse([
                     'offre' => $offreJSON,
                     'message' => "Offre modifiée avec succès",
-                    'reponse' => Response::HTTP_OK,
                     'serialized' => true
-                ]);
+                ], Response::HTTP_OK);
             } else {
                 return new JsonResponse([
                     'offre' => null,
                     'message' => "Offre non modifiée, merci de vérifier l'erreur décrite",
-                    'reponse' => Response::HTTP_BAD_REQUEST,
                     'serialized' => false
-                ]);
+                ], Response::HTTP_BAD_REQUEST);
             }
         } catch (\Exception $e) {
             throw new \RuntimeException("Erreur lors de la mise à jour de l'offre", $e->getMessage());
@@ -432,9 +416,8 @@ class OffreService
             return new JsonResponse([
                 'offre' => null,
                 'message' => 'offre non trouvée, merci de fournir un identifiant valide',
-                'reponse' => Response::HTTP_NOT_FOUND,
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         // suppression de l'offre en BDD
@@ -442,20 +425,22 @@ class OffreService
 
         // si l'action à réussi
         if ($rep) {
-            $offreJSON = $serializer->serialize($offre, 'json');
+            $offreJSON = $serializer->serialize(
+                $offre, 
+                'json', 
+                ['groups' => ['offre:read']]
+            );
             return new JsonResponse([
                 'offre' => $offreJSON,
                 'message' => 'offre supprimée',
-                'reponse' => Response::HTTP_NO_CONTENT,
                 'serialized' => false
-            ]);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'offre' => null,
                 'message' => 'offre non supprimée !',
-                'reponse' => Response::HTTP_BAD_REQUEST,
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -465,7 +450,6 @@ class OffreService
      * @param mixed $data Les données requises pour ajouter un artiste correpondant à l'offre.
      * @param OffreRepository $offreRepository Le repository des offres.
      * @param ArtisteRepository $artisteRepository Le repository des artistes.
-     * @param ConcernerRepository $concernerRepository Le repository des artistes qui sont concernés par des offres
      * @param SerializerInterface $serializer Le service de sérialisation.
      *
      * @return JsonResponse La réponse JSON après tentatives d'ajout d'artiste correpondant à l'offre.
@@ -474,7 +458,6 @@ class OffreService
         mixed $data,
         OffreRepository $offreRepository,
         ArtisteRepository $artisteRepository,
-        ConcernerRepository $concernerRepository,
         SerializerInterface $serializer,
     ): JsonResponse {
         // récupération de l'offre et de l'artiste ciblés
@@ -486,33 +469,32 @@ class OffreService
             return new JsonResponse([
                 'object' => null,
                 'message' => 'Artiste ou offre non trouvés, merci de fournir des identifiants valides',
-                'reponse' => Response::HTTP_NOT_FOUND,
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         // ajout de l'objet en BDD
-        $concerner = new Concerner();
-        $concerner->setIdOffre($offre);
-        $concerner->setIdArtiste($artiste);
-        $rep = $concernerRepository->ajouterConcerner($concerner);
+        $offre->addArtiste($artiste);
+        $rep = $offreRepository->updateOffre($offre);
 
         // si l'action à réussi
         if ($rep) {
-            $concernerJSON = $serializer->serialize($concerner, 'json');
+            $offreJSON = $serializer->serialize(
+                $offre, 
+                'json', 
+                ['groups' => ['offre:read']]
+            );
             return new JsonResponse([
-                'concerner' => $concernerJSON,
+                'offre' => $offreJSON,
                 'message' => "Artiste ajouté à l'offre.",
-                'reponse' => Response::HTTP_NO_CONTENT,
                 'serialized' => false
-            ]);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
-                'concerner' => null,
+                'offre' => null,
                 'message' => "Artiste non ajouté au à l'offre !",
-                'reponse' => Response::HTTP_BAD_REQUEST,
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -522,7 +504,6 @@ class OffreService
      * @param mixed $data Les données requises pour retirer un artiste de l'offre.
      * @param OffreRepository $offreRepository Le repository des offres.
      * @param ArtisteRepository $artisteRepository Le repository des utilisateurs.
-     * @param ConcernerRepository $concernerRepository Le repository des appartenance.
      * @param SerializerInterface $serializer Le service de sérialisation.
      *
      * @return JsonResponse La réponse JSON après tentatives de retrait d'un artiste de l'offre.
@@ -531,7 +512,6 @@ class OffreService
         mixed $data,
         OffreRepository $offreRepository,
         ArtisteRepository $artisteRepository,
-        ConcernerRepository $concernerRepository,
         SerializerInterface $serializer,
     ): JsonResponse {
         // récupération de l'offre et de l'artiste ciblés
@@ -542,33 +522,32 @@ class OffreService
             return new JsonResponse([
                 'object' => null,
                 'message' => 'Artiste ou offre non trouvés, merci de fournir des identifiants valides',
-                'reponse' => Response::HTTP_NOT_FOUND,
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         // ajout de l'objet en BDD
-        $concerner = new Concerner();
-        $concerner->setIdOffre($offre);
-        $concerner->setIdArtiste($artiste);
-        $rep = $concernerRepository->supprimerConcerner($concerner);
+        $offre->removeArtiste($artiste);
+        $rep = $offreRepository->updateOffre($offre);
 
         // si l'action à réussi
         if ($rep) {
-            $concernerJSON = $serializer->serialize($concerner, 'json');
+            $offreJSON = $serializer->serialize(
+                $offre, 
+                'json', 
+                ['groups' => ['offre:read']]
+            );
             return new JsonResponse([
-                'concerner' => $concernerJSON,
+                'offre' => $offreJSON,
                 'message' => "Artiste supprimé de l'offre.",
-                'reponse' => Response::HTTP_NO_CONTENT,
                 'serialized' => false
-            ]);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
-                'concerner' => null,
+                'offre' => null,
                 'message' => "Artiste non supprimé de l'offre !",
-                'reponse' => Response::HTTP_BAD_REQUEST,
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -578,7 +557,6 @@ class OffreService
      * @param mixed $data Les données requises pour ajouter un genre à l'offre.
      * @param OffreRepository $offreRepository Le repository des offres.
      * @param GenreMusicalRepository $genreMusicalRepository Le repository des genres musicaux.
-     * @param RattacherRepository $rattacherRepository Le repository des rattachements.
      * @param SerializerInterface $serializer Le service de sérialisation.
      *
      * @return JsonResponse La réponse JSON après tentatives d'ajout d'un genre musical à l'offre.
@@ -587,7 +565,6 @@ class OffreService
         mixed $data,
         OffreRepository $offreRepository,
         GenreMusicalRepository $genreMusicalRepository,
-        RattacherRepository $rattacherRepository,
         SerializerInterface $serializer,
     ): JsonResponse {
         // récupération de l'offre et du genre musical ciblés
@@ -599,33 +576,32 @@ class OffreService
             return new JsonResponse([
                 'object' => null,
                 'message' => 'Offre ou genre musical non trouvé, merci de fournir un identifiant valide',
-                'reponse' => Response::HTTP_NOT_FOUND,
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         // ajout de l'objet en BDD
-        $rattacher = new Rattacher();
-        $rattacher->setIdGenreMusical($genreMusical);
-        $rattacher->setIdOffre($offre);
-        $rep = $rattacherRepository->ajouterRattacher($rattacher);
+        $offre->addGenreMusical($genreMusical);
+        $rep = $offreRepository->updateOffre($offre);
 
         // si l'action à réussi
         if ($rep) {
-            $rattacherJSON = $serializer->serialize($rattacher, 'json');
+            $offreJSON = $serializer->serialize(
+                $offre, 
+                'json', 
+                ['groups' => ['offre:read']]
+            );
             return new JsonResponse([
-                'rattacher' => $rattacherJSON,
+                'offre' => $offreJSON,
                 'message' => "Genre musical rattaché à l'offre",
-                'reponse' => Response::HTTP_NO_CONTENT,
                 'serialized' => false
-            ]);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
-                'rattacher' => null,
+                'offre' => null,
                 'message' => "Genre musical non rattaché à l'offre !",
-                'reponse' => Response::HTTP_BAD_REQUEST,
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -635,7 +611,6 @@ class OffreService
      * @param mixed $data Les données requises pour retirer un genre du réseau.
      * @param OffreRepository $offreRepository Le repository des réseaux.
      * @param GenreMusicalRepository $genreMusicalRepository Le repository des genres musicaux.
-     * @param RattacherRepository $rattacherRepository Le repository des liaisons.
      * @param SerializerInterface $serializer Le service de sérialisation.
      *
      * @return JsonResponse La réponse JSON après tentatives de retrait d'un genre musical du réseau.
@@ -644,7 +619,6 @@ class OffreService
         mixed $data,
         OffreRepository $offreRepository,
         GenreMusicalRepository $genreMusicalRepository,
-        RattacherRepository $rattacherRepository,
         SerializerInterface $serializer,
     ): JsonResponse {
         // récupération de l'offre et du genre musical ciblés
@@ -656,33 +630,397 @@ class OffreService
             return new JsonResponse([
                 'object' => null,
                 'message' => 'Offre ou genre musical non trouvé, merci de fournir un identifiant valide',
-                'reponse' => Response::HTTP_NOT_FOUND,
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         // ajout de l'objet en BDD
-        $rattacher = new Rattacher();
-        $rattacher->setIdGenreMusical($genreMusical);
-        $rattacher->setIdOffre($offre);
-        $rep = $rattacherRepository->supprimerRattacher($rattacher);
+        $offre->removeGenreMusical($genreMusical);
+        $rep = $offreRepository->updateOffre($offre);
 
         // si l'action à réussi
         if ($rep) {
-            $rattacherJSON = $serializer->serialize($rattacher, 'json');
+            $offreJSON = $serializer->serialize(
+                $offre, 
+                'json', 
+                ['groups' => ['offre:read']]
+            );
             return new JsonResponse([
-                'rattacher' => $rattacherJSON,
+                'offre' => $offreJSON,
                 'message' => "Genre musical supprimé de l'offre",
-                'reponse' => Response::HTTP_NO_CONTENT,
                 'serialized' => false
-            ]);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
-                'rattacher' => null,
+                'offre' => null,
                 'message' => "Genre musical non supprimé de l'offre !",
-                'reponse' => Response::HTTP_BAD_REQUEST,
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Ajoute un réseau à l'offre et renvoie une réponse JSON.
+     *
+     * @param mixed $data Les données requises pour ajouter un réseau à l'offre.
+     * @param OffreRepository $offreRepository Le repository des offres.
+     * @param ReseauRepository $reseauRepository Le repository des réseaux.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après tentatives d'ajout du réseau à l'offre.
+     */
+    public static function ajouteReseauOffre(
+        mixed $data,
+        OffreRepository $offreRepository,
+        ReseauRepository $reseauRepository,
+        SerializerInterface $serializer,
+    ): JsonResponse {
+        // récupération de l'offre et du réseau ciblés
+        $offre = $offreRepository->find($data['idOffre']);
+        $reseau = $reseauRepository->find($data['idReseau']);
+
+        // si pas d'offre ou du réseau trouvé
+        if ($offre == null || $reseau == null) {
+            return new JsonResponse([
+                'object' => null,
+                'message' => 'Réseau ou offre non trouvés, merci de fournir des identifiants valides',
+                'serialized' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // ajout de l'objet en BDD
+        $offre->addReseau($reseau);
+        $rep = $offreRepository->updateOffre($offre);
+
+        // si l'action à réussi
+        if ($rep) {
+            $offreJSON = $serializer->serialize(
+                $offre, 
+                'json', 
+                ['groups' => ['offre:read']]
+            );
+            return new JsonResponse([
+                'offre' => $offreJSON,
+                'message' => "Réseau ajouté à l'offre.",
+                'serialized' => false
+            ], Response::HTTP_OK);
+        } else {
+            return new JsonResponse([
+                'offre' => null,
+                'message' => "Réseau non ajouté au à l'offre !",
+                'serialized' => false
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Retire un réseau à l'offre et renvoie une réponse JSON.
+     *
+     * @param mixed $data Les données requises pour retirer un réseau de l'offre.
+     * @param OffreRepository $offreRepository Le repository des offres.
+     * @param ReseauRepository $reseauRepository Le repository des réseaux.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après tentatives de retrait d'un réseau de l'offre.
+     */
+    public static function retireReseauOffre(
+        mixed $data,
+        OffreRepository $offreRepository,
+        ReseauRepository $reseauRepository,
+        SerializerInterface $serializer,
+    ): JsonResponse {
+        // récupération de l'offre et du réseau ciblés
+        $offre = $offreRepository->find($data['idOffre']);
+        $reseau = $reseauRepository->find($data['idReseau']);
+
+        if ($offre == null || $reseau == null) {
+            return new JsonResponse([
+                'object' => null,
+                'message' => 'Réseau ou offre non trouvés, merci de fournir des identifiants valides',
+                'serialized' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // ajout de l'objet en BDD
+        $offre->removeReseau($reseau);
+        $rep = $offreRepository->updateOffre($offre);
+
+        // si l'action à réussi
+        if ($rep) {
+            $offreJSON = $serializer->serialize(
+                $offre, 
+                'json', 
+                ['groups' => ['offre:read']]
+            );
+            return new JsonResponse([
+                'offre' => $offreJSON,
+                'message' => "Réseau supprimé de l'offre.",
+                'serialized' => false
+            ], Response::HTTP_OK);
+        } else {
+            return new JsonResponse([
+                'offre' => null,
+                'message' => "Réseau non supprimé de l'offre !",
+                'serialized' => false
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Ajoute un commentaire et un utilisateur qui a commenté l'offre et renvoie une réponse JSON.
+     *
+     * @param mixed $data Les données requises pour ajouter un commentaire à l'offre.
+     * @param OffreRepository $offreRepository Le repository des offres.
+     * @param UtilisateurRepository $utilisateurRepository Le repository des utilisateurs.
+     * @param CommentaireRepository $commentaireRepository Le repository des commentaires.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après tentatives d'ajout d'un commentaire à l'offre.
+     */
+    public static function ajouteUtilisateurCommentaireOffre(
+        mixed $data,
+        OffreRepository $offreRepository,
+        UtilisateurRepository $utilisateurRepository,
+        CommentaireRepository $commentaireRepository,
+        SerializerInterface $serializer,
+    ): JsonResponse {
+        // récupération de l'offre et de l'utilisateur ciblés
+        $offre = $offreRepository->find($data['idOffre']);
+        $utilisateur = $utilisateurRepository->find($data['idUtilisateur']);
+
+        // si pas d'offre ou utilisateur trouvé
+        if ($offre == null || $utilisateur == null) {
+            return new JsonResponse([
+                'object' => null,
+                'message' => 'Offre ou utilisateur non trouvé, merci de fournir un identifiant valide',
+                'serialized' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $commentaire = new Commentaire();
+        $commentaire->setCommentaire($data['contenu']);
+        $commentaire->setOffre($offre);
+        $commentaire->setUtilisateur($utilisateur);
+        $rep = $commentaireRepository->inscritCommentaire($commentaire);
+
+        // si l'action à réussi
+        if (!$rep) {
+            return new JsonResponse([
+                'commentaire' => null,
+                'message' => "Commentaire non ajouté à l'offre !",
+                'serialized' => false
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // ajout de l'objet en BDD
+        $offre->addCommenteePar($utilisateur);
+        $rep = $offreRepository->updateOffre($offre);
+
+        // si l'action à réussi
+        if ($rep) {
+            $offreJSON = $serializer->serialize(
+                $offre, 
+                'json', 
+                ['groups' => ['offre:read']]
+            );
+            return new JsonResponse([
+                'offre' => $offreJSON,
+                'message' => "Genre musical rattaché à l'offre",
+                'serialized' => false
+            ], Response::HTTP_OK);
+        } else {
+            return new JsonResponse([
+                'offre' => null,
+                'message' => "Genre musical non rattaché à l'offre !",
+                'serialized' => false
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Retire commentaire à l'offre et renvoie une réponse JSON.
+     *
+     * @param mixed $data Les données requises pour retirer un genre du réseau.
+     * @param OffreRepository $offreRepository Le repository des offres.
+     * @param UtilisateurRepository $utilisateurRepository Le repository des utilisateurs.
+     * @param CommentaireRepository $commentaireRepository Le repository des commentaires.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après tentatives de retrait d'un genre musical du réseau.
+     */
+    public static function retireUtilisateurCommentaireOffre(
+        mixed $data,
+        OffreRepository $offreRepository,
+        UtilisateurRepository $utilisateurRepository,
+        CommentaireRepository $commentaireRepository,
+        SerializerInterface $serializer,
+    ): JsonResponse {
+        // récupération de l'offre, de l'utilisateur et du commentaire ciblés
+        $offre = $offreRepository->find($data['idOffre']);
+        $utilisateur = $utilisateurRepository->find($data['idUtilisateur']);
+        $commentaire = $commentaireRepository->find($data['idCommentaire']);
+
+        // si pas d'offre, utilisateur ou commentaire trouvé
+        if ($offre == null || $utilisateur == null || $commentaire == null) {
+            return new JsonResponse([
+                'object' => null,
+                'message' => 'Offre ou utilisateur ou commentaire non trouvé, merci de fournir un identifiant valide',
+                'serialized' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // suppression de l'objet en BDD
+        $rep = $commentaireRepository->removeCommentaire($commentaire);
+        if (!$rep) {
+            return new JsonResponse([
+                'commentaire' => null,
+                'message' => "Commentaire non supprimé de l'offre !",
+                'serialized' => false
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // suppression de l'objet en BDD
+        $offre->removeCommenteePar($utilisateur);
+        $rep = $offreRepository->updateOffre($offre);
+
+        // si l'action à réussi
+        if ($rep) {
+            $offreJSON = $serializer->serialize(
+                $offre, 
+                'json', 
+                ['groups' => ['offre:read']]
+            );
+            return new JsonResponse([
+                'offre' => $offreJSON,
+                'message' => "Genre musical supprimé de l'offre",
+                'serialized' => false
+            ], Response::HTTP_OK);
+        } else {
+            return new JsonResponse([
+                'offre' => null,
+                'message' => "Genre musical non supprimé de l'offre !",
+                'serialized' => false
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Ajoute une réponse à une offre et renvoie une réponse JSON.
+     *
+     * @param mixed $data Les données requises pour ajouter un commentaire à l'offre.
+     * @param OffreRepository $offreRepository Le repository des offres.
+     * @param ReponseRepository $reponseRepository Le repository des réponses.
+     * @param EtatReponseRepository $etatReponseRepository Le repository des états réponse.
+     * @param UtilisateurRepository $utilisateurRepository Le repository des utilisateurs.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après tentatives d'ajout d'une réponse à l'offre.
+     */
+    public static function ajouteReponseOffre(
+        mixed $data,
+        OffreRepository $offreRepository,
+        ReponseRepository $reponseRepository,
+        EtatReponseRepository $etatReponseRepository,
+        UtilisateurRepository $utilisateurRepository,
+        SerializerInterface $serializer,
+    ): JsonResponse {
+        // récupération de l'offre et de la réponse ciblése
+        $offre = $offreRepository->find($data['idOffre']);
+        $utilisateur = $utilisateurRepository->find($data['idUtilisateur']);
+        $etatReponse = $etatReponseRepository->find($data['idEtatReponse']);
+
+        // si pas d'offre ou utilisateur trouvé
+        if ($offre == null || $utilisateur == null || $etatReponse == null) {
+            return new JsonResponse([
+                'object' => null,
+                'message' => 'Offre ou utilisateur ou état réponse non trouvé(e), merci de fournir un identifiant valide',
+                'serialized' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $reponse = new Reponse();
+        $reponse->setEtatReponse($etatReponse);
+        $reponse->setOffre($offre);
+        $reponse->setUtilisateur($utilisateur);
+        $reponseRepository->ajouterReponse($reponse);
+
+
+        // ajout de l'objet en BDD
+        $offre->addReponse($reponse);
+        $rep = $offreRepository->updateOffre($offre);
+
+        // si l'action à réussi
+        if ($rep) {
+            $offreJSON = $serializer->serialize(
+                $offre, 
+                'json', 
+                ['groups' => ['offre:read']]
+            );
+            return new JsonResponse([
+                'offre' => $offreJSON,
+                'message' => "Réponse rattachée à l'offre",
+                'serialized' => false
+            ], Response::HTTP_OK);
+        } else {
+            return new JsonResponse([
+                'offre' => null,
+                'message' => "Réponse non rattachée à l'offre !",
+                'serialized' => false
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Retire réponse à l'offre et renvoie une réponse JSON.
+     *
+     * @param mixed $data Les données requises pour retirer uné réponse de l'offre.
+     * @param OffreRepository $offreRepository Le repository des offres.
+     * @param ReponseRepository $reponseRepository Le repository des réponses.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après tentatives de retrait d'une réponse à l'offre.
+     */
+    public static function retireReponseOffre(
+        mixed $data,
+        OffreRepository $offreRepository,
+        ReponseRepository $reponseRepository,
+        SerializerInterface $serializer,
+    ): JsonResponse {
+        // récupération de l'offre et de la réponse ciblées
+        $offre = $offreRepository->find($data['idOffre']);
+        $reponse = $reponseRepository->find($data['idReponse']);
+
+        // si pas d'offre ou réponse trouvée
+        if ($offre == null || $reponse = null) {
+            return new JsonResponse([
+                'object' => null,
+                'message' => 'Offre ou réponse non trouvé(e), merci de fournir un identifiant valide',
+                'serialized' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // suppression de l'objet en BDD
+        $offre->removeReponse($reponse);
+        $rep = $offreRepository->updateOffre($offre);
+
+        // si l'action à réussi
+        if ($rep) {
+            $offreJSON = $serializer->serialize(
+                $offre, 
+                'json', 
+                ['groups' => ['offre:read']]
+            );
+            return new JsonResponse([
+                'offre' => $offreJSON,
+                'message' => "Réponse supprimée de l'offre",
+                'serialized' => false
+            ], Response::HTTP_OK);
+        } else {
+            return new JsonResponse([
+                'offre' => null,
+                'message' => "Réponse non supprimée de l'offre !",
+                'serialized' => false
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 }

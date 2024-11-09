@@ -4,6 +4,9 @@ namespace App\Entity;
 
 use App\Repository\EtatReponseRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Classe EtatReponse
@@ -13,33 +16,27 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: EtatReponseRepository::class)]
 class EtatReponse
 {
-    /**
-     * @var int|null
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
+    #[Groups(['etat_reponse:read'])]
     private ?int $id = null;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="string", length=100)
-     */
+    
     #[ORM\Column(type: "string", length: 100)]
+    #[Groups(['etat_reponse:read', 'etat_reponse:write'])]
     private ?string $nomEtatReponse = null;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="string", length=255)
-     */
+    
     #[ORM\Column(type: "string", length: 255)]
+    #[Groups(['etat_reponse:read', 'etat_reponse:write'])]
     private ?string $descriptionEtatReponse = null;
+    
+    #[ORM\OneToMany(targetEntity: Reponse::class, mappedBy: "etatReponse", orphanRemoval: true, cascade: ["remove"])]
+    #[Groups(['etat_reponse:read'])]
+    private Collection $reponses;    
+
+    public function __construct() {
+        $this->reponses = new ArrayCollection();
+    }
 
     /**
      * Obtient l'identifiant de l'état de réponse
@@ -92,6 +89,30 @@ class EtatReponse
     public function setDescriptionEtatReponse(string $descriptionEtatReponse): self
     {
         $this->descriptionEtatReponse = $descriptionEtatReponse;
+        return $this;
+    }
+
+    public function getReponses(): Collection
+    {
+        return $this->reponses;
+    }
+
+    public function addReponse(Reponse $reponse): self
+    {
+        if (!$this->reponses->contains($reponse)) {
+            $this->reponses[] = $reponse;
+            $reponse->setEtatReponse($this);
+        }
+        return $this;
+    }
+
+    public function removeReponse(Reponse $reponse): self
+    {
+        if ($this->reponses->removeElement($reponse)) {
+            if ($reponse->getEtatReponse() === $this) {
+                $reponse->setEtatReponse(null);
+            }
+        }
         return $this;
     }
 }

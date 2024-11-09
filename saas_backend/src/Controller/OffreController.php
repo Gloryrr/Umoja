@@ -3,11 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\ArtisteRepository;
-use App\Repository\ConcernerRepository;
-use App\Repository\CreerRepository;
 use App\Repository\GenreMusicalRepository;
-use App\Repository\PosterRepository;
-use App\Repository\RattacherRepository;
 use App\Repository\ReseauRepository;
 use App\Repository\UtilisateurRepository;
 use App\Services\OffreService;
@@ -51,26 +47,18 @@ class OffreController extends AbstractController
         Request $request,
         OffreRepository $offreRepository,
         UtilisateurRepository $utilisateurRepository,
-        CreerRepository $creerRepository,
         ReseauRepository $reseauRepository,
-        PosterRepository $posterRepository,
-        RattacherRepository $rattacherRepository,
         GenreMusicalRepository $genreMusicalRepository,
         ArtisteRepository $artisteRepository,
-        ConcernerRepository $concernerRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
         return OffreService::createOffre(
             $offreRepository,
             $utilisateurRepository,
-            $creerRepository,
             $reseauRepository,
-            $posterRepository,
-            $rattacherRepository,
             $genreMusicalRepository,
             $artisteRepository,
-            $concernerRepository,
             $serializer,
             $data
         );
@@ -128,7 +116,6 @@ class OffreController extends AbstractController
      * @param Request $requete, la requête avec les données d'ajout
      * @param OffreRepository $offreRepository, la classe CRUD des offres
      * @param ArtisteRepository $artisteRepository, la classe CRUD des artistes
-     * @param ConcernerRepository $concernerRepository, CRUD des artistes qui sont concernés par des offres
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
@@ -137,7 +124,6 @@ class OffreController extends AbstractController
         Request $request,
         OffreRepository $offreRepository,
         ArtisteRepository $artisteRepository,
-        ConcernerRepository $concernerRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
@@ -145,7 +131,6 @@ class OffreController extends AbstractController
             $data,
             $offreRepository,
             $artisteRepository,
-            $concernerRepository,
             $serializer
         );
     }
@@ -156,7 +141,6 @@ class OffreController extends AbstractController
      * @param Request $request, la requête avec les données de suppression
      * @param OffreRepository $offreRepository, la classe CRUD des offres
      * @param ArtisteRepository $artisteRepository, la classe CRUD des artistes
-     * @param ConcernerRepository $concernerRepository, CRUD des artistes qui sont concernés par des offres
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
@@ -165,7 +149,6 @@ class OffreController extends AbstractController
         Request $request,
         OffreRepository $offreRepository,
         ArtisteRepository $artisteRepository,
-        ConcernerRepository $concernerRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
@@ -173,7 +156,6 @@ class OffreController extends AbstractController
             $data,
             $offreRepository,
             $artisteRepository,
-            $concernerRepository,
             $serializer
         );
     }
@@ -184,7 +166,6 @@ class OffreController extends AbstractController
      * @param Request $requete, la requête avec les données d'jaout
      * @param OffreRepository $offreRepository, la classe CRUD des offrex
      * @param GenreMusicalRepository $genreMusicalRepository, la classe CRUD des genres musicaux
-     * @param RattacherRepository $rattacherRepository, la classe CRUD des utilisateurs qui appartiennent à des offrex
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
@@ -193,7 +174,6 @@ class OffreController extends AbstractController
         Request $request,
         OffreRepository $offreRepository,
         GenreMusicalRepository $genreMusicalRepository,
-        RattacherRepository $rattacherRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
@@ -201,7 +181,7 @@ class OffreController extends AbstractController
             $data,
             $offreRepository,
             $genreMusicalRepository,
-            $rattacherRepository,
+
             $serializer
         );
     }
@@ -212,7 +192,6 @@ class OffreController extends AbstractController
      * @param Request $requete, la requête avec les données d'jaout
      * @param OffreRepository $offreRepository, la classe CRUD des réseaux
      * @param GenreMusicalRepository $genreMusicalRepository, la classe CRUD des genres musicaux
-     * @param RattacherRepository $rattacherRepository, la classe CRUD des utilisateurs qui appartiennent à des réseaux
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
@@ -221,7 +200,6 @@ class OffreController extends AbstractController
         Request $request,
         OffreRepository $offreRepository,
         GenreMusicalRepository $genreMusicalRepository,
-        RattacherRepository $rattacherRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
@@ -229,7 +207,7 @@ class OffreController extends AbstractController
             $data,
             $offreRepository,
             $genreMusicalRepository,
-            $rattacherRepository,
+
             $serializer
         );
     }

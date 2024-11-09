@@ -2,13 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\Extras;
 use App\Repository\ExtrasRepository;
 use App\Services\ExtrasService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -88,14 +86,19 @@ class ExtrasController extends AbstractController
      *
      * @param int $id
      * @param ExtrasRepository $extrasRepository, la classe CRUD des extras
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
     #[Route('/api/v1/extras/{id}', name: 'delete_extra', methods: ['DELETE'])]
-    public function deleteExtra(int $id, ExtrasRepository $extrasRepository): JsonResponse
-    {
+    public function deleteExtra(
+        int $id,
+        ExtrasRepository $extrasRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
         return ExtrasService::deleteExtra(
             $id,
-            $extrasRepository
+            $extrasRepository,
+            $serializer
         );
     }
 }

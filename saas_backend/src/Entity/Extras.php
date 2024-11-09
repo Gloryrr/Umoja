@@ -4,6 +4,9 @@ namespace App\Entity;
 
 use App\Repository\ExtrasRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Classe représentant les extras associés à une offre ou une condition.
@@ -13,55 +16,43 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ExtrasRepository::class)]
 class Extras
 {
-    /**
-     * @var int|null L'identifiant unique des extras.
-     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['extras:read'])]
     private ?int $id = null;
-
-    /**
-     * @var string|null La description des extras.
-     * Peut être null si aucune description n'est fournie.
-     */
+    
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['extras:read', 'extras:write'])]
     private ?string $descrExtras = null;
-
-    /**
-     * @var int|null Le coût des extras.
-     * Peut être null si aucun coût n'est défini.
-     */
+    
     #[ORM\Column(nullable: true)]
+    #[Groups(['extras:read', 'extras:write'])]
     private ?int $coutExtras = null;
-
-    /**
-     * @var string|null Exclusivité des extras.
-     * Peut être null si aucune exclusivité n'est précisée.
-     */
+    
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['extras:read', 'extras:write'])]
     private ?string $exclusivite = null;
-
-    /**
-     * @var string|null Exception des extras.
-     * Peut être null si aucune exception n'est définie.
-     */
+    
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['extras:read', 'extras:write'])]
     private ?string $exception = null;
-
-    /**
-     * @var string|null Ordre de passage des extras.
-     * Peut être null si aucun ordre n'est spécifié.
-     */
+    
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['extras:read', 'extras:write'])]
     private ?string $ordrePassage = null;
-
-    /**
-     * @var string|null Les clauses de confidentialité liées aux extras.
-     * Peut être null si aucune clause n'est définie.
-     */
+    
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['extras:read', 'extras:write'])]
     private ?string $clausesConfidentialites = null;
+    
+    #[ORM\OneToMany(targetEntity: Offre::class, mappedBy: "extras", orphanRemoval: true, cascade: ["remove"])]
+    #[Groups(['extras:read'])]
+    private Collection $offres;    
+
+    public function __construct() {
+        $this->offres = new ArrayCollection();
+    }
 
     /**
      * Récupère l'identifiant des extras.
@@ -208,6 +199,30 @@ class Extras
     {
         $this->clausesConfidentialites = $clausesConfidentialites;
 
+        return $this;
+    }
+
+    public function getOffres(): Collection
+    {
+        return $this->offres;
+    }
+
+    public function addOffre(Offre $offre): self
+    {
+        if (!$this->offres->contains($offre)) {
+            $this->offres[] = $offre;
+            $offre->setExtras($this);
+        }
+        return $this;
+    }
+
+    public function removeOffre(Offre $offre): self
+    {
+        if ($this->offres->removeElement($offre)) {
+            if ($offre->getExtras() === $this) {
+                $offre->setExtras(null);
+            }
+        }
         return $this;
     }
 }
