@@ -8,16 +8,9 @@ export default function ConnectionForm() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!username || !password) {
-      setErrorMessage('Veuillez remplir tous les champs.');
-      return;
-    }
 
     const data = {
       "username" : username,
@@ -33,15 +26,14 @@ export default function ConnectionForm() {
       localStorage.setItem('isConnected', 'true');
       window.location.href = 'umodja/home';
     } else {
-      setErrorMessage('Une erreur est survenue.');
       localStorage.setItem('isConnected', 'false');
     }
   };
 
   return (
-    <div className="h-screen flex items-center justify-center">
+    <div className="mt-20 flex items-center justify-center">
       <div className="w-[35vw] rounded-lg p-8">
-        <h1 className="text-3xl font-semibold text-center pb-20">UmoDJA</h1>
+        {/* <h1 className="text-3xl font-semibold text-center pb-20">UmoDJA</h1> */}
         <form onSubmit={handleSubmit} className="flex max-w-md flex-col gap-4">
           <div>
             <div className="mb-2 block">
@@ -77,15 +69,9 @@ export default function ConnectionForm() {
             />
             <Label className="font-semibold" htmlFor="remember">Se souvenir de moi</Label>
           </div>
-          <Button className="font-semibold" type="submit" disabled={loading}>
-            {loading ? 'Chargement...' : 'Se connecter'}
+          <Button className="font-semibold" type="submit">
+            Se connecter
           </Button>
-
-          {errorMessage && (
-            <Alert color="failure" className="mt-4">
-              <span>{errorMessage}</span>
-            </Alert>
-          )}
 
           <div className="text-sm text-center my-4">
             <p>

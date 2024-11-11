@@ -10,7 +10,7 @@ html {
 }
 
 html.dark {
-  @apply bg-gray-900 text-gray-100;  /* Je suis obligé d'ajouter ça pour forcer le changement de thème, à voir pourquoi plus tard !!!! */ 
+  @apply bg-gray-800 text-gray-100;  /* Je suis obligé d'ajouter ça pour forcer le changement de thème, à voir pourquoi plus tard !!!! */ 
 }
 
 p {
