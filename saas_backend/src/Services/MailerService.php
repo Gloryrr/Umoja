@@ -1,12 +1,12 @@
 <?php
 
-
 namespace App\Services;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Address;
+use Symfony\Component\HttpFoundation\Response;
 
 class MailerService
 {
@@ -17,7 +17,7 @@ class MailerService
     public function __construct(MailerInterface $mailer)
     {
         $this->mailer = $mailer;
-        $this->fromEmail = "marmionsteven8@gmail.com"; // à changer lors de la mise en route de l'applciation
+        $this->fromEmail = "marmionsteven8@gmail.com"; // à changer lors de la mise en route de l'application
         $this->fromName = "UMODJA";
     }
 
@@ -40,11 +40,11 @@ class MailerService
             $this->mailer->send($email);
 
             return new JsonResponse([
-                'status' => 'success', 
+                'mail' => 'succès',
                 'message' => 'E-mail envoyé avec succès.'
-            ]);
+            ], Response::HTTP_OK);
         } catch (\Exception $e) {
-            throw new \RuntimeException(''. $e->getMessage());
+            throw new \RuntimeException('' . $e->getMessage());
         }
     }
 }
