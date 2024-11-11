@@ -20,7 +20,7 @@ const Home = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white w-full">
+        <div className="min-h-screen w-full">
             {/* Section principale avec le bouton de création d&apos;offre */}
             <section className="container mx-auto px-6 py-12 flex items-center overflow-x-hidden mb-[10vh]">
                 {/* Texte à gauche */}
