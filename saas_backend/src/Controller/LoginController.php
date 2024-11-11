@@ -22,7 +22,7 @@ class LoginController extends AbstractController
      *
      * @return JsonResponse
      */
-    #[Route('/api/v1/login', name: 'login_user', methods: ['GET'])]
+    #[Route('/api/v1/login', name: 'login_user', methods: ['POST'])]
     public function login(
         UtilisateurRepository $utilisateurRepository,
         UserPasswordHasherInterface $passwordHasher,
