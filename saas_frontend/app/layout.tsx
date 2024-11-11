@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 // import localFont from "next/font/local";
 import { Fredoka, Nunito } from "next/font/google";
 import "./styles/css/globals.css";
-import NavbarApp from "./components/Navbar";
+import NavbarApp, { NavBarConnectionInscription } from "./components/Navbar";
 import Footer from "./components/Footer";
+import Head from "next/head";
+import { ThemeModeScript } from "flowbite-react";
 
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
@@ -40,15 +42,24 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  let isConnected : boolean = false;
+  if (typeof window !== 'undefined') {
+    isConnected = localStorage.getItem('isConnected') ? true : false;
+  }
+
   return (
-    <html lang="en">
-      
-      <body
-        className={`${fredoka.variable} ${nunito.variable} antialiased flex flex-col`}
-      >
-        <NavbarApp/>
-        {children}
-        <Footer/>
+    <html lang="en" suppressHydrationWarning>
+      <Head>
+        <ThemeModeScript />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet"
+        />
+      </Head>
+      <body>
+        {isConnected ? <NavbarApp/> : <NavBarConnectionInscription/>}
+          {children}
+        {isConnected ? <Footer/> : null}
         
       </body>
     </html>
