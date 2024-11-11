@@ -47,7 +47,7 @@ export default function RootLayout({
 }>) {
   let isConnected : boolean = false;
   if (typeof window !== 'undefined') {
-    isConnected = localStorage.getItem('isConnected') ? true : false;
+    isConnected = localStorage.getItem('isConnected') == 'true' ? true : false;
   }
 
   return (
