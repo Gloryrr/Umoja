@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-// import localFont from "next/font/local";
+import localFont from "next/font/local";
 import { Fredoka, Nunito } from "next/font/google";
 import "./styles/css/globals.css";
 import NavbarApp, { NavBarConnectionInscription } from "./components/Navbar";
@@ -7,16 +7,16 @@ import Footer from "./components/Footer";
 import Head from "next/head";
 import { ThemeModeScript } from "flowbite-react";
 
-// const geistSans = localFont({
-//   src: "./fonts/GeistVF.woff",
-//   variable: "--font-geist-sans",
-//   weight: "100 900",
-// });
-// const geistMono = localFont({
-//   src: "./fonts/GeistMonoVF.woff",
-//   variable: "--font-geist-mono",
-//   weight: "100 900",
-// });
+const geistSans = localFont({
+  src: "./styles/fonts/GeistVF.woff",
+  variable: "--font-geist-sans",
+  weight: "100 900",
+});
+const geistMono = localFont({
+  src: "./styles/fonts/GeistMonoVF.woff",
+  variable: "--font-geist-mono",
+  weight: "100 900",
+});
 
 const fredoka = Fredoka({
   weight: ["300", "400", "500", "600", "700"],
@@ -48,18 +48,20 @@ export default function RootLayout({
   }
 
   return (
-    <html lang="en" suppressHydrationWarning>
-      <Head>
+    <html lang="en">
+      {/*<Head>
         <ThemeModeScript />
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
           rel="stylesheet"
         />
-      </Head>
-      <body>
-        {isConnected ? <NavbarApp/> : <NavBarConnectionInscription/>}
+      </Head>*/}
+      <body className={`${fredoka.variable} ${nunito.variable} antialiased flex flex-col`}>
+        {/* isConnected ? <NavbarApp/> : <NavBarConnectionInscription/> */}
+        <NavbarApp/>
           {children}
-        {isConnected ? <Footer/> : null}
+        {/* isConnected ? <Footer/> : null*/}
+        <Footer/>
         
       </body>
     </html>
