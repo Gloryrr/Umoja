@@ -3,6 +3,7 @@
 import React from 'react';
 import { useSearchParams } from 'next/navigation';
 import { FaHeart, FaCode, FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
+
 type Project = {
     id: number
     title: string
@@ -54,66 +55,68 @@ export default function ProjectDetails() {
     }
 
     return (
-        <div className="bg-gray-900 min-h-screen text-white">
+        <div className="bg-gray-900 h-screen w-full text-white flex items-center justify-center">
             <div className="container mx-auto px-4 py-8 max-w-4xl">
                 <h1 className="text-4xl font-bold mb-2 text-center">{project.title}</h1>
                 <p className="text-xl mb-8 text-center">{project.description}</p>
                 
-                <div className="aspect-video mb-8">
-                    <iframe 
-                        className="w-full h-full"
-                        src={project.videoUrl} 
-                        title={project.title}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowFullScreen
-                    ></iframe>
-                </div>
-
-                <div className="flex items-center mb-6">
-                    <div>
-                        <h2 className="text-xl font-semibold">{project.creator}</h2>
-                    </div>
-                </div>
-
-                <div className="bg-gray-800 rounded-lg p-6 mb-8">
-                    <div className="flex justify-between mb-4">
-                        <div>
-                            <p className="text-3xl font-bold">{project.amountRaised.toLocaleString()} €</p>
-                            <p className="text-gray-400">sur {project.goal.toLocaleString()} €</p>
-                        </div>
-                        <div className="text-right">
-                            <p className="text-3xl font-bold">{project.contributions}</p>
-                            <p className="text-gray-400">Contributions</p>
-                        </div>
-                        <div className="text-right">
-                            <p className="text-3xl font-bold">{project.endDate}</p>
-                            <p className="text-gray-400">Date de fin</p>
+                <div className="flex flex-col md:flex-row">
+                    <div className="md:w-1/2 md:pr-4 mb-8 md:mb-0">
+                        <div className="aspect-video">
+                            <iframe 
+                                className="w-full h-full"
+                                src={project.videoUrl} 
+                                title={project.title}
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowFullScreen
+                            ></iframe>
                         </div>
                     </div>
-                    <div className="w-full bg-gray-700 rounded-full h-2 mb-2">
-                        <div
-                            className="h-2 rounded-full bg-green-500"
-                            style={{ width: `${Math.min((project.amountRaised / project.goal) * 100, 100)}%` }}
-                        ></div>
+                    <div className="md:w-1/2 md:pl-4">
+                        <div className="mb-6">
+                            <h2 className="text-xl font-semibold">{project.creator}</h2>
+                        </div>
+                        <div className="bg-gray-800 rounded-lg p-6 mb-8">
+                            
+                            <div className="flex justify-between mb-4">
+                                <div>
+                                    <p className="text-3xl font-bold">{project.amountRaised.toLocaleString()} €</p>
+                                    <p className="text-gray-400">sur {project.goal.toLocaleString()} €</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-3xl font-bold">{project.contributions}</p>
+                                    <p className="text-gray-400">Contributions</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-3xl font-bold">{project.endDate}</p>
+                                    <p className="text-gray-400">Date de fin</p>
+                                </div>
+                            </div>
+                            <div className="w-full bg-gray-700 rounded-full h-2 mb-2">
+                                <div
+                                    className="h-2 rounded-full bg-green-500"
+                                    style={{ width: `${Math.min((project.amountRaised / project.goal) * 100, 100)}%` }}
+                                ></div>
+                            </div>
+                            <p className="text-right text-green-500 font-semibold mb-4">
+                                {Math.round((project.amountRaised / project.goal) * 100)}%
+                            </p>
+                        </div>
+                        <div className="flex justify-center space-x-4">
+                            <button className="bg-white text-black px-6 py-3 rounded-full font-semibold hover:bg-gray-200 transition duration-300">
+                                Contribuer
+                            </button>
+                            <button className="bg-gray-800 text-white px-4 py-3 rounded-full font-semibold hover:bg-gray-700 transition duration-300">
+                                <FaFacebookF />
+                            </button>
+                            <button className="bg-gray-800 text-white px-4 py-3 rounded-full font-semibold hover:bg-gray-700 transition duration-300">
+                                <FaTwitter />
+                            </button>
+                            <button className="bg-gray-800 text-white px-4 py-3 rounded-full font-semibold hover:bg-gray-700 transition duration-300">
+                                <FaLinkedinIn />
+                            </button>
+                        </div>
                     </div>
-                    <p className="text-right text-green-500 font-semibold">
-                        {Math.round((project.amountRaised / project.goal) * 100)}%
-                    </p>
-                </div>
-
-                <div className="flex justify-center space-x-4">
-                    <button className="bg-white text-black px-6 py-3 rounded-full font-semibold hover:bg-gray-200 transition duration-300">
-                        Contribuer
-                    </button>
-                    <button className="bg-gray-800 text-white px-4 py-3 rounded-full font-semibold hover:bg-gray-700 transition duration-300">
-                        <FaFacebookF />
-                    </button>
-                    <button className="bg-gray-800 text-white px-4 py-3 rounded-full font-semibold hover:bg-gray-700 transition duration-300">
-                        <FaTwitter />
-                    </button>
-                    <button className="bg-gray-800 text-white px-4 py-3 rounded-full font-semibold hover:bg-gray-700 transition duration-300">
-                        <FaLinkedinIn />
-                    </button>
                 </div>
             </div>
         </div>
