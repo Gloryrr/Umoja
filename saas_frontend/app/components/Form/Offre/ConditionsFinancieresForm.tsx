@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { apiGet } from '@/app/services/externalApiClients';
+import { Card, Label, TextInput, Select } from 'flowbite-react';
 
 interface ConditionsFinancieresFormProps {
     conditionsFinancieres: {
@@ -40,13 +41,13 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
 
     return (
         <div className="flex items-center justify-center">
-            <div className="mx-auto w-full max-w bg-gray-800 rounded-lg p-8">
-                <h3 className="text-2xl font-semibold text-white mb-4">Conditions financières</h3>
-                
+            <Card className="mx-auto w-full">
+                <h3 className="text-2xl font-semibold mb-4">Conditions financières</h3>
+
                 <div className="grid grid-cols-2 gap-4 mb-5">
                     <div>
-                        <label htmlFor="minimumGaranti" className="text-white">Minimum Garanti:</label>
-                        <input
+                        <Label htmlFor="minimumGaranti" value="Minimum Garanti:" />
+                        <TextInput
                             type="number"
                             id="minimumGaranti"
                             name="minimumGaranti"
@@ -54,19 +55,21 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
                             onChange={handleConditionsFinancieresChange}
                             required
                             placeholder="Minimum garanti"
-                            className="w-full mt-1 rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            color="dark"
+                            className="mt-1"
                         />
                     </div>
 
                     <div>
-                        <label htmlFor="conditionsPaiement" className="text-white">Conditions de Paiement:</label>
-                        <select
+                        <Label htmlFor="conditionsPaiement" value="Conditions de Paiement:" />
+                        <Select
                             id="conditionsPaiement"
                             name="conditionsPaiement"
                             value={conditionsFinancieres.conditionsPaiement}
                             onChange={handleConditionsFinancieresChange}
                             required
-                            className="w-full mt-1 rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            color="dark"
+                            className="mt-1"
                         >
                             <option value="">Sélectionnez une monnaie</option>
                             {conditionsPaiement.map((monnaie, index) => (
@@ -74,24 +77,25 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
                                     {monnaie}
                                 </option>
                             ))}
-                        </select>
+                        </Select>
                     </div>
                 </div>
 
                 <div className="mb-5">
-                    <label htmlFor="pourcentageRecette" className="text-white">Pourcentage de Recette:</label>
-                    <input
+                    <Label htmlFor="pourcentageRecette" value="Pourcentage de Recette:" />
+                    <TextInput
                         type="number"
                         id="pourcentageRecette"
                         name="pourcentageRecette"
                         value={conditionsFinancieres.pourcentageRecette || 0.0}
                         onChange={handleConditionsFinancieresChange}
                         required
-                        placeholder="15.5%" 
-                        className="w-full mt-1 rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
+                        placeholder="15.5%"
+                        color="dark"
+                        className="mt-1"
                     />
                 </div>
-            </div>
+            </Card>
         </div>
     );
 };

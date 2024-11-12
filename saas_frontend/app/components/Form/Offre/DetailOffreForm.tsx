@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { apiGet } from '@/app/services/externalApiClients';
+import { Card, Label, TextInput, Textarea, Button, Select } from 'flowbite-react';
 
 interface Feature {
     properties: {
@@ -110,11 +111,12 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
 
     return (
         <div className="flex items-center justify-center">
-            <div className="mx-auto w-full max-w bg-gray-800 rounded-lg p-8">
-                <h3 className="text-2xl font-semibold text-white mb-6">Détails de l&apos;Offre</h3>
+            <Card className="mx-auto w-full">
+                <h3 className="text-2xl font-semibold mb-6">Détails de l'Offre</h3>
+    
                 <div className="mb-5">
-                    <label htmlFor="titleOffre" className="mb-3 block text-base font-medium text-white">Titre de l&apos;Offre:</label>
-                    <input
+                    <Label htmlFor="titleOffre" value="Titre de l'Offre:" />
+                    <TextInput
                         type="text"
                         id="titleOffre"
                         name="titleOffre"
@@ -122,27 +124,27 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         onChange={handleDetailOffreChange}
                         required
                         placeholder="Indiquer le titre de l'Offre"
-                        className="w-full rounded-md border border-grey-700 placeholder-grey-500 bg-gray-900 py-3 px-6 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
+                        className="mt-1"
                     />
                 </div>
-
+    
                 <div className="mb-5">
-                    <label htmlFor="deadLine" className="mb-3 block text-base font-medium text-white">Date de réponse maximale:</label>
-                    <input
+                    <Label htmlFor="deadLine" value="Date de réponse maximale:" />
+                    <TextInput
                         type="date"
                         id="deadLine"
                         name="deadLine"
                         value={detailOffre.deadLine || dateParDefaut}
                         onChange={handleDetailOffreChange}
                         required
-                        className="w-full rounded-md border border-grey-700 placeholder-grey-500 bg-gray-900 py-3 px-6 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
+                        className="mt-1"
                     />
                 </div>
-
+    
                 <div className="grid grid-cols-2 gap-4 mb-5">
                     <div>
-                        <label htmlFor="dateMinProposee" className="mb-3 block text-base font-medium text-white">Date Min Proposée:</label>
-                        <input
+                        <Label htmlFor="dateMinProposee" value="Date Min Proposée:" />
+                        <TextInput
                             type="date"
                             id="dateMinProposee"
                             name="dateMinProposee"
@@ -150,13 +152,13 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                             onChange={handleDetailOffreChange}
                             required
                             min={detailOffre.deadLine}
-                            className="w-full rounded-md border border-grey-700 placeholder-grey-500 bg-gray-900 py-3 px-6 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            className="mt-1"
                         />
                     </div>
-
+    
                     <div>
-                        <label htmlFor="dateMaxProposee" className="mb-3 block text-base font-medium text-white">Date Max Proposée:</label>
-                        <input
+                        <Label htmlFor="dateMaxProposee" value="Date Max Proposée:" />
+                        <TextInput
                             type="date"
                             id="dateMaxProposee"
                             name="dateMaxProposee"
@@ -164,28 +166,28 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                             onChange={handleDetailOffreChange}
                             required
                             min={detailOffre.dateMinProposee}
-                            className="w-full rounded-md border border-grey-700 placeholder-grey-500 bg-gray-900 py-3 px-6 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            className="mt-1"
                         />
                     </div>
                 </div>
-
+    
                 <div className="mb-5">
-                    <label htmlFor="descrTournee" className="mb-3 block text-base font-medium text-white">Description de la Tournée:</label>
-                    <textarea
+                    <Label htmlFor="descrTournee" value="Description de la Tournée:" />
+                    <Textarea
                         id="descrTournee"
                         name="descrTournee"
                         value={detailOffre.descrTournee}
                         onChange={handleDetailOffreChange}
                         required
-                        placeholder='La description de la tournée'
-                        className="w-full rounded-md border border-grey-700 placeholder-grey-500 bg-gray-900 py-3 px-6 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
+                        placeholder="La description de la tournée"
+                        className="mt-1"
                     />
                 </div>
-
+    
                 <div className="grid grid-cols-2 gap-4 mb-5">
                     <div>
-                        <label htmlFor="villeVisee" className="mb-3 block text-base font-medium text-white">Ville Visée:</label>
-                        <input
+                        <Label htmlFor="villeVisee" value="Ville Visée:" />
+                        <TextInput
                             type="text"
                             id="villeVisee"
                             name="villeVisee"
@@ -193,40 +195,27 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                             onChange={handleCityInputChange}
                             required
                             placeholder="Dans quelle ville se déroulera l'offre"
-                            className="w-full rounded-md border border-grey-700 placeholder-grey-500 bg-gray-900 py-3 px-6 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            className="mt-1"
                         />
-                        {citySuggestions.length > 0 && (
-                            <ul className="border border-gray-300 mt-1 rounded-md">
-                                {citySuggestions.map((city, index) => (
-                                    <li
-                                        key={index}
-                                        onClick={() => handleCitySelect(city)}
-                                        className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                    >
-                                        {city}
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
                     </div>
-
+    
                     <div>
-                        <label htmlFor="regionVisee" className="mb-3 block text-base font-medium text-white">Région Visée:</label>
-                        <input
+                        <Label htmlFor="regionVisee" value="Région Visée:" />
+                        <TextInput
                             type="text"
                             id="regionVisee"
                             name="regionVisee"
                             value={detailOffre.regionVisee}
                             readOnly
-                            className="w-full rounded-md border border-grey-700 bg-gray-700 py-3 px-6 text-base font-medium text-white outline-none"
+                            className="mt-1"
                         />
                     </div>
                 </div>
-
+    
                 <div className="grid grid-cols-2 gap-4 mb-5">
                     <div>
-                        <label htmlFor="placesMin" className="mb-3 block text-base font-medium text-white">Places Minimum:</label>
-                        <input
+                        <Label htmlFor="placesMin" value="Places Minimum:" />
+                        <TextInput
                             type="number"
                             id="placesMin"
                             name="placesMin"
@@ -234,13 +223,13 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                             onChange={handleDetailOffreChange}
                             required
                             placeholder="Nombre de places minimum"
-                            className="w-full rounded-md border border-grey-700 placeholder-grey-500 bg-gray-900 py-3 px-6 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            className="mt-1"
                         />
                     </div>
 
                     <div>
-                        <label htmlFor="placesMax" className="mb-3 block text-base font-medium text-white">Places Maximum:</label>
-                        <input
+                        <Label htmlFor="placesMax" value="Places Maximum:" />
+                        <TextInput
                             type="number"
                             id="placesMax"
                             name="placesMax"
@@ -249,15 +238,15 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                             required
                             min={placesMin}
                             placeholder="Nombre de places maximum"
-                            className="w-full rounded-md border border-grey-700 placeholder-grey-500 bg-gray-900 py-3 px-6 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            className="mt-1"
                         />
                     </div>
                 </div>
-
+    
                 <div className="grid grid-cols-2 gap-4 mb-5">
                     <div>
-                        <label htmlFor="nbArtistesConcernes" className="mb-3 block text-base font-medium text-white">Nombre d&apos;Artistes Concernés:</label>
-                        <input
+                        <Label htmlFor="nbArtistesConcernes" value="Nombre d'Artistes Concernés:" />
+                        <TextInput
                             type="number"
                             id="nbArtistesConcernes"
                             name="nbArtistesConcernes"
@@ -265,13 +254,13 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                             onChange={handleDetailOffreChange}
                             required
                             placeholder="Nombre d'artistes concernés"
-                            className="w-full rounded-md border border-grey-700 placeholder-grey-500 bg-gray-900 py-3 px-6 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            className="mt-1"
                         />
                     </div>
-
+    
                     <div>
-                        <label htmlFor="nbInvitesConcernes" className="mb-3 block text-base font-medium text-white">Nombre d&apos;Invités Concernés:</label>
-                        <input
+                        <Label htmlFor="nbInvitesConcernes" value="Nombre d'Invités Concernés:" />
+                        <TextInput
                             type="number"
                             id="nbInvitesConcernes"
                             name="nbInvitesConcernes"
@@ -279,45 +268,43 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                             onChange={handleDetailOffreChange}
                             required
                             placeholder="Nombre d'invités concernés"
-                            className="w-full rounded-md border border-grey-700 placeholder-grey-500 bg-gray-900 py-3 px-6 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            className="mt-1"
                         />
                     </div>
                 </div>
-
-                <div className="flex flex-col rounded-lg">
-                    <div>
-                        <h3 className="text-2xl font-semibold text-white mb-4">Liens Promotionnels:</h3>
-                        {liensPromotionnels.map((lien, index) => (
-                            <div key={index} className="flex items-center mb-2">
-                                <input
-                                    type="url"
-                                    value={lien}
-                                    onChange={(e) => handleLienChange(index, e.target.value)}
-                                    required
-                                    placeholder="Lien promotionnel de l'artiste"
-                                    className="w-full mt-1 rounded-md border border-grey-700 placeholder-grey-500 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => handleRemoveLien(index)}
-                                    className="ml-2 text-red-600 hover:text-red-800"
-                                >
-                                    Supprimer
-                                </button>
-                            </div>
-                        ))}
-                        <button
-                            type="button"
-                            onClick={handleAddLien}
-                            className="mt-2 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
-                        >
-                            Ajouter un lien
-                        </button>
-                    </div>
+    
+                <div className="mb-5">
+                    <h3 className="text-2xl font-semibold mb-4">Liens Promotionnels:</h3>
+                    {liensPromotionnels.map((lien, index) => (
+                        <div key={index} className="flex items-center mb-2">
+                            <TextInput
+                                type="url"
+                                value={lien}
+                                onChange={(e) => handleLienChange(index, e.target.value)}
+                                required
+                                placeholder="Lien promotionnel de l'artiste"
+                                className="mt-1"
+                            />
+                            <Button
+                                color="failure"
+                                onClick={() => handleRemoveLien(index)}
+                                className="ml-2"
+                            >
+                                Supprimer
+                            </Button>
+                        </div>
+                    ))}
+                    <Button
+                        color="success"
+                        onClick={handleAddLien}
+                        className="mt-2 w-full"
+                    >
+                        Ajouter un lien
+                    </Button>
                 </div>
-            </div>
+            </Card>
         </div>
-    );
+    );    
 };
 
 export default DetailOffreForm;

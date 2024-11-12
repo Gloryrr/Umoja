@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import FicheTechniqueArtisteForm from '@/app/components/Form/Offre/FicheTechniqueArtiste';
 import { apiGet, apiPost } from '@/app/services/internalApiClients';
+import {TextInput, Label, Select, Button, Card} from 'flowbite-react';
 
 interface DonneesSupplementairesFormProps {
     donneesSupplementaires: {
@@ -109,90 +110,84 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
     };
 
     return (
-        <div className="mx-auto w-full max-w bg-gray-800 rounded-lg p-8">
+        <Card className="mx-auto w-full p-8 rounded-lg">
+            {/* Formulaire de la fiche technique */}
             <div>
                 <FicheTechniqueArtisteForm
                     ficheTechniqueArtiste={donneesSupplementaires.ficheTechniqueArtiste}
-                    onFicheTechniqueChange={onFicheTechniqueChange}
+                    onFicheTechniqueChange={handleArtisteChange}
                 />
             </div>
-            <div className="flex flex-col rounded-lg mb-4">
-                <div className="mb-5">
-                    <h3 className="text-2xl font-semibold text-white mb-4">Artistes Concernés</h3>
-                    {artistes.map((artiste, index) => (
-                        <div key={index} className="flex items-center mb-2">
-                            <input
-                                type="text"
-                                value={artiste}
-                                onChange={(e) => handleArtisteChange(index, e.target.value)}
-                                placeholder="Nom de l&apos;artiste"
-                                className="w-full mt-1 rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
-                            />
-                            <button
-                                type="button"
-                                onClick={() => removeArtisteField(index)}
-                                className="ml-2 text-red-600 hover:text-red-800"
-                            >
-                                Supprimer
-                            </button>
-                        </div>
-                    ))}
-                    <button
-                        type="button"
-                        onClick={addArtisteField}
-                        className="mt-2 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
-                    >
-                        Ajouter un artiste
-                    </button>
-                </div>
 
-                <h3 className="text-2xl font-semibold text-white mb-4">Réseau et Genre Musical</h3>
+            {/* Section des artistes concernés */}
+            <div className="flex flex-col rounded-lg mb-4">
+                <h3 className="text-2xl font-semibold mb-4">Artistes Concernés</h3>
+                {artistes.map((artiste, index) => (
+                    <div key={index} className="flex items-center mb-2">
+                        <TextInput
+                            type="text"
+                            value={artiste}
+                            onChange={(e) => handleArtisteChange(index, e.target.value)}
+                            placeholder="Nom de l'artiste"
+                        />
+                        <Button color="failure" onClick={() => removeArtisteField(index)} size="sm" className="ml-2">
+                            Supprimer
+                        </Button>
+                    </div>
+                ))}
+                <Button color="info" onClick={addArtisteField} className="mt-2 w-full">
+                    Ajouter un artiste
+                </Button>
+            </div>
+
+            {/* Section Réseau et Genre Musical */}
+            <div className="flex flex-col rounded-lg mb-4">
+                <h3 className="text-2xl font-semibold mb-4">Réseau et Genre Musical</h3>
                 <div className="grid grid-cols-2 gap-4">
+                    {/* Sélection des réseaux */}
                     <div className="flex flex-col">
-                        <label htmlFor="reseau" className="text-white">Réseau:</label>
-                        <select
+                        <Label htmlFor="reseau" value="Réseau" />
+                        <Select
                             id="reseau"
                             name="reseau"
                             value={selectedReseaux}
                             onChange={handleReseauxSelectionChange}
-                            required
                             multiple
-                            className="w-full mt-1 rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                         >
                             {reseaux.map((reseau, index) => (
                                 <option key={index} value={reseau.idReseau.nomReseau}>
                                     {reseau.idReseau.nomReseau}
                                 </option>
                             ))}
-                        </select>
-                        <p className="text-sm text-white mt-1">
-                            Vous pouvez sélectionner jusqu&apos;&agrave; {reseaux.length} réseaux.
+                        </Select>
+                        <p className="text-sm mt-1">
+                            Vous pouvez sélectionner jusqu'à {reseaux.length} réseaux.
                         </p>
                     </div>
 
+                    {/* Sélection des genres musicaux */}
                     <div className="flex flex-col">
-                        <label htmlFor="genreMusical" className="text-white">Genre Musical:</label>
-                        <select
+                        <Label htmlFor="genreMusical" value="Genre Musical" />
+                        <Select
                             id="genreMusical"
                             name="genreMusical"
                             value={selectedGenres}
                             onChange={handleGenreSelectionChange}
                             multiple
-                            className="w-full mt-1 rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                         >
                             {genresMusicaux.map((genre, index) => (
                                 <option key={index} value={genre.nomGenreMusical}>
                                     {genre.nomGenreMusical}
                                 </option>
                             ))}
-                        </select>
-                        <p className="text-sm text-white mt-1">
-                            Vous pouvez sélectionner jusqu&apos;&agrave; {genresMusicaux.length} genres musicaux.
+                        </Select>
+                        <p className="text-sm mt-1">
+                            Vous pouvez sélectionner jusqu'à {genresMusicaux.length} genres musicaux.
                         </p>
                     </div>
                 </div>
             </div>
-        </div>
+        </Card>
     );
 };
 

@@ -188,55 +188,45 @@ const OffreForm: React.FC = () => {
     return (
         <div className="mt-10 mb-10 w-[60%] mx-auto">
             {!offrePostee ? (
-                <form onSubmit={valideFormulaire} className="w-full mx-auto bg-gray-800 text-white shadow-md rounded-lg p-8 space-y-4 font-nunito">
-                    <h2 className="text-3xl font-semibold text-center text-white mb-10">Formulaire d&apos;Offre</h2>
+                <form onSubmit={valideFormulaire} className="w-full mx-auto shadow-md rounded-lg p-8 space-y-4 font-nunito">
+                    <h2 className="text-3xl font-semibold text-center  mb-10">Formulaire d&apos;Offre</h2>
     
                     <div className="mb-8">
                         <div className="flex justify-between mb-2">
                             <span
-                                className={`text-sm font-bold inline-block py-2 px-4 rounded-full transition-all duration-300 ${
-                                    0 < etapeCourante ? 'text-white bg-blue-600' : 'text-white bg-gray-700 opacity-75'
-                                }`}
+                                className={`text-sm font-bold inline-block py-2 px-4 rounded-full transition-all duration-300`}
                                 id="step1"
                             >
                                 Informations de base
                             </span>
                             <span
-                                className={`text-sm font-bold inline-block py-2 px-4 rounded-full transition-all duration-300 ${
-                                    1 < etapeCourante ? 'text-white bg-blue-600' : 'text-white bg-gray-700 opacity-75'
-                                }`}
+                                className={`text-sm font-bold inline-block py-2 px-4 rounded-full transition-all duration-300`}
                                 id="step2"
                             >
                                 Extras
                             </span>
                             <span
-                                className={`text-sm font-bold inline-block py-2 px-4 rounded-full transition-all duration-300 ${
-                                    2 < etapeCourante ? 'text-white bg-blue-600' : 'text-white bg-gray-700 opacity-75'
-                                }`}
+                                className={`text-sm font-bold inline-block py-2 px-4 rounded-full transition-all duration-300`}
                                 id="step3"
                             >
                                 Conditions Financières
                             </span>
                             <span
-                                className={`text-sm font-bold inline-block py-2 px-4 rounded-full transition-all duration-300 ${
-                                    3 < etapeCourante ? 'text-white bg-blue-600' : 'text-white bg-gray-700 opacity-75'
-                                }`}
+                                className={`text-sm font-bold inline-block py-2 px-4 rounded-full transition-all duration-300`}
                                 id="step4"
                             >
                                 Budget Estimatif
                             </span>
                             <span
-                                className={`text-sm font-bold inline-block py-2 px-4 rounded-full transition-all duration-300 ${
-                                    4 < etapeCourante ? 'text-white bg-blue-600' : 'text-white bg-gray-700 opacity-75'
-                                }`}
+                                className={`text-sm font-bold inline-block py-2 px-4 rounded-full transition-all duration-300`}
                                 id="step5"
                             >
                                 Données supplémentaires
                             </span>
                         </div>
-                        <div className="overflow-hidden h-2 mb-4 flex text-sm rounded bg-white">
+                        <div className="overflow-hidden h-2 mb-4 flex text-sm rounded white">
                             <div
-                                className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-600 transition-all duration-300"
+                                className="shadow-none flex flex-col text-center whitespace-nowrap justify-center transition-all duration-300"
                                 style={{ width: `${(etapeCourante / 5) * 100}%` }}
                             ></div>
                         </div>
@@ -249,7 +239,7 @@ const OffreForm: React.FC = () => {
                             <button
                                 type="button"
                                 onClick={revientEtapePrecedente}
-                                className="px-5 py-3 bg-gray-700 text-white rounded-full transition-colors duration-300 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
+                                className="px-5 py-3 gray-700 rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
                             >
                                 Précédent
                             </button>
@@ -258,7 +248,7 @@ const OffreForm: React.FC = () => {
                             <button
                                 type="button"
                                 onClick={accedeEtapeSuivante}
-                                className="px-5 py-3 bg-blue-600 text-white rounded-full transition-colors duration-300 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50"
+                                className="px-5 py-3 rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-opacity-50"
                             >
                                 Suivant
                             </button>
@@ -266,7 +256,7 @@ const OffreForm: React.FC = () => {
                         {etapeCourante === 5 && (
                             <button
                                 type="submit"
-                                className="px-5 py-3 bg-blue-600 text-white rounded-full transition-colors duration-300 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
+                                className="px-5 py-3  rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-opacity-50"
                             >
                                 Poster l&apos;offre
                             </button>
@@ -274,7 +264,7 @@ const OffreForm: React.FC = () => {
                     </div>
                 </form>
             ) : (
-                <p className="text-center text-lg text-white">{messageOffrePostee}</p>
+                <p className="text-center text-lg ">{messageOffrePostee}</p>
             )}
         </div>
     );        

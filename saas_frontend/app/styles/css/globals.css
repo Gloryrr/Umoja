@@ -13,11 +13,11 @@ html.dark {
   @apply bg-gray-800 text-gray-100;  /* Je suis obligé d'ajouter ça pour forcer le changement de thème, à voir pourquoi plus tard !!!! */ 
 }
 
-p {
+p, h3 {
   @apply text-gray-900;  /* Je suis obligé d'ajouter ça pour forcer le changement de thème, à voir pourquoi plus tard !!!! */ 
 }
 
-.dark p {
+.dark p, .dark h3 {
   @apply text-gray-100;  /* Je suis obligé d'ajouter ça pour forcer le changement de thème, à voir pourquoi plus tard !!!! */ 
 }
 
