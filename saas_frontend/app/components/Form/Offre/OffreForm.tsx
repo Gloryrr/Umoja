@@ -13,17 +13,16 @@ import { useRouter } from 'next/navigation';
 import { HiInformationCircle } from "react-icons/hi";
 
 const OffreForm: React.FC = () => {
-    const router = useRouter();
     const dateParDefaut = new Date().toISOString().split('T')[0];
     const [formData, setFormData] = useState({
         detailOffre: {
-            titleOffre: 'b',
+            titleOffre: '',
             deadLine: dateParDefaut,
-            descrTournee: 'b',
+            descrTournee: '',
             dateMinProposee: dateParDefaut,
             dateMaxProposee: dateParDefaut,
-            villeVisee: 'b',
-            regionVisee: 'b',
+            villeVisee: '',
+            regionVisee: '',
             placesMin: 0,
             placesMax: 0,
             nbArtistesConcernes: 0,
@@ -31,12 +30,12 @@ const OffreForm: React.FC = () => {
             liensPromotionnels: []
         },
         extras: {
-            descrExtras: 'b',
+            descrExtras: '',
             coutExtras: 0,
-            exclusivite: 'b',
-            exception: 'b',
-            ordrePassage: 'b',
-            clausesConfidentialites: 'b'
+            exclusivite: '',
+            exception: '',
+            ordrePassage: '',
+            clausesConfidentialites: ''
         },
         etatOffre: {
             nomEtatOffre: 'INITIAL'
@@ -46,7 +45,7 @@ const OffreForm: React.FC = () => {
         },
         conditionsFinancieres: {
             minimumGaranti: 0,
-            conditionsPaiement: 'b',
+            conditionsPaiement: '',
             pourcentageRecette: 0
         },
         budgetEstimatif: {
@@ -56,11 +55,11 @@ const OffreForm: React.FC = () => {
             fraisRestauration: 0
         },
         ficheTechniqueArtiste: {
-            besoinBackline: 'b',
-            besoinEclairage: 'b',
-            besoinEquipements: 'b',
-            besoinScene: 'b',
-            besoinSonorisation: 'b'
+            besoinBackline: '',
+            besoinEclairage: '',
+            besoinEquipements: '',
+            besoinScene: '',
+            besoinSonorisation: ''
         },
         donneesSupplementaires: {
             reseau: ["Facebook"],
@@ -71,7 +70,7 @@ const OffreForm: React.FC = () => {
             nbArtistes: 0
         },
         utilisateur: {
-            username: 'steven',
+            username: 'steven', // utiliser localStorage après
             contact: 'utilisateur@gmail.com'
         }
     });
@@ -118,7 +117,7 @@ const OffreForm: React.FC = () => {
                     <span className='font-medium'>Info alerte ! </span>{messageOffrePostee}
                 </Alert>
             )}
-            <form onSubmit={valideFormulaire} className="w-full mx-auto shadow-md rounded-lg p-8 space-y-4 font-nunito">
+            <form onSubmit={valideFormulaire} className="w-full mx-auto rounded-lg space-y-4 font-nunito">
                 <h2 className="text-3xl font-semibold text-center mb-10">Formulaire d&apos;Offre</h2>
                 <Accordion collapseAll>
                     <Accordion.Panel>
