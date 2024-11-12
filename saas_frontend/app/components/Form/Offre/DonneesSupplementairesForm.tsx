@@ -1,18 +1,10 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import FicheTechniqueArtisteForm from '@/app/components/Form/Offre/FicheTechniqueArtiste';
 import { apiGet, apiPost } from '@/app/services/internalApiClients';
 import {TextInput, Label, Select, Button, Card} from 'flowbite-react';
 
 interface DonneesSupplementairesFormProps {
     donneesSupplementaires: {
-        ficheTechniqueArtiste: {
-            besoinBackline: string;
-            besoinEclairage: string;
-            besoinEquipements: string;
-            besoinScene: string;
-            besoinSonorisation: string;
-        };
         reseau: string[];
         nbReseaux: number;
         genreMusical: string[];
@@ -21,13 +13,11 @@ interface DonneesSupplementairesFormProps {
         nbArtistes: number;
     };
     onDonneesSupplementairesChange: (name: string, value: string|string[]|number) => void;
-    onFicheTechniqueChange: (name: string, value: string) => void;
 }
 
 const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
     donneesSupplementaires,
-    onDonneesSupplementairesChange,
-    onFicheTechniqueChange
+    onDonneesSupplementairesChange
 }) => {
     const [genresMusicaux, setGenresMusicaux] = useState<Array<{ nomGenreMusical: string }>>([]);
     const [selectedGenres, setSelectedGenres] = useState<string[]>(donneesSupplementaires.genreMusical);
@@ -110,15 +100,7 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
     };
 
     return (
-        <Card className="mx-auto w-full p-8 rounded-lg">
-            {/* Formulaire de la fiche technique */}
-            <div>
-                <FicheTechniqueArtisteForm
-                    ficheTechniqueArtiste={donneesSupplementaires.ficheTechniqueArtiste}
-                    onFicheTechniqueChange={handleArtisteChange}
-                />
-            </div>
-
+        <Card className="shadow-none border-none mx-auto w-full">
             {/* Section des artistes concernés */}
             <div className="flex flex-col rounded-lg mb-4">
                 <h3 className="text-2xl font-semibold mb-4">Artistes Concernés</h3>
@@ -129,13 +111,14 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                             value={artiste}
                             onChange={(e) => handleArtisteChange(index, e.target.value)}
                             placeholder="Nom de l'artiste"
+                            className='w-full'
                         />
                         <Button color="failure" onClick={() => removeArtisteField(index)} size="sm" className="ml-2">
                             Supprimer
                         </Button>
                     </div>
                 ))}
-                <Button color="info" onClick={addArtisteField} className="mt-2 w-full">
+                <Button onClick={addArtisteField} className="mt-2 w-full">
                     Ajouter un artiste
                 </Button>
             </div>

@@ -40,63 +40,58 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
     }, []);
 
     return (
-        <div className="flex items-center justify-center">
-            <Card className="mx-auto w-full">
-                <h3 className="text-2xl font-semibold mb-4">Conditions financières</h3>
+        <Card className="shadow-none border-none mx-auto w-full">
+            <h3 className="text-2xl font-semibold mb-4">Conditions financières</h3>
 
-                <div className="grid grid-cols-2 gap-4 mb-5">
-                    <div>
-                        <Label htmlFor="minimumGaranti" value="Minimum Garanti:" />
-                        <TextInput
-                            type="number"
-                            id="minimumGaranti"
-                            name="minimumGaranti"
-                            value={conditionsFinancieres.minimumGaranti || 0}
-                            onChange={handleConditionsFinancieresChange}
-                            required
-                            placeholder="Minimum garanti"
-                            color="dark"
-                            className="mt-1"
-                        />
-                    </div>
-
-                    <div>
-                        <Label htmlFor="conditionsPaiement" value="Conditions de Paiement:" />
-                        <Select
-                            id="conditionsPaiement"
-                            name="conditionsPaiement"
-                            value={conditionsFinancieres.conditionsPaiement}
-                            onChange={handleConditionsFinancieresChange}
-                            required
-                            color="dark"
-                            className="mt-1"
-                        >
-                            <option value="">Sélectionnez une monnaie</option>
-                            {conditionsPaiement.map((monnaie, index) => (
-                                <option key={index} value={monnaie}>
-                                    {monnaie}
-                                </option>
-                            ))}
-                        </Select>
-                    </div>
-                </div>
-
-                <div className="mb-5">
-                    <Label htmlFor="pourcentageRecette" value="Pourcentage de Recette:" />
+            <div className="grid grid-cols-2 gap-4 mb-5">
+                <div>
+                    <Label htmlFor="minimumGaranti" value="Minimum Garanti:" />
                     <TextInput
                         type="number"
-                        id="pourcentageRecette"
-                        name="pourcentageRecette"
-                        value={conditionsFinancieres.pourcentageRecette || 0.0}
+                        id="minimumGaranti"
+                        name="minimumGaranti"
+                        value={conditionsFinancieres.minimumGaranti || 0}
                         onChange={handleConditionsFinancieresChange}
                         required
-                        placeholder="15.5%"
-                        color="dark"
+                        placeholder="Minimum garanti"
                         className="mt-1"
                     />
                 </div>
-            </Card>
-        </div>
+
+                <div>
+                    <Label htmlFor="conditionsPaiement" value="Conditions de Paiement:" />
+                    <Select
+                        id="conditionsPaiement"
+                        name="conditionsPaiement"
+                        value={conditionsFinancieres.conditionsPaiement}
+                        onChange={handleConditionsFinancieresChange}
+                        required
+                        className="mt-1"
+                    >
+                        <option value="">Sélectionnez une monnaie</option>
+                        {conditionsPaiement.map((monnaie, index) => (
+                            <option key={index} value={monnaie}>
+                                {monnaie}
+                            </option>
+                        ))}
+                    </Select>
+                </div>
+            </div>
+
+            <div className="mb-5">
+                <Label htmlFor="pourcentageRecette" value="Pourcentage de Recette:" />
+                <TextInput
+                    type="number"
+                    id="pourcentageRecette"
+                    name="pourcentageRecette"
+                    value={conditionsFinancieres.pourcentageRecette || 0.0}
+                    onChange={handleConditionsFinancieresChange}
+                    required
+                    placeholder="15.5%"
+                    className="mt-1"
+                />
+            </div>
+        </Card>
     );
 };
 
