@@ -120,7 +120,13 @@ class OffreService
                 intval($data['detailOffre']['nbArtistesConcernes'])
             );
             $offre->setNbInvitesConcernes(intval($data['detailOffre']['nbInvitesConcernes']));
-            $offre->setLiensPromotionnels($data['detailOffre']['liensPromotionnels']);
+
+            $liens = $data['detailOffre']['liensPromotionnels'];
+            $liensPromotionnels = "";
+            foreach ($liens as $lien) {
+                $liensPromotionnels .= "{$lien};";
+            }
+            $offre->setLiensPromotionnels($liensPromotionnels);
 
             $extras = new Extras();
             $extras->setDescrExtras($data['extras']['descrExtras']);

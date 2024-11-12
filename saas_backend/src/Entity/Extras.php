@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * Classe représentant les extras associés à une offre ou une condition.
@@ -19,7 +20,7 @@ class Extras
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['extras:read'])]
+    #[Groups(['extras:read', 'offre:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -48,6 +49,7 @@ class Extras
 
     #[ORM\OneToMany(targetEntity: Offre::class, mappedBy: "extras", orphanRemoval: true, cascade: ["remove"])]
     #[Groups(['extras:read'])]
+    #[MaxDepth(1)]
     private Collection $offres;
 
     public function __construct()

@@ -32,7 +32,7 @@ class FicheTechniqueArtisteService
         $fichesTechniquesArtisteJSON = $serializer->serialize(
             $fichesTechniquesArtiste,
             'json',
-            ['groups' => ['ficheTechniqueArtiste:read']]
+            ['groups' => ['fiche_technique_artiste:read']]
         );
         return new JsonResponse([
             'fiches_techniques_artistes' => $fichesTechniquesArtisteJSON,
@@ -95,7 +95,7 @@ class FicheTechniqueArtisteService
                 $ficheTechniqueArtisteJSON = $serializer->serialize(
                     $ficheTechniqueArtiste,
                     'json',
-                    ['groups' => ['ficheTechniqueArtiste:read']]
+                    ['groups' => ['fiche_technique_artiste:read']]
                 );
                 return new JsonResponse([
                     'fiche_technique_artiste' => $ficheTechniqueArtisteJSON,
@@ -170,7 +170,7 @@ class FicheTechniqueArtisteService
                 $ficheTechniqueArtisteJSON = $serializer->serialize(
                     $ficheTechniqueArtiste,
                     'json',
-                    ['groups' => ['ficheTechniqueArtiste:read']]
+                    ['groups' => ['fiche_technique_artiste:read']]
                 );
 
                 return new JsonResponse([
@@ -224,7 +224,7 @@ class FicheTechniqueArtisteService
             $ficheTechniqueArtisteJSON = $serializer->serialize(
                 $ficheTechniqueArtiste,
                 'json',
-                ['groups' => ['ficheTechniqueArtiste:read']]
+                ['groups' => ['fiche_technique_artiste:read']]
             );
             return new JsonResponse([
                 'fiche_technique_artiste' => $ficheTechniqueArtisteJSON,
@@ -277,7 +277,7 @@ class FicheTechniqueArtisteService
             $ficheTechniqueArtisteJSON = $serializer->serialize(
                 $ficheTechniqueArtiste,
                 'json',
-                ['groups' => ['ficheTechniqueArtiste:read']]
+                ['groups' => ['fiche_technique_artiste:read']]
             );
             return new JsonResponse([
                 'fiche_technique_artiste' => $ficheTechniqueArtisteJSON,
@@ -331,7 +331,7 @@ class FicheTechniqueArtisteService
             $ficheTechniqueArtisteJSON = $serializer->serialize(
                 $ficheTechniqueArtiste,
                 'json',
-                ['groups' => ['ficheTechniqueArtiste:read']]
+                ['groups' => ['fiche_technique_artiste:read']]
             );
             return new JsonResponse([
                 'fiche_technique_artiste' => $ficheTechniqueArtisteJSON,

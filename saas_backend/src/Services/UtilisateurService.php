@@ -59,10 +59,13 @@ class UtilisateurService
     ): JsonResponse {
         // on récupère tous les utilisateurs
         $utilisateurs = $utilisateurRepository->trouveUtilisateurByUsername($data['username']);
+        $context = [
+            'circular_reference_handler' => fn($object) => $object->getId(),
+        ];
         $utilisateursJSON = $serializer->serialize(
             $utilisateurs,
             'json',
-            ['groups' => ['utilisateur:read']]
+            ['groups' => ['utilisateur:read']], 
         );
         return new JsonResponse([
             'utilisateur' => $utilisateursJSON,

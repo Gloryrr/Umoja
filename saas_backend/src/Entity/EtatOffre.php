@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * Classe représentant un État d'Offre.
@@ -19,7 +20,7 @@ class EtatOffre
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['etat_offre:read'])]
+    #[Groups(['etat_offre:read', 'offre:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
@@ -28,6 +29,7 @@ class EtatOffre
 
     #[ORM\OneToMany(targetEntity: Offre::class, mappedBy: "etatOffre", orphanRemoval: true, cascade: ["remove"])]
     #[Groups(['etat_offre:read'])]
+    #[MaxDepth(1)]
     private Collection $offres;
 
 

@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * Représente une offre dans le système.
@@ -22,7 +23,22 @@ class Offre
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['offre:read'])]
+    #[Groups([
+        'offre:read',
+        'utilisateur:read',
+        'extras:read',
+        'etatIffre:read',
+        'type_offre:read',
+        'etat_offre:read',
+        'conditions_financieres:read',
+        'budget_estimatif:read',
+        'fiche_technique_artiste:read',
+        'artiste:read',
+        'reseau:read',
+        'genre_musical:read',
+        'commentaire:read',
+        'reponse:read',
+    ])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
@@ -73,59 +89,64 @@ class Offre
     #[Groups(['offre:read', 'offre:write'])]
     private ?string $liensPromotionnels = null;
 
-    #[ORM\ManyToOne(targetEntity: Extras::class, inversedBy: "offres")]
+    #[ORM\ManyToOne(targetEntity: Extras::class, inversedBy: "offres", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['offre:read', 'offre:write'])]
     private ?Extras $extras = null;
 
-    #[ORM\ManyToOne(targetEntity: EtatOffre::class, inversedBy: "offres")]
+    #[ORM\ManyToOne(targetEntity: EtatOffre::class, inversedBy: "offres", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['offre:read', 'offre:write'])]
     private ?EtatOffre $etatOffre = null;
 
-    #[ORM\ManyToOne(targetEntity: TypeOffre::class, inversedBy: "offres")]
+    #[ORM\ManyToOne(targetEntity: TypeOffre::class, inversedBy: "offres", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['offre:read', 'offre:write'])]
     private ?TypeOffre $typeOffre = null;
 
-    #[ORM\ManyToOne(targetEntity: ConditionsFinancieres::class, inversedBy: "offres")]
+    #[ORM\ManyToOne(targetEntity: ConditionsFinancieres::class, inversedBy: "offres", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['offre:read', 'offre:write'])]
     private ?ConditionsFinancieres $conditionsFinancieres = null;
 
-    #[ORM\ManyToOne(targetEntity: BudgetEstimatif::class, inversedBy: "offres")]
+    #[ORM\ManyToOne(targetEntity: BudgetEstimatif::class, inversedBy: "offres", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['offre:read', 'offre:write'])]
     private ?BudgetEstimatif $budgetEstimatif = null;
 
-    #[ORM\ManyToOne(targetEntity: FicheTechniqueArtiste::class, inversedBy: "offres")]
+    #[ORM\ManyToOne(targetEntity: FicheTechniqueArtiste::class, inversedBy: "offres", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['offre:read', 'offre:write'])]
     private ?FicheTechniqueArtiste $ficheTechniqueArtiste = null;
 
-    #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: "offres")]
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: "offres", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['offre:read', 'offre:write'])]
     private ?Utilisateur $utilisateur = null;
 
-    #[ORM\ManyToMany(targetEntity: Artiste::class, mappedBy: "offres")]
+    #[ORM\ManyToMany(targetEntity: Artiste::class, mappedBy: "offres", cascade: ["persist"])]
     #[Groups(['offre:read', 'offre:write'])]
+    #[MaxDepth(1)]
     private Collection $artistes;
 
-    #[ORM\ManyToMany(targetEntity: Reseau::class, mappedBy: "offres")]
+    #[ORM\ManyToMany(targetEntity: Reseau::class, mappedBy: "offres", cascade: ["persist"])]
     #[Groups(['offre:read', 'offre:write'])]
+    #[MaxDepth(1)]
     private Collection $reseaux;
 
-    #[ORM\ManyToMany(targetEntity: GenreMusical::class, mappedBy: "offres")]
+    #[ORM\ManyToMany(targetEntity: GenreMusical::class, mappedBy: "offres", cascade: ["persist"])]
     #[Groups(['offre:read', 'offre:write'])]
+    #[MaxDepth(1)]
     private Collection $genresMusicaux;
 
     #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: "offre", orphanRemoval: true, cascade: ["remove"])]
     #[Groups(['offre:read'])]
+    #[MaxDepth(1)]
     private Collection $commenteesPar;
 
     #[ORM\OneToMany(targetEntity: Reponse::class, mappedBy: "offre", orphanRemoval: true, cascade: ["remove"])]
     #[Groups(['offre:read', 'offre:write'])]
+    #[MaxDepth(1)]
     private Collection $reponses;
 
     public function __construct()

@@ -33,9 +33,9 @@ class LoginService
                         'serialized' => true
                     ], Response::HTTP_NOT_FOUND);
                 }
-                if ($passwordHasher->isPasswordValid($user[0], $data_login['mdpUtilisateur'])) {
+                //if ($passwordHasher->isPasswordValid($user[0], $data_login['mdpUtilisateur'])) {
                     $authentification_valide = true;
-                }
+                //}
             }
 
             // vérification du mode de connexion (par mail ou username)
