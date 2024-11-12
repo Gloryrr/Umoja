@@ -22,16 +22,16 @@ interface DetailOffreFormProps {
         placesMax: number;
         nbArtistesConcernes: number;
         nbInvitesConcernes: number;
-        liensPromotionnels: string;
+        liensPromotionnels: string[];
     };
-    onDetailOffreChange: (name: string, value: string | number) => void;
+    onDetailOffreChange: (name: string, value: string | number | string[]) => void;
 }
 
 const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
     detailOffre,
     onDetailOffreChange,
 }) => {
-    const [liensPromotionnels, setLiensPromotionnels] = useState<string[]>(['']);
+    const [liensPromotionnels, setLiensPromotionnels] = useState<string[]>(detailOffre.liensPromotionnels || ['']);
     const [citySuggestions, setCitySuggestions] = useState<string[]>([]);
     const [placesMin, setPlacesMin] = useState(detailOffre.placesMin);
     const [placesMax, setPlacesMax] = useState(detailOffre.placesMax);
@@ -70,20 +70,26 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
         }
     };
 
+    const handleUpdateLien = (newLiens: string[]) => {
+        setLiensPromotionnels(newLiens);
+        onDetailOffreChange('liensPromotionnels', newLiens);
+    };
+    
     const handleLienChange = (index: number, value: string) => {
         const newLiens = [...liensPromotionnels];
         newLiens[index] = value;
-        setLiensPromotionnels(newLiens);
+        handleUpdateLien(newLiens);
     };
-
+    
     const handleAddLien = () => {
-        setLiensPromotionnels([...liensPromotionnels, '']);
+        handleUpdateLien([...liensPromotionnels, '']);
     };
-
+    
     const handleRemoveLien = (index: number) => {
         const newLiens = liensPromotionnels.filter((_, i) => i !== index);
-        setLiensPromotionnels(newLiens);
+        handleUpdateLien(newLiens);
     };
+    
 
     const handleCityInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;

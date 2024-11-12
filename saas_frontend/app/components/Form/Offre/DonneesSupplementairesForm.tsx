@@ -22,7 +22,7 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
     const [genresMusicaux, setGenresMusicaux] = useState<Array<{ nomGenreMusical: string }>>([]);
     const [selectedGenres, setSelectedGenres] = useState<string[]>(donneesSupplementaires.genreMusical);
 
-    const [reseaux, setReseaux] = useState<Array<{ idReseau: { nomReseau: string } }>>([]);
+    const [reseaux, setReseaux] = useState<Array<{ nomReseau: string }>>([]);
     const [selectedReseaux, setSelectedReseaux] = useState<string[]>(donneesSupplementaires.reseau);
 
     const [artistes, setArtistes] = useState<string[]>(donneesSupplementaires.artiste);
@@ -41,10 +41,10 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
         const fetchReseauUtilisateur = async () => {
             try {
                 const data = {
-                    username: 'username n° 1' // utiliser localStorage plus tard
+                    username: 'steven' // utiliser localStorage plus tard
                 };
                 const datasUser = await apiPost('/utilisateur', JSON.parse(JSON.stringify(data)));
-                const reseauxListe: Array<{ idReseau: { nomReseau: string } }> = JSON.parse(datasUser.utilisateur)[0].membreDesReseaux;
+                const reseauxListe: Array<{ nomReseau: string }> = JSON.parse(datasUser.utilisateur)[0].reseaux;
                 setReseaux(reseauxListe);
                 console.log(reseauxListe);
             } catch (error) {
@@ -138,8 +138,8 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                             multiple
                         >
                             {reseaux.map((reseau, index) => (
-                                <option key={index} value={reseau.idReseau.nomReseau}>
-                                    {reseau.idReseau.nomReseau}
+                                <option key={index} value={reseau.nomReseau}>
+                                    {reseau.nomReseau}
                                 </option>
                             ))}
                         </Select>

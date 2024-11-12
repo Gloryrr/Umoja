@@ -23,7 +23,7 @@ const OffreForm: React.FC = () => {
             placesMax: 0,
             nbArtistesConcernes: 0,
             nbInvitesConcernes: 0,
-            liensPromotionnels: ''
+            liensPromotionnels: []
         },
         extras: {
             descrExtras: '',
@@ -66,7 +66,7 @@ const OffreForm: React.FC = () => {
             nbArtistes: 0
         },
         utilisateur: {
-            username: 'username n° 1', // on va utiliser localStorage
+            username: 'steven', // on va utiliser localStorage
             contact: 'utilisateur@gmail.com'
         }
     });
