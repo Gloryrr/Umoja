@@ -36,8 +36,6 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
     const [placesMin, setPlacesMin] = useState(detailOffre.placesMin);
     const [placesMax, setPlacesMax] = useState(detailOffre.placesMax);
 
-    const dateParDefaut = new Date().toISOString().split('T')[0];
-
     const handleDetailOffreChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         onDetailOffreChange(name, value);
@@ -141,7 +139,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                     type="date"
                     id="deadLine"
                     name="deadLine"
-                    value={detailOffre.deadLine || dateParDefaut}
+                    value={detailOffre.deadLine}
                     onChange={handleDetailOffreChange}
                     required
                     className="mt-1"
@@ -155,7 +153,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         type="date"
                         id="dateMinProposee"
                         name="dateMinProposee"
-                        value={detailOffre.dateMinProposee || dateParDefaut}
+                        value={detailOffre.dateMinProposee}
                         onChange={handleDetailOffreChange}
                         required
                         min={detailOffre.deadLine}
@@ -169,7 +167,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         type="date"
                         id="dateMaxProposee"
                         name="dateMaxProposee"
-                        value={detailOffre.dateMaxProposee || dateParDefaut}
+                        value={detailOffre.dateMaxProposee}
                         onChange={handleDetailOffreChange}
                         required
                         min={detailOffre.dateMinProposee}

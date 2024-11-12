@@ -10,13 +10,14 @@ import FicheTechniqueArtisteForm from '@/app/components/Form/Offre/FicheTechniqu
 import { apiPost } from '@/app/services/internalApiClients';
 
 const OffreForm: React.FC = () => {
+    const dateParDefaut = new Date().toISOString().split('T')[0];
     const [formData, setFormData] = useState({
         detailOffre: {
             titleOffre: '',
-            deadLine: '',
+            deadLine: dateParDefaut,
             descrTournee: '',
-            dateMinProposee: '',
-            dateMaxProposee: '',
+            dateMinProposee: dateParDefaut,
+            dateMaxProposee: dateParDefaut,
             villeVisee: '',
             regionVisee: '',
             placesMin: 0,
