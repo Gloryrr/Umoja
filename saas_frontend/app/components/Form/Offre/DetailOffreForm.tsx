@@ -11,17 +11,17 @@ interface Feature {
 
 interface DetailOffreFormProps {
     detailOffre : {
-        titleOffre: string;
-        deadLine: string;
-        descrTournee: string;
-        dateMinProposee: string;
-        dateMaxProposee: string;
-        villeVisee: string;
-        regionVisee: string;
-        placesMin: number;
-        placesMax: number;
-        nbArtistesConcernes: number;
-        nbInvitesConcernes: number;
+        titleOffre: string | null;
+        deadLine: string | Date | null;
+        descrTournee: string | null;
+        dateMinProposee: string | null;
+        dateMaxProposee: string | null;
+        villeVisee: string | null;
+        regionVisee: string | null;
+        placesMin: number | null;
+        placesMax: number | null;
+        nbArtistesConcernes: number | null;
+        nbInvitesConcernes: number | null;
         liensPromotionnels: string[];
     };
     onDetailOffreChange: (name: string, value: string | number | string[]) => void;
@@ -125,7 +125,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                     type="text"
                     id="titleOffre"
                     name="titleOffre"
-                    value={detailOffre.titleOffre}
+                    value={detailOffre.titleOffre || undefined}
                     onChange={handleDetailOffreChange}
                     required
                     placeholder="Indiquer le titre de l'Offre"
@@ -139,7 +139,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                     type="date"
                     id="deadLine"
                     name="deadLine"
-                    value={detailOffre.deadLine}
+                    value={detailOffre.deadLine || undefined}
                     onChange={handleDetailOffreChange}
                     required
                     className="mt-1"
@@ -153,10 +153,10 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         type="date"
                         id="dateMinProposee"
                         name="dateMinProposee"
-                        value={detailOffre.dateMinProposee}
+                        value={detailOffre.dateMinProposee || undefined}
                         onChange={handleDetailOffreChange}
                         required
-                        min={detailOffre.deadLine}
+                        min={detailOffre.dateMinProposee || undefined}
                         className="mt-1"
                     />
                 </div>
@@ -167,10 +167,10 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         type="date"
                         id="dateMaxProposee"
                         name="dateMaxProposee"
-                        value={detailOffre.dateMaxProposee}
+                        value={detailOffre.dateMaxProposee || undefined}
                         onChange={handleDetailOffreChange}
                         required
-                        min={detailOffre.dateMinProposee}
+                        min={detailOffre.dateMinProposee || undefined}
                         className="mt-1"
                     />
                 </div>
@@ -181,7 +181,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                 <Textarea
                     id="descrTournee"
                     name="descrTournee"
-                    value={detailOffre.descrTournee}
+                    value={detailOffre.descrTournee || undefined}
                     onChange={handleDetailOffreChange}
                     required
                     placeholder="La description de la tournée"
@@ -196,7 +196,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         type="text"
                         id="villeVisee"
                         name="villeVisee"
-                        value={detailOffre.villeVisee}
+                        value={detailOffre.villeVisee || undefined}
                         onChange={handleCityInputChange}
                         required
                         placeholder="Dans quelle ville se déroulera l'offre"
@@ -210,7 +210,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         type="text"
                         id="regionVisee"
                         name="regionVisee"
-                        value={detailOffre.regionVisee}
+                        value={detailOffre.regionVisee || undefined}
                         readOnly
                         className="mt-1"
                     />
@@ -224,7 +224,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         type="number"
                         id="placesMin"
                         name="placesMin"
-                        value={placesMin || 0}
+                        value={placesMin || undefined}
                         onChange={handleDetailOffreChange}
                         required
                         placeholder="Nombre de places minimum"
@@ -238,10 +238,10 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         type="number"
                         id="placesMax"
                         name="placesMax"
-                        value={placesMax || 0}
+                        value={placesMax || undefined}
                         onChange={handleDetailOffreChange}
                         required
-                        min={placesMin}
+                        min={placesMin || undefined}
                         placeholder="Nombre de places maximum"
                         className="mt-1"
                     />
@@ -255,7 +255,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         type="number"
                         id="nbArtistesConcernes"
                         name="nbArtistesConcernes"
-                        value={detailOffre.nbArtistesConcernes || 0}
+                        value={detailOffre.nbArtistesConcernes || undefined}
                         onChange={handleDetailOffreChange}
                         required
                         placeholder="Nombre d'artistes concernés"
@@ -269,7 +269,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         type="number"
                         id="nbInvitesConcernes"
                         name="nbInvitesConcernes"
-                        value={detailOffre.nbInvitesConcernes || 0}
+                        value={detailOffre.nbInvitesConcernes || undefined}
                         onChange={handleDetailOffreChange}
                         required
                         placeholder="Nombre d'invités concernés"

@@ -10,31 +10,32 @@ import FicheTechniqueArtisteForm from '@/app/components/Form/Offre/FicheTechniqu
 import InfoAdditionnelAlert from '@/app/components/Alerte/InfoAdditionnelAlerte';
 import { apiPost } from '@/app/services/internalApiClients';
 import { HiInformationCircle } from "react-icons/hi";
+import { FormData } from '@/app/types/FormDataType';
 
 const OffreForm: React.FC = () => {
     const dateParDefaut = new Date().toISOString().split('T')[0];
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<FormData>({
         detailOffre: {
-            titleOffre: '',
+            titleOffre: null,
             deadLine: dateParDefaut,
-            descrTournee: '',
+            descrTournee: null,
             dateMinProposee: dateParDefaut,
             dateMaxProposee: dateParDefaut,
-            villeVisee: '',
-            regionVisee: '',
-            placesMin: 0,
-            placesMax: 0,
-            nbArtistesConcernes: 0,
-            nbInvitesConcernes: 0,
+            villeVisee: null,
+            regionVisee: null,
+            placesMin: null,
+            placesMax: null,
+            nbArtistesConcernes: null,
+            nbInvitesConcernes: null,
             liensPromotionnels: []
         },
         extras: {
-            descrExtras: '',
-            coutExtras: 0,
-            exclusivite: '',
-            exception: '',
-            ordrePassage: '',
-            clausesConfidentialites: ''
+            descrExtras: null,
+            coutExtras: null,
+            exclusivite: null,
+            exception: null,
+            ordrePassage: null,
+            clausesConfidentialites: null
         },
         etatOffre: {
             nomEtatOffre: 'INITIAL'
@@ -43,30 +44,30 @@ const OffreForm: React.FC = () => {
             nomTypeOffre: 'TYPE TOURNEE'
         },
         conditionsFinancieres: {
-            minimumGaranti: 0,
-            conditionsPaiement: '',
-            pourcentageRecette: 0
+            minimumGaranti: null,
+            conditionsPaiement: null,
+            pourcentageRecette: null
         },
         budgetEstimatif: {
-            cachetArtiste: 0,
-            fraisDeplacement: 0,
-            fraisHebergement: 0,
-            fraisRestauration: 0
+            cachetArtiste: null,
+            fraisDeplacement: null,
+            fraisHebergement: null,
+            fraisRestauration: null
         },
         ficheTechniqueArtiste: {
-            besoinBackline: '',
-            besoinEclairage: '',
-            besoinEquipements: '',
-            besoinScene: '',
-            besoinSonorisation: ''
+            besoinBackline: null,
+            besoinEclairage: null,
+            besoinEquipements: null,
+            besoinScene: null,
+            besoinSonorisation: null
         },
         donneesSupplementaires: {
             reseau: ["Facebook"],
-            nbReseaux: 0,
+            nbReseaux: null,
             genreMusical: ["Pop"],
-            nbGenresMusicaux: 0,
+            nbGenresMusicaux: null,
             artiste: [],
-            nbArtistes: 0
+            nbArtistes: null
         },
         utilisateur: {
             username: 'steven', // utiliser localStorage après
@@ -118,10 +119,10 @@ const OffreForm: React.FC = () => {
             dateMaxProposee && 
             villeVisee && 
             regionVisee && 
-            placesMin > 0 && 
-            placesMax > 0 &&
-            nbArtistesConcernes > 0 &&
-            nbInvitesConcernes > 0 &&
+            placesMin != null && placesMin > 0 && 
+            placesMax != null && placesMax > 0 &&
+            nbArtistesConcernes != null && nbArtistesConcernes > 0 &&
+            nbInvitesConcernes != null && nbInvitesConcernes > 0 &&
             liensPromotionnels.length > 0;
     };
 
@@ -134,7 +135,13 @@ const OffreForm: React.FC = () => {
             ordrePassage,
             clausesConfidentialites 
         } = formData.extras;
-        return descrExtras && coutExtras > 0 && exclusivite && exception && ordrePassage && clausesConfidentialites;
+        return descrExtras && 
+            coutExtras != null && 
+            coutExtras > 0 && 
+            exclusivite && 
+            exception && 
+            ordrePassage && 
+            clausesConfidentialites;
     };
 
     const checkConditionsFinancieres = () => {
@@ -143,7 +150,7 @@ const OffreForm: React.FC = () => {
             conditionsPaiement,
             pourcentageRecette
         } = formData.conditionsFinancieres;
-        return minimumGaranti > 0 && conditionsPaiement && pourcentageRecette > 0;
+        return minimumGaranti != null && minimumGaranti > 0 && conditionsPaiement && pourcentageRecette != null && pourcentageRecette > 0;
     };
 
     const checkBudgetEstimatif = () => {
@@ -153,7 +160,10 @@ const OffreForm: React.FC = () => {
             fraisHebergement,
             fraisRestauration
         } = formData.budgetEstimatif;
-        return cachetArtiste > 0 && fraisDeplacement > 0 && fraisHebergement > 0 && fraisRestauration > 0;
+        return cachetArtiste != null && cachetArtiste > 0 && 
+            fraisDeplacement != null && fraisDeplacement > 0 && 
+            fraisHebergement != null && fraisHebergement > 0 && 
+            fraisRestauration != null && fraisRestauration > 0;
     };
 
     const checkFicheTechniqueArtiste = () => {
@@ -176,7 +186,12 @@ const OffreForm: React.FC = () => {
             artiste,
             nbArtistes
         } = formData.donneesSupplementaires;
-        return reseau.length > 0 && nbReseaux > 0 && genreMusical.length > 0 && nbGenresMusicaux > 0 && artiste.length > 0 && nbArtistes > 0;
+        return reseau.length > 0 && 
+            nbReseaux != null && nbReseaux > 0 && 
+            genreMusical.length > 0 && 
+            nbGenresMusicaux != null && nbGenresMusicaux > 0 && 
+            artiste.length > 0 && 
+            nbArtistes != null && nbArtistes > 0;
     };
 
     const getPointColor = (isValid: boolean) => {
@@ -184,7 +199,7 @@ const OffreForm: React.FC = () => {
     };
 
     return (
-        <div className="w-full flex items-start justify-center pl-10">
+        <div className="w-full flex items-start justify-center">
             <div className="mt-10 mb-10 w-[60%] mx-auto">
                 {offrePostee && (
                     <Alert

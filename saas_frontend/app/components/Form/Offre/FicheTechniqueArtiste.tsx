@@ -4,11 +4,11 @@ import { TextInput, Label, Card } from 'flowbite-react';
 
 interface FicheTechniqueArtisteFormProps {
     ficheTechniqueArtiste: {
-        besoinBackline: string;
-        besoinEclairage: string;
-        besoinEquipements: string;
-        besoinScene: string;
-        besoinSonorisation: string;
+        besoinBackline: string | null;
+        besoinEclairage: string | null;
+        besoinEquipements: string | null;
+        besoinScene: string | null;
+        besoinSonorisation: string | null;
     };
     onFicheTechniqueChange: (name: string, value: string) => void;
 }
@@ -33,7 +33,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                     <TextInput
                         id="besoinBackline"
                         name="besoinBackline"
-                        value={ficheTechniqueArtiste.besoinBackline}
+                        value={ficheTechniqueArtiste.besoinBackline || undefined}
                         onChange={handleFicheTechniqueArtisteChange}
                         placeholder="Besoins en backline"
                         required
@@ -44,7 +44,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                     <TextInput
                         id="besoinEclairage"
                         name="besoinEclairage"
-                        value={ficheTechniqueArtiste.besoinEclairage}
+                        value={ficheTechniqueArtiste.besoinEclairage || undefined}
                         onChange={handleFicheTechniqueArtisteChange}
                         placeholder="Besoins en éclairage"
                         required
@@ -59,7 +59,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                     <TextInput
                         id="besoinEquipements"
                         name="besoinEquipements"
-                        value={ficheTechniqueArtiste.besoinEquipements}
+                        value={ficheTechniqueArtiste.besoinEquipements || undefined}
                         onChange={handleFicheTechniqueArtisteChange}
                         placeholder="Besoins en équipements"
                         required
@@ -70,7 +70,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                     <TextInput
                         id="besoinScene"
                         name="besoinScene"
-                        value={ficheTechniqueArtiste.besoinScene}
+                        value={ficheTechniqueArtiste.besoinScene || undefined}
                         onChange={handleFicheTechniqueArtisteChange}
                         placeholder="Besoins en scène"
                         required
@@ -84,7 +84,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                 <TextInput
                     id="besoinSonorisation"
                     name="besoinSonorisation"
-                    value={ficheTechniqueArtiste.besoinSonorisation}
+                    value={ficheTechniqueArtiste.besoinSonorisation || undefined}
                     onChange={handleFicheTechniqueArtisteChange}
                     placeholder="Besoins en sonorisation"
                     required

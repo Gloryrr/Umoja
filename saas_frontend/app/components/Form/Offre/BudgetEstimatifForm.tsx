@@ -4,10 +4,10 @@ import { Card, Label, TextInput } from 'flowbite-react';
 
 interface BudgetEstimatifFormProps {
     budgetEstimatif: {
-        cachetArtiste: number;
-        fraisDeplacement: number;
-        fraisHebergement: number;
-        fraisRestauration: number;
+        cachetArtiste: number | null;
+        fraisDeplacement: number | null;
+        fraisHebergement: number | null;
+        fraisRestauration: number | null;
     };
     onBudgetEstimatifChange: (name: string, value: number) => void;
 }
@@ -32,7 +32,7 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
                         type="number"
                         id="cachetArtiste"
                         name="cachetArtiste"
-                        value={budgetEstimatif.cachetArtiste || 0}
+                        value={budgetEstimatif.cachetArtiste || undefined}
                         onChange={handleBudgetEstimatifChange}
                         placeholder="Cachet de l'artiste"
                         required
@@ -45,7 +45,7 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
                         type="number"
                         id="fraisDeplacement"
                         name="fraisDeplacement"
-                        value={budgetEstimatif.fraisDeplacement || 0}
+                        value={budgetEstimatif.fraisDeplacement || undefined}
                         onChange={handleBudgetEstimatifChange}
                         placeholder="Frais de déplacement"
                         required
@@ -61,7 +61,7 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
                         type="number"
                         id="fraisHebergement"
                         name="fraisHebergement"
-                        value={budgetEstimatif.fraisHebergement || 0}
+                        value={budgetEstimatif.fraisHebergement || undefined}
                         onChange={handleBudgetEstimatifChange}
                         placeholder="Frais d'hébergement"
                         required
@@ -74,7 +74,7 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
                         type="number"
                         id="fraisRestauration"
                         name="fraisRestauration"
-                        value={budgetEstimatif.fraisRestauration || 0}
+                        value={budgetEstimatif.fraisRestauration || undefined}
                         onChange={handleBudgetEstimatifChange}
                         placeholder="Frais de restauration"
                         required

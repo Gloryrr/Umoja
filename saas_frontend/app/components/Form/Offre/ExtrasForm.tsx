@@ -4,12 +4,12 @@ import {Label, TextInput, Textarea, Card } from 'flowbite-react';
 
 interface ExtrasFormProps {
     extras: {
-        descrExtras: string;
-        coutExtras: number;
-        exclusivite: string;
-        exception: string;
-        ordrePassage: string;
-        clausesConfidentialites: string;
+        descrExtras: string | null;
+        coutExtras: number | null;
+        exclusivite: string | null;
+        exception: string | null;
+        ordrePassage: string | null;
+        clausesConfidentialites: string | null;
     };
     onExtrasChange: (name: string, value: string) => void;
 }
@@ -34,7 +34,7 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
                             id="descrExtras"
                             name="descrExtras"
                             type="text"
-                            value={extras.descrExtras}
+                            value={extras.descrExtras || undefined}
                             onChange={handleExtrasChange}
                             placeholder="Description des Extras"
                         />
@@ -45,7 +45,7 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
                             id="coutExtras"
                             name="coutExtras"
                             type="number"
-                            value={extras.coutExtras || 0}
+                            value={extras.coutExtras || undefined}
                             onChange={handleExtrasChange}
                             placeholder="Coût des Extras"
                         />
@@ -60,7 +60,7 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
                             id="exclusivite"
                             name="exclusivite"
                             type="text"
-                            value={extras.exclusivite}
+                            value={extras.exclusivite || undefined}
                             onChange={handleExtrasChange}
                             placeholder="Exclusivité"
                         />
@@ -71,7 +71,7 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
                             id="exception"
                             name="exception"
                             type="text"
-                            value={extras.exception}
+                            value={extras.exception || undefined}
                             onChange={handleExtrasChange}
                             placeholder="Exceptions"
                         />
@@ -86,7 +86,7 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
                             id="ordrePassage"
                             name="ordrePassage"
                             type="text"
-                            value={extras.ordrePassage}
+                            value={extras.ordrePassage || undefined}
                             onChange={handleExtrasChange}
                             placeholder="Ordre de Passage"
                             className='w-full'
@@ -98,7 +98,7 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
                     <Textarea
                         id="clausesConfidentialites"
                         name="clausesConfidentialites"
-                        value={extras.clausesConfidentialites}
+                        value={extras.clausesConfidentialites || undefined}
                         onChange={handleExtrasChange}
                         placeholder="Clauses de Confidentialité"
                         className='w-full'

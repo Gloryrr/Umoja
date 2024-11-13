@@ -5,9 +5,9 @@ import { Card, Label, TextInput, Select } from 'flowbite-react';
 
 interface ConditionsFinancieresFormProps {
     conditionsFinancieres: {
-        minimumGaranti: number;
-        conditionsPaiement: string;
-        pourcentageRecette: number;
+        minimumGaranti: number | null;
+        conditionsPaiement: string | null;
+        pourcentageRecette: number | null;
     };
     onConditionsFinancieresChange: (name: string, value: string) => void;
 }
@@ -50,7 +50,7 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
                         type="number"
                         id="minimumGaranti"
                         name="minimumGaranti"
-                        value={conditionsFinancieres.minimumGaranti || 0}
+                        value={conditionsFinancieres.minimumGaranti || undefined}
                         onChange={handleConditionsFinancieresChange}
                         required
                         placeholder="Minimum garanti"
@@ -63,7 +63,7 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
                     <Select
                         id="conditionsPaiement"
                         name="conditionsPaiement"
-                        value={conditionsFinancieres.conditionsPaiement}
+                        value={conditionsFinancieres.conditionsPaiement || undefined}
                         onChange={handleConditionsFinancieresChange}
                         required
                         className="mt-1"
@@ -84,7 +84,7 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
                     type="number"
                     id="pourcentageRecette"
                     name="pourcentageRecette"
-                    value={conditionsFinancieres.pourcentageRecette || 0.0}
+                    value={conditionsFinancieres.pourcentageRecette || undefined}
                     onChange={handleConditionsFinancieresChange}
                     required
                     placeholder="15.5%"

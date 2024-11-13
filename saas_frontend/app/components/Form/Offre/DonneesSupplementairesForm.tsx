@@ -6,11 +6,11 @@ import {TextInput, Label, Select, Button, Card} from 'flowbite-react';
 interface DonneesSupplementairesFormProps {
     donneesSupplementaires: {
         reseau: string[];
-        nbReseaux: number;
+        nbReseaux: number | undefined;
         genreMusical: string[];
-        nbGenresMusicaux: number;
+        nbGenresMusicaux: number | undefined;
         artiste: string[];
-        nbArtistes: number;
+        nbArtistes: number | undefined;
     };
     onDonneesSupplementairesChange: (name: string, value: string|string[]|number) => void;
 }
