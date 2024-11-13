@@ -200,7 +200,7 @@ const OffreForm: React.FC = () => {
 
     return (
         <div className="w-full flex items-start justify-center">
-            <div className="mt-10 mb-10 w-[60%] mx-auto">
+            <div className="m-20 w-[55%]">
                 {offrePostee && (
                     <Alert
                         color={typeMessage === "success" ? "green" : "failure"}
