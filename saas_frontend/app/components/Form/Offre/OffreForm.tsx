@@ -13,7 +13,7 @@ import { HiInformationCircle } from "react-icons/hi";
 import { FormData } from '@/app/types/FormDataType';
 
 const OffreForm: React.FC = () => {
-    const dateParDefaut = new Date().toISOString().split('T')[0];
+    const dateParDefaut = new Date().toISOString().split('T')[0] as string;
     const [formData, setFormData] = useState<FormData>({
         detailOffre: {
             titleOffre: null,
@@ -112,7 +112,7 @@ const OffreForm: React.FC = () => {
             nbInvitesConcernes,
             liensPromotionnels
         } = formData.detailOffre;
-        return titleOffre && 
+        return !!(titleOffre && 
             deadLine && 
             descrTournee && 
             dateMinProposee && 
@@ -123,7 +123,7 @@ const OffreForm: React.FC = () => {
             placesMax != null && placesMax > 0 &&
             nbArtistesConcernes != null && nbArtistesConcernes > 0 &&
             nbInvitesConcernes != null && nbInvitesConcernes > 0 &&
-            liensPromotionnels.length > 0;
+            liensPromotionnels.length > 0);
     };
 
     const checkExtras = () => {
@@ -135,13 +135,13 @@ const OffreForm: React.FC = () => {
             ordrePassage,
             clausesConfidentialites 
         } = formData.extras;
-        return descrExtras && 
+        return !!(descrExtras && 
             coutExtras != null && 
             coutExtras > 0 && 
             exclusivite && 
             exception && 
             ordrePassage && 
-            clausesConfidentialites;
+            clausesConfidentialites);
     };
 
     const checkConditionsFinancieres = () => {
@@ -150,7 +150,7 @@ const OffreForm: React.FC = () => {
             conditionsPaiement,
             pourcentageRecette
         } = formData.conditionsFinancieres;
-        return minimumGaranti != null && minimumGaranti > 0 && conditionsPaiement && pourcentageRecette != null && pourcentageRecette > 0;
+        return !!(minimumGaranti != null && minimumGaranti > 0 && conditionsPaiement && pourcentageRecette != null && pourcentageRecette > 0);
     };
 
     const checkBudgetEstimatif = () => {
@@ -160,10 +160,10 @@ const OffreForm: React.FC = () => {
             fraisHebergement,
             fraisRestauration
         } = formData.budgetEstimatif;
-        return cachetArtiste != null && cachetArtiste > 0 && 
+        return !!(cachetArtiste != null && cachetArtiste > 0 && 
             fraisDeplacement != null && fraisDeplacement > 0 && 
             fraisHebergement != null && fraisHebergement > 0 && 
-            fraisRestauration != null && fraisRestauration > 0;
+            fraisRestauration != null && fraisRestauration > 0);
     };
 
     const checkFicheTechniqueArtiste = () => {
@@ -174,7 +174,7 @@ const OffreForm: React.FC = () => {
             besoinScene,
             besoinSonorisation
         } = formData.ficheTechniqueArtiste;
-        return besoinBackline && besoinEclairage && besoinEquipements && besoinScene && besoinSonorisation;
+        return !!(besoinBackline && besoinEclairage && besoinEquipements && besoinScene && besoinSonorisation);
     };
 
     const checkDonneesSupplementaires = () => {

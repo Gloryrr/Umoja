@@ -1,6 +1,7 @@
 "use client";
 import React from 'react';
-import { TextInput, Label, Card } from 'flowbite-react';
+import { TextInput, Label, Card, Button } from 'flowbite-react';
+import { FiRefreshCw } from "react-icons/fi";
 
 interface FicheTechniqueArtisteFormProps {
     ficheTechniqueArtiste: {
@@ -22,9 +23,28 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
         onFicheTechniqueChange(name, value);
     };
 
+    const handleReset = () => {
+        onFicheTechniqueChange("besoinBackline", "");
+        onFicheTechniqueChange("besoinEclairage", "");
+        onFicheTechniqueChange("besoinEquipements", "");
+        onFicheTechniqueChange("besoinScene", "");
+        onFicheTechniqueChange("besoinSonorisation", "");
+    };
+
     return (
         <Card className="w-full shadow-none border-none">
-            <h3 className="text-2xl font-semibold mb-4">Fiche Technique Artiste</h3>
+            <div className="flex justify-between items-center mb-4">
+                <h3 className="text-2xl font-semibold mb-4">Fiche Technique Artiste</h3>
+                <Button
+                    color="gray"
+                    onClick={handleReset}
+                    pill
+                    aria-label="Reset"
+                    className="flex items-center"
+                >
+                    <FiRefreshCw className="w-4 h-4" />
+                </Button>
+            </div>
 
             {/* Section Backline et Éclairage */}
             <div className="grid grid-cols-2 gap-4 mb-5">
@@ -33,7 +53,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                     <TextInput
                         id="besoinBackline"
                         name="besoinBackline"
-                        value={ficheTechniqueArtiste.besoinBackline || undefined}
+                        value={ficheTechniqueArtiste.besoinBackline ?? ""}
                         onChange={handleFicheTechniqueArtisteChange}
                         placeholder="Besoins en backline"
                         required
@@ -44,7 +64,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                     <TextInput
                         id="besoinEclairage"
                         name="besoinEclairage"
-                        value={ficheTechniqueArtiste.besoinEclairage || undefined}
+                        value={ficheTechniqueArtiste.besoinEclairage ?? ""}
                         onChange={handleFicheTechniqueArtisteChange}
                         placeholder="Besoins en éclairage"
                         required
@@ -59,7 +79,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                     <TextInput
                         id="besoinEquipements"
                         name="besoinEquipements"
-                        value={ficheTechniqueArtiste.besoinEquipements || undefined}
+                        value={ficheTechniqueArtiste.besoinEquipements ?? ""}
                         onChange={handleFicheTechniqueArtisteChange}
                         placeholder="Besoins en équipements"
                         required
@@ -70,7 +90,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                     <TextInput
                         id="besoinScene"
                         name="besoinScene"
-                        value={ficheTechniqueArtiste.besoinScene || undefined}
+                        value={ficheTechniqueArtiste.besoinScene ?? ""}
                         onChange={handleFicheTechniqueArtisteChange}
                         placeholder="Besoins en scène"
                         required
@@ -84,7 +104,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                 <TextInput
                     id="besoinSonorisation"
                     name="besoinSonorisation"
-                    value={ficheTechniqueArtiste.besoinSonorisation || undefined}
+                    value={ficheTechniqueArtiste.besoinSonorisation ?? ""}
                     onChange={handleFicheTechniqueArtisteChange}
                     placeholder="Besoins en sonorisation"
                     required

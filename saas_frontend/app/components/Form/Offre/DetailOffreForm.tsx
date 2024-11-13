@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { apiGet } from '@/app/services/externalApiClients';
 import { Card, Label, TextInput, Textarea, Button, Select } from 'flowbite-react';
+import { FiRefreshCw } from "react-icons/fi";
 
 interface Feature {
     properties: {
@@ -14,8 +15,8 @@ interface DetailOffreFormProps {
         titleOffre: string | null;
         deadLine: string | Date | null;
         descrTournee: string | null;
-        dateMinProposee: string | null;
-        dateMaxProposee: string | null;
+        dateMinProposee: string | Date | null;
+        dateMaxProposee: string | Date | null;
         villeVisee: string | null;
         regionVisee: string | null;
         placesMin: number | null;
@@ -105,6 +106,21 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
         }
     };
 
+    const handleReset = () => {
+        onDetailOffreChange("titleOffre", "");
+        onDetailOffreChange("deadLine", "");
+        onDetailOffreChange("descrTournee", "");
+        onDetailOffreChange("dateMinProposee", "");
+        onDetailOffreChange("dateMaxProposee", "");
+        onDetailOffreChange("villeVisee", "");
+        onDetailOffreChange("regionVisee", "");
+        onDetailOffreChange("placesMin", "");
+        onDetailOffreChange("placesMax", "");
+        onDetailOffreChange("nbArtistesConcernes", "");
+        onDetailOffreChange("nbInvitesConcernes", "");
+        onDetailOffreChange("liensPromotionnels", []);
+    };
+
     // const handleCitySelect = async (city: string) => {
     //     // setSelectedCity(city);
     //     onDetailOffreChange("villeVisee", city);
@@ -117,7 +133,18 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
 
     return (
         <Card className="shadow-none border-none mx-auto w-full">
-            <h3 className="text-2xl font-semibold mb-6">Détails de l'Offre</h3>
+            <div className="flex justify-between items-center mb-4">
+                <h3 className="text-2xl font-semibold mb-6">Détails de l'Offre</h3>
+                <Button
+                    color="gray"
+                    onClick={handleReset}
+                    pill
+                    aria-label="Reset"
+                    className="flex items-center"
+                >
+                    <FiRefreshCw className="w-4 h-4" />
+                </Button>
+            </div>
 
             <div className="mb-5">
                 <Label htmlFor="titleOffre" value="Titre de l'Offre:" />
@@ -125,7 +152,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                     type="text"
                     id="titleOffre"
                     name="titleOffre"
-                    value={detailOffre.titleOffre || undefined}
+                    value={detailOffre.titleOffre ?? ""}
                     onChange={handleDetailOffreChange}
                     required
                     placeholder="Indiquer le titre de l'Offre"
@@ -139,7 +166,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                     type="date"
                     id="deadLine"
                     name="deadLine"
-                    value={detailOffre.deadLine || undefined}
+                    value={detailOffre.deadLine ? new Date(detailOffre.deadLine).toISOString().split('T')[0] : ""}
                     onChange={handleDetailOffreChange}
                     required
                     className="mt-1"
@@ -153,10 +180,10 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         type="date"
                         id="dateMinProposee"
                         name="dateMinProposee"
-                        value={detailOffre.dateMinProposee || undefined}
+                        value={detailOffre.dateMinProposee ? new Date(detailOffre.dateMinProposee).toISOString().split('T')[0] : ""}
                         onChange={handleDetailOffreChange}
                         required
-                        min={detailOffre.dateMinProposee || undefined}
+                        min={detailOffre.dateMinProposee ? new Date(detailOffre.dateMinProposee).toISOString().split('T')[0] : ""}
                         className="mt-1"
                     />
                 </div>
@@ -167,10 +194,10 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         type="date"
                         id="dateMaxProposee"
                         name="dateMaxProposee"
-                        value={detailOffre.dateMaxProposee || undefined}
+                        value={detailOffre.dateMaxProposee ? new Date(detailOffre.dateMaxProposee).toISOString().split('T')[0] : ""}
                         onChange={handleDetailOffreChange}
                         required
-                        min={detailOffre.dateMinProposee || undefined}
+                        min={detailOffre.dateMinProposee ? new Date(detailOffre.dateMinProposee).toISOString().split('T')[0] : ""}
                         className="mt-1"
                     />
                 </div>
@@ -181,7 +208,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                 <Textarea
                     id="descrTournee"
                     name="descrTournee"
-                    value={detailOffre.descrTournee || undefined}
+                    value={detailOffre.descrTournee ?? ""}
                     onChange={handleDetailOffreChange}
                     required
                     placeholder="La description de la tournée"
@@ -196,7 +223,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         type="text"
                         id="villeVisee"
                         name="villeVisee"
-                        value={detailOffre.villeVisee || undefined}
+                        value={detailOffre.villeVisee ?? ""}
                         onChange={handleCityInputChange}
                         required
                         placeholder="Dans quelle ville se déroulera l'offre"
@@ -210,7 +237,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         type="text"
                         id="regionVisee"
                         name="regionVisee"
-                        value={detailOffre.regionVisee || undefined}
+                        value={detailOffre.regionVisee ?? ""}
                         readOnly
                         className="mt-1"
                     />
@@ -224,7 +251,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         type="number"
                         id="placesMin"
                         name="placesMin"
-                        value={placesMin || undefined}
+                        value={placesMin ?? ""}
                         onChange={handleDetailOffreChange}
                         required
                         placeholder="Nombre de places minimum"
@@ -238,10 +265,10 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         type="number"
                         id="placesMax"
                         name="placesMax"
-                        value={placesMax || undefined}
+                        value={placesMax ?? ""}
                         onChange={handleDetailOffreChange}
                         required
-                        min={placesMin || undefined}
+                        min={placesMin ?? ""}
                         placeholder="Nombre de places maximum"
                         className="mt-1"
                     />
@@ -255,7 +282,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         type="number"
                         id="nbArtistesConcernes"
                         name="nbArtistesConcernes"
-                        value={detailOffre.nbArtistesConcernes || undefined}
+                        value={detailOffre.nbArtistesConcernes ?? ""}
                         onChange={handleDetailOffreChange}
                         required
                         placeholder="Nombre d'artistes concernés"
@@ -269,7 +296,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         type="number"
                         id="nbInvitesConcernes"
                         name="nbInvitesConcernes"
-                        value={detailOffre.nbInvitesConcernes || undefined}
+                        value={detailOffre.nbInvitesConcernes ?? ""}
                         onChange={handleDetailOffreChange}
                         required
                         placeholder="Nombre d'invités concernés"

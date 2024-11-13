@@ -1,7 +1,8 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import { apiGet } from '@/app/services/externalApiClients';
-import { Card, Label, TextInput, Select } from 'flowbite-react';
+import React, { useEffect, useState } from "react";
+import { apiGet } from "@/app/services/externalApiClients";
+import { Card, Label, TextInput, Select, Button } from "flowbite-react";
+import { FiRefreshCw } from "react-icons/fi";
 
 interface ConditionsFinancieresFormProps {
     conditionsFinancieres: {
@@ -21,12 +22,18 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
         onConditionsFinancieresChange(name, value);
     };
 
+    const handleReset = () => {
+        onConditionsFinancieresChange("minimumGaranti", "");
+        onConditionsFinancieresChange("conditionsPaiement", "");
+        onConditionsFinancieresChange("pourcentageRecette", "");
+    };
+
     const [conditionsPaiement, setConditionsPaiement] = useState<string[]>([]);
 
     useEffect(() => {
         const fetchMonnaieExistantes = async () => {
             try {
-                const data: { currencies: Record<string, unknown> }[] = await apiGet('https://restcountries.com/v3.1/all');
+                const data: { currencies: Record<string, unknown> }[] = await apiGet("https://restcountries.com/v3.1/all");
                 const monnaieList = Array.from(
                     new Set(data.flatMap((country) => Object.keys(country.currencies || {})))
                 );
@@ -41,7 +48,18 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
 
     return (
         <Card className="shadow-none border-none mx-auto w-full">
-            <h3 className="text-2xl font-semibold mb-4">Conditions financières</h3>
+            <div className="flex justify-between items-center mb-4">
+                <h3 className="text-2xl font-semibold">Conditions financières</h3>
+                <Button
+                    color="gray"
+                    onClick={handleReset}
+                    pill
+                    aria-label="Reset"
+                    className="flex items-center"
+                >
+                    <FiRefreshCw className="w-4 h-4" />
+                </Button>
+            </div>
 
             <div className="grid grid-cols-2 gap-4 mb-5">
                 <div>
@@ -50,7 +68,7 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
                         type="number"
                         id="minimumGaranti"
                         name="minimumGaranti"
-                        value={conditionsFinancieres.minimumGaranti || undefined}
+                        value={conditionsFinancieres.minimumGaranti ?? ""}
                         onChange={handleConditionsFinancieresChange}
                         required
                         placeholder="Minimum garanti"
@@ -63,7 +81,7 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
                     <Select
                         id="conditionsPaiement"
                         name="conditionsPaiement"
-                        value={conditionsFinancieres.conditionsPaiement || undefined}
+                        value={conditionsFinancieres.conditionsPaiement ?? ""}
                         onChange={handleConditionsFinancieresChange}
                         required
                         className="mt-1"
@@ -84,7 +102,7 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
                     type="number"
                     id="pourcentageRecette"
                     name="pourcentageRecette"
-                    value={conditionsFinancieres.pourcentageRecette || undefined}
+                    value={conditionsFinancieres.pourcentageRecette ?? ""}
                     onChange={handleConditionsFinancieresChange}
                     required
                     placeholder="15.5%"
