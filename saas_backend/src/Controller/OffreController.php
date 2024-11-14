@@ -23,7 +23,7 @@ class OffreController extends AbstractController
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
-    #[Route('/api/v1/Offres', name: 'get_Offres', methods: ['GET'])]
+    #[Route('/api/v1/offres', name: 'get_Offres', methods: ['GET'])]
     public function getOffres(
         OffreRepository $offreRepository,
         SerializerInterface $serializer
