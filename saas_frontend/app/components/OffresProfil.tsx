@@ -136,7 +136,7 @@ const OffresProfil: React.FC = () => {
                             {new Date(offre.dateMaxProposee).toLocaleDateString()}
                         </p>
                         <p>Lieu : {offre.villeVisee}, {offre.regionVisee}</p>
-                        <Button href={`/mes-offres/detail/${offre.id}`} className="mt-4">
+                        <Button href={`/umodja/mes-offres/detail/${offre.id}`} className="mt-4">
                             Voir les détails
                         </Button>
                     </Card>
