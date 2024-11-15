@@ -6,6 +6,7 @@ use App\Repository\ArtisteRepository;
 use App\Repository\GenreMusicalRepository;
 use App\Repository\ReseauRepository;
 use App\Repository\UtilisateurRepository;
+use App\Services\MailerService;
 use App\Services\OffreService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -91,7 +92,8 @@ class OffreController extends AbstractController
         ReseauRepository $reseauRepository,
         GenreMusicalRepository $genreMusicalRepository,
         ArtisteRepository $artisteRepository,
-        SerializerInterface $serializer
+        SerializerInterface $serializer,
+        MailerService $mailerService
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
         return OffreService::createOffre(
@@ -101,6 +103,7 @@ class OffreController extends AbstractController
             $genreMusicalRepository,
             $artisteRepository,
             $serializer,
+            $mailerService,
             $data
         );
     }
@@ -112,6 +115,7 @@ class OffreController extends AbstractController
      * @param int $id
      * @param Request $request
      * @param OffreRepository $offreRepository, la classe CRUD des Offres
+     * @param MailerService $mailerService, le service d'envoi de mail
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
@@ -120,6 +124,7 @@ class OffreController extends AbstractController
         int $id,
         Request $request,
         OffreRepository $offreRepository,
+        MailerService $mailerService,
         SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
@@ -127,6 +132,7 @@ class OffreController extends AbstractController
             $id,
             $offreRepository,
             $serializer,
+            $mailerService,
             $data
         );
     }
