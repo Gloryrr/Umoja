@@ -56,6 +56,7 @@ class OffreService
     /**
      * Récupère une offre et renvoie une réponse JSON.
      *
+     * @param int $id L'identifiant de l'offre à récupérer.
      * @param OffreRepository $offreRepository Le repository des offres.
      * @param SerializerInterface $serializer Le service de sérialisation.
      *
@@ -64,9 +65,9 @@ class OffreService
     public static function getOffre(
         OffreRepository $offreRepository,
         SerializerInterface $serializer,
-        mixed $data
+        int $id
     ): JsonResponse {
-        $offre = $offreRepository->find($data['id']);
+        $offre = $offreRepository->find($id);
         $offreJSON = $serializer->serialize(
             $offre,
             'json',
@@ -455,7 +456,7 @@ class OffreService
                             $mailerService->sendEmail(
                                 $utilisateur->getEmailUtilisateur(),
                                 "Mise à jour d'offre",
-                                "<h1>Changement sur l'offre</h1><p>Une offre de votre réseau a récemment été modifié, Réseau :  {$reseau->getNomReseau()}</p>"
+                                "<h1>Changement sur l'offre</h1><p>Une offre de votre réseau a récemment été modifié, Réseau : {$reseau->getNomReseau()}</p>"
                             );
                         }
                     }

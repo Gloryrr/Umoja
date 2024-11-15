@@ -38,21 +38,21 @@ class OffreController extends AbstractController
     /**
      * Récupère une offre en particulière en fonction de son id.
      *
+     * @param int $id, l'id de l'offre à récupérer
      * @param OffreRepository $offreRepository, la classe CRUD des Offres
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
-    #[Route('/api/v1/offre', name: 'get_offre', methods: ['POST'])]
+    #[Route('/api/v1/offre/{id}', name: 'get_offre', methods: ['GET'])]
     public function getOffre(
+        int $id,
         OffreRepository $offreRepository,
         SerializerInterface $serializer,
-        Request $request
     ): JsonResponse {
-        $data = json_decode($request->getContent(), true);
         return OffreService::getOffre(
             $offreRepository,
             $serializer,
-            $data
+            $id
         );
     }
 
