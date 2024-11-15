@@ -25,6 +25,7 @@ const UserProfile: React.FC = () => {
                 const response = await apiPost("/utilisateur", JSON.parse(JSON.stringify(data)));
                 if (response) {
                     setUserInfo(JSON.parse(response.utilisateur)[0]);
+                    console.log(userInfo);
                 } else {
                     console.error("Erreur lors de la récupération des données utilisateur.");
                 }
@@ -38,10 +39,6 @@ const UserProfile: React.FC = () => {
         fetchUserProfile();
     }, []);
 
-    if (!userInfo || !userInfo.emailUtilisateur) {
-        return <div>Chargement...</div>;
-    }
-
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setEditedUserInfo((prev) => ({
@@ -52,7 +49,8 @@ const UserProfile: React.FC = () => {
 
     const handleSave = async () => {
         try {
-            await apiPatch(`/utilisateurs/update/${userInfo.id}`, editedUserInfo);
+            const data = JSON.parse(JSON.stringify(editedUserInfo));
+            await apiPatch(`/utilisateurs/update/${userInfo.id}`, data);
             setUserInfo(editedUserInfo);
             localStorage.setItem("username", editedUserInfo.username);
         } catch (error) {
