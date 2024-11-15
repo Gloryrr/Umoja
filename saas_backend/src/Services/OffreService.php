@@ -79,6 +79,32 @@ class OffreService
     }
 
     /**
+     * Récupère une offre par son créateur et renvoie une réponse JSON.
+     *
+     * @param OffreRepository $offreRepository Le repository des offres.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     * @param int $id L'identifiant de l'utilisateur.
+     *
+     * @return JsonResponse La réponse JSON contenant les offres.
+     */
+    public static function getOffreByUtilisateur(
+        OffreRepository $offreRepository,
+        SerializerInterface $serializer,
+        int $id
+    ): JsonResponse {
+        $offre = $offreRepository->findBy(['utilisateur' => $id]);
+        $offreJSON = $serializer->serialize(
+            $offre,
+            'json',
+            ['groups' => ['offre:read']]
+        );
+        return new JsonResponse([
+            'offre' => $offreJSON,
+            'serialized' => true
+        ], Response::HTTP_OK, ['Access-Control-Allow-Origin' => '*']);
+    }
+
+    /**
      * Crée une nouvelle offre et renvoie une réponse JSON.
      *
      * @param OffreRepository $offreRepository Le repository des offres.
