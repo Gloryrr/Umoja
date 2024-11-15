@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Card, Badge, Button, Pagination, Select } from "flowbite-react";
-import { apiPost } from "@/app/services/internalApiClients";
+import { apiPost, apiGet } from "@/app/services/internalApiClients";
 
 interface Offre {
     id: string;
@@ -32,6 +32,7 @@ const OffresProfil: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [offersPerPage, setOffersPerPage] = useState(10);
+    const [offerIds, setOfferIds] = useState<string[]>([]);
     const [totalOffers, setTotalOffers] = useState(0);
 
     const fetchUserOffers = async () => {
@@ -53,7 +54,8 @@ const OffresProfil: React.FC = () => {
 
             const offerIds: string[] = JSON.parse(userResponse.utilisateur)[0].offres;
             setTotalOffers(offerIds.length);
-            fetchPaginatedOffers(offerIds);
+            setOfferIds(offerIds);
+            fetchPaginatedOffers(JSON.parse(userResponse.utilisateur)[0].id);
         } catch (error) {
             console.error("Erreur réseau :", error);
             setError("Erreur lors de la récupération des offres.");
@@ -62,49 +64,20 @@ const OffresProfil: React.FC = () => {
         }
     };
 
-    const fetchPaginatedOffers = async (offerIds: string[]) => {
+    const fetchPaginatedOffers = async (idUtilisateur : number) => {
         const startIndex = (currentPage - 1) * offersPerPage;
         const endIndex = startIndex + offersPerPage;
-        const paginatedOfferIds = offerIds.slice(startIndex, endIndex);
 
-        const offersData: Offre[] = [];
-
-        for (const offreId of paginatedOfferIds) {
-            try {
-                const data = { id: offreId };
-                const offerResponse = await apiPost("/offre", JSON.parse(JSON.stringify(data)));
-                if (offerResponse.offre) {
-                    const offre: Offre = {
-                        id: JSON.parse(offerResponse.offre).id,
-                        titleOffre: JSON.parse(offerResponse.offre).titleOffre,
-                        deadLine: JSON.parse(offerResponse.offre).deadLine,
-                        descrTournee: JSON.parse(offerResponse.offre).descrTournee,
-                        dateMinProposee: JSON.parse(offerResponse.offre).dateMinProposee,
-                        dateMaxProposee: JSON.parse(offerResponse.offre).dateMaxProposee,
-                        villeVisee: JSON.parse(offerResponse.offre).villeVisee,
-                        regionVisee: JSON.parse(offerResponse.offre).regionVisee,
-                        placesMin: JSON.parse(offerResponse.offre).placesMin,
-                        placesMax: JSON.parse(offerResponse.offre).placesMax,
-                        nbArtistesConcernes: JSON.parse(offerResponse.offre).nbArtistesConcernes,
-                        nbInvitesConcernes: JSON.parse(offerResponse.offre).nbInvitesConcernes,
-                        liensPromotionnels: JSON.parse(offerResponse.offre).liensPromotionnels,
-                        extras: JSON.parse(offerResponse.offre).extras,
-                        etatOffre: JSON.parse(offerResponse.offre).etatOffre,
-                        typeOffre: JSON.parse(offerResponse.offre).typeOffre,
-                        conditionsFinancieres: JSON.parse(offerResponse.offre).conditionsFinancieres,
-                        budgetEstimatif: JSON.parse(offerResponse.offre).budgetEstimatif,
-                        ficheTechniqueArtiste: JSON.parse(offerResponse.offre).ficheTechniqueArtiste,
-                        utilisateur: JSON.parse(offerResponse.offre).utilisateur,
-                    };
-                    offersData.push(offre);
-                }
-            } catch (error) {
-                console.error(`Erreur lors de la récupération de l'offre ${offreId} :`, error);
-            }
+        try {
+            const reponses = await apiGet(`/offre/utilisateur/${idUtilisateur}`);
+            const offersData: Offre[] = JSON.parse(reponses.offre).slice(startIndex, endIndex);
+            setOffres(offersData);
+            setIsLoading(false);
+        } catch (error) {
+            console.error("Erreur lors de la récupération des offres paginées :", error);
+            // setError("Erreur lors de la récupération des offres paginées.");
+            return; // on verra plus tard pour faire la gestion d'erreur.
         }
-
-        setOffres(offersData);
-        setIsLoading(false);
     };
 
     useEffect(() => {
@@ -134,10 +107,11 @@ const OffresProfil: React.FC = () => {
         <div className="flex flex-col gap-6">
             <h2 className="text-xl font-semibold mb-4">Mes Offres</h2>
 
-            <div className="flex justify-center items-center gap-4">
+            <div className="flex justify-center items-center gap-4 w-full">
                 <Pagination
                     currentPage={currentPage}
                     totalPages={Math.ceil(totalOffers / offersPerPage)}
+                    showIcons
                     onPageChange={handlePageChange}
                 />
                 <Select
@@ -173,6 +147,7 @@ const OffresProfil: React.FC = () => {
                 <Pagination
                     currentPage={currentPage}
                     totalPages={Math.ceil(totalOffers / offersPerPage)}
+                    showIcons
                     onPageChange={handlePageChange}
                 />
             </div>
