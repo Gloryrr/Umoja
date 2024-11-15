@@ -4,6 +4,7 @@ import { Avatar, Card, ListGroup, ListGroupItem } from "flowbite-react";
 import { HiUserCircle, HiClipboardList, HiBell, HiUsers } from "react-icons/hi";
 import UserProfile from "@/app/components/UserProfil";
 import OffresProfil from "@/app/components/OffresProfil";
+import NotificationsProfil from "@/app/components/NotificationsProfil";
 
 const SettingsPage: React.FC = () => {
     const [selectedTab, setSelectedTab] = useState("profil");
@@ -61,6 +62,7 @@ const SettingsPage: React.FC = () => {
                 <h3 className="text-2xl font-bold mb-4">{getSectionTitle()}</h3>
                 {selectedTab === "profil" && <UserProfile />}
                 {selectedTab === "offres" && <OffresProfil />}
+                {selectedTab === "notifications" && <NotificationsProfil />}
             </div>
         </div>
     );
