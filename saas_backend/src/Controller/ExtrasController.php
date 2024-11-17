@@ -34,6 +34,27 @@ class ExtrasController extends AbstractController
     }
 
     /**
+     * Récupère un extras en focntion de son id.
+     *
+     * @param int $id, L'id de l'extras à récupéré
+     * @param ExtrasRepository $extrasRepository, la classe CRUD des extras
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/extras/{id}', name: 'get_extras_by_id', methods: ['GET'])]
+    public function getExtrasById(
+        ExtrasRepository $extrasRepository,
+        SerializerInterface $serializer,
+        int $id
+    ): JsonResponse {
+        return ExtrasService::getExtrasById(
+            $extrasRepository,
+            $serializer,
+            $id
+        );
+    }
+
+    /**
      * Crée un nouvel extra.
      *
      * @param Request $request
@@ -41,7 +62,7 @@ class ExtrasController extends AbstractController
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
-    #[Route('/api/v1/extras', name: 'create_extra', methods: ['POST'])]
+    #[Route('/api/v1/extras/create', name: 'create_extra', methods: ['POST'])]
     public function createExtra(
         Request $request,
         ExtrasRepository $extrasRepository,
@@ -65,7 +86,7 @@ class ExtrasController extends AbstractController
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
-    #[Route('/api/v1/extras/{id}', name: 'update_extra', methods: ['PATCH'])]
+    #[Route('/api/v1/extras/update/{id}', name: 'update_extra', methods: ['PATCH'])]
     public function updateExtra(
         int $id,
         Request $request,
@@ -89,7 +110,7 @@ class ExtrasController extends AbstractController
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
-    #[Route('/api/v1/extras/{id}', name: 'delete_extra', methods: ['DELETE'])]
+    #[Route('/api/v1/extras/delete/{id}', name: 'delete_extra', methods: ['DELETE'])]
     public function deleteExtra(
         int $id,
         ExtrasRepository $extrasRepository,
