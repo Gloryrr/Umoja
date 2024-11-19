@@ -4,7 +4,8 @@ import { Avatar, Card, ListGroup, ListGroupItem } from "flowbite-react";
 import { HiUserCircle, HiClipboardList, HiBell, HiUsers } from "react-icons/hi";
 import UserProfile from "@/app/components/UserProfil";
 import OffresProfil from "@/app/components/OffresProfil";
-import NotificationsProfil from "@/app/components/NotificationsProfil";
+import PreferencesProfil from "@/app/components/PreferencesProfil";
+import TableauDeBord from "@/app/components/TableauDeBord";
 
 const SettingsPage: React.FC = () => {
     const [selectedTab, setSelectedTab] = useState("profil");
@@ -20,10 +21,10 @@ const SettingsPage: React.FC = () => {
                 return "Profil Utilisateur";
             case "offres":
                 return "Mes Offres";
-            case "notifications":
-                return "Mes Notifications";
-            case "contributions":
-                return "Mes Contributions";
+            case "preferences":
+                return "Mes preferences";
+            case "tableau_de_bord":
+                return "Mon tableau de bord";
             default:
                 return "";
         }
@@ -48,11 +49,11 @@ const SettingsPage: React.FC = () => {
                         <ListGroupItem onClick={() => handleTabChange("offres")} active={selectedTab === "offres"} icon={HiClipboardList}>
                             Mes Offres
                         </ListGroupItem>
-                        <ListGroupItem onClick={() => handleTabChange("notifications")} active={selectedTab === "notifications"} icon={HiBell}>
-                            Mes Notifications
+                        <ListGroupItem onClick={() => handleTabChange("preferences")} active={selectedTab === "preferences"} icon={HiBell}>
+                            Mes Préférences
                         </ListGroupItem>
-                        <ListGroupItem onClick={() => handleTabChange("contributions")} active={selectedTab === "contributions"} icon={HiUsers}>
-                            Mes Contributions
+                        <ListGroupItem onClick={() => handleTabChange("tableau_de_bord")} active={selectedTab === "tableau_de_bord"} icon={HiUsers}>
+                            Mon tableau de bord
                         </ListGroupItem>
                     </ListGroup>
                 </Card>
@@ -62,7 +63,8 @@ const SettingsPage: React.FC = () => {
                 <h3 className="text-2xl font-bold mb-4">{getSectionTitle()}</h3>
                 {selectedTab === "profil" && <UserProfile />}
                 {selectedTab === "offres" && <OffresProfil />}
-                {selectedTab === "notifications" && <NotificationsProfil />}
+                {selectedTab === "preferences" && <PreferencesProfil />}
+                {selectedTab === "tableau_de_bord" && <TableauDeBord />}
             </div>
         </div>
     );

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Card, ToggleSwitch, Button, ListGroup } from 'flowbite-react';
 import { apiGet, apiPatch } from '@/app/services/internalApiClients';
+import { DarkThemeToggle, Flowbite } from "flowbite-react";
 
-const NotificationPreferences: React.FC = () => {
+const PreferencesProfil: React.FC = () => {
   const username = localStorage.getItem('username');
   const [loading, setLoading] = useState(false);
   const [preferences, setPreferences] = useState({
@@ -73,7 +74,7 @@ const NotificationPreferences: React.FC = () => {
   return (
     <div className="my-10">
       <Card>
-        <h2 className="text-2xl font-bold text-center mb-6">Préférences de Notifications</h2>
+        <h2 className="text-2xl font-bold text-center mb-6">Notifications</h2>
 
         {loading ? (
           <span>Chargement des préférences...</span>
@@ -125,8 +126,23 @@ const NotificationPreferences: React.FC = () => {
           </>
         )}
       </Card>
+
+      <Card className='mt-5'>
+        <h2 className="text-2xl font-bold text-center mb-6">Thème de l'application</h2>
+
+        <ListGroup>
+          <ListGroup.Item className="flex items-center justify-between">
+            <span>Thème</span>
+            <div className="ml-auto">
+              <Flowbite>
+                <DarkThemeToggle />
+              </Flowbite>
+            </div>
+          </ListGroup.Item>
+        </ListGroup>
+      </Card>
     </div>
   );
 };
 
-export default NotificationPreferences;
+export default PreferencesProfil;
