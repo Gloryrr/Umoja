@@ -5,6 +5,10 @@ namespace App\Entity;
 use App\Repository\OffreRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * Représente une offre dans le système.
@@ -16,175 +20,153 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: OffreRepository::class)]
 class Offre
 {
-    /**
-     * Identifiant unique de l'offre.
-     *
-     * @var int|null
-     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups([
+        'offre:read',
+        'utilisateur:read',
+        'extras:read',
+        'etatIffre:read',
+        'type_offre:read',
+        'etat_offre:read',
+        'conditions_financieres:read',
+        'budget_estimatif:read',
+        'fiche_technique_artiste:read',
+        'artiste:read',
+        'reseau:read',
+        'genre_musical:read',
+        'commentaire:read',
+        'reponse:read',
+    ])]
     private ?int $id = null;
 
-    /**
-     * Titre de l'offre.
-     *
-     * @var string|null
-     */
     #[ORM\Column(length: 50)]
+    #[Groups(['offre:read', 'offre:write'])]
     private ?string $titleOffre = null;
 
-    /**
-     * Date limite pour répondre à l'offre.
-     *
-     * @var \DateTimeInterface|null
-     */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['offre:read', 'offre:write'])]
     private ?\DateTimeInterface $deadLine = null;
 
-    /**
-     * Description de la tournée associée à l'offre.
-     *
-     * @var string|null
-     */
     #[ORM\Column(length: 500)]
+    #[Groups(['offre:read', 'offre:write'])]
     private ?string $descrTournee = null;
 
-    /**
-     * Date minimale proposée pour la tournée.
-     *
-     * @var \DateTimeInterface|null
-     */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['offre:read', 'offre:write'])]
     private ?\DateTimeInterface $dateMinProposee = null;
 
-    /**
-     * Date maximale proposée pour la tournée.
-     *
-     * @var \DateTimeInterface|null
-     */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['offre:read', 'offre:write'])]
     private ?\DateTimeInterface $dateMaxProposee = null;
 
-    /**
-     * Ville visée par la tournée.
-     *
-     * @var string|null
-     */
     #[ORM\Column(length: 50)]
+    #[Groups(['offre:read', 'offre:write'])]
     private ?string $villeVisee = null;
 
-    /**
-     * Région visée par la tournée.
-     *
-     * @var string|null
-     */
     #[ORM\Column(length: 50)]
+    #[Groups(['offre:read', 'offre:write'])]
     private ?string $regionVisee = null;
 
-    /**
-     * Nombre minimum de places disponibles.
-     *
-     * @var int|null
-     */
     #[ORM\Column]
+    #[Groups(['offre:read', 'offre:write'])]
     private ?int $placesMin = null;
 
-    /**
-     * Nombre maximum de places disponibles.
-     *
-     * @var int|null
-     */
     #[ORM\Column]
+    #[Groups(['offre:read', 'offre:write'])]
     private ?int $placesMax = null;
 
-    /**
-     * Nombre d'artistes concernés par l'offre.
-     *
-     * @var int|null
-     */
     #[ORM\Column]
+    #[Groups(['offre:read', 'offre:write'])]
     private ?int $nbArtistesConcernes = null;
 
-    /**
-     * Nombre d'invités concernés par l'offre.
-     *
-     * @var int|null
-     */
     #[ORM\Column]
+    #[Groups(['offre:read', 'offre:write'])]
     private ?int $nbInvitesConcernes = null;
 
-    /**
-     * Liens promotionnels associés à l'offre.
-     *
-     * @var string|null
-     */
     #[ORM\Column(length: 255)]
+    #[Groups(['offre:read', 'offre:write'])]
     private ?string $liensPromotionnels = null;
 
-    /**
-     * Relation avec l'entité Extras.
-     *
-     * Définit une relation ManyToOne avec l'entité Extras. Cela représente
-     * les extras associés à une offre. Cette colonne ne peut pas être nulle.
-     */
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: Extras::class, inversedBy: "offres", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['offre:read', 'offre:write'])]
     private ?Extras $extras = null;
 
-    /**
-     * Relation avec l'entité EtatOffre.
-     *
-     * Définit une relation ManyToOne avec l'entité EtatOffre, qui spécifie l'état
-     * ou le statut de l'offre (par exemple, "en cours", "terminée").
-     * Cette colonne ne peut pas être nulle.
-     */
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false, referencedColumnName: "id_etat_offre")]
+    #[ORM\ManyToOne(targetEntity: EtatOffre::class, inversedBy: "offres", cascade: ["persist"])]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['offre:read', 'offre:write'])]
     private ?EtatOffre $etatOffre = null;
 
-    /**
-     * Relation avec l'entité TypeOffre.
-     *
-     * Définit une relation ManyToOne avec l'entité TypeOffre, représentant le type
-     * spécifique de l'offre (par exemple, "concert", "événement privé").
-     * Cette colonne ne peut pas être nulle.
-    */
-     #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: TypeOffre::class, inversedBy: "offres", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['offre:read', 'offre:write'])]
     private ?TypeOffre $typeOffre = null;
 
-    /**
-     * Relation avec l'entité ConditionsFinancieres.
-     *
-     * Définit une relation ManyToOne avec l'entité ConditionsFinancieres,
-     * qui précise les conditions financières associées à l'offre.
-     * Cette colonne ne peut pas être nulle.
-     */
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false, referencedColumnName: "id_cf")]
+    #[ORM\ManyToOne(targetEntity: ConditionsFinancieres::class, inversedBy: "offres", cascade: ["persist"])]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['offre:read', 'offre:write'])]
     private ?ConditionsFinancieres $conditionsFinancieres = null;
 
-    /**
-     * Relation avec l'entité BudgetEstimatif.
-     *
-     * Définit une relation ManyToOne avec l'entité BudgetEstimatif,
-     * représentant le budget estimé pour l'offre. Cette colonne ne peut pas être nulle.
-     */
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false, referencedColumnName: "id_be")]
+    #[ORM\ManyToOne(targetEntity: BudgetEstimatif::class, inversedBy: "offres", cascade: ["persist"])]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['offre:read', 'offre:write'])]
     private ?BudgetEstimatif $budgetEstimatif = null;
 
-    /**
-     * Relation avec l'entité FicheTechniqueArtiste.
-     *
-     * Définit une relation ManyToOne avec l'entité FicheTechniqueArtiste,
-     * qui spécifie la fiche technique de l'artiste liée à l'offre.
-     * Cette colonne ne peut pas être nulle.
-     */
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false, referencedColumnName: "id_ft")]
+    #[ORM\ManyToOne(targetEntity: FicheTechniqueArtiste::class, inversedBy: "offres", cascade: ["persist"])]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['offre:read', 'offre:write'])]
     private ?FicheTechniqueArtiste $ficheTechniqueArtiste = null;
+
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: "offres", cascade: ["persist"])]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['offre:read', 'offre:write'])]
+    private ?Utilisateur $utilisateur = null;
+
+    #[ORM\ManyToMany(targetEntity: Artiste::class, mappedBy: "offres", cascade: ["persist"])]
+    #[Groups(['offre:read', 'offre:write'])]
+    #[MaxDepth(1)]
+    private Collection $artistes;
+
+    #[ORM\ManyToMany(targetEntity: Reseau::class, mappedBy: "offres", cascade: ["persist"])]
+    #[Groups(['offre:read', 'offre:write'])]
+    #[MaxDepth(1)]
+    private Collection $reseaux;
+
+    #[ORM\ManyToMany(targetEntity: GenreMusical::class, mappedBy: "offres", cascade: ["persist"])]
+    #[Groups(['offre:read', 'offre:write'])]
+    #[MaxDepth(1)]
+    private Collection $genresMusicaux;
+
+    #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: "offre", orphanRemoval: true, cascade: ["remove"])]
+    #[Groups(['offre:read'])]
+    #[MaxDepth(1)]
+    private Collection $commenteesPar;
+
+    #[ORM\OneToMany(targetEntity: Reponse::class, mappedBy: "offre", orphanRemoval: true, cascade: ["remove"])]
+    #[Groups(['offre:read', 'offre:write'])]
+    #[MaxDepth(1)]
+    private Collection $reponses;
+
+    public function __construct()
+    {
+        $this->artistes = new ArrayCollection();
+        $this->reseaux = new ArrayCollection();
+        $this->genresMusicaux = new ArrayCollection();
+        $this->commenteesPar = new ArrayCollection();
+        $this->reponses = new ArrayCollection();
+    }
+
+    /**
+     * Obtient l'id de l'offre
+     *
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
     /**
      * Obtient le titre de l'offre.
@@ -592,6 +574,124 @@ class Offre
     {
         $this->ficheTechniqueArtiste = $ficheTechniqueArtiste;
 
+        return $this;
+    }
+
+    public function getUtilisateur(): ?Utilisateur
+    {
+        return $this->utilisateur;
+    }
+
+    public function setUtilisateur(?Utilisateur $utilisateur): static
+    {
+        $this->utilisateur = $utilisateur;
+        return $this;
+    }
+
+    public function getArtistes(): Collection
+    {
+        return $this->artistes;
+    }
+
+    public function addArtiste(Artiste $artiste): self
+    {
+        if (!$this->artistes->contains($artiste)) {
+            $this->artistes->add($artiste);
+            $artiste->addOffre($this);
+        }
+        return $this;
+    }
+
+    public function removeArtiste(Artiste $artiste): self
+    {
+        if ($this->artistes->removeElement($artiste)) {
+            $artiste->removeOffre($this);
+        }
+        return $this;
+    }
+
+    public function getReseaux(): Collection
+    {
+        return $this->reseaux;
+    }
+
+    public function addReseau(Reseau $reseau): self
+    {
+        if (!$this->reseaux->contains($reseau)) {
+            $this->reseaux->add($reseau);
+            $reseau->addOffre($this);
+        }
+        return $this;
+    }
+
+    public function removeReseau(Reseau $reseau): self
+    {
+        if ($this->reseaux->removeElement($reseau)) {
+            $reseau->removeOffre($this);
+        }
+        return $this;
+    }
+
+    public function getGenresMusicaux(): Collection
+    {
+        return $this->genresMusicaux;
+    }
+
+    public function addGenreMusical(GenreMusical $genreMusical): self
+    {
+        if (!$this->genresMusicaux->contains($genreMusical)) {
+            $this->genresMusicaux->add($genreMusical);
+            $genreMusical->addOffre($this);
+        }
+        return $this;
+    }
+
+    public function removeGenreMusical(GenreMusical $genreMusical): self
+    {
+        if ($this->genresMusicaux->removeElement($genreMusical)) {
+            $genreMusical->removeOffre($this);
+        }
+        return $this;
+    }
+
+    public function getCommenteesPar(): Collection
+    {
+        return $this->commenteesPar;
+    }
+
+    public function addCommenteePar(Utilisateur $commenteePar): self
+    {
+        if (!$this->commenteesPar->contains($commenteePar)) {
+            $this->commenteesPar->add($commenteePar);
+            $commenteePar->addOffre($this);
+        }
+        return $this;
+    }
+
+    public function removeCommenteePar(Utilisateur $commenteePar): self
+    {
+        if ($this->commenteesPar->removeElement($commenteePar)) {
+            $commenteePar->removeOffre($this);
+        }
+        return $this;
+    }
+
+    public function addReponse(Reponse $reponse): self
+    {
+        if (!$this->reponses->contains($reponse)) {
+            $this->reponses[] = $reponse;
+            $reponse->setOffre($this);
+        }
+        return $this;
+    }
+
+    public function removeReponse(Reponse $reponse): self
+    {
+        if ($this->reponses->removeElement($reponse)) {
+            if ($reponse->getOffre() === $this) {
+                $reponse->setOffre(null);
+            }
+        }
         return $this;
     }
 }

@@ -40,8 +40,8 @@ class BudgetEstimatifTest extends TestCase
      */
     public function testId()
     {
-        $this->budgetEstimatif->setIdBE(1);
-        $this->assertEquals(1, $this->budgetEstimatif->getIdBE());
+        $this->budgetEstimatif->setId(1);
+        $this->assertEquals(1, $this->budgetEstimatif->getId());
 
     }
 

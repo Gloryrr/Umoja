@@ -5,68 +5,63 @@ namespace App\Entity;
 use App\Repository\FicheTechniqueArtisteRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: FicheTechniqueArtisteRepository::class)]
 class FicheTechniqueArtiste
 {
-    /**
-     * Identifiant unique de la fiche technique de l'offre.
-     *
-     * @var int|null
-     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $idFT = null;
+    #[Groups(['fiche_technique_artiste:read'])]
+    private ?int $id = null;
 
-    /**
-     * Besoins en sonorisation de l'offre.
-     *
-     * @var string|null
-     */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['fiche_technique_artiste:read', 'fiche_technique_artiste:write'])]
     private ?string $besoinSonorisation = null;
 
-    /**
-     * Besoins en éclairage de l'offre.
-     *
-     * @var string|null
-     */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['fiche_technique_artiste:read', 'fiche_technique_artiste:write'])]
     private ?string $besoinEclairage = null;
 
-    /**
-     * Besoins en scène de l'offre.
-     *
-     * @var string|null
-     */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['fiche_technique_artiste:read', 'fiche_technique_artiste:write'])]
     private ?string $besoinScene = null;
 
-    /**
-     * Besoins en backline de l'offre.
-     *
-     * @var string|null
-     */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['fiche_technique_artiste:read', 'fiche_technique_artiste:write'])]
     private ?string $besoinBackline = null;
 
-    /**
-     * Besoins en équipements de l'offre.
-     *
-     * @var string|null
-     */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['fiche_technique_artiste:read', 'fiche_technique_artiste:write'])]
     private ?string $besoinEquipements = null;
+
+    #[ORM\OneToMany(
+        targetEntity: Offre::class,
+        mappedBy: "ficheTechniqueArtiste",
+        orphanRemoval: true,
+        cascade: ["remove"]
+    )]
+    #[Groups(['fiche_technique_artiste:read'])]
+    #[MaxDepth(1)]
+    private Collection $offres;
+
+    public function __construct()
+    {
+        $this->offres = new ArrayCollection();
+    }
 
     /**
      * Récupère l'identifiant de la fiche technique.
      *
      * @return int|null
      */
-    public function getIdFT(): ?int
+    public function getId(): ?int
     {
-        return $this->idFT;
+        return $this->id;
     }
 
     /**
@@ -181,6 +176,30 @@ class FicheTechniqueArtiste
     {
         $this->besoinEquipements = $besoinEquipements;
 
+        return $this;
+    }
+
+    public function getOffres(): Collection
+    {
+        return $this->offres;
+    }
+
+    public function addOffre(Offre $offre): self
+    {
+        if (!$this->offres->contains($offre)) {
+            $this->offres[] = $offre;
+            $offre->setFicheTechniqueArtiste($this);
+        }
+        return $this;
+    }
+
+    public function removeOffre(Offre $offre): self
+    {
+        if ($this->offres->removeElement($offre)) {
+            if ($offre->getFicheTechniqueArtiste() === $this) {
+                $offre->setFicheTechniqueArtiste(null);
+            }
+        }
         return $this;
     }
 }

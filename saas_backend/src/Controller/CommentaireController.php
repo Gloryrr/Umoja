@@ -8,6 +8,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\SerializerInterface;
 use App\Repository\CommentaireRepository;
+use App\Repository\OffreRepository;
+use App\Repository\UtilisateurRepository;
 use App\Services\CommentaireService;
 
 class CommentaireController extends AbstractController
@@ -35,6 +37,8 @@ class CommentaireController extends AbstractController
      *
      * @param Request $request
      * @param CommentaireRepository $commentaireRepository, la classe CRUD des commentaires
+     * @param OffreRepository $offreRepository, la classe CRUD des offres
+     * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des utilisateurs
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
@@ -42,11 +46,15 @@ class CommentaireController extends AbstractController
     public function createCommentaire(
         Request $request,
         CommentaireRepository $commentaireRepository,
+        OffreRepository $offreRepository,
+        UtilisateurRepository $utilisateurRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
         return CommentaireService::createCommentaire(
             $commentaireRepository,
+            $offreRepository,
+            $utilisateurRepository,
             $serializer,
             $data
         );

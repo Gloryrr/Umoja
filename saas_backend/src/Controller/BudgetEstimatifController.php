@@ -31,6 +31,27 @@ class BudgetEstimatifController extends AbstractController
     }
 
     /**
+     * Récupère le budget estimatif ciblé en fonction de son identifiant existants.
+     *
+     * @param int $id, L'identifiant en question
+     * @param BudgetEstimatifRepository $budgetEstimatifRepository, la classe CRUD des budgets estimatifs
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/budget-estimatif/{id}', name: 'get_budget_estimatif_by_id', methods: ['GET'])]
+    public function getBudgetEstimatifById(
+        int $id,
+        BudgetEstimatifRepository $budgetEstimatifRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        return BudgetEstimatifService::getBudgetEstimatifById(
+            $id,
+            $budgetEstimatifRepository,
+            $serializer
+        );
+    }
+
+    /**
      * Crée un nouveau budget estimatif.
      *
      * @param Request $request
