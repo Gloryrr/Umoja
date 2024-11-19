@@ -3,7 +3,7 @@ import localFont from "next/font/local";
 import { Fredoka, Nunito } from "next/font/google";
 import Head from "next/head";
 
-import "./styles/css/globals.css";
+import "./globals.css";
 
 import NavbarApp, { NavBarConnectionInscription } from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -11,12 +11,12 @@ import Footer from "./components/Footer";
 import { ThemeModeScript } from "flowbite-react";
 
 const geistSans = localFont({
-  src: "./styles/fonts/GeistVF.woff",
+  src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
 const geistMono = localFont({
-  src: "./styles/fonts/GeistMonoVF.woff",
+  src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
   weight: "100 900",
 });
