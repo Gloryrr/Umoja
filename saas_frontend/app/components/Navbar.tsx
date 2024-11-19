@@ -110,9 +110,9 @@ const NavbarApp = () => {
 
   // Array containing navigation items
   const navItems = [
-    { id: 1, text: 'Home' },
+    { id: 1, text: 'Accueil' },
     { id: 2, text: 'Company' },
-    { id: 3, text: 'Resources' },
+    { id: 3, text: 'Offre' },
     { id: 4, text: 'About' },
     { id: 5, text: 'Contact' },
   ];
@@ -123,7 +123,7 @@ const NavbarApp = () => {
       <h1 className=' text-3xl font-bold '><NavigationHandler>
               {(handleNavigation) => (
                 <a
-                onClick={() => handleNavigation(`/home`)}
+                onClick={() => handleNavigation(`/accueil`)}
                 className="text-white cursor-pointer text-custom-green no-underline font-semibold hover:underline m-0"
               >
                 UmoDJA
