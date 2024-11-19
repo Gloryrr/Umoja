@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { Avatar, Card, ListGroup, ListGroupItem } from "flowbite-react";
 import { HiUserCircle, HiClipboardList, HiBell, HiUsers } from "react-icons/hi";
 import UserProfile from "@/app/components/UserProfil";
-import OffresProfil from "@/app/components/OffresProfil";
 import PreferencesProfil from "@/app/components/PreferencesProfil";
 import TableauDeBord from "@/app/components/TableauDeBord";
 
@@ -19,8 +18,6 @@ const SettingsPage: React.FC = () => {
         switch (selectedTab) {
             case "profil":
                 return "Profil Utilisateur";
-            case "offres":
-                return "Mes Offres";
             case "preferences":
                 return "Mes preferences";
             case "tableau_de_bord":
@@ -46,9 +43,6 @@ const SettingsPage: React.FC = () => {
                         <ListGroupItem onClick={() => handleTabChange("profil")} active={selectedTab === "profil"} icon={HiUserCircle}>
                             Profil
                         </ListGroupItem>
-                        <ListGroupItem onClick={() => handleTabChange("offres")} active={selectedTab === "offres"} icon={HiClipboardList}>
-                            Mes Offres
-                        </ListGroupItem>
                         <ListGroupItem onClick={() => handleTabChange("preferences")} active={selectedTab === "preferences"} icon={HiBell}>
                             Mes Préférences
                         </ListGroupItem>
@@ -62,7 +56,6 @@ const SettingsPage: React.FC = () => {
             <div className="w-3/4 ml-6">
                 <h3 className="text-2xl font-bold mb-4">{getSectionTitle()}</h3>
                 {selectedTab === "profil" && <UserProfile />}
-                {selectedTab === "offres" && <OffresProfil />}
                 {selectedTab === "preferences" && <PreferencesProfil />}
                 {selectedTab === "tableau_de_bord" && <TableauDeBord />}
             </div>
