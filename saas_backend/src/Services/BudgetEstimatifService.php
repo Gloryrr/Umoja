@@ -35,7 +35,34 @@ class BudgetEstimatifService
             ['groups' => ['budget_estimatif:read']]
         );
         return new JsonResponse([
-            'budget estimatifs_musicaux' => $budgetsEstimatifsJSON,
+            'budgets_estimatifs' => $budgetsEstimatifsJSON,
+            'message' => "Liste des budgets estimatifs",
+            'serialized' => true
+        ], Response::HTTP_OK);
+    }
+
+    /**
+     * Récupère un budget estimatif d'une offre en fonciton de son id et renvoie une réponse JSON.
+     *
+     * @param BudgetEstimatifRepository $budgetEstimatifRepository Le repository des budgets estimatifs.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les budgets estimatifs.
+     */
+    public static function getBudgetEstimatifById(
+        int $id,
+        BudgetEstimatifRepository $budgetEstimatifRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        // on récupère tous les budgets définis
+        $budgetsEstimatifs = $budgetEstimatifRepository->findBy(['id' => $id]);
+        $budgetsEstimatifsJSON = $serializer->serialize(
+            $budgetsEstimatifs,
+            'json',
+            ['groups' => ['budget_estimatif:read']]
+        );
+        return new JsonResponse([
+            'budget_estimatif' => $budgetsEstimatifsJSON,
             'message' => "Liste des budgets estimatifs",
             'serialized' => true
         ], Response::HTTP_OK);

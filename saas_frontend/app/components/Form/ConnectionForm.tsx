@@ -19,12 +19,13 @@ export default function ConnectionForm() {
     }
 
     const response = await apiPost('/login', JSON.parse(JSON.stringify(data)));
+    console.log(data);
 
     // console.log(response);
 
     if (response != null) {
-      console.log('Connexion réussie:', data);
       localStorage.setItem('isConnected', 'true');
+      localStorage.setItem('username', data.username);
       window.location.href = 'umodja/home';
     } else {
       localStorage.setItem('isConnected', 'false');

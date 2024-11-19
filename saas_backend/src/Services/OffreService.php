@@ -54,10 +54,63 @@ class OffreService
     }
 
     /**
+     * Récupère une offre et renvoie une réponse JSON.
+     *
+     * @param int $id L'identifiant de l'offre à récupérer.
+     * @param OffreRepository $offreRepository Le repository des offres.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les offres.
+     */
+    public static function getOffre(
+        OffreRepository $offreRepository,
+        SerializerInterface $serializer,
+        int $id
+    ): JsonResponse {
+        $offre = $offreRepository->find($id);
+        $offreJSON = $serializer->serialize(
+            $offre,
+            'json',
+            ['groups' => ['offre:read']]
+        );
+        return new JsonResponse([
+            'offre' => $offreJSON,
+            'serialized' => true
+        ], Response::HTTP_OK, ['Access-Control-Allow-Origin' => '*']);
+    }
+
+    /**
+     * Récupère une offre par son créateur et renvoie une réponse JSON.
+     *
+     * @param OffreRepository $offreRepository Le repository des offres.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     * @param int $id L'identifiant de l'utilisateur.
+     *
+     * @return JsonResponse La réponse JSON contenant les offres.
+     */
+    public static function getOffreByUtilisateur(
+        OffreRepository $offreRepository,
+        SerializerInterface $serializer,
+        int $id
+    ): JsonResponse {
+        $offre = $offreRepository->findBy(['utilisateur' => $id]);
+        $offreJSON = $serializer->serialize(
+            $offre,
+            'json',
+            ['groups' => ['offre:read']]
+        );
+        return new JsonResponse([
+            'offre' => $offreJSON,
+            'serialized' => true
+        ], Response::HTTP_OK, ['Access-Control-Allow-Origin' => '*']);
+    }
+
+    /**
      * Crée une nouvelle offre et renvoie une réponse JSON.
      *
      * @param OffreRepository $offreRepository Le repository des offres.
      * @param SerializerInterface $serializer Le service de sérialisation.
+     * @param MailerService $mailerService Le service d'envoi de mail.
      * @param mixed $data Les données de l'offre à créer.
      *
      * @return JsonResponse La réponse JSON après la création de l'offre.
@@ -72,6 +125,7 @@ class OffreService
         GenreMusicalRepository $genreMusicalRepository,
         ArtisteRepository $artisteRepository,
         SerializerInterface $serializer,
+        MailerService $mailerService,
         mixed $data
     ): JsonResponse {
         try {
@@ -184,9 +238,11 @@ class OffreService
 
             // ajoute l'offre sur le ou les réseau(x) indiqués
             $nb_reseaux = intval($data['donneesSupplementaires']['nbReseaux']);
+            $reseaux_list = [];
             for ($i = 0; $i < $nb_reseaux; $i++) {
                 $reseau = $reseauRepository->trouveReseauByName($data['donneesSupplementaires']['reseau'][$i]);
                 $offre->addReseau($reseau[0]);
+                $reseaux_list[] = $reseau[0];
             }
 
             $nb_genres_musicaux = intval($data['donneesSupplementaires']['nbGenresMusicaux']);
@@ -206,9 +262,21 @@ class OffreService
             // ajout de l'offre en base de données
             $rep = $offreRepository->inscritOffre($offre);
 
-
             // vérification de l'action en BDD
             if ($rep) {
+                foreach ($reseaux_list as $reseau) {
+                    $utilisateurs = $reseau->getUtilisateurs();
+                    foreach ($utilisateurs as $utilisateur) {
+                        if ($utilisateur->getEmailUtilisateur() != null) {
+                            $mailerService->sendEmail(
+                                $utilisateur->getEmailUtilisateur(),
+                                "Nouvelle offre",
+                                "<h1>Une nouvelle offre</h1><p>Une nouvelle offre a été ajoutée sur le réseau {$reseau->getNomReseau()}</p>"
+                            );
+                        }
+                    }
+                }
+
                 $offreJSON = $serializer->serialize(
                     $offre,
                     'json',
@@ -236,6 +304,7 @@ class OffreService
      * @param int $id L'identifiant de l'offre à mettre à jour.
      * @param OffreRepository $offreRepository Le repository des offres.
      * @param SerializerInterface $serializer Le service de sérialisation.
+     * @param MailerService $mailerService Le service d'envoi de mail.
      * @param mixed $data Les nouvelles données de l'offre.
      *
      * @return JsonResponse La réponse JSON après la mise à jour de l'offre.
@@ -246,6 +315,7 @@ class OffreService
         int $id,
         OffreRepository $offreRepository,
         SerializerInterface $serializer,
+        MailerService $mailerService,
         mixed $data
     ): JsonResponse {
         try {
@@ -372,11 +442,25 @@ class OffreService
                 $offre->setFicheTechniqueArtiste($ficheTechniqueArtiste);
             }
 
+            $reseaux_list = $offre->getReseaux();
+
             // sauvegarde des modifications dans la BDD
             $rep = $offreRepository->updateOffre($offre);
 
             // si l'action à réussi
             if ($rep) {
+                foreach ($reseaux_list as $reseau) {
+                    $utilisateurs = $reseau->getNomReseau()->getUtilisateurs();
+                    foreach ($utilisateurs as $utilisateur) {
+                        if ($utilisateur->getEmailUtilisateur() != null) {
+                            $mailerService->sendEmail(
+                                $utilisateur->getEmailUtilisateur(),
+                                "Mise à jour d'offre",
+                                "<h1>Changement sur l'offre</h1><p>Une offre de votre réseau a récemment été modifié, Réseau : {$reseau->getNomReseau()}</p>"
+                            );
+                        }
+                    }
+                }
                 $offreJSON = $serializer->serialize(
                     $offre,
                     'json',

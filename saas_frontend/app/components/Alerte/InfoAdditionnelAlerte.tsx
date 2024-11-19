@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button } from 'flowbite-react';
-import { useRouter } from 'next/navigation';
 
 interface InfoAdditionnelAlertProps {
     isSuccess: boolean;
@@ -15,12 +14,6 @@ const InfoAdditionnelAlert: React.FC<InfoAdditionnelAlertProps> = ({
     offreId,
     onDismiss,
 }) => {
-    const router = useRouter();
-
-    const handleVoirPlus = () => {
-        router.push(`/umodja/mes-offres/detail/${offreId}`);
-    };
-
     return (
         <div>
             <div className="flex flex-col">
@@ -31,7 +24,7 @@ const InfoAdditionnelAlert: React.FC<InfoAdditionnelAlertProps> = ({
                 {/* Ligne contenant les boutons */}
                 <div className="flex justify-start gap-4">
                     {isSuccess && (
-                        <Button size="sm" color="success" onClick={handleVoirPlus}>
+                        <Button size="sm" color="success" href={`/umodja/mes-offres/detail/${offreId}`}>
                             Voir plus
                         </Button>
                     )}

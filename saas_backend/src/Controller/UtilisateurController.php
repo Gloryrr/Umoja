@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\GenreMusicalRepository;
+use App\Repository\PreferenceNotificationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -169,6 +170,57 @@ class UtilisateurController extends AbstractController
             $utilisateurRepository,
             $genreMusicalRepository,
             $serializer
+        );
+    }
+
+    /**
+     * Récupère les préférences de notification d'un utilisateur.
+     *
+     * @param string $username, le nom de l'utilisateur
+     * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des utilisateurs
+     * @param PreferenceNotificationRepository $preferenceNotificationRepository, la classe CRUD des préférences de notification
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/utilisateur/preference-notification/{username}', name: 'get_preference_notification_utilisateur', methods: ['GET'])]
+    public function getPreferenceNotificationUtilisateur(
+        string $username,
+        UtilisateurRepository $utilisateurRepository,
+        PreferenceNotificationRepository $preferenceNotificationRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        return UtilisateurService::getPreferenceNotificationUtilisateur(
+            $username,
+            $utilisateurRepository,
+            $preferenceNotificationRepository,
+            $serializer
+        );
+    }
+
+    /**
+     * Mets à jour les préférences de notification d'un utilisateur.
+     *
+     * @param string $username, le nom de l'utilisateur
+     * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des utilisateurs
+     * @param PreferenceNotificationRepository $preferenceNotificationRepository, la classe CRUD des préférences de notification
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/utilisateur/preference-notification/update/{username}', name: 'get_preference_update_notification_utilisateur', methods: ['PATCH'])]
+    public function updatePreferenceNotificationUtilisateur(
+        string $username,
+        UtilisateurRepository $utilisateurRepository,
+        PreferenceNotificationRepository $preferenceNotificationRepository,
+        SerializerInterface $serializer,
+        Request $request
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        return UtilisateurService::updatePreferenceNotificationUtilisateur(
+            $username,
+            $utilisateurRepository,
+            $preferenceNotificationRepository,
+            $serializer,
+            $data
         );
     }
 }

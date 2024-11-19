@@ -4,11 +4,13 @@ namespace App\Services;
 
 use App\Repository\GenreMusicalRepository;
 use App\Repository\OffreRepository;
+use App\Repository\PreferenceNotificationRepository;
 use App\Repository\UtilisateurRepository;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Utilisateur;
+use App\Entity\PreferenceNotification;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
@@ -117,6 +119,9 @@ class UtilisateurService
             $utilisateur->setNumTelUtilisateur($data['numTelUtilisateur'] ?? null);
             $utilisateur->setNomUtilisateur($data['nomUtilisateur'] ?? null);
             $utilisateur->setPrenomUtilisateur($data['prenomUtilisateur'] ?? null);
+
+            $preferenceNotification = new PreferenceNotification();
+            $preferenceNotification->addUtilisateur($utilisateur);
 
             // ajout de l'utilisateur en base de données
             $rep = $utilisateurRepository->inscritUtilisateur($utilisateur);
@@ -485,5 +490,97 @@ class UtilisateurService
                 'serialized' => false
             ], Response::HTTP_BAD_REQUEST);
         }
+    }
+
+    /**
+     * Récupère les préférences de notification d'un utilisateur et renvoie une réponse JSON.
+     *
+     * @param string $username Le nom de l'utilisateur à rechercher.
+     * @param UtilisateurRepository $utilisateurRepository Le repository des utilisateurs.
+     * @param PreferenceNotificationRepository $preferenceNotificationRepository Le repository des préférences de notification.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les préférences de notification de l'utilisateur.
+     */
+    public static function getPreferenceNotificationUtilisateur(
+        string $username,
+        UtilisateurRepository $utilisateurRepository,
+        PreferenceNotificationRepository $preferenceNotificationRepository,
+        SerializerInterface $serializerInterface
+    ): JsonResponse {
+        // récupération des préférences de notification de l'utilisateur
+        $utilisateur = $utilisateurRepository->trouveUtilisateurByUsername($username);
+        
+        // si pas d'utilisateur trouvé
+        if ($utilisateur[0] == null) {
+            return new JsonResponse([
+                'preferences' => null,
+                'message' => 'Utilisateur non trouvé, merci de fournir un identifiant valide',
+                'serialized' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $preferences = $preferenceNotificationRepository->findBy(['id' => $utilisateur[0]->getPreferenceNotification()->getId()]);
+        $preferencesJSON = $serializerInterface->serialize(
+            $preferences,
+            'json',
+            ['groups' => ['preference_notification:read']]
+        );
+
+        return new JsonResponse([
+            'preferences' => $preferencesJSON,
+            'message' => "Préférences de notification de l'utilisateur",
+            'serialized' => true
+        ], Response::HTTP_OK);
+    }
+
+    /**
+     * Mets à jour les préférences de notification d'un utilisateur et renvoie une réponse JSON.
+     *
+     * @param string $username Le nom de l'utilisateur à rechercher.
+     * @param UtilisateurRepository $utilisateurRepository Le repository des utilisateurs.
+     * @param PreferenceNotificationRepository $preferenceNotificationRepository Le repository des préférences de notification.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     * @param mixed $data Les nouvelles données de préférences de notification.
+     *
+     * @return JsonResponse La réponse JSON contenant les préférences de notification de l'utilisateur.
+     */
+    public static function updatePreferenceNotificationUtilisateur(
+        string $username,
+        UtilisateurRepository $utilisateurRepository,
+        PreferenceNotificationRepository $preferenceNotificationRepository,
+        SerializerInterface $serializerInterface,
+        mixed $data
+    ): JsonResponse {
+        // récupération des préférences de notification de l'utilisateur
+        $utilisateur = $utilisateurRepository->trouveUtilisateurByUsername($username);
+        
+        // si pas d'utilisateur trouvé
+        if ($utilisateur[0] == null) {
+            return new JsonResponse([
+                'preferences' => null,
+                'message' => 'Utilisateur non trouvé, merci de fournir un identifiant valide',
+                'serialized' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $preference = $preferenceNotificationRepository->findBy(['id' => $utilisateur[0]->getPreferenceNotification()->getId()]);
+        $preference[0]->setEmailNouvelleOffre($data['email_nouvelle_offre']);
+        $preference[0]->setEmailUpdateOffre($data['email_update_offre']);
+        $preference[0]->setReponseOffre($data['reponse_offre']);
+
+        $preferenceNotificationRepository->updatePreferenceNotification($preference[0]);
+
+        $preferencesJSON = $serializerInterface->serialize(
+            $preference,
+            'json',
+            ['groups' => ['preference_notification:read']]
+        );
+
+        return new JsonResponse([
+            'preferences' => $preferencesJSON,
+            'message' => "Nouvelles préférences de notification de l'utilisateur",
+            'serialized' => true
+        ], Response::HTTP_OK);
     }
 }

@@ -45,6 +45,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         'reseau:read',
         'commentaire:read',
         'reponse:read',
+        'preference_notification:read'
     ])]
     private ?string $username = null;
 
@@ -90,6 +91,12 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['utilisateur:read'])]
     #[MaxDepth(1)]
     private Collection $reponses;
+
+    #[ORM\ManyToOne(targetEntity: PreferenceNotification::class, inversedBy: 'utilisateur', cascade: ["persist"])]
+    #[ORM\JoinColumn]
+    #[Groups(['utilisateur:read', 'utilisateur:write'])]
+    #[MaxDepth(1)]
+    private PreferenceNotification $preferenceNotification;
 
     /**
      * Constructeur de la classe.
@@ -424,6 +431,18 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
                 $reponse->setUtilisateur(null);
             }
         }
+        return $this;
+    }
+
+    public function getPreferenceNotification(): ?PreferenceNotification
+    {
+        return $this->preferenceNotification;
+    }
+
+    public function setPreferenceNotification(?PreferenceNotification $preferenceNotification): static
+    {
+        $this->preferenceNotification = $preferenceNotification;
+
         return $this;
     }
 }

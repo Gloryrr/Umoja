@@ -43,6 +43,35 @@ class ExtrasService
     }
 
     /**
+     * Récupère un extras oar rapport à son id et renvoie une réponse JSON.
+     *
+     * @param int $id, L'id de l'extras en particulier
+     * @param ExtrasRepository $extrasRepository Le repository des extras.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les extras.
+     */
+    public static function getExtrasById(
+        ExtrasRepository $extrasRepository,
+        SerializerInterface $serializer,
+        int $id
+    ): JsonResponse {
+        // Récupère tous les extras.
+        $extras = $extrasRepository->findBy(['id' => $id]);
+        $extrasJSON = $serializer->serialize(
+            $extras,
+            'json',
+            ['groups' => ['extras:read']]
+        );
+
+        return new JsonResponse([
+            'extras' => $extrasJSON,
+            'message' => "Liste des extras",
+            'serialized' => true
+        ], Response::HTTP_OK);
+    }
+
+    /**
      * Crée un nouveau extra et renvoie une réponse JSON.
      *
      * @param ExtrasRepository $extrasRepository Le repository des extras.

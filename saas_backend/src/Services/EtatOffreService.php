@@ -42,6 +42,34 @@ class EtatOffreService
     }
 
     /**
+     * Récupère un état d'offre en fonction de son id et renvoie une réponse JSON.
+     *
+     * @param int $id, L'id de l'état actuel recherché
+     * @param EtatOffreRepository $etatOffreRepository Le repository des états d'offre.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les états d'offre.
+     */
+    public static function getEtatOffreById(
+        int $id,
+        EtatOffreRepository $etatOffreRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        // on récupère tous les états
+        $etatsOffre = $etatOffreRepository->findBy(['id' => $id]);
+        $etatsOffreJSON = $serializer->serialize(
+            $etatsOffre,
+            'json',
+            ['groups' => ['etat_offre:read']]
+        );
+        return new JsonResponse([
+            'etat_offre' => $etatsOffreJSON,
+            'message' => "Liste des états d'offre",
+            'serialized' => true
+        ], Response::HTTP_OK);
+    }
+
+    /**
      * Crée un nouvel état d'offre et renvoie une réponse JSON.
      *
      * @param EtatOffreRepository $etatOffreRepository Le repository des états d'offre.
@@ -79,13 +107,13 @@ class EtatOffreService
                     ['groups' => ['etat_offre:read']]
                 );
                 return new JsonResponse([
-                    'genre_musical' => $etatOffreJSON,
+                    'etat_offre' => $etatOffreJSON,
                     'message' => "Etat d'offre ajoutée !",
                     'serialized' => true
                 ], Response::HTTP_CREATED);
             }
             return new JsonResponse([
-                'genre_musical' => null,
+                'etat_offre' => null,
                 'message' => "Etat d'offre non inscrit, merci de regarder l'erreur décrite",
                 'serialized' => false
             ], Response::HTTP_BAD_REQUEST);
@@ -119,7 +147,7 @@ class EtatOffreService
             // si il n'y pas de genre trouvé
             if ($etatOffre == null) {
                 return new JsonResponse([
-                    'genre_musical' => null,
+                    'etat_offre' => null,
                     'message' => "État d'offre non trouvé, merci de donner un identifiant valide !",
                     'serialized' => true
                 ], Response::HTTP_NOT_FOUND);
@@ -143,13 +171,13 @@ class EtatOffreService
                 );
 
                 return new JsonResponse([
-                    'genre_musical' => $etatOffre,
+                    'etat_offre' => $etatOffre,
                     'message' => "État d'offre modifié avec succès",
                     'serialized' => true
                 ], Response::HTTP_OK);
             } else {
                 return new JsonResponse([
-                    'genre_musical' => null,
+                    'etat_offre' => null,
                     'message' => "État d'offre non modifié, merci de vérifier l'erreur décrite",
                     'serialized' => false
                 ], Response::HTTP_BAD_REQUEST);
@@ -179,7 +207,7 @@ class EtatOffreService
         // si pas de état d'offre trouvé
         if ($etatOffre == null) {
             return new JsonResponse([
-                'genre_musical' => null,
+                'etat_offre' => null,
                 'message' => "État d'offre non trouvée, merci de fournir un identifiant valide",
                 'serialized' => false
             ], Response::HTTP_NOT_FOUND);
@@ -196,13 +224,13 @@ class EtatOffreService
                 ['groups' => ['etat_offre:read']]
             );
             return new JsonResponse([
-                'genre_musical' => $etatOffreJSON,
+                'etat_offre' => $etatOffreJSON,
                 'message' => "État d'offre supprimée",
                 'serialized' => false
             ], Response::HTTP_NO_CONTENT);
         } else {
             return new JsonResponse([
-                'genre_musical' => null,
+                'etat_offre' => null,
                 'message' => "État d'offre non supprimée !",
                 'serialized' => false
             ], Response::HTTP_BAD_REQUEST);
