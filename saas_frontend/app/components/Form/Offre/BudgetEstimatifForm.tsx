@@ -1,12 +1,14 @@
 "use client";
 import React from 'react';
+import { Card, Label, TextInput, Button } from 'flowbite-react';
+import { FiRefreshCw } from "react-icons/fi";
 
 interface BudgetEstimatifFormProps {
     budgetEstimatif: {
-        cachetArtiste: number;
-        fraisDeplacement: number;
-        fraisHebergement: number;
-        fraisRestauration: number;
+        cachetArtiste: number | null;
+        fraisDeplacement: number | null;
+        fraisHebergement: number | null;
+        fraisRestauration: number | null;
     };
     onBudgetEstimatifChange: (name: string, value: number) => void;
 }
@@ -15,75 +17,91 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
     budgetEstimatif,
     onBudgetEstimatifChange,
 }) => {
-    const handleBudgetEstmatifChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleBudgetEstimatifChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         onBudgetEstimatifChange(name, Number(value));
     };
 
-    return (
-        <div className="flex items-center justify-center">
-            <div className="mx-auto w-full max-w bg-gray-800 rounded-lg p-8">
-                <h3 className="text-2xl font-semibold text-white mb-4">Budget Estimatif</h3>
-                
-                <div className="grid grid-cols-2 gap-4 mb-5">
-                    <div>
-                        <label htmlFor="cachetArtiste" className="text-white">Cachet Artiste:</label>
-                        <input
-                            type="number"
-                            id="cachetArtiste"
-                            name="cachetArtiste"
-                            value={budgetEstimatif.cachetArtiste || 0}
-                            onChange={handleBudgetEstmatifChange}
-                            required
-                            placeholder="Cachet de l'artiste"
-                            className="w-full mt-1 rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="fraisDeplacement" className="text-white">Frais de Déplacement:</label>
-                        <input
-                            type="number"
-                            id="fraisDeplacement"
-                            name="fraisDeplacement"
-                            value={budgetEstimatif.fraisDeplacement || 0}
-                            onChange={handleBudgetEstmatifChange}
-                            required
-                            placeholder="Frais de déplacement"
-                            className="w-full mt-1 rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
-                        />
-                    </div>
-                </div>
+    const handleReset = () => {
+        onBudgetEstimatifChange("cachetArtiste", 0);
+        onBudgetEstimatifChange("fraisDeplacement", 0);
+        onBudgetEstimatifChange("fraisHebergement", 0);
+        onBudgetEstimatifChange("fraisRestauration", 0);
+    };
 
-                <div className="grid grid-cols-2 gap-4 mb-5">
-                    <div>
-                        <label htmlFor="fraisHebergement" className="text-white">Frais d&apos;Hébergement:</label>
-                        <input
-                            type="number"
-                            id="fraisHebergement"
-                            name="fraisHebergement"
-                            value={budgetEstimatif.fraisHebergement || 0}
-                            onChange={handleBudgetEstmatifChange}
-                            required
-                            placeholder="Frais d'hébergement"
-                            className="w-full mt-1 rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="fraisRestauration" className="text-white">Frais de Restauration:</label>
-                        <input
-                            type="number"
-                            id="fraisRestauration"
-                            name="fraisRestauration"
-                            value={budgetEstimatif.fraisRestauration || 0}
-                            onChange={handleBudgetEstmatifChange}
-                            required
-                            placeholder="Frais de restauration"
-                            className="w-full mt-1 rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
-                        />
-                    </div>
+    return (
+        <Card className="shadow-none border-none mx-auto w-full">
+            <div className="flex justify-between items-center mb-4">
+                <h3 className="text-2xl font-semibold mb-4">Budget Estimatif</h3>
+                <Button
+                    color="gray"
+                    onClick={handleReset}
+                    pill
+                    aria-label="Reset"
+                    className="flex items-center"
+                >
+                    <FiRefreshCw className="w-4 h-4" />
+                </Button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-5">
+                <div>
+                    <Label htmlFor="cachetArtiste" value="Cachet Artiste:" />
+                    <TextInput
+                        type="number"
+                        id="cachetArtiste"
+                        name="cachetArtiste"
+                        value={budgetEstimatif.cachetArtiste ?? ""}
+                        onChange={handleBudgetEstimatifChange}
+                        placeholder="Cachet de l'artiste"
+                        required
+                        className="mt-1"
+                    />
+                </div>
+                <div>
+                    <Label htmlFor="fraisDeplacement" value="Frais de Déplacement:" />
+                    <TextInput
+                        type="number"
+                        id="fraisDeplacement"
+                        name="fraisDeplacement"
+                        value={budgetEstimatif.fraisDeplacement ?? ""}
+                        onChange={handleBudgetEstimatifChange}
+                        placeholder="Frais de déplacement"
+                        required
+                        className="mt-1"
+                    />
                 </div>
             </div>
-        </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-5">
+                <div>
+                    <Label htmlFor="fraisHebergement" value="Frais d'Hébergement:" />
+                    <TextInput
+                        type="number"
+                        id="fraisHebergement"
+                        name="fraisHebergement"
+                        value={budgetEstimatif.fraisHebergement ?? ""}
+                        onChange={handleBudgetEstimatifChange}
+                        placeholder="Frais d'hébergement"
+                        required
+                        className="mt-1"
+                    />
+                </div>
+                <div>
+                    <Label htmlFor="fraisRestauration" value="Frais de Restauration:" />
+                    <TextInput
+                        type="number"
+                        id="fraisRestauration"
+                        name="fraisRestauration"
+                        value={budgetEstimatif.fraisRestauration ?? ""}
+                        onChange={handleBudgetEstimatifChange}
+                        placeholder="Frais de restauration"
+                        required
+                        className="mt-1"
+                    />
+                </div>
+            </div>
+        </Card>
     );
 };
 

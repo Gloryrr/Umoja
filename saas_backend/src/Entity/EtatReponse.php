@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * Classe EtatReponse
@@ -23,7 +24,7 @@ class EtatReponse
     private ?int $id = null;
 
     #[ORM\Column(type: "string", length: 100)]
-    #[Groups(['etat_reponse:read', 'etat_reponse:write'])]
+    #[Groups(['etat_reponse:read', 'etat_reponse:write', 'reponse:read'])]
     private ?string $nomEtatReponse = null;
 
     #[ORM\Column(type: "string", length: 255)]
@@ -32,6 +33,7 @@ class EtatReponse
 
     #[ORM\OneToMany(targetEntity: Reponse::class, mappedBy: "etatReponse", orphanRemoval: true, cascade: ["remove"])]
     #[Groups(['etat_reponse:read'])]
+    #[MaxDepth(1)]
     private Collection $reponses;
 
     public function __construct()

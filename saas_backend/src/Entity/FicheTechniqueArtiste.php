@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: FicheTechniqueArtisteRepository::class)]
 class FicheTechniqueArtiste
@@ -15,27 +16,27 @@ class FicheTechniqueArtiste
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['ficheTechniqueArtiste:read'])]
+    #[Groups(['fiche_technique_artiste:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['ficheTechniqueArtiste:read', 'ficheTechniqueArtiste:write'])]
+    #[Groups(['fiche_technique_artiste:read', 'fiche_technique_artiste:write'])]
     private ?string $besoinSonorisation = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['ficheTechniqueArtiste:read', 'ficheTechniqueArtiste:write'])]
+    #[Groups(['fiche_technique_artiste:read', 'fiche_technique_artiste:write'])]
     private ?string $besoinEclairage = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['ficheTechniqueArtiste:read', 'ficheTechniqueArtiste:write'])]
+    #[Groups(['fiche_technique_artiste:read', 'fiche_technique_artiste:write'])]
     private ?string $besoinScene = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['ficheTechniqueArtiste:read', 'ficheTechniqueArtiste:write'])]
+    #[Groups(['fiche_technique_artiste:read', 'fiche_technique_artiste:write'])]
     private ?string $besoinBackline = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['ficheTechniqueArtiste:read', 'ficheTechniqueArtiste:write'])]
+    #[Groups(['fiche_technique_artiste:read', 'fiche_technique_artiste:write'])]
     private ?string $besoinEquipements = null;
 
     #[ORM\OneToMany(
@@ -44,7 +45,8 @@ class FicheTechniqueArtiste
         orphanRemoval: true,
         cascade: ["remove"]
     )]
-    #[Groups(['ficheTechniqueArtiste:read'])]
+    #[Groups(['fiche_technique_artiste:read'])]
+    #[MaxDepth(1)]
     private Collection $offres;
 
     public function __construct()

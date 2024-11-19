@@ -25,7 +25,12 @@ class Reponse
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['reponse:read'])]
+    #[Groups([
+        'reponse:read',
+        'utilisateur:read',
+        'offre:read',
+        'etat_reponse:read',
+    ])]
     private ?int $id = null;
 
     /**
@@ -33,7 +38,7 @@ class Reponse
      *
      * @var EtatReponse|null
      */
-    #[ORM\ManyToOne(targetEntity: EtatReponse::class, inversedBy: "reponses")]
+    #[ORM\ManyToOne(targetEntity: EtatReponse::class, inversedBy: "reponses", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['reponse:read', 'reponse:write'])]
     private ?EtatReponse $etatReponse = null;
@@ -43,7 +48,7 @@ class Reponse
      *
      * @var Offre|null
      */
-    #[ORM\ManyToOne(targetEntity: Offre::class, inversedBy: "reponses")]
+    #[ORM\ManyToOne(targetEntity: Offre::class, inversedBy: "reponses", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['reponse:read', 'reponse:write'])]
     private ?Offre $offre = null;
@@ -53,9 +58,9 @@ class Reponse
      *
      * @var Utilisateur|null
      */
-    #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: "reponses")]
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: "reponses", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
-    #[Groups(['reponse:read', 'reponse:write'])]
+    #[Groups(['reponse:read', 'reponse:write', 'utilisateur:read'])]
     private ?Utilisateur $utilisateur = null;
 
     /**

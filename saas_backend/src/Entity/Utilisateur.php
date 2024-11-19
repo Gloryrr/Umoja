@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * Classe représentant un Utilisateur.
@@ -21,6 +22,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['utilisateur:read', 'utilisateur:write'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 128)]
@@ -28,7 +30,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $emailUtilisateur = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['utilisateur:write'])]
     private ?string $mdpUtilisateur = null;
 
     #[ORM\Column(length: 20)]
@@ -36,7 +37,15 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $roleUtilisateur = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['utilisateur:read', 'utilisateur:write'])]
+    #[Groups([
+        'utilisateur:read',
+        'utilisateur:write',
+        'offre:read',
+        'genre_musical:read',
+        'reseau:read',
+        'commentaire:read',
+        'reponse:read',
+    ])]
     private ?string $username = null;
 
     #[ORM\Column(length: 15, nullable: true)]
@@ -51,30 +60,35 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['utilisateur:read', 'utilisateur:write'])]
     private ?string $prenomUtilisateur = null;
 
-    #[ORM\ManyToMany(targetEntity: GenreMusical::class, inversedBy: "utilisateurs")]
+    #[ORM\ManyToMany(targetEntity: GenreMusical::class, inversedBy: "utilisateurs", cascade: ["persist"])]
     #[ORM\JoinTable(name: "preferencer")]
     #[ORM\JoinColumn(name: "utilisateur_id", onDelete: "CASCADE")]
     #[ORM\InverseJoinColumn(name: "genre_musical_id", onDelete: "CASCADE")]
-    #[Groups(['utilisateur:read', 'utilisateur:write'])]
+    #[Groups(['utilisateur:read'])]
+    #[MaxDepth(1)]
     private Collection $genresMusicaux;
 
-    #[ORM\ManyToMany(targetEntity: Reseau::class, inversedBy: "utilisateurs")]
+    #[ORM\ManyToMany(targetEntity: Reseau::class, inversedBy: "utilisateurs", cascade: ["persist"])]
     #[ORM\JoinTable(name: "appartenir")]
     #[ORM\JoinColumn(name: "utilisateur_id", onDelete: "CASCADE")]
     #[ORM\InverseJoinColumn(name: "reseau_id", onDelete: "CASCADE")]
     #[Groups(['utilisateur:read', 'utilisateur:write'])]
+    #[MaxDepth(1)]
     private Collection $reseaux;
 
     #[ORM\OneToMany(targetEntity: Offre::class, mappedBy: "utilisateur", orphanRemoval: true, cascade: ["remove"])]
     #[Groups(['utilisateur:read'])]
+    #[MaxDepth(1)]
     private Collection $offres;
 
     #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: "utilisateur", orphanRemoval: true, cascade:["remove"])]
     #[Groups(['utilisateur:read'])]
+    #[MaxDepth(1)]
     private Collection $offresCommentees;
 
     #[ORM\OneToMany(targetEntity: Reponse::class, mappedBy: "utilisateur", orphanRemoval: true, cascade: ["remove"])]
     #[Groups(['utilisateur:read'])]
+    #[MaxDepth(1)]
     private Collection $reponses;
 
     /**

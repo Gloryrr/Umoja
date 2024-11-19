@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * Classe représentant un Genre Musical.
@@ -22,7 +23,7 @@ class GenreMusical
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['genreMusical:read'])]
+    #[Groups(['genre_musical:read'])]
     private ?int $id = null;
 
     /**
@@ -30,26 +31,37 @@ class GenreMusical
      * Doit avoir une longueur maximale de 50 caractères.
      */
     #[ORM\Column(length: 50)]
-    #[Groups(['genreMusical:read', 'genreMusical:write'])]
+    #[Groups([
+        'genre_musical:read',
+        'genre_musical:write',
+        'utilisateur:read',
+        'artiste:read',
+        'reseau:read',
+        'offres:read',
+    ])]
     private ?string $nomGenreMusical = null;
 
-    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: "genresMusicaux")]
-    #[Groups(['genreMusical:read'])]
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: "genresMusicaux", cascade: ["persist"])]
+    #[Groups(['genre_musical:read'])]
+    #[MaxDepth(1)]
     private Collection $utilisateurs;
 
-    #[ORM\ManyToMany(targetEntity: Artiste::class, mappedBy: "genresMusicaux")]
-    #[Groups(['genreMusical:read'])]
+    #[ORM\ManyToMany(targetEntity: Artiste::class, mappedBy: "genresMusicaux", cascade: ["persist"])]
+    #[Groups(['genre_musical:read', 'artiste:read'])]
+    #[MaxDepth(1)]
     private Collection $artistes;
 
-    #[ORM\ManyToMany(targetEntity: Reseau::class, mappedBy: "genresMusicaux")]
-    #[Groups(['genreMusical:read'])]
+    #[ORM\ManyToMany(targetEntity: Reseau::class, mappedBy: "genresMusicaux", cascade: ["persist"])]
+    #[Groups(['genre_musical:read'])]
+    #[MaxDepth(1)]
     private Collection $reseaux;
 
-    #[ORM\ManyToMany(targetEntity: Offre::class, inversedBy: "genresMusicaux")]
+    #[ORM\ManyToMany(targetEntity: Offre::class, inversedBy: "genresMusicaux", cascade: ["persist"])]
     #[ORM\JoinTable(name: "rattacher")]
     #[ORM\JoinColumn(name: "genre_musical_id", onDelete: "CASCADE")]
     #[ORM\InverseJoinColumn(name: "offre_id", onDelete: "CASCADE")]
-    #[Groups(['genreMusical:read'])]
+    #[Groups(['genre_musical:read'])]
+    #[MaxDepth(1)]
     private Collection $offres;
 
     public function __construct()

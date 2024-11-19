@@ -1,37 +1,29 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import FicheTechniqueArtisteForm from '@/app/components/Form/Offre/FicheTechniqueArtiste';
 import { apiGet, apiPost } from '@/app/services/internalApiClients';
+import {TextInput, Label, Select, Button, Card} from 'flowbite-react';
+import { FiRefreshCw } from "react-icons/fi";
 
 interface DonneesSupplementairesFormProps {
     donneesSupplementaires: {
-        ficheTechniqueArtiste: {
-            besoinBackline: string;
-            besoinEclairage: string;
-            besoinEquipements: string;
-            besoinScene: string;
-            besoinSonorisation: string;
-        };
         reseau: string[];
-        nbReseaux: number;
+        nbReseaux: number | null;
         genreMusical: string[];
-        nbGenresMusicaux: number;
+        nbGenresMusicaux: number | null;
         artiste: string[];
-        nbArtistes: number;
+        nbArtistes: number | null;
     };
     onDonneesSupplementairesChange: (name: string, value: string|string[]|number) => void;
-    onFicheTechniqueChange: (name: string, value: string) => void;
 }
 
 const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
     donneesSupplementaires,
-    onDonneesSupplementairesChange,
-    onFicheTechniqueChange
+    onDonneesSupplementairesChange
 }) => {
     const [genresMusicaux, setGenresMusicaux] = useState<Array<{ nomGenreMusical: string }>>([]);
     const [selectedGenres, setSelectedGenres] = useState<string[]>(donneesSupplementaires.genreMusical);
 
-    const [reseaux, setReseaux] = useState<Array<{ idReseau: { nomReseau: string } }>>([]);
+    const [reseaux, setReseaux] = useState<Array<{ nomReseau: string }>>([]);
     const [selectedReseaux, setSelectedReseaux] = useState<string[]>(donneesSupplementaires.reseau);
 
     const [artistes, setArtistes] = useState<string[]>(donneesSupplementaires.artiste);
@@ -50,10 +42,10 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
         const fetchReseauUtilisateur = async () => {
             try {
                 const data = {
-                    username: 'username n° 1' // utiliser localStorage plus tard
+                    username: 'steven' // utiliser localStorage plus tard
                 };
                 const datasUser = await apiPost('/utilisateur', JSON.parse(JSON.stringify(data)));
-                const reseauxListe: Array<{ idReseau: { nomReseau: string } }> = JSON.parse(datasUser.utilisateur)[0].membreDesReseaux;
+                const reseauxListe: Array<{ nomReseau: string }> = JSON.parse(datasUser.utilisateur)[0].reseaux;
                 setReseaux(reseauxListe);
                 console.log(reseauxListe);
             } catch (error) {
@@ -108,91 +100,99 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
         onDonneesSupplementairesChange('nbArtistes', updatedArtistes.length);
     };
 
+    const handleReset = () => {
+        onDonneesSupplementairesChange("reseau", []);
+        onDonneesSupplementairesChange("nbReseaux", 0);
+        onDonneesSupplementairesChange("genreMusical", []);
+        onDonneesSupplementairesChange("nbGenresMusicaux", 0);
+        onDonneesSupplementairesChange("artiste", []);
+        onDonneesSupplementairesChange("nbArtistes", 0);
+    };
+
     return (
-        <div className="mx-auto w-full max-w bg-gray-800 rounded-lg p-8">
-            <div>
-                <FicheTechniqueArtisteForm
-                    ficheTechniqueArtiste={donneesSupplementaires.ficheTechniqueArtiste}
-                    onFicheTechniqueChange={onFicheTechniqueChange}
-                />
-            </div>
+        <Card className="shadow-none border-none mx-auto w-full">
+            {/* Section des artistes concernés */}
             <div className="flex flex-col rounded-lg mb-4">
-                <div className="mb-5">
-                    <h3 className="text-2xl font-semibold text-white mb-4">Artistes Concernés</h3>
-                    {artistes.map((artiste, index) => (
-                        <div key={index} className="flex items-center mb-2">
-                            <input
-                                type="text"
-                                value={artiste}
-                                onChange={(e) => handleArtisteChange(index, e.target.value)}
-                                placeholder="Nom de l&apos;artiste"
-                                className="w-full mt-1 rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
-                            />
-                            <button
-                                type="button"
-                                onClick={() => removeArtisteField(index)}
-                                className="ml-2 text-red-600 hover:text-red-800"
-                            >
-                                Supprimer
-                            </button>
-                        </div>
-                    ))}
-                    <button
-                        type="button"
-                        onClick={addArtisteField}
-                        className="mt-2 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
+                <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-2xl font-semibold mb-4">Artistes Concernés</h3>
+                    <Button
+                        color="gray"
+                        onClick={handleReset}
+                        pill
+                        aria-label="Reset"
+                        className="flex items-center"
                     >
-                        Ajouter un artiste
-                    </button>
+                        <FiRefreshCw className="w-4 h-4" />
+                    </Button>
                 </div>
 
-                <h3 className="text-2xl font-semibold text-white mb-4">Réseau et Genre Musical</h3>
+                {artistes.map((artiste, index) => (
+                    <div key={index} className="flex items-center mb-2">
+                        <TextInput
+                            type="text"
+                            value={artiste}
+                            onChange={(e) => handleArtisteChange(index, e.target.value)}
+                            placeholder="Nom de l'artiste"
+                            className='w-full'
+                        />
+                        <Button color="failure" onClick={() => removeArtisteField(index)} size="sm" className="ml-2">
+                            Supprimer
+                        </Button>
+                    </div>
+                ))}
+                <Button onClick={addArtisteField} className="mt-2 w-full">
+                    Ajouter un artiste
+                </Button>
+            </div>
+
+            {/* Section Réseau et Genre Musical */}
+            <div className="flex flex-col rounded-lg mb-4">
+                <h3 className="text-2xl font-semibold mb-4">Réseau et Genre Musical</h3>
                 <div className="grid grid-cols-2 gap-4">
+                    {/* Sélection des réseaux */}
                     <div className="flex flex-col">
-                        <label htmlFor="reseau" className="text-white">Réseau:</label>
-                        <select
+                        <Label htmlFor="reseau" value="Réseau" />
+                        <Select
                             id="reseau"
                             name="reseau"
                             value={selectedReseaux}
                             onChange={handleReseauxSelectionChange}
-                            required
                             multiple
-                            className="w-full mt-1 rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                         >
                             {reseaux.map((reseau, index) => (
-                                <option key={index} value={reseau.idReseau.nomReseau}>
-                                    {reseau.idReseau.nomReseau}
+                                <option key={index} value={reseau.nomReseau}>
+                                    {reseau.nomReseau}
                                 </option>
                             ))}
-                        </select>
-                        <p className="text-sm text-white mt-1">
-                            Vous pouvez sélectionner jusqu&apos;&agrave; {reseaux.length} réseaux.
+                        </Select>
+                        <p className="text-sm mt-1">
+                            Vous pouvez sélectionner jusqu'à {reseaux.length} réseaux.
                         </p>
                     </div>
 
+                    {/* Sélection des genres musicaux */}
                     <div className="flex flex-col">
-                        <label htmlFor="genreMusical" className="text-white">Genre Musical:</label>
-                        <select
+                        <Label htmlFor="genreMusical" value="Genre Musical" />
+                        <Select
                             id="genreMusical"
                             name="genreMusical"
                             value={selectedGenres}
                             onChange={handleGenreSelectionChange}
                             multiple
-                            className="w-full mt-1 rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
                         >
                             {genresMusicaux.map((genre, index) => (
                                 <option key={index} value={genre.nomGenreMusical}>
                                     {genre.nomGenreMusical}
                                 </option>
                             ))}
-                        </select>
-                        <p className="text-sm text-white mt-1">
-                            Vous pouvez sélectionner jusqu&apos;&agrave; {genresMusicaux.length} genres musicaux.
+                        </Select>
+                        <p className="text-sm mt-1">
+                            Vous pouvez sélectionner jusqu'à {genresMusicaux.length} genres musicaux.
                         </p>
                     </div>
                 </div>
             </div>
-        </div>
+        </Card>
     );
 };
 

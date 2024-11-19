@@ -95,7 +95,7 @@ class OffreService
                 empty($data['typeOffre']) &&
                 empty($data['conditionsFinancieres']) &&
                 empty($data['budgetEstimatif']) &&
-                empty($data['donneesSupplementaires']['ficheTechniqueArtiste']) &&
+                empty($data['ficheTechniqueArtiste']) &&
                 empty($data['utilisateur']) &&
                 empty($data['donneesSupplementaires']['reseau']) &&
                 empty($data['donneesSupplementaires']['genreMusical']) &&
@@ -120,7 +120,13 @@ class OffreService
                 intval($data['detailOffre']['nbArtistesConcernes'])
             );
             $offre->setNbInvitesConcernes(intval($data['detailOffre']['nbInvitesConcernes']));
-            $offre->setLiensPromotionnels($data['detailOffre']['liensPromotionnels']);
+
+            $liens = $data['detailOffre']['liensPromotionnels'];
+            $liensPromotionnels = "";
+            foreach ($liens as $lien) {
+                $liensPromotionnels .= "{$lien};";
+            }
+            $offre->setLiensPromotionnels($liensPromotionnels);
 
             $extras = new Extras();
             $extras->setDescrExtras($data['extras']['descrExtras']);
@@ -156,19 +162,19 @@ class OffreService
 
             $ficheTechniqueArtiste = new FicheTechniqueArtiste();
             $ficheTechniqueArtiste->setBesoinBackline(
-                $data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinBackline']
+                $data['ficheTechniqueArtiste']['besoinBackline']
             );
             $ficheTechniqueArtiste->setBesoinEclairage(
-                $data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinEclairage']
+                $data['ficheTechniqueArtiste']['besoinEclairage']
             );
             $ficheTechniqueArtiste->setBesoinEquipements(
-                $data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinEquipements']
+                $data['ficheTechniqueArtiste']['besoinEquipements']
             );
             $ficheTechniqueArtiste->setBesoinScene(
-                $data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinScene']
+                $data['ficheTechniqueArtiste']['besoinScene']
             );
             $ficheTechniqueArtiste->setBesoinSonorisation(
-                $data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinSonorisation']
+                $data['ficheTechniqueArtiste']['besoinSonorisation']
             );
             $offre->setFicheTechniqueArtiste($ficheTechniqueArtiste);
 

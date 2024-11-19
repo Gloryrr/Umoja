@@ -1,14 +1,16 @@
 "use client";
 import React from 'react';
+import {Label, TextInput, Textarea, Card, Button } from 'flowbite-react';
+import { FiRefreshCw } from "react-icons/fi";
 
 interface ExtrasFormProps {
     extras: {
-        descrExtras: string;
-        coutExtras: number;
-        exclusivite: string;
-        exception: string;
-        ordrePassage: string;
-        clausesConfidentialites: string;
+        descrExtras: string | null;
+        coutExtras: number | null;
+        exclusivite: string | null;
+        exception: string | null;
+        ordrePassage: string | null;
+        clausesConfidentialites: string | null;
     };
     onExtrasChange: (name: string, value: string) => void;
 }
@@ -22,101 +24,114 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
         onExtrasChange(name, value);
     };
 
+    const handleReset = () => {
+        onExtrasChange("descrExtras", "");
+        onExtrasChange("coutExtras", "");
+        onExtrasChange("exclusivite", "");
+        onExtrasChange("exception", "");
+        onExtrasChange("ordrePassage", "");
+        onExtrasChange("clausesConfidentialites", "");
+    };
+
     return (
-        <div className="flex items-center justify-center">
-            <div className="mx-auto w-full max-w bg-gray-800 rounded-lg p-8">
-                <h3 className="text-2xl font-semibold text-white mb-4">Extras de l&apos;offre</h3>
-                <div className="grid grid-cols-2 gap-4 mb-5">
-                    <div>
-                        <label htmlFor="descrExtras" className="text-white">Description de l&apos;extras:</label>
-                        <input
-                            type="text"
-                            id='descrExtras'
-                            name="descrExtras"
-                            value={extras.descrExtras}
-                            onChange={handleExtrasChange}
-                            placeholder="Description des Extras"
-                            className="w-full rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="coutExtras" className="text-white">Coût des extras:</label>
-                        <input
-                            type="number"
-                            name="coutExtras"
-                            id='coutExtras'
-                            value={extras.coutExtras || 0}
-                            onChange={handleExtrasChange}
-                            placeholder="Coût des Extras"
-                            className="w-full rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
-                        />
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 mb-5">
-                    <div>
-                        <label htmlFor="exclusivite" className="text-white">Exclusivité proposée:</label>
-                        <input
-                            type="text"
-                            id='exclusivite'
-                            name="exclusivite"
-                            value={extras.exclusivite}
-                            onChange={handleExtrasChange}
-                            placeholder="Exclusivité"
-                            className="w-full rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
-                        />
-                    </div>
-
-                    <div>
-                        <label htmlFor="exception" className="text-white">Exception de l&apos;extras:</label>
-                        <input
-                            type="text"
-                            id='exception'
-                            name="exception"
-                            value={extras.exception}
-                            onChange={handleExtrasChange}
-                            placeholder="Exceptions"
-                            className="w-full rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
-                        />
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 mb-5">
-                    <div>
-                        <label htmlFor="ordrePassage" className="text-white">Ordre de passage:</label>
-                        <input
-                            type="text"
-                            id='ordrePassage'
-                            name="ordrePassage"
-                            value={extras.ordrePassage}
-                            onChange={handleExtrasChange}
-                            placeholder="Ordre de Passage"
-                            className="w-full rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
-                        />
-                    </div>
-
-                    <div>
-                        <label htmlFor="clausesConfidentialites" className="text-white">Clauses de confidentialité:</label>
-                        <textarea
-                            name="clausesConfidentialites"
-                            id='clausesConfidentialites'
-                            value={extras.clausesConfidentialites}
-                            onChange={handleExtrasChange}
-                            placeholder="Clauses de Confidentialité"
-                            className="w-full rounded-md border border-grey-700 bg-gray-900 py-2 px-3 text-base font-medium text-white outline-none focus:border-[#6A64F1] focus:shadow-md"
-                        />
-                    </div>
-                </div>
-
-                {/* <button
-                    type="button"
-                    onClick={() => onRemove(0)} // Appelle la fonction de suppression
-                    className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 mt-2"
+        <Card className="shadow-none border-none mx-auto w-full">
+            <div className="flex justify-between items-center mb-4">
+                <h3 className="text-2xl font-semibold mb-4">Extras de l&apos;offre</h3>
+                <Button
+                    color="gray"
+                    onClick={handleReset}
+                    pill
+                    aria-label="Reset"
+                    className="flex items-center"
                 >
-                    Supprimer Extras
-                </button> */}
+                    <FiRefreshCw className="w-4 h-4" />
+                </Button>
             </div>
-        </div>
+
+            {/* Section description et coût */}
+            <div className="grid grid-cols-2 gap-4 mb-5">
+                <div>
+                    <Label htmlFor="descrExtras" value="Description de l'extras" />
+                    <TextInput
+                        id="descrExtras"
+                        name="descrExtras"
+                        type="text"
+                        value={extras.descrExtras ?? ""}
+                        onChange={handleExtrasChange}
+                        placeholder="Description des Extras"
+                    />
+                </div>
+                <div>
+                    <Label htmlFor="coutExtras" value="Coût des extras" />
+                    <TextInput
+                        id="coutExtras"
+                        name="coutExtras"
+                        type="number"
+                        value={extras.coutExtras ?? ""}
+                        onChange={handleExtrasChange}
+                        placeholder="Coût des Extras"
+                    />
+                </div>
+            </div>
+
+            {/* Section exclusivité et exception */}
+            <div className="grid grid-cols-2 gap-4 mb-5">
+                <div>
+                    <Label htmlFor="exclusivite" value="Exclusivité proposée" />
+                    <TextInput
+                        id="exclusivite"
+                        name="exclusivite"
+                        type="text"
+                        value={extras.exclusivite ?? ""}
+                        onChange={handleExtrasChange}
+                        placeholder="Exclusivité"
+                    />
+                </div>
+                <div>
+                    <Label htmlFor="exception" value="Exception de l'extras" />
+                    <TextInput
+                        id="exception"
+                        name="exception"
+                        type="text"
+                        value={extras.exception ?? ""}
+                        onChange={handleExtrasChange}
+                        placeholder="Exceptions"
+                    />
+                </div>
+            </div>
+
+            {/* Section ordre de passage et clauses de confidentialité */}
+            <div className="grid gap-4 mb-5">
+                <div>
+                    <Label htmlFor="ordrePassage" value="Ordre de passage" />
+                    <TextInput
+                        id="ordrePassage"
+                        name="ordrePassage"
+                        type="text"
+                        value={extras.ordrePassage ?? ""}
+                        onChange={handleExtrasChange}
+                        placeholder="Ordre de Passage"
+                        className='w-full'
+                    />
+                </div>
+            </div>
+            <div>
+                <Label htmlFor="clausesConfidentialites" value="Clauses de confidentialité" />
+                <Textarea
+                    id="clausesConfidentialites"
+                    name="clausesConfidentialites"
+                    value={extras.clausesConfidentialites ?? ""}
+                    onChange={handleExtrasChange}
+                    placeholder="Clauses de Confidentialité"
+                    className='w-full'
+                />
+            </div>
+
+            {/* Bouton de suppression */}
+            {/* <Button color="failure" onClick={() => onRemove(0)} pill className="mt-2">
+                Supprimer Extras
+            </Button> */}
+        </Card>
     );
 };
 

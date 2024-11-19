@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * Classe représentant un Réseau.
@@ -34,7 +35,13 @@ class Reseau
      * @var string|null
      */
     #[ORM\Column(length: 100)]
-    #[Groups(['reseau:read', 'reseau:write'])]
+    #[Groups([
+        'reseau:read',
+        'reseau:write',
+        'utilisateur:read',
+        'offre:read',
+        'genre_musical:read',
+    ])]
     private ?string $nomReseau = null;
 
     /**
@@ -42,8 +49,9 @@ class Reseau
      *
      * @var Collection<int, Utilisateur>
      */
-    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: "reseaux")]
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: "reseaux", cascade: ["persist"])]
     #[Groups(['reseau:read'])]
+    #[MaxDepth(1)]
     private Collection $utilisateurs;
 
     /**
@@ -51,11 +59,12 @@ class Reseau
      *
      * @var Collection<int, GenreMusical>
      */
-    #[ORM\ManyToMany(targetEntity: GenreMusical::class, inversedBy: "reseaux")]
+    #[ORM\ManyToMany(targetEntity: GenreMusical::class, inversedBy: "reseaux", cascade: ["persist"])]
     #[ORM\JoinTable(name: "lier")]
     #[ORM\JoinColumn(name: "reseau_id", onDelete: "CASCADE")]
     #[ORM\InverseJoinColumn(name: "genre_musical_id", onDelete: "CASCADE")]
     #[Groups(['reseau:read', 'reseau:write'])]
+    #[MaxDepth(1)]
     private Collection $genresMusicaux;
 
     /**
@@ -63,11 +72,12 @@ class Reseau
      *
      * @var Collection<int, Offre>
      */
-    #[ORM\ManyToMany(targetEntity: Offre::class, inversedBy: "reseaux")]
+    #[ORM\ManyToMany(targetEntity: Offre::class, inversedBy: "reseaux", cascade: ["persist"])]
     #[ORM\JoinTable(name: "poster")]
     #[ORM\JoinColumn(name: "reseau_id", onDelete: "CASCADE")]
     #[ORM\InverseJoinColumn(name: "offre_id", onDelete: "CASCADE")]
     #[Groups(['reseau:read', 'reseau:write'])]
+    #[MaxDepth(1)]
     private Collection $offres;
 
     public function __construct()

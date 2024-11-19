@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: TypeOffreRepository::class)]
 class TypeOffre
@@ -19,7 +20,7 @@ class TypeOffre
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['typeOffre:read'])]
+    #[Groups(['type_offre:read'])]
     private ?int $id = null;
 
     /**
@@ -29,7 +30,7 @@ class TypeOffre
      * @var string|null
      */
     #[ORM\Column(length: 255)]
-    #[Groups(['typeOffre:read', 'typeOffre:write'])]
+    #[Groups(['type_offre:read', 'type_offre:write', 'offre:read'])]
     private ?string $nomTypeOffre = null;
 
     /**
@@ -38,7 +39,8 @@ class TypeOffre
      * @var Collection<int, Offre>
      */
     #[ORM\OneToMany(targetEntity: Offre::class, mappedBy: "typeOffre", orphanRemoval: true, cascade: ["remove"])]
-    #[Groups(['typeOffre:read'])]
+    #[Groups(['type_offre:read'])]
+    #[MaxDepth(1)]
     private Collection $offres;
 
     public function __construct()

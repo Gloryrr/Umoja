@@ -32,7 +32,7 @@ class TypeOffreService
         $typesOffreJSON = $serializer->serialize(
             $typesOffre,
             'json',
-            ['groups' => ['typeOffre:read']]
+            ['groups' => ['type_offre:read']]
         );
         return new JsonResponse([
             'types_offre' => $typesOffreJSON,

@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * Classe représentant les conditions financières d'une salle ou d'un contrat.
@@ -20,7 +21,7 @@ class ConditionsFinancieres
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['conditions_financieres:read'])]
+    #[Groups(['conditions_financieres:read', 'offre:read'])]
     private ?int $id = null;
 
     #[ORM\Column]
@@ -42,6 +43,7 @@ class ConditionsFinancieres
         cascade: ["remove"]
     )]
     #[Groups(['conditions_financieres:read'])]
+    #[MaxDepth(1)]
     private Collection $offres;
 
 

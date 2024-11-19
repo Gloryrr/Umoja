@@ -35,7 +35,7 @@ class GenreMusicalService
         $genresMusicauxJSON = $serializer->serialize(
             $genresMusicaux,
             'json',
-            ['groups' => ['genreMusical:read']]
+            ['groups' => ['genre_musical:read']]
         );
         return new JsonResponse([
             'genres_musicaux' => $genresMusicauxJSON,
@@ -79,7 +79,7 @@ class GenreMusicalService
                 $genreMusicalJSON = $serializer->serialize(
                     $genreMusical,
                     'json',
-                    ['groups' => ['genreMusical:read']]
+                    ['groups' => ['genre_musical:read']]
                 );
                 return new JsonResponse([
                     'genre_musical' => $genreMusicalJSON,
@@ -142,7 +142,7 @@ class GenreMusicalService
                 $genreMusical = $serializer->serialize(
                     $genreMusical,
                     'json',
-                    ['groups' => ['genreMusical:read']]
+                    ['groups' => ['genre_musical:read']]
                 );
 
                 return new JsonResponse([
@@ -196,7 +196,7 @@ class GenreMusicalService
             $GenreMusicalJSON = $serializer->serialize(
                 $genreMusical,
                 'json',
-                ['groups' => ['genreMusical:read']]
+                ['groups' => ['genre_musical:read']]
             );
             return new JsonResponse([
                 'genre_musical' => $GenreMusicalJSON,
@@ -249,7 +249,7 @@ class GenreMusicalService
             $genreMusicalJSON = $serializer->serialize(
                 $genreMusical,
                 'json',
-                ['groups' => ['genreMusical:read']]
+                ['groups' => ['genre_musical:read']]
             );
             return new JsonResponse([
                 'genre_musical' => $genreMusicalJSON,
@@ -302,7 +302,7 @@ class GenreMusicalService
             $genreMusicalJSON = $serializer->serialize(
                 $genreMusical,
                 'json',
-                ['groups' => ['genreMusical:read']]
+                ['groups' => ['genre_musical:read']]
             );
             return new JsonResponse([
                 'genre_musical' => $genreMusicalJSON,
@@ -356,7 +356,7 @@ class GenreMusicalService
             $genreMusicalJSON = $serializer->serialize(
                 $genreMusical,
                 'json',
-                ['groups' => ['genreMusical:read']]
+                ['groups' => ['genre_musical:read']]
             );
             return new JsonResponse([
                 'genre_musical' => $genreMusicalJSON,
@@ -409,7 +409,7 @@ class GenreMusicalService
             $genreMusicalJSON = $serializer->serialize(
                 $genreMusical,
                 'json',
-                ['groups' => ['genreMusical:read']]
+                ['groups' => ['genre_musical:read']]
             );
             return new JsonResponse([
                 'genre_musical' => $genreMusicalJSON,
@@ -462,7 +462,7 @@ class GenreMusicalService
             $genreMusicalJSON = $serializer->serialize(
                 $genreMusical,
                 'json',
-                ['groups' => ['genreMusical:read']]
+                ['groups' => ['genre_musical:read']]
             );
             return new JsonResponse([
                 'genre_musical' => $genreMusicalJSON,
@@ -515,7 +515,7 @@ class GenreMusicalService
             $genreMusicalJSON = $serializer->serialize(
                 $genreMusical,
                 'json',
-                ['groups' => ['genreMusical:read']]
+                ['groups' => ['genre_musical:read']]
             );
             return new JsonResponse([
                 'genre_musical' => $genreMusicalJSON,
@@ -568,7 +568,7 @@ class GenreMusicalService
             $genreMusicalJSON = $serializer->serialize(
                 $genreMusical,
                 'json',
-                ['groups' => ['genreMusical:read']]
+                ['groups' => ['genre_musical:read']]
             );
             return new JsonResponse([
                 'genre_musical' => $genreMusicalJSON,
@@ -622,7 +622,7 @@ class GenreMusicalService
             $genreMusicalJSON = $serializer->serialize(
                 $genreMusical,
                 'json',
-                ['groups' => ['genreMusical:read']]
+                ['groups' => ['genre_musical:read']]
             );
             return new JsonResponse([
                 'genre_musical' => $genreMusicalJSON,
