@@ -3,13 +3,10 @@
 namespace App\Controller;
 
 use App\Repository\ArtisteRepository;
-use App\Repository\ConcernerRepository;
-use App\Repository\CreerRepository;
 use App\Repository\GenreMusicalRepository;
-use App\Repository\PosterRepository;
-use App\Repository\RattacherRepository;
 use App\Repository\ReseauRepository;
 use App\Repository\UtilisateurRepository;
+use App\Services\MailerService;
 use App\Services\OffreService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,7 +24,7 @@ class OffreController extends AbstractController
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
-    #[Route('/api/v1/Offres', name: 'get_Offres', methods: ['GET'])]
+    #[Route('/api/v1/offres', name: 'get_Offres', methods: ['GET'])]
     public function getOffres(
         OffreRepository $offreRepository,
         SerializerInterface $serializer
@@ -35,6 +32,47 @@ class OffreController extends AbstractController
         return OffreService::getOffres(
             $offreRepository,
             $serializer
+        );
+    }
+
+    /**
+     * Récupère une offre en particulière en fonction de son id.
+     *
+     * @param int $id, l'id de l'offre à récupérer
+     * @param OffreRepository $offreRepository, la classe CRUD des Offres
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/offre/{id}', name: 'get_offre', methods: ['GET'])]
+    public function getOffre(
+        int $id,
+        OffreRepository $offreRepository,
+        SerializerInterface $serializer,
+    ): JsonResponse {
+        return OffreService::getOffre(
+            $offreRepository,
+            $serializer,
+            $id
+        );
+    }
+
+    /**
+     * Récupère toutes les offres qui sont liés à un utilisateur en particulier.
+     *
+     * @param OffreRepository $offreRepository, la classe CRUD des Offres
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/offre/utilisateur/{id}', name: 'get_offre_by_utilisateur', methods: ['GET'])]
+    public function getOffreByUtilisateur(
+        int $id,
+        OffreRepository $offreRepository,
+        SerializerInterface $serializer,
+    ): JsonResponse {
+        return OffreService::getOffreByUtilisateur(
+            $offreRepository,
+            $serializer,
+            $id
         );
     }
 
@@ -51,27 +89,21 @@ class OffreController extends AbstractController
         Request $request,
         OffreRepository $offreRepository,
         UtilisateurRepository $utilisateurRepository,
-        CreerRepository $creerRepository,
         ReseauRepository $reseauRepository,
-        PosterRepository $posterRepository,
-        RattacherRepository $rattacherRepository,
         GenreMusicalRepository $genreMusicalRepository,
         ArtisteRepository $artisteRepository,
-        ConcernerRepository $concernerRepository,
-        SerializerInterface $serializer
+        SerializerInterface $serializer,
+        MailerService $mailerService
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
         return OffreService::createOffre(
             $offreRepository,
             $utilisateurRepository,
-            $creerRepository,
             $reseauRepository,
-            $posterRepository,
-            $rattacherRepository,
             $genreMusicalRepository,
             $artisteRepository,
-            $concernerRepository,
             $serializer,
+            $mailerService,
             $data
         );
     }
@@ -83,6 +115,7 @@ class OffreController extends AbstractController
      * @param int $id
      * @param Request $request
      * @param OffreRepository $offreRepository, la classe CRUD des Offres
+     * @param MailerService $mailerService, le service d'envoi de mail
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
@@ -91,6 +124,7 @@ class OffreController extends AbstractController
         int $id,
         Request $request,
         OffreRepository $offreRepository,
+        MailerService $mailerService,
         SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
@@ -98,6 +132,7 @@ class OffreController extends AbstractController
             $id,
             $offreRepository,
             $serializer,
+            $mailerService,
             $data
         );
     }
@@ -128,7 +163,6 @@ class OffreController extends AbstractController
      * @param Request $requete, la requête avec les données d'ajout
      * @param OffreRepository $offreRepository, la classe CRUD des offres
      * @param ArtisteRepository $artisteRepository, la classe CRUD des artistes
-     * @param ConcernerRepository $concernerRepository, CRUD des artistes qui sont concernés par des offres
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
@@ -137,7 +171,6 @@ class OffreController extends AbstractController
         Request $request,
         OffreRepository $offreRepository,
         ArtisteRepository $artisteRepository,
-        ConcernerRepository $concernerRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
@@ -145,7 +178,6 @@ class OffreController extends AbstractController
             $data,
             $offreRepository,
             $artisteRepository,
-            $concernerRepository,
             $serializer
         );
     }
@@ -156,7 +188,6 @@ class OffreController extends AbstractController
      * @param Request $request, la requête avec les données de suppression
      * @param OffreRepository $offreRepository, la classe CRUD des offres
      * @param ArtisteRepository $artisteRepository, la classe CRUD des artistes
-     * @param ConcernerRepository $concernerRepository, CRUD des artistes qui sont concernés par des offres
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
@@ -165,7 +196,6 @@ class OffreController extends AbstractController
         Request $request,
         OffreRepository $offreRepository,
         ArtisteRepository $artisteRepository,
-        ConcernerRepository $concernerRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
@@ -173,7 +203,6 @@ class OffreController extends AbstractController
             $data,
             $offreRepository,
             $artisteRepository,
-            $concernerRepository,
             $serializer
         );
     }
@@ -184,7 +213,6 @@ class OffreController extends AbstractController
      * @param Request $requete, la requête avec les données d'jaout
      * @param OffreRepository $offreRepository, la classe CRUD des offrex
      * @param GenreMusicalRepository $genreMusicalRepository, la classe CRUD des genres musicaux
-     * @param RattacherRepository $rattacherRepository, la classe CRUD des utilisateurs qui appartiennent à des offrex
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
@@ -193,7 +221,6 @@ class OffreController extends AbstractController
         Request $request,
         OffreRepository $offreRepository,
         GenreMusicalRepository $genreMusicalRepository,
-        RattacherRepository $rattacherRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
@@ -201,7 +228,6 @@ class OffreController extends AbstractController
             $data,
             $offreRepository,
             $genreMusicalRepository,
-            $rattacherRepository,
             $serializer
         );
     }
@@ -212,7 +238,6 @@ class OffreController extends AbstractController
      * @param Request $requete, la requête avec les données d'jaout
      * @param OffreRepository $offreRepository, la classe CRUD des réseaux
      * @param GenreMusicalRepository $genreMusicalRepository, la classe CRUD des genres musicaux
-     * @param RattacherRepository $rattacherRepository, la classe CRUD des utilisateurs qui appartiennent à des réseaux
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
@@ -221,7 +246,6 @@ class OffreController extends AbstractController
         Request $request,
         OffreRepository $offreRepository,
         GenreMusicalRepository $genreMusicalRepository,
-        RattacherRepository $rattacherRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
@@ -229,7 +253,6 @@ class OffreController extends AbstractController
             $data,
             $offreRepository,
             $genreMusicalRepository,
-            $rattacherRepository,
             $serializer
         );
     }

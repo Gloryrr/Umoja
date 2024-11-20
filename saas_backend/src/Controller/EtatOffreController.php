@@ -31,6 +31,26 @@ class EtatOffreController extends AbstractController
     }
 
     /**
+     * Récupère un état d'offre existants.
+     *
+     * @param EtatOffreRepository $etatOffreRepository, la classe CRUD des états d'offre
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/etat-offre/{id}', name: 'get_etat_offre_by_id', methods: ['GET'])]
+    public function getEtatOffreById(
+        int $id,
+        EtatOffreRepository $etatOffreRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        return EtatOffreService::getEtatOffreById(
+            $id,
+            $etatOffreRepository,
+            $serializer
+        );
+    }
+
+    /**
      * Crée un nouveau genre musical.
      *
      * @param Request $request
