@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react';
-import { FaCalendarAlt, FaMapMarkerAlt, FaUsers, FaLink } from "react-icons/fa";
+import { FaCalendarAlt, FaMapMarkerAlt, FaLink } from "react-icons/fa";
 import NavigationHandler from  '../components/router';
 
 interface Offre {
@@ -57,7 +57,7 @@ export default function Offre() {
       <form onSubmit={handleSubmit} className="space-y-6">
         
         <div className="space-y-2">
-          <label htmlFor="title_offre" className="text-lg">Titre de l'offre</label>
+          <label htmlFor="title_offre" className="text-lg">Titre de l&apos;offre</label>
           <div className="relative">
             <input
               type="text"
@@ -201,11 +201,11 @@ export default function Offre() {
 
 
         <button type="submit" className="w-full h-12 bg-blue-600 rounded-full font-bold text-white hover:bg-blue-700 focus:outline-none">
-          Créer l'offre
+          Créer l&apos;offre
         </button>
 
         <div className="text-center text-sm mt-4">
-          <p>Vous avez des questions sur la création d'offres ?
+          <p>Vous avez des questions sur la création d&apos;offres ?
             <NavigationHandler>
               {(handleNavigation: (path: string) => void) => (
                 <a onClick={() => handleNavigation('/faq')} className="text-blue-500 font-semibold hover:underline"> Consultez notre FAQ</a>

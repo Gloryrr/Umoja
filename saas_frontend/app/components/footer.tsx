@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import { Facebook, Linkedin, Twitter, Instagram, Youtube } from 'lucide-react'
 
