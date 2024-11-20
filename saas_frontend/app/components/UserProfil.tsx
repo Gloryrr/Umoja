@@ -65,8 +65,8 @@ const UserProfile: React.FC = () => {
     };
 
     return (
-        <Card>
-            <h2 className="text-xl font-semibold mb-4">Informations du Profil</h2>
+        <Card className="mx-auto w-[70%]">
+            <h2 className="text-2xl font-bold mb-4">Informations du Profil</h2>
             {isEditing ? (
                 <form className="flex flex-col gap-6">
                     <div>

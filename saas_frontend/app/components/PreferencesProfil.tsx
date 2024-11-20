@@ -72,7 +72,7 @@ const PreferencesProfil: React.FC = () => {
   }, []);
 
   return (
-    <div className="my-10">
+    <div className="mx-auto w-[70%]">
       <Card>
         <h2 className="text-2xl font-bold text-center mb-6">Notifications</h2>
 
