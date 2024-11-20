@@ -10,11 +10,14 @@ use App\Entity\Extras;
 use App\Entity\FicheTechniqueArtiste;
 use App\Entity\Reponse;
 use App\Entity\TypeOffre;
+use App\Entity\Artiste;
 use App\Entity\Offre;
 use App\Repository\CommentaireRepository;
+use App\Repository\EtatOffreRepository;
 use App\Repository\EtatReponseRepository;
 use App\Repository\ReponseRepository;
 use App\Repository\OffreRepository;
+use App\Repository\TypeOffreRepository;
 use App\Repository\UtilisateurRepository;
 use App\Repository\ReseauRepository;
 use App\Repository\GenreMusicalRepository;
@@ -124,6 +127,8 @@ class OffreService
         ReseauRepository $reseauRepository,
         GenreMusicalRepository $genreMusicalRepository,
         ArtisteRepository $artisteRepository,
+        EtatOffreRepository $etatOffreRepository,
+        TypeOffreRepository $typeOffreRepository,
         SerializerInterface $serializer,
         MailerService $mailerService,
         mixed $data
@@ -191,13 +196,15 @@ class OffreService
             $extras->setClausesConfidentialites($data['extras']['clausesConfidentialites']);
             $offre->setExtras($extras);
 
-            $etatOffre = new EtatOffre();
-            $etatOffre->setNomEtat($data['etatOffre']['nomEtatOffre']);
-            $offre->setEtatOffre($etatOffre);
+            if ($data['etatOffre']['nomEtatOffre'] == "") {
+                $etatOffre = $etatOffreRepository->findBy(['nomEtat' => 'En Cours'])[0];
+                $offre->setEtatOffre($etatOffre);
+            }
 
-            $typeOffre = new TypeOffre();
-            $typeOffre->setNomTypeOffre($data['typeOffre']['nomTypeOffre']);
-            $offre->setTypeOffre($typeOffre);
+            if ($data['typeOffre']['nomTypeOffre'] == "") {
+                $typeOffre = $typeOffreRepository->findBy(['nomTypeOffre' => 'Tournée'])[0];
+                $offre->setTypeOffre($typeOffre);
+            }
 
             $conditionsFinancieres = new ConditionsFinancieres();
             $conditionsFinancieres->setMinimunGaranti(intval($data['conditionsFinancieres']['minimumGaranti']));
@@ -256,7 +263,18 @@ class OffreService
             $nb_artistes = intval($data['donneesSupplementaires']['nbArtistes']);
             for ($i = 0; $i < $nb_artistes; $i++) {
                 $artiste = $artisteRepository->trouveArtisteByName($data['donneesSupplementaires']['artiste'][$i]);
-                $offre->addArtiste($artiste[0]);
+                switch (sizeof($artiste)) {
+                    case 0:
+                        $artisteObject = new Artiste();
+                        $artisteObject->setNomArtiste($data['donneesSupplementaires']['artiste'][$i]);
+                        $artisteObject->setDescrArtiste("Artiste quelconque");
+                        $artisteRepository->inscritArtiste($artisteObject);
+                        break;
+                    
+                    default:
+                        $offre->addArtiste($artiste[0]);
+                        break;
+                }
             }
 
             // ajout de l'offre en base de données

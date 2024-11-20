@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Repository\ArtisteRepository;
+use App\Repository\EtatOffreRepository;
 use App\Repository\GenreMusicalRepository;
 use App\Repository\ReseauRepository;
+use App\Repository\TypeOffreRepository;
 use App\Repository\UtilisateurRepository;
 use App\Services\MailerService;
 use App\Services\OffreService;
@@ -92,6 +94,8 @@ class OffreController extends AbstractController
         ReseauRepository $reseauRepository,
         GenreMusicalRepository $genreMusicalRepository,
         ArtisteRepository $artisteRepository,
+        EtatOffreRepository $etatOffreRepository,
+        TypeOffreRepository $typeOffreRepository,
         SerializerInterface $serializer,
         MailerService $mailerService
     ): JsonResponse {
@@ -102,6 +106,8 @@ class OffreController extends AbstractController
             $reseauRepository,
             $genreMusicalRepository,
             $artisteRepository,
+            $etatOffreRepository,
+            $typeOffreRepository,
             $serializer,
             $mailerService,
             $data
