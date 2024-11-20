@@ -38,10 +38,10 @@ const OffreForm: React.FC = () => {
             clausesConfidentialites: null
         },
         etatOffre: {
-            nomEtatOffre: 'INITIAL'
+            nomEtatOffre: ""
         },
         typeOffre: {
-            nomTypeOffre: 'TYPE TOURNEE'
+            nomTypeOffre: ""
         },
         conditionsFinancieres: {
             minimumGaranti: null,
@@ -62,16 +62,15 @@ const OffreForm: React.FC = () => {
             besoinSonorisation: null
         },
         donneesSupplementaires: {
-            reseau: ["Facebook"],
+            reseau: [],
             nbReseaux: null,
-            genreMusical: ["Pop"],
+            genreMusical: [],
             nbGenresMusicaux: null,
             artiste: [],
             nbArtistes: null
         },
         utilisateur: {
-            username: localStorage.getItem("username"),
-            contact: 'utilisateur@gmail.com'
+            username: localStorage.getItem("username")
         }
     });
 

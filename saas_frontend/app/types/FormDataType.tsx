@@ -71,7 +71,6 @@ export type DonneesSupplementaires = {
 // type pour l'utilisateur
 export type Utilisateur = {
     username: string | null;
-    contact: string | null;
 };
 
 // type global pour formData

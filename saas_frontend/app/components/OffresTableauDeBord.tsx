@@ -18,6 +18,7 @@ interface Offre {
     nbArtistesConcernes: number | null;
     nbInvitesConcernes: number | null;
     liensPromotionnels: string;
+    etatOffre: string | null;
 }
 
 const TableDesOffres = () => {
@@ -59,9 +60,23 @@ const TableDesOffres = () => {
         try {
             const response = await apiGet(`/offre/utilisateur/${idUtilisateur}`);
             const allOffers: Offre[] = JSON.parse(response.offre);
-            console.log(allOffers);
+
+            // Récupération des états pour chaque offre
+            const offersWithStates = await Promise.all(
+                allOffers.map(async (offre) => {
+                    try {
+                        const etatResponse = await apiGet(`/etat-offre/${offre.etatOffre.id}`);
+                        offre.etatOffre = JSON.parse(etatResponse.etat_offre)[0].nomEtat;
+                    } catch (error) {
+                        console.error(`Erreur lors de la récupération de l'état pour l'offre ${offre.id}`, error);
+                        offre.etatOffre = "État inconnu";
+                    }
+                    return offre;
+                })
+            );
+
             setOffresTaille(allOffers.length);
-            setOffres(allOffers.slice(startIndex, startIndex + offersPerPage));
+            setOffres(offersWithStates.slice(startIndex, startIndex + offersPerPage));
         } catch (error) {
             console.error("Erreur lors de la récupération des offres paginées :", error);
             setError("Erreur lors de la récupération des offres paginées.");
@@ -78,10 +93,13 @@ const TableDesOffres = () => {
         const deadlineDate = new Date(deadLine).getTime();
         const today = new Date().getTime();
         return deadlineDate < today;
-    };    
+    };
 
     if (isLoading) {
-        return <Spinner size="xl" className="mt-2">Chargement des offres...</Spinner>;
+        return  <div className="flex items-center">
+                    <p className="mr-2">Chargement des offres...</p>
+                    <Spinner size="xl" className="mt-2"></Spinner>
+                </div> 
     }
 
     if (error) {
@@ -112,7 +130,7 @@ const TableDesOffres = () => {
                             <Table.Row key={offre.id} className="bg-white dark:border-gray-700">
                                 <Table.Cell>{offre.titleOffre}</Table.Cell>
                                 <Table.Cell
-                                    className={` ${
+                                    className={`${
                                         isDateDepassee(offre.deadLine || "") ? "text-red-500" : "text-green-500"
                                     }`}
                                 >
@@ -121,13 +139,15 @@ const TableDesOffres = () => {
                                 <Table.Cell>
                                     {offre.villeVisee || "N/A"}, {offre.regionVisee || "N/A"}
                                 </Table.Cell>
-                                <Table.Cell                                     className={` ${
-                                        isDateDepassee(offre.deadLine || "") ? "text-red-500" : "text-green-500"
-                                    }`}>
-                                    {isDateDepassee(offre.deadLine || "") ? "Date dépassée" : "Active"}
+                                <Table.Cell
+                                    className={`${
+                                        offre.etatOffre === "En Cours" ? "text-green-500" : "text-red-500"
+                                    }`}
+                                >
+                                    {offre.etatOffre}
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <Button size="sm" href={`mes-offres/detail/${offre.id}`}>
+                                    <Button size="sm" href={`mes-offres/detail/${Number(offre.id)}`}>
                                         Voir Détails
                                     </Button>
                                 </Table.Cell>
