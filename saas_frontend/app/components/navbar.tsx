@@ -97,7 +97,6 @@ const Navbar = () => {
     { id: 3, text: 'Offre' },
     { id: 4, text: 'About' },
     { id: 5, text: 'Contact' },
-    { id: 5, text: 'admin' },
   ];
 
   return (
