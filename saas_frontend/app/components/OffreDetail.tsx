@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, Card, TextInput, Label, Modal } from "flowbite-react";
+import { Button, Label, Modal, Progress, Accordion, Textarea } from "flowbite-react";
 import { HiArrowLeft, HiPencil, HiTrash } from "react-icons/hi";
-import { apiGet, apiDelete, apiPatch } from "@/app/services/internalApiClients";
+import { apiGet, apiDelete, apiPost } from "@/app/services/internalApiClients";
+import CommentaireSection from "@/app/components/Commentaires/CommentaireSection";
 
 interface Offre {
   id: string;
@@ -27,6 +28,48 @@ interface Offre {
   utilisateur: { username: string };
   artistes: { nomArtiste: string }[];
   reseaux: { nomReseau: string }[];
+  reponses: { id: number }[];
+  commenteesPar: { id: number }[];
+}
+
+interface Extras {
+  id: number;
+  descrExtras: string;
+  coutExtras: number;
+  exclusivite: string;
+  exception: string;
+  ordrePassage: string;
+  clausesConfidentialites: string;
+}
+
+interface EtatOffre {
+  id: number;
+  nomEtatOffre: string;
+}
+
+interface ConditionsFinancieres {
+  id: number;
+  minimumGaranti: number;
+  conditionsPaiement: string;
+  pourcentageRecette: number;
+}
+
+interface BudgetEstimatif {
+  id: number;
+  cachetArtiste: number;
+  fraisDeplacement: number;
+  fraisHebergement: number;
+  fraisRestauration: number;
+}
+
+interface reponse {
+  id: number;
+  etatReponseId: number;
+  offreId: number;
+  utilisateurId: number;
+  dateDebut: string;
+  dateFin: string;
+  prixParticipation: number;
 }
 
 async function fetchOffreDetails(id: number): Promise<Offre> {
@@ -69,34 +112,72 @@ async function fetchBudgetEstimatif(idBudgetEstimatif: number): Promise<any> {
   return JSON.parse(response.budget_estimatif);
 }
 
+async function fetchReponse(idReponse: number): Promise<any> {
+  const response = await apiGet(`/reponse/${idReponse}`);
+  if (!response) {
+    throw new Error("Erreur lors de la récupération de la réponse");
+  }
+  return JSON.parse(response.reponse);
+}
+
+async function fetchCommentaire(idCommenaire: number): Promise<any> {
+  const response = await apiGet(`/commentaire/${idCommenaire}`);
+  if (!response) {
+    throw new Error("Erreur lors de la récupération du commentaire");
+  }
+  return JSON.parse(response.commentaires);
+}
+
 interface OffreDetailProps {
   offreId: number;
 }
 
 export default function OffreDetail({ offreId }: OffreDetailProps) {
+  const [commentaire, setCommentaire] = useState("");
   const [offre, setOffre] = useState<Offre | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [extras, setExtras] = useState<Extras | null>(null);
+  const [etatOffre, setEtatOffre] = useState<EtatOffre | null>(null);
+  const [conditionsFinancieres, setConditionsFinancieres] = useState<ConditionsFinancieres | null>(null);
+  const [budgetEstimatif, setBudgetEstimatif] = useState<BudgetEstimatif | null>(null);
+  const [reponses, setReponses] = useState<reponse[]>([]);
+  const [commentaires, setCommentaires] = useState<Commentaire[]>([]);
+  const [montantTotal, setMontantTotal] = useState<number>(0);
+  const [montantTotalRecu, setMontantTotalRecu] = useState<number>(5);
+  const [timeLeft, setTimeLeft] = useState<string | null>(null);
 
   useEffect(() => {
     fetchOffreDetails(offreId)
       .then((data) => {
         setOffre(data);
         setLoading(false);
-        fetchExtrasOffre(data.extras.id).then(
-          (data => console.log(data[0]))
-        ) // récupération de l'extras
-        fecthEtatOffre(data.etatOffre.id).then(
-          (data => console.log(data[0]))
-        ) // récupération de l'état actuel de l'offre
-        fetchConditionsFinancieres(data.conditionsFinancieres.id).then(
-          (data => console.log(data[0]))
-        )
-        fetchBudgetEstimatif(data.budgetEstimatif.id).then(
-          (data => console.log(data[0]))
-        )
+        fetchExtrasOffre(data.extras.id).then((data => {setExtras(data[0])})) // récupération de l'extras
+        fecthEtatOffre(data.etatOffre.id).then((data => {setEtatOffre(data[0])})) // récupération de l'état actuel de l'offre
+        fetchConditionsFinancieres(data.conditionsFinancieres.id).then((data => {setConditionsFinancieres(data[0])}))
+        fetchBudgetEstimatif(data.budgetEstimatif.id).then((data => {setBudgetEstimatif(data[0])}))
+        const allReponses: reponse[] = [];
+        data.reponses.forEach((reponse) => {
+          fetchReponse(reponse.id).then((reponseData) => {
+            allReponses.push(reponseData);
+            if (allReponses.length === data.reponses.length) {
+              setReponses(allReponses);
+              setMontantTotalRecu(calculSommeTotalRecu(allReponses));
+            }
+          });
+        });
+        const allCommentaires: Commentaire[] = [];
+        console.log(data.commenteesPar);
+        data.commenteesPar.forEach((commentaire) => {
+          fetchCommentaire(commentaire.id).then((commentaireData) => {
+            allCommentaires.push(commentaireData);
+            if (allCommentaires.length === data.commenteesPar.length) {
+              setCommentaires(allCommentaires);
+            }
+          });
+        });
       })
       .catch((err) => {
         setError(err.message);
@@ -104,14 +185,106 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
       });
   }, [offreId]);
 
+  useEffect(() => {
+    if (!offre || !offre.deadLine) return;
+
+    const deadlineDate = new Date(offre.deadLine).getTime();
+
+    const updateCountdown = () => {
+      const now = Date.now();
+      const diff = deadlineDate - now;
+
+      if (diff <= 0) {
+        setTimeLeft("Délai expiré");
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      setTimeLeft(`${days}j ${hours}h ${minutes}m ${seconds}s`);
+    };
+
+    const intervalId = setInterval(updateCountdown, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [offre]);
+
+  useEffect(() => {
+    if (budgetEstimatif) {
+      const total = 
+        budgetEstimatif.cachetArtiste + 
+        budgetEstimatif.fraisDeplacement + 
+        budgetEstimatif.fraisHebergement + 
+        budgetEstimatif.fraisRestauration;
+  
+      setMontantTotal(total);
+      console.log("Montant total calculé :", total);
+    }
+  }, [budgetEstimatif]);  
+
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
   };
+
+  const calculSommeTotalRecu = (reponses: reponse[]) => {
+    return reponses.reduce(
+      (acc, reponse) => acc + reponse.prixParticipation, 0
+    );
+  };  
+
+  const calculPourcentageMontantTotalRecu = () => {
+    if (!montantTotal) {
+      return 0;
+    }
+    const pourcentage = (montantTotalRecu / montantTotal) * 100;
+    return parseFloat(pourcentage.toFixed(1));
+  }
 
   const handleDelete = async () => {
     await apiDelete(`/offre/${offreId}`);
     alert("Offre supprimée avec succès.");
     window.location.href = "/umodja/home";
+  };
+
+  interface Commentaire {
+    id: number;
+    utilisateur : {
+      username: string;
+    },
+    commentaire: string;
+  }
+
+  const handleCommentSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!commentaire.trim()) {
+      setError("Le commentaire ne peut pas être vide.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    const data = JSON.stringify({
+      commentaire: {
+        idOffre: offre?.id,
+        username: localStorage.getItem("username"),
+        contenu: commentaire,
+      },
+    });
+
+    try {
+      await apiPost("/commentaire/create", JSON.parse(data));
+      setCommentaire("");
+      alert("Commentaire ajouté avec succès !");
+    } catch (err) {
+      setError("Une erreur est survenue lors de l'ajout du commentaire.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading) {
@@ -128,171 +301,198 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
 
   return (
     <div className="p-6">
-      <Button color="light" href={"/umodja/home"} className="mb-4">
-        <HiArrowLeft className="mr-2" /> Retour
+      <Button href={"/umodja/home"} className="mb-4 w-[15%]">
+        <HiArrowLeft className="mr-2" />
+        <span>Retour</span>
       </Button>
-      <h1 className="text-3xl font-bold mb-6">{offre.titleOffre}</h1>
+  
+      <Accordion className="ml-[20%] mr-[20%]" collapseAll>
+        <Accordion.Panel>
+          <Accordion.Title>Détails de l'offre</Accordion.Title>
+          <Accordion.Content>
+              <h1 className="text-3xl font-bold mb-6">{offre.titleOffre}</h1>
+        
+              {/* Informations générales */}
+              <div className="mb-6">
+                <Label value="Date limite de la tournée" />
+                <p>{new Date(offre.deadLine).toLocaleDateString()}</p>
+                <p className="text-red-500 font-semibold">Temps restant : {timeLeft}</p>
+              </div>
+        
+              <div className="mb-6">
+                <Progress progress={calculPourcentageMontantTotalRecu()} size="lg" color="green" />
+                <p className="mt-2">Avancement de la cagnotte : {calculPourcentageMontantTotalRecu()} %</p>
+              </div>
+        
+              {/* Détails de l'offre */}
+              <h2 className="text-2xl font-bold mt-8">Offre</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Label value="Description" />
+                  <p>{offre.descrTournee}</p>
+                </div>
+                <div>
+                  <Label value="Ville visée" />
+                  <p>{offre.villeVisee}</p>
+                </div>
+                <div>
+                  <Label value="Région visée" />
+                  <p>{offre.regionVisee}</p>
+                </div>
+                <div>
+                  <Label value="Nombre de places (min)" />
+                  <p>{offre.placesMin}</p>
+                </div>
+                <div>
+                  <Label value="Nombre de places (max)" />
+                  <p>{offre.placesMax}</p>
+                </div>
+                <div>
+                  <Label value="Date minimale" />
+                  <p>{offre.dateMinProposee}</p>
+                </div>
+                <div>
+                  <Label value="Date maximale" />
+                  <p>{offre.dateMaxProposee}</p>
+                </div>
+                <div>
+                  <Label value="Nombre d'artistes concernés" />
+                  <p>{offre.nbArtistesConcernes}</p>
+                </div>
+                <div>
+                  <Label value="Nombre d'invités concernés" />
+                  <p>{offre.nbInvitesConcernes}</p>
+                </div>
+                <div>
+                  <Label value="Liens promotionnels" />
+                  <p>{offre.liensPromotionnels}</p>
+                </div>
+              </div>
+        
+              {/* Extras */}
+              {extras && (
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold mt-8">Extras</h2>
+                  <p>Exclusivité : {extras.exclusivite}</p>
+                  <p>Clauses de confidentialité : {extras.clausesConfidentialites}</p>
+                  <p>Exception : {extras.exception}</p>
+                  <p>Ordre de passage : {extras.ordrePassage}</p>
+                </div>
+              )}
+        
+              {/* État de l'offre */}
+              {etatOffre && (
+                <div className="mb-6">
+                  <Label value="État de l'offre" />
+                  <p>{etatOffre.nomEtatOffre}</p>
+                </div>
+              )}
+        
+              {/* Type d'offre */}
+              {offre.typeOffre && (
+                <div className="mb-6">
+                  <Label value="Type d'offre" />
+                  <p>{offre.typeOffre.nomTypeOffre}</p>
+                </div>
+              )}
+        
+              {/* Conditions financières */}
+              {conditionsFinancieres && (
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold mt-8">Conditions financières</h2>
+                  <p>Minimum garanti : {conditionsFinancieres.minimumGaranti} €</p>
+                  <p>Conditions de paiement : {conditionsFinancieres.conditionsPaiement}</p>
+                  <p>Pourcentage sur recettes : {conditionsFinancieres.pourcentageRecette} %</p>
+                </div>
+              )}
+        
+              {/* Budget estimatif */}
+              {budgetEstimatif && (
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold mt-8">Budget estimatif</h2>
+                  <p>Cachet artiste : {budgetEstimatif.cachetArtiste} €</p>
+                  <p>Frais de déplacement : {budgetEstimatif.fraisDeplacement} €</p>
+                  <p>Frais d'hébergement : {budgetEstimatif.fraisHebergement} €</p>
+                  <p>Frais de restauration : {budgetEstimatif.fraisRestauration} €</p>
+                </div>
+              )}
+        
+              {/* Artistes */}
+              {offre.artistes && (
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold mt-8">Artistes</h2>
+                  <ul>
+                    {offre.artistes.map((artiste, index) => (
+                      <li key={index}>{artiste.nomArtiste}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+        
+              {/* Réseaux */}
+              {offre.reseaux && (
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold mt-8">Réseaux</h2>
+                  <ul>
+                    {offre.reseaux.map((reseau, index) => (
+                      <li key={index}>{reseau.nomReseau}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
-      <Card className="w-full md:w-[60%] mx-auto shadow-lg">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <Label value="Titre de l'offre" />
-            <TextInput
-              value={offre.titleOffre}
-              readOnly={!isEditing}
-              onChange={(e) => setOffre({ ...offre, titleOffre: e.target.value })}
-            />
-          </div>
+              <div className="flex justify-end mt-12 gap-4">
+                <Button color="warning" onClick={handleEditToggle}>
+                  <HiPencil className="mr-2" />
+                  Modifier
+                </Button>
+                <Button color="failure" onClick={() => setShowDeleteModal(true)}>
+                  <HiTrash className="mr-2" />
+                  Supprimer
+                </Button>
+              </div>
+          </Accordion.Content>
+        </Accordion.Panel>
+      </Accordion>
 
-          <div>
-            <Label value="Description de la tournée" />
-            <TextInput
-              value={offre.descrTournee}
-              readOnly={!isEditing}
-              onChange={(e) => setOffre({ ...offre, descrTournee: e.target.value })}
-            />
-          </div>
-
-          <div>
-            <Label value="Date limite" />
-            <TextInput
-              type="date"
-              value={new Date(offre.deadLine).toLocaleDateString()} 
-              // à régler plus tard, le format pose problème pour afficher la date dans un input type Date
-              readOnly={!isEditing}
-              onChange={(e) => setOffre({ ...offre, deadLine: e.target.value })}
-            />
-          </div>
-
-          <div>
-            <Label value="Date minimale de l'offre" />
-            <TextInput
-              type="date"
-              value={offre.dateMinProposee}
-              readOnly={!isEditing}
-              onChange={(e) => setOffre({ ...offre, dateMinProposee: e.target.value })}
-            />
-          </div>
-
-          <div>
-            <Label value="Date maximale de l'offre" />
-            <TextInput
-              type="date"
-              value={offre.dateMaxProposee}
-              readOnly={!isEditing}
-              onChange={(e) => setOffre({ ...offre, dateMaxProposee: e.target.value })}
-            />
-          </div>
-
-          <div>
-            <Label value="Ville visée" />
-            <TextInput
-              value={offre.villeVisee}
-              readOnly={!isEditing}
-              onChange={(e) => setOffre({ ...offre, villeVisee: e.target.value })}
-            />
-          </div>
-
-          <div>
-            <Label value="Région visée" />
-            <TextInput
-              value={offre.regionVisee}
-              readOnly={!isEditing}
-              onChange={(e) => setOffre({ ...offre, regionVisee: e.target.value })}
-            />
-          </div>
-
-          <div>
-            <Label value="Nombre de places (min)" />
-            <TextInput
-              type="number"
-              value={offre.placesMin}
-              readOnly={!isEditing}
-              onChange={(e) => setOffre({ ...offre, placesMin: parseInt(e.target.value) })}
-            />
-          </div>
-
-          <div>
-            <Label value="Nombre de places (max)" />
-            <TextInput
-              type="number"
-              value={offre.placesMax}
-              readOnly={!isEditing}
-              onChange={(e) => setOffre({ ...offre, placesMax: parseInt(e.target.value) })}
-            />
-          </div>
-
-          <div>
-            <Label value="Artistes concernés" />
-            <span className="block">{offre.artistes.map((artiste) => artiste.nomArtiste).join(", ")}</span>
-          </div>
-
-          <div>
-            <Label value="Réseaux sociaux" />
-            <span className="block">{offre.reseaux.map((reseau) => reseau.nomReseau).join(", ")}</span>
-          </div>
-
-          <div>
-            <Label value="Type de l'offre" />
-            <TextInput value={offre.typeOffre.nomTypeOffre} readOnly />
-          </div>
-
-          <div>
-            <Label value="Les liens promotionnels de l'artiste" />
-            <TextInput
-              value={offre.liensPromotionnels}
-              readOnly={!isEditing}
-              onChange={(e) => setOffre({ ...offre, liensPromotionnels: e.target.value })}
-            />
-          </div>
-
-          <div>
-            <Label value="Nombre d'artistes concernés" />
-            <TextInput
-              type="number"
-              value={offre.nbArtistesConcernes}
-              readOnly={!isEditing}
-              onChange={(e) => setOffre({ ...offre, nbArtistesConcernes: parseInt(e.target.value) })}
-            />
-          </div>
-
-          <div>
-            <Label value="Nombre de d'invités concernés" />
-            <TextInput
-              type="number"
-              value={offre.nbInvitesConcernes}
-              readOnly={!isEditing}
-              onChange={(e) => setOffre({ ...offre, nbInvitesConcernes: parseInt(e.target.value) })}
-            />
-          </div>
-        </div>
-
-        <div className="flex justify-end mt-4">
-          <Button color="warning" onClick={handleEditToggle}>
-            <HiPencil className="mr-2" />
-            {isEditing ? "Annuler" : "Modifier"}
-          </Button>
-          <Button color="failure" className="ml-2" onClick={() => setShowDeleteModal(true)}>
-            <HiTrash className="mr-2" />
-            Supprimer
-          </Button>
-        </div>
-      </Card>
-
-      <Modal show={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
-        <Modal.Header>Confirmer la suppression</Modal.Header>
+      {/* Modal de confirmation */}
+      <Modal
+        show={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+      >
+        <Modal.Header>Confirmation</Modal.Header>
         <Modal.Body>
           <p>Êtes-vous sûr de vouloir supprimer cette offre ? Cette action est irréversible.</p>
         </Modal.Body>
         <Modal.Footer>
-          <Button color="failure" onClick={handleDelete}>
-            Supprimer
-          </Button>
-          <Button color="light" onClick={() => setShowDeleteModal(false)}>
+          {/* Boutons dans le modal */}
+          <Button color="gray" onClick={() => setShowDeleteModal(false)}>
             Annuler
+          </Button>
+          <Button color="failure" onClick={handleDelete}>
+            Confirmer
           </Button>
         </Modal.Footer>
       </Modal>
+      {/* Zone de commentaires */}
+      <div className="mt-10 ml-[20%] mr-[20%] mx-auto">
+        <h2 className="font-semibold mb-2">Commentaires</h2>
+        <form onSubmit={handleCommentSubmit}>
+          <Textarea
+            value={commentaire}
+            onChange={(e) => setCommentaire(e.target.value)}
+            placeholder="Écrivez un commentaire..."
+            rows={4}
+            required
+            className="mb-2"
+          />
+          {error && <p className="error">{error}</p>}
+          <Button type="submit" disabled={loading}>
+            {loading ? "Envoi..." : "Poster le commentaire"}
+          </Button>
+        </form>
+      </div>
+      <CommentaireSection commentaires={commentaires} />
     </div>
-  );
+  );  
 }
