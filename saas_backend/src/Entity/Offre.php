@@ -676,6 +676,11 @@ class Offre
         return $this;
     }
 
+    public function getReponses(): Collection
+    {
+        return $this->reponses;
+    }
+
     public function addReponse(Reponse $reponse): self
     {
         if (!$this->reponses->contains($reponse)) {

@@ -44,6 +44,62 @@ class ReponseService
     }
 
     /**
+     * Récupère une réponse par son id et renvoie une réponse JSON.
+     *
+     * @param int $id L'identifiant de la réponse.
+     * @param ReponseRepository $reponseRepository Le repository des réponses.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les réponses.
+     */
+    public static function getReponse(
+        int $id,
+        ReponseRepository $reponseRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        // On récupère toutes les réponses
+        $reponses = $reponseRepository->findBy(['id' => $id]);
+        $reponsesJSON = $serializer->serialize(
+            $reponses,
+            'json',
+            ['groups' => ['reponse:read']]
+        );
+        return new JsonResponse([
+            'reponse' => $reponsesJSON,
+            'message' => "Liste des réponses",
+            'serialized' => true
+        ], Response::HTTP_OK);
+    }
+
+    /**
+     * Récupère toutes les réponses pour une offre donnée et renvoie une réponse JSON.
+     *
+     * @param int $id L'identifiant de l'offre.
+     * @param ReponseRepository $reponseRepository Le repository des réponses.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les réponses pour l'offre donnée.
+     */
+    public static function getReponsesPourOffre(
+        int $id,
+        ReponseRepository $reponseRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        // On récupère les réponses pour l'offre donnée
+        $reponses = $reponseRepository->findBy(['offre' => $id]);
+        $reponsesJSON = $serializer->serialize(
+            $reponses,
+            'json',
+            ['groups' => ['reponse:read']]
+        );
+        return new JsonResponse([
+            'reponses' => $reponsesJSON,
+            'message' => "Liste des réponses pour l'offre $id",
+            'serialized' => true
+        ], Response::HTTP_OK);
+    }
+
+    /**
      * Crée une nouvelle réponse et renvoie une réponse JSON.
      *
      * @param ReponseRepository $reponseRepository Le repository des réponses.
