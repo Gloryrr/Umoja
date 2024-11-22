@@ -8,7 +8,6 @@ import PreferencesProfil from "@/app/components/PreferencesProfil";
 import TableauDeBord from "@/app/components/TableauDeBord";
 
 const SettingsPage: React.FC = () => {
-
     return (
         <div className="container mt-1 mb-1 flex flex-col items-center">
             <div className="w-full max-w-4xl">
