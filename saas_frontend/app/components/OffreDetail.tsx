@@ -62,7 +62,7 @@ interface BudgetEstimatif {
   fraisRestauration: number;
 }
 
-interface reponse {
+interface Reponse {
   id: number;
   etatReponseId: number;
   offreId: number;
@@ -70,6 +70,14 @@ interface reponse {
   dateDebut: string;
   dateFin: string;
   prixParticipation: number;
+}
+
+interface Commentaire {
+  id: number;
+  utilisateur : {
+      username : string;
+  }
+  commentaire: string;
 }
 
 async function fetchOffreDetails(id: number): Promise<Offre> {
@@ -80,7 +88,7 @@ async function fetchOffreDetails(id: number): Promise<Offre> {
   return JSON.parse(response.offre);
 }
 
-async function fetchExtrasOffre(idExtras: number): Promise<any> {
+async function fetchExtrasOffre(idExtras: number): Promise<Extras[]> {
   const response = await apiGet(`/extras/${idExtras}`);
   if (!response) {
     throw new Error("Erreur lors de la récupération des détails de l'offre");
@@ -88,7 +96,7 @@ async function fetchExtrasOffre(idExtras: number): Promise<any> {
   return JSON.parse(response.extras);
 }
 
-async function fecthEtatOffre(idEtatOffre: number): Promise<any> {
+async function fecthEtatOffre(idEtatOffre: number): Promise<EtatOffre[]> {
   const response = await apiGet(`/etat-offre/${idEtatOffre}`);
   if (!response) {
     throw new Error("Erreur lors de la récupération des détails de l'offre");
@@ -96,7 +104,7 @@ async function fecthEtatOffre(idEtatOffre: number): Promise<any> {
   return JSON.parse(response.etat_offre);
 }
 
-async function fetchConditionsFinancieres(idConditionFinancieres: number): Promise<any> {
+async function fetchConditionsFinancieres(idConditionFinancieres: number): Promise<ConditionsFinancieres[]> {
   const response = await apiGet(`/condition-financiere/${idConditionFinancieres}`);
   if (!response) {
     throw new Error("Erreur lors de la récupération des détails de l'offre");
@@ -104,7 +112,7 @@ async function fetchConditionsFinancieres(idConditionFinancieres: number): Promi
   return JSON.parse(response.condition_financiere);
 }
 
-async function fetchBudgetEstimatif(idBudgetEstimatif: number): Promise<any> {
+async function fetchBudgetEstimatif(idBudgetEstimatif: number): Promise<BudgetEstimatif[]> {
   const response = await apiGet(`/budget-estimatif/${idBudgetEstimatif}`);
   if (!response) {
     throw new Error("Erreur lors de la récupération des détails de l'offre");
@@ -112,7 +120,7 @@ async function fetchBudgetEstimatif(idBudgetEstimatif: number): Promise<any> {
   return JSON.parse(response.budget_estimatif);
 }
 
-async function fetchReponse(idReponse: number): Promise<any> {
+async function fetchReponse(idReponse: number): Promise<Reponse[]> {
   const response = await apiGet(`/reponse/${idReponse}`);
   if (!response) {
     throw new Error("Erreur lors de la récupération de la réponse");
@@ -120,7 +128,7 @@ async function fetchReponse(idReponse: number): Promise<any> {
   return JSON.parse(response.reponse);
 }
 
-async function fetchCommentaire(idCommenaire: number): Promise<any> {
+async function fetchCommentaire(idCommenaire: number): Promise<Commentaire[]> {
   const response = await apiGet(`/commentaire/${idCommenaire}`);
   if (!response) {
     throw new Error("Erreur lors de la récupération du commentaire");
@@ -143,7 +151,7 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
   const [etatOffre, setEtatOffre] = useState<EtatOffre | null>(null);
   const [conditionsFinancieres, setConditionsFinancieres] = useState<ConditionsFinancieres | null>(null);
   const [budgetEstimatif, setBudgetEstimatif] = useState<BudgetEstimatif | null>(null);
-  const [reponses, setReponses] = useState<reponse[]>([]);
+  const [reponses, setReponses] = useState<Reponse[]>([]);
   const [commentaires, setCommentaires] = useState<Commentaire[]>([]);
   const [montantTotal, setMontantTotal] = useState<number>(0);
   const [montantTotalRecu, setMontantTotalRecu] = useState<number>(5);
@@ -158,10 +166,10 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
         fecthEtatOffre(data.etatOffre.id).then((data => {setEtatOffre(data[0])})) // récupération de l'état actuel de l'offre
         fetchConditionsFinancieres(data.conditionsFinancieres.id).then((data => {setConditionsFinancieres(data[0])}))
         fetchBudgetEstimatif(data.budgetEstimatif.id).then((data => {setBudgetEstimatif(data[0])}))
-        const allReponses: reponse[] = [];
+        const allReponses: Reponse[] = [];
         data.reponses.forEach((reponse) => {
           fetchReponse(reponse.id).then((reponseData) => {
-            allReponses.push(reponseData);
+            allReponses.push(...reponseData);
             if (allReponses.length === data.reponses.length) {
               setReponses(allReponses);
               setMontantTotalRecu(calculSommeTotalRecu(allReponses));
@@ -172,7 +180,7 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
         console.log(data.commenteesPar);
         data.commenteesPar.forEach((commentaire) => {
           fetchCommentaire(commentaire.id).then((commentaireData) => {
-            allCommentaires.push(commentaireData);
+            allCommentaires.push(...commentaireData);
             if (allCommentaires.length === data.commenteesPar.length) {
               setCommentaires(allCommentaires);
             }
@@ -229,7 +237,7 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
     setIsEditing(!isEditing);
   };
 
-  const calculSommeTotalRecu = (reponses: reponse[]) => {
+  const calculSommeTotalRecu = (reponses: Reponse[]) => {
     return reponses.reduce(
       (acc, reponse) => acc + reponse.prixParticipation, 0
     );
@@ -282,13 +290,14 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
       alert("Commentaire ajouté avec succès !");
     } catch (err) {
       setError("Une erreur est survenue lors de l'ajout du commentaire.");
+      throw err;
     } finally {
       setLoading(false);
     }
   };
 
   if (loading) {
-    return <p>Chargement des détails de l'offre...</p>;
+    return <p>Chargement des détails de l&apos;offre...</p>;
   }
 
   if (error) {
@@ -308,7 +317,7 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
   
       <Accordion className="ml-[20%] mr-[20%]" collapseAll>
         <Accordion.Panel>
-          <Accordion.Title>Détails de l'offre</Accordion.Title>
+          <Accordion.Title>Détails de l&apos;offre</Accordion.Title>
           <Accordion.Content>
               <h1 className="text-3xl font-bold mb-6">{offre.titleOffre}</h1>
         
@@ -412,7 +421,7 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
                   <h2 className="text-2xl font-bold mt-8">Budget estimatif</h2>
                   <p>Cachet artiste : {budgetEstimatif.cachetArtiste} €</p>
                   <p>Frais de déplacement : {budgetEstimatif.fraisDeplacement} €</p>
-                  <p>Frais d'hébergement : {budgetEstimatif.fraisHebergement} €</p>
+                  <p>Frais d&apos;hébergement : {budgetEstimatif.fraisHebergement} €</p>
                   <p>Frais de restauration : {budgetEstimatif.fraisRestauration} €</p>
                 </div>
               )}

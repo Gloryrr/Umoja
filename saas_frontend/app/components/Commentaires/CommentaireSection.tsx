@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Button } from 'flowbite-react';
+import Image from 'next/image';
 
 interface Commentaire {
     id: number;
@@ -52,7 +53,7 @@ const CommentSection = ({ commentaires }: CommentSectionProps) => {
                         commentaires.map((commentaire, index) => (
                             <div key={index} className="mb-6 p-4 border rounded-lg shadow-md">
                                 <div className="flex items-center space-x-4">
-                                    <img
+                                    <Image
                                         src={/* commentaire.utilisateur.avatar || */"/favicon.ico"}
                                         alt={commentaire.utilisateur.username}
                                         className="w-7 h-7 rounded-full"

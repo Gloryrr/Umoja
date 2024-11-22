@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Breadcrumb, Card, Button } from "flowbite-react";
+import { Breadcrumb, Button } from "flowbite-react";
 import { HiHome } from "react-icons/hi";
 import TableDesOffres from "@/app/components/OffresTableauDeBord";
 

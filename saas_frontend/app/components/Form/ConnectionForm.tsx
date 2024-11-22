@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from 'react';
 import NavigationHandler from '../../navigation/Router';
-import { Button, Checkbox, Label, TextInput, Alert } from "flowbite-react";
+import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 import { apiPost } from '@/app/services/internalApiClients';
 
 export default function ConnectionForm() {
@@ -76,7 +76,7 @@ export default function ConnectionForm() {
 
           <div className="text-sm text-center my-4">
             <p>
-              Tu n'as pas encore de compte ?{' '}
+              Tu n&apos;as pas encore de compte ?{' '}
               <NavigationHandler>
                 {(handleNavigation: (path: string) => void) => (
                   <a onClick={() => handleNavigation('/inscription')} className="no-underline font-semibold hover:underline">

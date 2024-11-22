@@ -1,4 +1,4 @@
-import ConnectionForm from "../../components/Form/ConnectionForm";
+import ConnectionForm from "../components/Form/ConnectionForm";
 
 export default function Connection() {
     return (

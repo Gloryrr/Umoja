@@ -164,7 +164,7 @@ const UserProfile: React.FC = () => {
                         <span>{userInfo.emailUtilisateur ? userInfo.emailUtilisateur : <Badge color="failure">Non renseigné</Badge>}</span>
                     </div>
                     <div className="flex justify-between">
-                        <span className="font-semibold">Nom d'utilisateur :</span>
+                        <span className="font-semibold">Nom d&apos;utilisateur :</span>
                         <span>{userInfo.username ? userInfo.username : <Badge color="failure">Non renseigné</Badge>}</span>
                     </div>
                     <div className="flex justify-between">

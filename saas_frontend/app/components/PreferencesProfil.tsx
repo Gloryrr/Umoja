@@ -104,7 +104,7 @@ const PreferencesProfil: React.FC = () => {
               </ListGroup.Item>
 
               <ListGroup.Item className="flex items-center justify-between">
-                <span>Réponse à une offre que j'ai postée</span>
+                <span>Réponse à une offre que j&apos;ai postée</span>
                 <div className="ml-auto">
                   <ToggleSwitch
                     checked={preferences.reponse_offre}
@@ -128,7 +128,7 @@ const PreferencesProfil: React.FC = () => {
       </Card>
 
       <Card className='mt-5'>
-        <h2 className="text-2xl font-bold text-center mb-6">Thème de l'application</h2>
+        <h2 className="text-2xl font-bold text-center mb-6">Thème de l&apos;application</h2>
 
         <ListGroup>
           <ListGroup.Item className="flex items-center justify-between">

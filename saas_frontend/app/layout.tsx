@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 // import localFont from "next/font/local";
-import { Fredoka, Nunito } from "next/font/google";
+// import { Fredoka, Nunito } from "next/font/google";
 import Head from "next/head";
 
 import "./styles/css/globals.css";
@@ -21,19 +21,19 @@ import { ThemeModeScript } from "flowbite-react";
 //   weight: "100 900",
 // });
 
-const fredoka = Fredoka({
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-fredoka",
-  display: "swap",
-  subsets: ["latin"], // Specify the subsets here
-});
+// const fredoka = Fredoka({
+//   weight: ["300", "400", "500", "600", "700"],
+//   variable: "--font-fredoka",
+//   display: "swap",
+//   subsets: ["latin"], // Specify the subsets here
+// });
 
-const nunito = Nunito({
-  weight: ["200", "300", "400", "500", "600", "700", "800", "900", "1000"],
-  variable: "--font-nunito",
-  display: "swap",
-  subsets: ["latin"], // Specify the subsets here
-});
+// const nunito = Nunito({
+//   weight: ["200", "300", "400", "500", "600", "700", "800", "900", "1000"],
+//   variable: "--font-nunito",
+//   display: "swap",
+//   subsets: ["latin"], // Specify the subsets here
+// });
 
 export const metadata: Metadata = {
   title: "Create Next App",
