@@ -10,7 +10,7 @@ const NavigationHandler: React.FC<NavigationHandlerProps> = ({ children }) => {
   const router = useRouter();
 
   const handleNavigation = async (path: string) => {
-    console.log('Navigating to', 'umodja' + path);
+    console.log('Navigating to' + path);
     // Précharge la page sans changer immédiatement
     // await router.prefetch(path); await inutil ???
 
@@ -20,7 +20,7 @@ const NavigationHandler: React.FC<NavigationHandlerProps> = ({ children }) => {
     // await new Promise(resolve => setTimeout(resolve, 400));
 
     // Naviguer une fois l'animation terminée
-    router.push(`/umodja${path}`);
+    router.push(`${path}`);
   };
 
   return <>{children(handleNavigation)}</>;

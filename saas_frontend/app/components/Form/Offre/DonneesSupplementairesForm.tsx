@@ -166,7 +166,7 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                             ))}
                         </Select>
                         <p className="text-sm mt-1">
-                            Vous pouvez sélectionner jusqu'à {reseaux.length} réseaux.
+                            Vous pouvez sélectionner jusqu&apos;à {reseaux.length} réseaux.
                         </p>
                     </div>
 
@@ -187,7 +187,7 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                             ))}
                         </Select>
                         <p className="text-sm mt-1">
-                            Vous pouvez sélectionner jusqu'à {genresMusicaux.length} genres musicaux.
+                            Vous pouvez sélectionner jusqu&apos;à {genresMusicaux.length} genres musicaux.
                         </p>
                     </div>
                 </div>

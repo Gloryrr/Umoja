@@ -16,7 +16,7 @@ class PreferenceNotification
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups([
-        'preference_notification:read', 
+        'preference_notification:read',
         'preference_notification:write',
         'utilisateur:read',
     ])]

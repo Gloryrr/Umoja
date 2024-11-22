@@ -65,8 +65,8 @@ const UserProfile: React.FC = () => {
     };
 
     return (
-        <Card>
-            <h2 className="text-xl font-semibold mb-4">Informations du Profil</h2>
+        <Card className="mx-auto w-[70%]">
+            <h2 className="text-2xl font-bold mb-4">Informations du Profil</h2>
             {isEditing ? (
                 <form className="flex flex-col gap-6">
                     <div>
@@ -164,7 +164,7 @@ const UserProfile: React.FC = () => {
                         <span>{userInfo.emailUtilisateur ? userInfo.emailUtilisateur : <Badge color="failure">Non renseigné</Badge>}</span>
                     </div>
                     <div className="flex justify-between">
-                        <span className="font-semibold">Nom d'utilisateur :</span>
+                        <span className="font-semibold">Nom d&apos;utilisateur :</span>
                         <span>{userInfo.username ? userInfo.username : <Badge color="failure">Non renseigné</Badge>}</span>
                     </div>
                     <div className="flex justify-between">

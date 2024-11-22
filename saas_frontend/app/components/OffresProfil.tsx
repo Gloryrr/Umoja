@@ -32,7 +32,6 @@ const OffresProfil: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [offersPerPage, setOffersPerPage] = useState(10);
-    const [offerIds, setOfferIds] = useState<string[]>([]);
     const [totalOffers, setTotalOffers] = useState(0);
 
     const fetchUserOffers = async () => {
@@ -54,7 +53,6 @@ const OffresProfil: React.FC = () => {
 
             const offerIds: string[] = JSON.parse(userResponse.utilisateur)[0].offres;
             setTotalOffers(offerIds.length);
-            setOfferIds(offerIds);
             fetchPaginatedOffers(JSON.parse(userResponse.utilisateur)[0].id);
         } catch (error) {
             console.error("Erreur réseau :", error);

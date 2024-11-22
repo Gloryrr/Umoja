@@ -1,4 +1,4 @@
-import InscriptionForm from "../../components/Form/InscriptionForm";
+import InscriptionForm from "../components/Form/InscriptionForm";
 
 export default function Inscription() {
     return (

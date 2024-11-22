@@ -1,14 +1,8 @@
 "use client";
 import React, { useState } from 'react';
 import { apiGet } from '@/app/services/externalApiClients';
-import { Card, Label, TextInput, Textarea, Button, Select } from 'flowbite-react';
+import { Card, Label, TextInput, Textarea, Button } from 'flowbite-react';
 import { FiRefreshCw } from "react-icons/fi";
-
-interface Feature {
-    properties: {
-        city: string;
-    };
-}
 
 interface DetailOffreFormProps {
     detailOffre : {
@@ -33,7 +27,6 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
     onDetailOffreChange,
 }) => {
     const [liensPromotionnels, setLiensPromotionnels] = useState<string[]>(detailOffre.liensPromotionnels || ['']);
-    const [citySuggestions, setCitySuggestions] = useState<string[]>([]);
     const [placesMin, setPlacesMin] = useState(detailOffre.placesMin);
     const [placesMax, setPlacesMax] = useState(detailOffre.placesMax);
 
@@ -96,13 +89,8 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
     
         if (value.length > 2) {
             const correspondancesTrouvees = await apiGet(`https://api-adresse.data.gouv.fr/search/?q=${value}&type=municipality`);
-            setCitySuggestions(
-                correspondancesTrouvees.features.map((feature: Feature) => feature.properties.city)
-            );
             const region = correspondancesTrouvees.features[0].properties.context.split(", ").pop();
             onDetailOffreChange("regionVisee", region);
-        } else {
-            setCitySuggestions([]);
         }
     };
 
@@ -134,7 +122,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
     return (
         <Card className="shadow-none border-none mx-auto w-full">
             <div className="flex justify-between items-center mb-4">
-                <h3 className="text-2xl font-semibold mb-6">Détails de l'Offre</h3>
+                <h3 className="text-2xl font-semibold mb-6">Détails de l&apos;Offre</h3>
                 <Button
                     color="gray"
                     onClick={handleReset}

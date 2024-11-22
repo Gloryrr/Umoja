@@ -2,57 +2,101 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\EtatOffre;
+use App\Entity\TypeOffre;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use App\Entity\Utilisateur;
 use App\Entity\GenreMusical;
 use App\Entity\Reseau;
 use App\Entity\Artiste;
+use App\Entity\EtatReponse;
 
 class AppFixtures extends Fixture
 {
     public function load(
-        ObjectManager $manager, 
+        ObjectManager $manager,
     ): void {
-        // données fictives d'entrées pour un test fonctionnel de l'API
-        $rock = $this->createGenreMusical('Rock');
-        $pop = $this->createGenreMusical('Pop');
+        // États de réponse
+        $etatReponseEnAttente = $this->createEtatReponse(
+            "En Attente",
+            "Indique que la proposition n'a pas été validée"
+        );
+        $etatReponseValidee = $this->createEtatReponse(
+            "Validée",
+            "Indique que la proposition a été validée par l'utilisateur"
+        );
+        $etatReponseRefusee = $this->createEtatReponse(
+            "Refusée",
+            "Indique que la proposition a été refusée par l'utilisateur"
+        );
 
-        $artiste = $this->createArtiste();
+        $manager->persist($etatReponseEnAttente);
+        $manager->persist($etatReponseValidee);
+        $manager->persist($etatReponseRefusee);
 
-        $reseau = $this->createReseau('Facebook');
-        $reseau2 = $this->createReseau('Instagram');
-        $reseau3 = $this->createReseau('Twitter');
+        // États d'offre
+        $etatOffreEnCours = $this->createEtatOffre("En Cours");
+        $etatOffreTerminee = $this->createEtatOffre("Terminée");
 
-        $user = $manager->getRepository(Utilisateur::class)->findOneBy([]);
+        $manager->persist($etatOffreEnCours);
+        $manager->persist($etatOffreTerminee);
 
-        if ($user === null) {
-            throw new \Exception("Aucun utilisateur trouvé dans la base de données.");
+        // Types d'offre
+        $typeOffreTournee = $this->createTypeOffre("Tournée");
+        $typeOffreConcert = $this->createTypeOffre("Concert");
+
+        $manager->persist($typeOffreTournee);
+        $manager->persist($typeOffreConcert);
+
+        // Genres musicaux
+        $genresMusicaux = [
+            "Pop", "Rock", "Hip-hop", "Jazz", "Classique",
+            "Blues", "Électro", "Reggae", "Country", "Folk",
+            "Soul", "R&B", "Métal", "Punk", "Disco",
+            "Ska", "Trap", "House", "Techno", "Latino"
+        ];
+
+        foreach ($genresMusicaux as $nomGenre) {
+            $genreMusical = $this->createGenreMusical($nomGenre);
+            $manager->persist($genreMusical);
         }
 
-        $user->addGenreMusical($rock);
-        $user->addGenreMusical($pop);
-        $user->addReseau($reseau);
-        $user->addReseau($reseau2);
-        $user->addReseau($reseau3);
+        $reseauF = $this->createReseau("Facebook");
+        $reseauT = $this->createReseau("Twitter");
+        $reseauI = $this->createReseau("Instagram");
 
-        $manager->persist($rock);
-        $manager->persist($pop);
-        $manager->persist($artiste);
-        $manager->persist($reseau);
-        $manager->persist($reseau2);
-        $manager->persist($reseau3);
-        $manager->persist($user);
+        $manager->persist($reseauF);
+        $manager->persist($reseauT);
+        $manager->persist($reseauI);
+
+        // Persist and flush
         $manager->flush();
     }
 
-    public function createArtiste(): Artiste
+    public function createEtatReponse(string $etatReponse, string $descriptionEtatReponse): EtatReponse
     {
-        $artiste = new Artiste();
-        $artiste->setNomArtiste("Nekfeu");
-        $artiste->setDescrArtiste("Nekfeu, de son vrai nom Ken Samaras, né le 3 avril 1990 à La Trinité, dans les Alpes-Maritimes, est un rappeur, acteur et producteur français.");
+        $etatReponseObject = new EtatReponse();
+        $etatReponseObject->setNomEtatReponse($etatReponse);
+        $etatReponseObject->setDescriptionEtatReponse($descriptionEtatReponse);
 
-        return $artiste;
+        return $etatReponseObject;
+    }
+
+    public function createEtatOffre(string $etatOffre)
+    {
+        $etatOffreObject = new EtatOffre();
+        $etatOffreObject->setNomEtat($etatOffre);
+
+        return $etatOffreObject;
+    }
+
+    public function createTypeOffre(string $typeOffre)
+    {
+        $typeOffreObject = new TypeOffre();
+        $typeOffreObject->setNomTypeOffre($typeOffre);
+
+        return $typeOffreObject;
     }
 
     public function createGenreMusical(string $nomGenreMusical): GenreMusical
@@ -63,11 +107,11 @@ class AppFixtures extends Fixture
         return $genreMusical;
     }
 
-    public function createReseau(string $nomReseau) : Reseau
+    public function createReseau(string $nomReseau): Reseau
     {
-        $reseau = new Reseau();
-        $reseau->setNomReseau($nomReseau);
+        $reseauObject = new Reseau();
+        $reseauObject->setNomReseau($nomReseau);
 
-        return $reseau;
+        return $reseauObject;
     }
 }

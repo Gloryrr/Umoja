@@ -43,6 +43,34 @@ class CommentaireService
     }
 
     /**
+     * Récupère un commentaire par son identifiant et renvoie une réponse JSON.
+     *
+     * @param int $id L'identifiant du commentaire à récupérer.
+     * @param CommentaireRepository $commentaireRepository Le repository des commentaires.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les commentaires.
+     */
+    public static function getCommentaireById(
+        int $id,
+        CommentaireRepository $commentaireRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        // on récupère tous les Commentaires
+        $commentaires = $commentaireRepository->find($id);
+        $commentairesJSON = $serializer->serialize(
+            $commentaires,
+            'json',
+            ['groups' => ['commentaire:read']]
+        );
+        return new JsonResponse([
+            'commentaires' => $commentairesJSON,
+            'message' => "Liste des commentaires",
+            'serialized' => true
+        ], Response::HTTP_OK);
+    }
+
+    /**
      * Crée un nouveau commentaire et renvoie une réponse JSON.
      *
      * @param CommentaireRepository $commentaireRepository Le repository des commentaires.
@@ -70,13 +98,13 @@ class CommentaireService
             }
 
             $offre = $offreRepository->find(intval($data['commentaire']['idOffre']));
-            $utilisateur = $utilisateurRepository->find(intval($data['commentaire']['idUtilisateur']));
+            $utilisateur = $utilisateurRepository->findBy(['username' => $data['commentaire']['username']]);
 
             // création de l'objet et instanciation des données de l'objet
             $commentaire = new Commentaire();
             $commentaire->setCommentaire($data['commentaire']['contenu']);
             $commentaire->setOffre($offre);
-            $commentaire->setUtilisateur($utilisateur);
+            $commentaire->setUtilisateur($utilisateur[0]);
 
             // ajout du commentaire en base de données
             $rep = $commentaireRepository->inscritCommentaire($commentaire);

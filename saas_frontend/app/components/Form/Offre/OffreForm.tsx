@@ -38,10 +38,10 @@ const OffreForm: React.FC = () => {
             clausesConfidentialites: null
         },
         etatOffre: {
-            nomEtatOffre: 'INITIAL'
+            nomEtatOffre: ""
         },
         typeOffre: {
-            nomTypeOffre: 'TYPE TOURNEE'
+            nomTypeOffre: ""
         },
         conditionsFinancieres: {
             minimumGaranti: null,
@@ -62,16 +62,15 @@ const OffreForm: React.FC = () => {
             besoinSonorisation: null
         },
         donneesSupplementaires: {
-            reseau: ["Facebook"],
+            reseau: [],
             nbReseaux: null,
-            genreMusical: ["Pop"],
+            genreMusical: [],
             nbGenresMusicaux: null,
             artiste: [],
             nbArtistes: null
         },
         utilisateur: {
-            username: localStorage.getItem("username"),
-            contact: 'utilisateur@gmail.com'
+            username: localStorage.getItem("username")
         }
     });
 
@@ -93,7 +92,8 @@ const OffreForm: React.FC = () => {
         } catch (error) {
             setTypeMessage("error");
             setMessageOffrePostee("Une erreur s'est produite durant le post de votre offre.");
-            setOffrePostee(true);   
+            setOffrePostee(true);
+            throw new Error("Erreur lors du post de l'offre :", error as Error);
         }
     };
 
@@ -295,7 +295,7 @@ const OffreForm: React.FC = () => {
                         </Accordion.Panel>
 
                         <Accordion.Panel>
-                            <Accordion.Title>Fiche technique de l'artiste</Accordion.Title>
+                            <Accordion.Title>Fiche technique de l&apos;artiste</Accordion.Title>
                             <Accordion.Content className='p-0'>
                                 <FicheTechniqueArtisteForm
                                     ficheTechniqueArtiste={formData.ficheTechniqueArtiste}
@@ -390,7 +390,7 @@ const OffreForm: React.FC = () => {
                     <Timeline.Item>
                         <Timeline.Point className={`h-2 w-2 rounded-full ${getPointColor(checkFicheTechniqueArtiste())}`} />
                         <Timeline.Content>
-                            <Timeline.Time>Étape 5 : Fiche technique de l'artiste</Timeline.Time>
+                            <Timeline.Time>Étape 5 : Fiche technique de l&apos;artiste</Timeline.Time>
                             <Timeline.Body>
                                 {checkFicheTechniqueArtiste() ? 'Tous les champs sont remplis.' : 'Certains champs sont manquants.'}
                             </Timeline.Body>

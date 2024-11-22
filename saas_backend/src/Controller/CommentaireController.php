@@ -33,6 +33,27 @@ class CommentaireController extends AbstractController
     }
 
     /**
+     * Récupère un commentaire à partir de son id.
+     *
+     * @param int $id
+     * @param CommentaireRepository $commentaireRepository, la classe CRUD des commentaires
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/commentaire/{id}', name: 'get_commentaire_by_id', methods: ['GET'])]
+    public function getCommentaireById(
+        int $id,
+        CommentaireRepository $commentaireRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        return CommentaireService::getCommentaireById(
+            $id,
+            $commentaireRepository,
+            $serializer
+        );
+    }
+
+    /**
      * Crée un nouveau commentaire.
      *
      * @param Request $request
