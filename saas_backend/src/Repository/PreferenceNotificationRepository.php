@@ -32,7 +32,9 @@ class PreferenceNotificationRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
             return true;
         } catch (\Exception $e) {
-            throw new \RuntimeException("Erreur lors de l'enregistrement de la préférence de notification : " . $e->getCode());
+            throw new \RuntimeException(
+                "Erreur lors de l'enregistrement de la préférence de notification : " . $e->getCode()
+            );
         }
     }
 
@@ -71,8 +73,10 @@ class PreferenceNotificationRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
             return true;
         } catch (\Exception $e) {
-            throw new \RuntimeException("Erreur lors de la suppression de la préférence de notification", $e->getCode());
+            throw new \RuntimeException(
+                "Erreur lors de la suppression de la préférence de notification",
+                $e->getCode()
+            );
         }
     }
 }
-

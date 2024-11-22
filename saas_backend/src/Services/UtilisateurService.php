@@ -67,7 +67,7 @@ class UtilisateurService
         $utilisateursJSON = $serializer->serialize(
             $utilisateurs,
             'json',
-            ['groups' => ['utilisateur:read']], 
+            ['groups' => ['utilisateur:read']],
         );
         return new JsonResponse([
             'utilisateur' => $utilisateursJSON,
@@ -497,7 +497,7 @@ class UtilisateurService
      *
      * @param string $username Le nom de l'utilisateur à rechercher.
      * @param UtilisateurRepository $utilisateurRepository Le repository des utilisateurs.
-     * @param PreferenceNotificationRepository $preferenceNotificationRepository Le repository des préférences de notification.
+     * @param PreferenceNotificationRepository $preferenceNotificationRepository Le repository des préférences.
      * @param SerializerInterface $serializer Le service de sérialisation.
      *
      * @return JsonResponse La réponse JSON contenant les préférences de notification de l'utilisateur.
@@ -510,7 +510,7 @@ class UtilisateurService
     ): JsonResponse {
         // récupération des préférences de notification de l'utilisateur
         $utilisateur = $utilisateurRepository->trouveUtilisateurByUsername($username);
-        
+
         // si pas d'utilisateur trouvé
         if ($utilisateur[0] == null) {
             return new JsonResponse([
@@ -520,7 +520,9 @@ class UtilisateurService
             ], Response::HTTP_NOT_FOUND);
         }
 
-        $preferences = $preferenceNotificationRepository->findBy(['id' => $utilisateur[0]->getPreferenceNotification()->getId()]);
+        $preferences = $preferenceNotificationRepository->findBy(
+            ['id' => $utilisateur[0]->getPreferenceNotification()->getId()]
+        );
         $preferencesJSON = $serializerInterface->serialize(
             $preferences,
             'json',
@@ -539,7 +541,7 @@ class UtilisateurService
      *
      * @param string $username Le nom de l'utilisateur à rechercher.
      * @param UtilisateurRepository $utilisateurRepository Le repository des utilisateurs.
-     * @param PreferenceNotificationRepository $preferenceNotificationRepository Le repository des préférences de notification.
+     * @param PreferenceNotificationRepository $preferenceNotificationRepository Le repository des préférences de.
      * @param SerializerInterface $serializer Le service de sérialisation.
      * @param mixed $data Les nouvelles données de préférences de notification.
      *
@@ -554,7 +556,7 @@ class UtilisateurService
     ): JsonResponse {
         // récupération des préférences de notification de l'utilisateur
         $utilisateur = $utilisateurRepository->trouveUtilisateurByUsername($username);
-        
+
         // si pas d'utilisateur trouvé
         if ($utilisateur[0] == null) {
             return new JsonResponse([
@@ -564,7 +566,9 @@ class UtilisateurService
             ], Response::HTTP_NOT_FOUND);
         }
 
-        $preference = $preferenceNotificationRepository->findBy(['id' => $utilisateur[0]->getPreferenceNotification()->getId()]);
+        $preference = $preferenceNotificationRepository->findBy(
+            ['id' => $utilisateur[0]->getPreferenceNotification()->getId()]
+        );
         $preference[0]->setEmailNouvelleOffre($data['email_nouvelle_offre']);
         $preference[0]->setEmailUpdateOffre($data['email_update_offre']);
         $preference[0]->setReponseOffre($data['reponse_offre']);

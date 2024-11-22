@@ -270,7 +270,7 @@ class OffreService
                         $artisteObject->setDescrArtiste("Artiste quelconque");
                         $artisteRepository->inscritArtiste($artisteObject);
                         break;
-                    
+
                     default:
                         $offre->addArtiste($artiste[0]);
                         break;
@@ -289,7 +289,8 @@ class OffreService
                             $mailerService->sendEmail(
                                 $utilisateur->getEmailUtilisateur(),
                                 "Nouvelle offre",
-                                "<h1>Une nouvelle offre</h1><p>Une nouvelle offre a été ajoutée sur le réseau {$reseau->getNomReseau()}</p>"
+                                "<h1>Une nouvelle offre</h1> " +
+                                "<p>Une nouvelle offre a été ajoutée sur le réseau {$reseau->getNomReseau()}</p>"
                             );
                         }
                     }
@@ -474,7 +475,9 @@ class OffreService
                             $mailerService->sendEmail(
                                 $utilisateur->getEmailUtilisateur(),
                                 "Mise à jour d'offre",
-                                "<h1>Changement sur l'offre</h1><p>Une offre de votre réseau a récemment été modifié, Réseau : {$reseau->getNomReseau()}</p>"
+                                "<h1>Changement sur l'offre</h1>" +
+                                "<p>Une offre de votre réseau a récemment été modifié," +
+                                "Réseau : {$reseau->getNomReseau()}</p>"
                             );
                         }
                     }

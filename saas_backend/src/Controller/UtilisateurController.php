@@ -178,11 +178,15 @@ class UtilisateurController extends AbstractController
      *
      * @param string $username, le nom de l'utilisateur
      * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des utilisateurs
-     * @param PreferenceNotificationRepository $preferenceNotificationRepository, la classe CRUD des préférences de notification
+     * @param PreferenceNotificationRepository $preferenceNotificationRepository, la classe CRUD des préférences.
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
-    #[Route('/api/v1/utilisateur/preference-notification/{username}', name: 'get_preference_notification_utilisateur', methods: ['GET'])]
+    #[Route(
+        '/api/v1/utilisateur/preference-notification/{username}',
+        name: 'get_preference_notification_utilisateur',
+        methods: ['GET']
+    )]
     public function getPreferenceNotificationUtilisateur(
         string $username,
         UtilisateurRepository $utilisateurRepository,
@@ -202,11 +206,15 @@ class UtilisateurController extends AbstractController
      *
      * @param string $username, le nom de l'utilisateur
      * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des utilisateurs
-     * @param PreferenceNotificationRepository $preferenceNotificationRepository, la classe CRUD des préférences de notification
+     * @param PreferenceNotificationRepository $preferenceNotificationRepository, la classe CRUD des préférences.
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
-    #[Route('/api/v1/utilisateur/preference-notification/update/{username}', name: 'get_preference_update_notification_utilisateur', methods: ['PATCH'])]
+    #[Route(
+        '/api/v1/utilisateur/preference-notification/update/{username}',
+        name: 'get_preference_update_notification_utilisateur',
+        methods: ['PATCH']
+    )]
     public function updatePreferenceNotificationUtilisateur(
         string $username,
         UtilisateurRepository $utilisateurRepository,
