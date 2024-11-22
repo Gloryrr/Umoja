@@ -57,6 +57,8 @@ const CommentSection = ({ commentaires }: CommentSectionProps) => {
                                         src={/* commentaire.utilisateur.avatar || */"/favicon.ico"}
                                         alt={commentaire.utilisateur.username}
                                         className="w-7 h-7 rounded-full"
+                                        width={28}
+                                        height={28}
                                     />
                                     <div>
                                         <p className="font-semibold text-lg">{commentaire.utilisateur.username}</p>

@@ -25,7 +25,7 @@ export default function ConnectionForm() {
     if (response != null) {
       localStorage.setItem('isConnected', 'true');
       localStorage.setItem('username', data.username);
-      window.location.href = 'umodja/home';
+      window.location.href = '/home';
     } else {
       localStorage.setItem('isConnected', 'false');
     }

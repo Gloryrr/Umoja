@@ -254,7 +254,7 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
   const handleDelete = async () => {
     await apiDelete(`/offre/${offreId}`);
     alert("Offre supprimée avec succès.");
-    window.location.href = "/umodja/home";
+    window.location.href = "/home";
   };
 
   interface Commentaire {
@@ -310,7 +310,7 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
 
   return (
     <div className="p-6">
-      <Button href={"/umodja/home"} className="mb-4 w-[15%]">
+      <Button href={"/home"} className="mb-4 w-[15%]">
         <HiArrowLeft className="mr-2" />
         <span>Retour</span>
       </Button>
