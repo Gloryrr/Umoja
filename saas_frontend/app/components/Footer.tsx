@@ -34,7 +34,7 @@ function FooterComponent() {
                 <Footer.Link href="/networks" className="text-sm">
                   Découvrez les projets de vos réseaux
                 </Footer.Link>
-                <Footer.Link href="/fonctionnement" className="text-sm">
+                <Footer.Link href="/fonctionnement-projet" className="text-sm">
                   Comment ça marche ?
                 </Footer.Link>
                 <Footer.Link href="/participations" className="text-sm">
@@ -49,8 +49,8 @@ function FooterComponent() {
                 <Footer.Link href="/umodja" className="text-sm">
                   Qui est UmoDJA ?
                 </Footer.Link>
-                <Footer.Link href="/newsletter" className="text-sm">
-                  Newsletter
+                <Footer.Link href="/consentement-mail" className="text-sm">
+                  Mon consentement aux emails
                 </Footer.Link>
               </Footer.LinkGroup>
             </div>
