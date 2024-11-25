@@ -39,6 +39,33 @@ class OffreRepository extends ServiceEntityRepository
     }
 
     /**
+     * Récupère les offres d'un réseau dans la base de données.
+     *
+     * @param mixed $data Les données de l'offre.
+     * @param Offre $offre L'objet offre à persister.
+     * @return bool Indique si l'inscription a réussi.
+     *
+     * @throws \RuntimeException Si une erreur survient lors de l'enregistrement.
+     */
+    public function getOffresByTitleAndReseau(int $idReseau, string $title): array
+    {
+        try {
+            return $this->createQueryBuilder('o')
+                ->join('o.reseaux', 'r')
+                ->andWhere('r.id = :idReseau')
+                ->andWhere('o.titleOffre LIKE :title')
+                ->setParameter('idReseau', $idReseau)
+                ->setParameter('title', "%{$title}%")
+                ->getQuery()
+                ->getResult();
+        } catch (\Exception $e) {
+            throw new \RuntimeException(
+                "Erreur lors de la récupération des offres : " . $e->getCode() . ", " . $e->getMessage()
+            );
+        }
+    }
+
+    /**
      * Met à jour une offre existante dans la base de données.
      *
      * @param mixed $data Les données de l'offre.

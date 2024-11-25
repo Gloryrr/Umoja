@@ -1,194 +1,284 @@
 "use client";
-import { useState } from 'react';
-import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
-import { Dropdown, Avatar, Navbar } from 'flowbite-react';
-import NavigationHandler from '../navigation/Router';
-import { DarkThemeToggle, Flowbite } from "flowbite-react";
-import Image from 'next/image';
 
-export function NavBarConnectionInscription() {
-  return (
-    <Navbar fluid className="border-b border-gray-300 p-5">
-      <Navbar.Brand>
-        <Image width={28} height={28} src="/favicon.ico" className="mr-3 h-6 sm:h-9" alt="Flowbite React Logo" />
-        <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">UmoDJA</span>
-      </Navbar.Brand>
-      <Navbar.Toggle />
-      <Navbar.Collapse>
-        <Flowbite>
-          <DarkThemeToggle />
-        </Flowbite>
-      </Navbar.Collapse>
-    </Navbar>
-  );
-}
-
-
-const UserAvatar = () => {
-  return (
-    <div className='hidden md:block  relative'>
-      <Dropdown
-        arrowIcon={false}
-        inline
-        label={
-          <Avatar
-            alt="User settings"
-            img="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-            rounded
-            className="h-10 w-10"
-          />
-        }
-      >
-        {/* Dropdown menu content */}
-        <Dropdown.Header>
-          <span className="block text-sm font-medium text-black">Bonnie Green</span>
-          <span className="block truncate text-sm text-gray">name@flowbite.com</span>
-        </Dropdown.Header>
-        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white hover:bg-gray-200">
-          Dashboard
-        </Dropdown.Item>
-        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white hover:bg-gray-200">
-          Settings
-        </Dropdown.Item>
-        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white hover:bg-gray-200">
-          Earnings
-        </Dropdown.Item>
-        <Dropdown.Divider className="border-t border-gray-200 my-1" />
-        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white hover:bg-red-400">
-          Sign out
-        </Dropdown.Item>
-      </Dropdown>
-    </div>
-  );
-}
-
-const UserAvatarMobile = () => {
-  return (
-    <div className='relative'>
-      <Dropdown
-        arrowIcon={false}
-        inline
-        label={
-          <Avatar
-            alt="User settings"
-            img="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-            rounded
-            className="h-10 w-10"
-          />
-        }
-      >
-        {/* Dropdown menu content */}
-        <Dropdown.Header>
-          <span className="block text-sm font-medium text-black">Bonnie Green</span>
-          <span className="block truncate text-sm text-gray">name@flowbite.com</span>
-        </Dropdown.Header>
-        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white hover:bg-gray-200">
-          Dashboard
-        </Dropdown.Item>
-        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white hover:bg-gray-200">
-          Settings
-        </Dropdown.Item>
-        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white hover:bg-gray-200">
-          Earnings
-        </Dropdown.Item>
-        <Dropdown.Divider className="border-t border-gray-200 my-1" />
-        <Dropdown.Item className="block px-4 py-2 text-sm text-gray-700 bg-white hover:bg-red-400">
-          Sign out
-        </Dropdown.Item>
-      </Dropdown>
-    </div>
-  );
-}
+import { useState, useEffect } from "react";
+import { MegaMenu, Navbar, Dropdown, Avatar } from "flowbite-react";
+import NavigationHandler from "../navigation/Router";
+import Image from "next/image";
+import { HiSearch } from "react-icons/hi";
+import { IoIosTime } from "react-icons/io";
+import { apiGet, apiPost } from "@/app/services/internalApiClients";
 
 const NavbarApp = () => {
-  // State to manage the navbar's visibility
-  const [nav, setNav] = useState(false);
+  const [navItems] = useState([
+    { id: 1, text: "Accueil", href: "/accueil" },
+    { id: 3, text: "Créer un projet", href: "/offre" },
+  ]);
 
-  // Toggle function to handle the navbar's display
-  const handleNav = () => {
-    setNav(!nav);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchSearchResults = async (query: string) => {
+    if (query.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+  
+    setIsLoading(true);
+  
+    try {
+      const username = localStorage.getItem("username") || "inconnu";
+      const data = {
+        "username": username,
+        "title": query,
+      };
+  
+      const response = await apiPost("/offres/title", JSON.parse(JSON.stringify(data)));
+  
+      if (response) {
+        const offres = JSON.parse(response.offres).slice(0, 3);
+        const offresAvecEtat = await Promise.all(
+          offres.map(async (offre: any) => {
+            try {
+              console.log(offre);
+              const etatResponse = await apiGet(`/etat-offre/${offre.etatOffre.id}`);
+              return {
+                ...offre,
+                etatOffreDetail: JSON.parse(etatResponse.etat_offre)[0].nomEtat || "Inconnu",
+              };
+            } catch (error) {
+              console.error(
+                `Erreur lors de la récupération de l'état de l'offre ${offre.id}`,
+                error
+              );
+              return {
+                ...offre,
+                etatOffreDetail: "Erreur",
+              };
+            }
+          })
+        );
+        setSearchResults(offresAvecEtat);
+      } else {
+        setSearchResults([]);
+      }
+    } catch (error) {
+      console.error("Une erreur est survenue durant la récupération des offres", error);
+      setSearchResults([]);
+    } finally {
+      setIsLoading(false);
+    }
   };
-
-  // Array containing navigation items
-  const navItems = [
-    { id: 1, text: 'Accueil' },
-    { id: 2, text: 'Company' },
-    { id: 3, text: 'Offre' },
-    { id: 4, text: 'About' },
-    { id: 5, text: 'Contact' },
-  ];
+  
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      fetchSearchResults(searchQuery);
+    }, 300);
+  
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery]);  
 
   return (
-    <div className='bg-black flex justify-between w-full items-center h-24 mx-auto px-4 text-white font-fredoka'>
-      {/* Logo */}
-      <h1 className=' text-3xl font-bold '><NavigationHandler>
-              {(handleNavigation) => (
-                <a
-                onClick={() => handleNavigation(`/accueil`)}
-                className="text-white cursor-pointer text-custom-green no-underline font-semibold hover:underline m-0"
-              >
-                UmoDJA
-              </a>              
-              )}
-            </NavigationHandler></h1>
+    <MegaMenu className="w-full">
+      <div className="flex items-center justify-between w-full py-4 border-b border-gray-300 px-4">
+        {/* Logo à gauche */}
+        <Navbar.Brand href="/" className="flex items-center space-x-2">
+          <Image
+            width={28}
+            height={28}
+            src="/favicon.ico"
+            alt="Flowbite React Logo"
+          />
+          <span className="text-xl font-semibold whitespace-nowrap dark:text-white">
+            UmoDJA
+          </span>
+        </Navbar.Brand>
 
-      {/* Desktop Navigation */}
-      <ul className='hidden md:flex'>
-        {navItems.map(item => (
-          <li
-            key={item.id}
-            className='p-4 hover:bg-[#00df9a] rounded-xl m-2 cursor-pointer duration-300 hover:text-black'
-          >
-            <NavigationHandler>
-              {(handleNavigation) => (
+        {/* Navigation Links au centre */}
+        <NavigationHandler>
+          {(handleNavigation) => (
+            <nav className="flex items-center space-x-10 font-medium">
+              {navItems.map((item) => (
                 <a
-                  onClick={() => handleNavigation(`/${item.text.toLowerCase()}`)} // Assure-toi que ce chemin existe
-                  className="text-white no-underline font-semibold hover:underline"
+                  key={item.id}
+                  href="#"
+                  onClick={() => handleNavigation(item.href)}
+                  className="hover:text-primary-600 dark:hover:text-primary-500 text-center whitespace-nowrap"
                 >
                   {item.text}
                 </a>
+              ))}
+              <MegaMenu.Dropdown toggle={<span className="cursor-pointer">Services</span>}>
+                <ul className="grid grid-cols-3 gap-4 p-4">
+                  <li>
+                    <a
+                      href="/networks"
+                      className="hover:text-primary-600 dark:hover:text-primary-500"
+                    >
+                      Mes réseaux
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/contact"
+                      className="hover:text-primary-600 dark:hover:text-primary-500"
+                    >
+                      Contactez-nous
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/offre/public"
+                      className="hover:text-primary-600 dark:hover:text-primary-500"
+                    >
+                      Découvrir les projets
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="hover:text-primary-600 dark:hover:text-primary-500"
+                    >
+                      Support Center
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="hover:text-primary-600 dark:hover:text-primary-500"
+                    >
+                      License
+                    </a>
+                  </li>
+                </ul>
+              </MegaMenu.Dropdown>
+            </nav>
+          )}
+        </NavigationHandler>
+
+        {/* Barre de recherche */}
+        <div className="relative w-1/3">
+          <form
+            onSubmit={(e) => e.preventDefault()}
+            className="relative flex items-center"
+          >
+            <input
+              type="text"
+              placeholder="Rechercher un projet dans vos réseaux..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full px-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none"
+            />
+            <HiSearch className="absolute right-4 text-gray-500" />
+          </form>
+
+          {/* Résultats de recherche dynamiques */}
+          {searchQuery.length >= 2 && (
+            <div className="absolute z-10 w-full mt-2 border border-gray-300 rounded-md shadow-lg">
+              {isLoading ? (
+                <p className="p-2 text-sm">Chargement...</p>
+              ) : searchResults.length > 0 ? (
+                <>
+                  <ul>
+                    {searchResults.map((result: any, index) => (
+                      <li
+                        key={index}
+                        className="bg-white p-4 text-sm border-b hover:bg-gray-100 flex flex-col space-y-1"
+                      >
+                        {/* Titre de l'offre */}
+                        <h3 className="text-base font-bold">{result.titleOffre}</h3>
+
+                        {/* Ville et région */}
+                        <p className="text-gray-600">
+                          {result.villeVisee}, {result.regionVisee}
+                        </p>
+
+                        {/* État de l'offre */}
+                        <div className="flex items-center space-x-2">
+                          <IoIosTime color="blue" />
+                          <p>{result.etatOffreDetail}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                  <button
+                    onClick={() => window.location.href = "/offres/resultats"}
+                    className="block w-full p-2 text-sm text-center rounded-b-md text-primary-600 hover:bg-gray-100"
+                  >
+                    Voir tous les résultats
+                  </button>
+                </>
+              ) : (
+                <p className="p-2 text-sm text-gray-500">
+                  Aucun résultat trouvé.
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Avatar à droite */}
+        <Dropdown
+          arrowIcon={false}
+          inline
+          label={
+            <Avatar
+              alt="User settings"
+              img="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+              rounded
+              className="h-10 w-10"
+            />
+          }
+        >
+          <Dropdown.Header>
+            <span className="block text-sm font-medium text-black">
+              {localStorage.getItem("username")
+                ? localStorage.getItem("username")
+                : "Bonnie Green"}
+            </span>
+            <span className="block truncate text-sm text-gray">
+              name@flowbite.com
+            </span>
+          </Dropdown.Header>
+          <Dropdown.Item>
+            <NavigationHandler>
+              {(handleNavigation: (path: string) => void) => (
+                <p onClick={() => handleNavigation(`/profil`)}>Mon profil</p>
               )}
             </NavigationHandler>
-          </li>
-        ))}
-
-      </ul>
-
-      <UserAvatar />
-
-      {/* Mobile Navigation Icon */}
-      <div onClick={handleNav} className='block md:hidden z-[10000] relative'>
-        {nav ? <AiOutlineClose size={20} /> : <AiOutlineMenu size={20} />}
+          </Dropdown.Item>
+          <Dropdown.Item>
+            <NavigationHandler>
+              {(handleNavigation: (path: string) => void) => (
+                <p onClick={() => handleNavigation(`/mes-offres`)}>
+                  Mes projets
+                </p>
+              )}
+            </NavigationHandler>
+          </Dropdown.Item>
+          <Dropdown.Item>
+            <NavigationHandler>
+              {(handleNavigation: (path: string) => void) => (
+                <p onClick={() => handleNavigation(`/parametres`)}>
+                  Mes paramètres
+                </p>
+              )}
+            </NavigationHandler>
+          </Dropdown.Item>
+          <Dropdown.Divider />
+          <Dropdown.Item>
+            <NavigationHandler>
+              {(handleNavigation: (path: string) => void) => (
+                <p onClick={() => handleNavigation(`/disconnect`)}>
+                  Se déconnecter
+                </p>
+              )}
+            </NavigationHandler>
+          </Dropdown.Item>
+        </Dropdown>
       </div>
-
-      {/* Mobile Navigation Menu */}
-      <ul
-        className={
-          nav
-            ? 'fixed md:hidden left-0 top-0 w-[60%] h-full border-r border-r-gray-900 bg-[#000300] z-[5000] ease-in-out duration-500'
-            : 'ease-in-out w-[60%] duration-500 fixed top-0 bottom-0 left-[-100%] z-[5000]'
-        }
-
-      >
-
-        {/* Mobile Logo */}
-        <div className='flex m-4 '>
-          <h1 className='w-full text-3xl font-bold text-[#00df9a]'>UmoDJA</h1>
-          <UserAvatarMobile />
-        </div>
-        {/* Mobile Navigation Items */}
-        {navItems.map(item => (
-          <li
-            key={item.id}
-            className='p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600'
-          >
-            {item.text}
-          </li>
-        ))}
-      </ul>
-    </div>
+    </MegaMenu>
   );
 };
 
 export default NavbarApp;
-
