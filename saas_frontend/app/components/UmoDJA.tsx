@@ -8,13 +8,13 @@ function UmodDJA() {
     <div className="py-12 px-6">
       {/* Titre principal */}
       <div className="text-center mb-10">
-        <h1 className="text-4xl font-bold mb-4">UmoDJA</h1>
+        <h1 className="text-2xl font-bold mb-4">UmoDJA</h1>
       </div>
 
       {/* Présentation du concept */}
       <section className="mb-12">
         <Card className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold mb-4">Qu'est-ce qu'UmoDJA ?</h2>
+          <h2 className="text-xl font-bold mb-4">Qu'est-ce qu'UmoDJA ?</h2>
           <p className="text-gray-700">
             UmoDJA est une plateforme participative dédiée aux projets d'événements musicaux. Elle permet aux artistes,
             organisateurs et passionnés de collaborer pour créer des expériences uniques. Que vous soyez musicien,

@@ -117,13 +117,13 @@ const TableDesOffres = () => {
                 />
             </div>
             <div className="mx-auto overflow-x-auto">
-                <Table>
+                <Table striped hoverable>
                     <Table.Head>
                         <Table.HeadCell className="font-bold mx-auto">Titre</Table.HeadCell>
                         <Table.HeadCell className="font-bold mx-auto">Date Limite de réponse</Table.HeadCell>
                         <Table.HeadCell className="font-bold mx-auto">Localisation</Table.HeadCell>
                         <Table.HeadCell className="font-bold mx-auto">Statut</Table.HeadCell>
-                        <Table.HeadCell className="font-bold mx-auto">Détail</Table.HeadCell>
+                        <Table.HeadCell><span className="sr-only">Edit</span></Table.HeadCell>
                     </Table.Head>
                     <Table.Body>
                         {offres.map((offre) => (
@@ -147,9 +147,9 @@ const TableDesOffres = () => {
                                     {offre.etatOffre}
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <Button size="sm" href={`mes-offres/detail/${Number(offre.id)}`}>
-                                        Voir Détails
-                                    </Button>
+                                    <a href={`mes-offres/detail/${Number(offre.id)}`} className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
+                                        Détail
+                                    </a>
                                 </Table.Cell>
                             </Table.Row>
                         ))}

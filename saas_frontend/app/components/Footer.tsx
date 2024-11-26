@@ -5,7 +5,7 @@ import { Mail } from "lucide-react";
 
 function FooterComponent() {
   return (
-    <Footer container className="py-12 rounded-none">
+    <Footer container className="py-12 rounded-none border-t border-dark dark:border-gray-500">
       <div className="w-full mx-auto">
         {/* Logo et menu principal */}
         <div className="grid grid-cols-2 gap-10 md:gap-20">
@@ -61,14 +61,11 @@ function FooterComponent() {
                 <Footer.Link href="/profil" className="text-sm">
                   Mon profil
                 </Footer.Link>
-                <Footer.Link href="/parametres" className="text-sm">
-                  Mes paramètres
-                </Footer.Link>
                 <Footer.Link href="/tableau-de-bord" className="text-sm">
                   Mon tableau de bord
                 </Footer.Link>
                 <Footer.Link href="/preferences-notifications" className="text-sm">
-                  Mes préférences de notifications
+                  Mes préférences
                 </Footer.Link>
               </Footer.LinkGroup>
             </div>

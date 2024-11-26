@@ -2,35 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
 @import "flowbite";
-/* @import '../../../node_modules/flowbite/dist/flowbite.css'; */
+@import '../../../node_modules/flowbite/dist/flowbite.css';
 
 
 html {
-  @apply bg-white text-gray-800; /* Je suis obligé d'ajouter ça pour forcer le changement de thème, à voir pourquoi plus tard !!!! */
+  @apply bg-white text-gray-800;
 }
 
 html.dark {
-  @apply bg-gray-800 text-gray-100;  /* Je suis obligé d'ajouter ça pour forcer le changement de thème, à voir pourquoi plus tard !!!! */
+  @apply bg-gray-800 text-gray-100; 
 }
 
 p, h3 {
-  @apply text-gray-900;  /* Je suis obligé d'ajouter ça pour forcer le changement de thème, à voir pourquoi plus tard !!!! */ 
+  @apply text-gray-900;  
 }
 
 .dark p, .dark h3 {
-  @apply text-gray-100;  /* Je suis obligé d'ajouter ça pour forcer le changement de thème, à voir pourquoi plus tard !!!! */
+  @apply text-gray-100; 
 }
+*/
 
 
-/* :root {
+:root {
   --background: #05285C;
-  --background: white;
+  /*--background: white;*/
   --foreground: #0054D1;
-  --foreground: white;
+  /*--foreground: white;*/
   --font-fredoka: 'Fredoka', sans-serif;
   --font-nunito: 'Nunito', sans-serif;
-} */
+}
 
 
 @media (prefers-color-scheme: dark) {

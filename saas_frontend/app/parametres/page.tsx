@@ -3,8 +3,8 @@ import React from "react";
 import { Tabs } from "flowbite-react";
 import { HiUserCircle, HiAdjustments } from "react-icons/hi";
 import { MdDashboard } from "react-icons/md";
-import UserProfile from "@/app/components/UserProfil";
-import PreferencesProfil from "@/app/components/PreferencesProfil";
+import UserProfile from "@/app/components/Profil";
+import PreferencesProfil from "@/app/components/PreferencesNotifications";
 import TableauDeBord from "@/app/components/TableauDeBord";
 
 const SettingsPage: React.FC = () => {

@@ -8,23 +8,22 @@ function Participations() {
     <div className="py-12 px-6">
       {/* Titre principal */}
       <div className="text-center mb-10">
-        <h1 className="text-4xl font-bold mb-4">Comment fonctionnent les participations ?</h1>
-        <p className="text-lg">
-          Découvrez comment participer à des projets et comment gérer les contributions reçues pour vos propres offres.
+        <h1 className="text-xl font-bold mb-4">Comment fonctionnent les participations ?</h1>
+        <p className="text-base">
+          Découvrez comment vous pouvez participer à des projets et comment gérer les contributions reçues pour vos propres offres.
         </p>
       </div>
 
       {/* Participer à une offre */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-6 text-center">Participer à une offre</h2>
+        <h2 className="text-xl font-bold mb-6 text-center">Participer à un projet musical</h2>
         <Timeline>
           <Timeline.Item>
             <Timeline.Point icon={MessageCircle} />
             <Timeline.Content>
               <Timeline.Title>1. Commenter une offre</Timeline.Title>
               <Timeline.Body>
-                Trouvez une offre qui vous intéresse et exprimez votre soutien en laissant un commentaire. Vous pouvez
-                poser des questions, partager vos idées ou simplement montrer votre enthousiasme.
+                Trouvez une offre qui vous intéresse et participez en commentant le projet pour discuter du projet.
               </Timeline.Body>
             </Timeline.Content>
           </Timeline.Item>
@@ -34,7 +33,7 @@ function Participations() {
               <Timeline.Title>2. Indiquer votre participation financière</Timeline.Title>
               <Timeline.Body>
                 Soutenez le projet en indiquant le montant que vous souhaitez contribuer à la cagnotte. Chaque
-                participation financière aide le créateur de l’offre à atteindre ses objectifs.
+                participation financière aide le créateur de l'offre à atteindre son objectif.
               </Timeline.Body>
             </Timeline.Content>
           </Timeline.Item>
@@ -43,10 +42,10 @@ function Participations() {
 
       {/* Recevoir des participations */}
       <section>
-        <h2 className="text-3xl font-bold mb-6 text-center">Gérer les participations à votre offre</h2>
+        <h2 className="text-xl font-bold mb-6 text-center">Gérer les participations de votre offre</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <Card>
-            <h3 className="text-2xl font-bold mb-4">Accepter une participation</h3>
+            <h3 className="text-xl font-bold mb-4">Accepter une participation</h3>
             <p>
               Lorsqu'une personne participe à votre projet, vous recevez une notification. Vous pouvez accepter la
               participation si elle correspond à vos attentes.
@@ -57,7 +56,7 @@ function Participations() {
           </Card>
 
           <Card>
-            <h3 className="text-2xl font-bold mb-4">Refuser une participation</h3>
+            <h3 className="text-xl font-bold mb-4">Refuser une participation</h3>
             <p>
               Si une participation ne correspond pas aux objectifs ou aux besoins de votre projet, vous pouvez la
               refuser en expliquant brièvement votre décision.
