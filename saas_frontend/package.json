@@ -2,6 +2,7 @@
   "name": "saas_frontend",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,10 +10,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroicons/react": "^2.1.5",
     "@nextui-org/react": "^2.4.8",
-    "class-variance-authority": "^0.7.0",
+    "autoprefixer": "^10.4.20",
+    "axios": "^1.7.7",
+    "flowbite": "^2.5.2",
     "flowbite-react": "^0.10.2",
-    "lint": "^0.8.19",
+    "lint": "^1.1.2",
     "lucide-react": "^0.263.1",
     "next": "14.2.14",
     "radix-ui": "^1.0.1",
@@ -26,8 +30,8 @@
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.14",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
+    "postcss": "^8.4.48",
+    "tailwindcss": "^3.4.14",
     "typescript": "^5"
   }
 }

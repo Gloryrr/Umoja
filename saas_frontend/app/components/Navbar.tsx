@@ -1,8 +1,26 @@
 "use client";
 import { useState } from 'react';
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
-import { Dropdown, Avatar } from 'flowbite-react';
-import NavigationHandler from './router';
+import { Dropdown, Avatar, Navbar } from 'flowbite-react';
+import NavigationHandler from '../navigation/Router';
+import { DarkThemeToggle, Flowbite } from "flowbite-react";
+
+export function NavBarConnectionInscription() {
+  return (
+    <Navbar fluid className="border-b border-gray-300 p-5">
+      <Navbar.Brand>
+        <img src="../favicon.ico" className="mr-3 h-6 sm:h-9" alt="Flowbite React Logo" />
+        <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">UmoDJA</span>
+      </Navbar.Brand>
+      <Navbar.Toggle />
+      <Navbar.Collapse>
+        <Flowbite>
+          <DarkThemeToggle />
+        </Flowbite>
+      </Navbar.Collapse>
+    </Navbar>
+  );
+}
 
 
 const UserAvatar = () => {
@@ -81,7 +99,7 @@ const UserAvatarMobile = () => {
   );
 }
 
-const Navbar = () => {
+const NavbarApp = () => {
   // State to manage the navbar's visibility
   const [nav, setNav] = useState(false);
 
@@ -171,5 +189,5 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default NavbarApp;
 

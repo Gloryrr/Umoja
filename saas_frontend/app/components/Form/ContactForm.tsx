@@ -1,7 +1,7 @@
 "use client"
 import React from 'react';
 import { FaUser, FaEnvelope, FaComment } from "react-icons/fa";
-import NavigationHandler from './router';
+import NavigationHandler from '../../navigation/Router';
 
 interface User {
   name: string;
@@ -13,7 +13,7 @@ const user: User = {
   email: "john.doe@example.com"
 };
 
-export default function contact_form() {
+export default function ContactForm() {
 
 const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     const nom = (e.target as HTMLFormElement).elements.namedItem('Nom') as HTMLInputElement;
