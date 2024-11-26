@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Table, Spinner, Pagination, Button } from "flowbite-react";
+import { useEffect, useState, useCallback } from "react";
+import { Table, Spinner, Pagination } from "flowbite-react";
 import { apiGet, apiPost } from "@/app/services/internalApiClients";
 
 interface Offre {
@@ -18,7 +18,10 @@ interface Offre {
     nbArtistesConcernes: number | null;
     nbInvitesConcernes: number | null;
     liensPromotionnels: string;
-    etatOffre: string | null;
+    etatOffre: {
+        id: number;
+        nomEtat: string;
+    } | null;
 }
 
 const TableDesOffres = () => {
@@ -29,8 +32,44 @@ const TableDesOffres = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const offersPerPage = 10;
 
-    const fetchUserOffers = async () => {
-        const username = localStorage.getItem("username");
+    const fetchPaginatedOffers = useCallback(
+        async (idUtilisateur: number) => {
+            const startIndex = (currentPage - 1) * offersPerPage;
+            try {
+                const response = await apiGet(`/offre/utilisateur/${idUtilisateur}`);
+                const allOffers: Offre[] = JSON.parse(response.offre);
+
+                const offersWithStates = await Promise.all(
+                    allOffers.map(async (offre) => {
+                        try {
+                            if (offre) {
+                                const etatResponse = await apiGet(`/etat-offre/${offre.etatOffre?.id}`);
+                                offre.etatOffre = JSON.parse(etatResponse.etat_offre)[0].nomEtat;
+                            }
+                        } catch (error) {
+                            console.error(`Erreur pour l'offre ${offre.id}`, error);
+                            if (offre.etatOffre) {
+                                offre.etatOffre.nomEtat = "État inconnu";
+                            }
+                        }
+                        return offre;
+                    })
+                );
+
+                setOffresTaille(allOffers.length);
+                setOffres(offersWithStates.slice(startIndex, startIndex + offersPerPage));
+            } catch (error) {
+                console.error("Erreur lors de la récupération des offres paginées :", error);
+                setError("Erreur lors de la récupération des offres paginées.");
+            } finally {
+                setIsLoading(false);
+            }
+        },
+        [currentPage, offersPerPage]
+    );
+
+    const fetchUserOffers = useCallback(async () => {
+        const username = typeof window !== 'undefined' ? localStorage.getItem('username') : null;
         if (!username) {
             setError("Nom d'utilisateur introuvable dans le localStorage.");
             setIsLoading(false);
@@ -53,41 +92,11 @@ const TableDesOffres = () => {
             setError("Erreur lors de la récupération des offres.");
             setIsLoading(false);
         }
-    };
-
-    const fetchPaginatedOffers = async (idUtilisateur: number) => {
-        const startIndex = (currentPage - 1) * offersPerPage;
-        try {
-            const response = await apiGet(`/offre/utilisateur/${idUtilisateur}`);
-            const allOffers: Offre[] = JSON.parse(response.offre);
-
-            // Récupération des états pour chaque offre
-            const offersWithStates = await Promise.all(
-                allOffers.map(async (offre) => {
-                    try {
-                        const etatResponse = await apiGet(`/etat-offre/${offre.etatOffre.id}`);
-                        offre.etatOffre = JSON.parse(etatResponse.etat_offre)[0].nomEtat;
-                    } catch (error) {
-                        console.error(`Erreur lors de la récupération de l'état pour l'offre ${offre.id}`, error);
-                        offre.etatOffre = "État inconnu";
-                    }
-                    return offre;
-                })
-            );
-
-            setOffresTaille(allOffers.length);
-            setOffres(offersWithStates.slice(startIndex, startIndex + offersPerPage));
-        } catch (error) {
-            console.error("Erreur lors de la récupération des offres paginées :", error);
-            setError("Erreur lors de la récupération des offres paginées.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    }, [fetchPaginatedOffers]);
 
     useEffect(() => {
         fetchUserOffers();
-    }, [currentPage]);
+    }, [fetchUserOffers]);
 
     const isDateDepassee = (deadLine: string | Date): boolean => {
         const deadlineDate = new Date(deadLine).getTime();
@@ -141,10 +150,10 @@ const TableDesOffres = () => {
                                 </Table.Cell>
                                 <Table.Cell
                                     className={`${
-                                        offre.etatOffre === "En Cours" ? "text-green-500" : "text-red-500"
+                                        offre.etatOffre?.nomEtat === "En Cours" ? "text-green-500" : "text-red-500"
                                     }`}
                                 >
-                                    {offre.etatOffre}
+                                    {offre.etatOffre?.nomEtat}
                                 </Table.Cell>
                                 <Table.Cell>
                                     <a href={`mes-offres/detail/${Number(offre.id)}`} className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">

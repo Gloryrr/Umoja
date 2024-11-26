@@ -1,40 +1,18 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Card, ToggleSwitch, Button, ListGroup } from 'flowbite-react';
 import { apiGet, apiPatch } from '@/app/services/internalApiClients';
 import { DarkThemeToggle, Flowbite } from "flowbite-react";
 
 const PreferencesNotifications: React.FC = () => {
-  const username = localStorage.getItem('username');
+  const username = typeof window !== 'undefined' ? localStorage.getItem('username') : "";
   const [loading, setLoading] = useState(false);
   const [preferences, setPreferences] = useState({
     email_nouvelle_offre: false,
     email_update_offre: false,
     reponse_offre: false,
   });
-
-  const fetchPreferences = async () => {
-    if (!username) return;
-
-    setLoading(true);
-    try {
-      const response = await apiGet(`/utilisateur/preference-notification/${username}`);
-      if (response) {
-        setPreferences({
-          email_nouvelle_offre: JSON.parse(response.preferences)[0].email_nouvelle_offre,
-          email_update_offre: JSON.parse(response.preferences)[0].email_update_offre,
-          reponse_offre: JSON.parse(response.preferences)[0].reponse_offre,
-        });
-      } else {
-        console.error("Erreur lors de la récupération des préférences");
-      }
-    } catch (error) {
-      console.error("Erreur réseau :", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const updatePreferences = async () => {
     if (!username) return;
@@ -69,9 +47,31 @@ const PreferencesNotifications: React.FC = () => {
     }));
   };
 
+  const fetchPreferences = useCallback(async () => {
+    if (!username) return;
+
+    setLoading(true);
+    try {
+      const response = await apiGet(`/utilisateur/preference-notification/${username}`);
+      if (response) {
+        setPreferences({
+          email_nouvelle_offre: JSON.parse(response.preferences)[0].email_nouvelle_offre,
+          email_update_offre: JSON.parse(response.preferences)[0].email_update_offre,
+          reponse_offre: JSON.parse(response.preferences)[0].reponse_offre,
+        });
+      } else {
+        console.error("Erreur lors de la récupération des préférences");
+      }
+    } catch (error) {
+      console.error("Erreur réseau :", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [username]);
+
   useEffect(() => {
     fetchPreferences();
-  }, []);
+  }, [fetchPreferences]);
 
   return (
     <div className="mx-auto mt-10 mb-10">

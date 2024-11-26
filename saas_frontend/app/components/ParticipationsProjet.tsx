@@ -33,7 +33,7 @@ function Participations() {
               <Timeline.Title>2. Indiquer votre participation financière</Timeline.Title>
               <Timeline.Body>
                 Soutenez le projet en indiquant le montant que vous souhaitez contribuer à la cagnotte. Chaque
-                participation financière aide le créateur de l'offre à atteindre son objectif.
+                participation financière aide le créateur de l&apos;offre à atteindre son objectif.
               </Timeline.Body>
             </Timeline.Content>
           </Timeline.Item>
@@ -47,7 +47,7 @@ function Participations() {
           <Card>
             <h3 className="text-xl font-bold mb-4">Accepter une participation</h3>
             <p>
-              Lorsqu'une personne participe à votre projet, vous recevez une notification. Vous pouvez accepter la
+              Lorsqu&apos;une personne participe à votre projet, vous recevez une notification. Vous pouvez accepter la
               participation si elle correspond à vos attentes.
             </p>
             <div className="flex justify-center mt-4">

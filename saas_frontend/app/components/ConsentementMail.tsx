@@ -50,7 +50,7 @@ export default function ConsentementNotifications() {
                 className="mr-2"
               />
               <label htmlFor="consentement" className="text-sm text-gray-700">
-                J'accepte de recevoir des notifications et emails de la part de UmoDJA.
+                J&apos;accepte de recevoir des notifications et emails de la part de UmoDJA.
               </label>
             </div>
             <Button type="submit" className="w-full mt-4" disabled={!isChecked}>

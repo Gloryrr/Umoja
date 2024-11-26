@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Button, Card, TextInput, Label, Badge } from "flowbite-react";
 import { apiPatch, apiPost } from "@/app/services/internalApiClients";
 
@@ -15,9 +15,10 @@ const Profil: React.FC = () => {
     const [editedUserInfo, setEditedUserInfo] = useState(userInfo);
     const [isEditing, setIsEditing] = useState(false);
 
-    const fetchUserProfile = async () => {
-        if (localStorage.isConnected === "true") {
-            const username = window.localStorage.getItem("username");
+    const fetchUserProfile = useCallback(async () => {
+        const isConnected = typeof window !== 'undefined' ? localStorage.getItem('isConnected') : null;
+        if (isConnected === "true") {
+            const username = typeof window !== 'undefined' ? localStorage.getItem('username') : "";
             const data = {
                 username,
             };
@@ -33,11 +34,11 @@ const Profil: React.FC = () => {
                 console.error("Erreur réseau :", error);
             }
         }
-    };
+    }, [userInfo]);
 
     useEffect(() => {
         fetchUserProfile();
-    }, []);
+    }, [fetchUserProfile]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -52,7 +53,7 @@ const Profil: React.FC = () => {
             const data = JSON.parse(JSON.stringify(editedUserInfo));
             await apiPatch(`/utilisateurs/update/${userInfo.id}`, data);
             setUserInfo(editedUserInfo);
-            localStorage.setItem("username", editedUserInfo.username);
+            if (typeof window !== 'undefined') localStorage.setItem("username", editedUserInfo.username);
         } catch (error) {
             console.error("Erreur lors de la sauvegarde des données utilisateur :", error);
         }

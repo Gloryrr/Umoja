@@ -41,8 +41,9 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
         
         const fetchReseauUtilisateur = async () => {
             try {
+                const username = typeof window !== 'undefined' ? localStorage.getItem('username') : "";
                 const data = {
-                    username: localStorage.getItem("username")
+                    username: username,
                 };
                 const datasUser = await apiPost('/utilisateur', JSON.parse(JSON.stringify(data)));
                 const reseauxListe: Array<{ nomReseau: string }> = JSON.parse(datasUser.utilisateur)[0].reseaux;

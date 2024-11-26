@@ -8,18 +8,18 @@ function FonctionnementProjet() {
     <div className="py-12 px-6">
       {/* Titre principal */}
       <div className="text-xl text-center mb-10">
-        <h1 className="font-bold mb-4">Comment fonctionne la création d'une offre de projet ?</h1>
+        <h1 className="font-bold mb-4">Comment fonctionne la création d&apos;une offre de projet ?</h1>
         <p className="text-base">
           Découvrez comment construire, gérer et faire vivre votre projet sur notre application et au sein de vos réseaux.
         </p>
       </div>
 
-      {/* Définition d'un projet */}
+      {/* Définition d&apos;un projet */}
       <section className="mb-12">
         <Card>
-          <h2 className="font-bold mb-4">Qu'est-ce qu'une offre de projet ?</h2>
+          <h2 className="font-bold mb-4">Qu&apos;est-ce qu&apos;une offre de projet ?</h2>
           <p className="text-base">
-            Un offre de projet est une idée d'évènement musical que vous souhaitez concrétiser grâce à l'aide de votre réseau
+            Un offre de projet est une idée d&apos;évènement musical que vous souhaitez concrétiser grâce à l&apos;aide de votre réseau
             et de notre plateforme. 
             Votre réseau vous permet de trouver des personnes qui souhaite vous aider à rendre ce projet réalisable en participant financièrement.
           </p>
@@ -83,7 +83,7 @@ function FonctionnementProjet() {
           <Card>
             <h3 className="font-bold mb-4">Gestion du projet</h3>
             <p>
-              Modifiez les informations du projet, ajustez le budget nécessaire, les artistes ou le lieux au fur et à mesure de l'avancement.
+              Modifiez les informations du projet, ajustez le budget nécessaire, les artistes ou le lieux au fur et à mesure de l&apos;avancement.
             </p>
           </Card>
 
@@ -97,13 +97,13 @@ function FonctionnementProjet() {
           <Card>
             <h3 className="font-bold mb-4">Tableau de bord</h3>
             <p>
-              Suivez l'avancement de votre projet depuis le tableau de bord, visualisez la bar de progression du budget total et disuctez avec les participants.
+              Suivez l&apos;avancement de votre projet depuis le tableau de bord, visualisez la bar de progression du budget total et disuctez avec les participants.
             </p>
           </Card>
         </div>
       </section>
 
-      {/* Bouton d'action */}
+      {/* Bouton d&apos;action */}
       <div className="text-center mt-12">
         <Button href="/offre" size="lg">
           Démarrer mon projet

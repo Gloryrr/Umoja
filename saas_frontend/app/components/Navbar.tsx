@@ -7,7 +7,15 @@ import Image from "next/image";
 import { HiSearch } from "react-icons/hi";
 import { IoIosTime } from "react-icons/io";
 import { apiGet, apiPost } from "@/app/services/internalApiClients";
-import { DarkThemeToggle, Flowbite } from "flowbite-react";
+import { DarkThemeToggle } from "flowbite-react";
+
+interface SearchResult {
+  id: number;
+  titleOffre: string;
+  villeVisee: string;
+  regionVisee: string;
+  etatOffreDetail: string;
+}
 
 const NavbarApp = () => {
   const [navItems] = useState([
@@ -16,7 +24,7 @@ const NavbarApp = () => {
   ]);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchSearchResults = async (query: string) => {
@@ -28,7 +36,7 @@ const NavbarApp = () => {
     setIsLoading(true);
   
     try {
-      const username = localStorage.getItem("username") || "inconnu";
+      const username = typeof window !== 'undefined' ? localStorage.getItem('username') : null;
       const data = {
         "username": username,
         "title": query,
@@ -39,7 +47,7 @@ const NavbarApp = () => {
       if (response) {
         const offres = JSON.parse(response.offres).slice(0, 3);
         const offresAvecEtat = await Promise.all(
-          offres.map(async (offre: any) => {
+          offres.map(async (offre: { id: number; etatOffre: { id: number } }) => {
             try {
               console.log(offre);
               const etatResponse = await apiGet(`/etat-offre/${offre.etatOffre.id}`);
@@ -181,7 +189,7 @@ const NavbarApp = () => {
               ) : searchResults.length > 0 ? (
                 <>
                   <ul>
-                    {searchResults.map((result: any, index) => (
+                    {searchResults.map((result: SearchResult, index) => (
                       <li
                         key={index}
                         className="bg-white p-4 text-sm border-b hover:bg-gray-100 flex flex-col space-y-1"
@@ -238,9 +246,7 @@ const NavbarApp = () => {
           >
             <Dropdown.Header>
               <span className="block text-sm font-medium text-black">
-                {localStorage.getItem("username")
-                  ? localStorage.getItem("username")
-                  : "Bonnie Green"}
+                {typeof window !== 'undefined' ? localStorage.getItem('username') : "Bonnie Green"}
               </span>
               <span className="block truncate text-sm text-gray">
                 name@flowbite.com

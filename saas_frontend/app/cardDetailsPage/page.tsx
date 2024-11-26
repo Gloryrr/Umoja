@@ -1,8 +1,8 @@
 "use client"
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { FaHeart, FaCode, FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
+import { /*FaHeart, FaCode,*/ FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
 
 type Project = {
     id: number
@@ -45,7 +45,7 @@ const projects: Project[] = [
     // Add more projects as needed
 ];
 
-export default function ProjectDetails() {
+function ProjectDetailsContent({ projects }: { projects: Project[] }) {
     const searchParams = useSearchParams();
     const id = searchParams.get('id');
     const project = projects.find(p => p.id === Number(id));
@@ -120,5 +120,13 @@ export default function ProjectDetails() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function ProjectDetails() {
+    return (
+        <Suspense fallback={<div className="flex items-center justify-center h-screen bg-gray-900 text-white">Chargement...</div>}>
+            <ProjectDetailsContent projects={projects} />
+        </Suspense>
     );
 }
