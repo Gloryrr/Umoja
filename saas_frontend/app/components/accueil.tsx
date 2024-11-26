@@ -3,6 +3,7 @@ import React from 'react'
 import { FaCheck } from "react-icons/fa";
 import { GrInProgress } from "react-icons/gr";
 import Link from 'next/link';
+import Image from 'next/image';
 
 type Project = {
     id: number
@@ -19,7 +20,7 @@ export default function Accueil({ projects = [] }: { projects: Project[] }) {
     if (projects.length === 0) {
         return (
         <div className="flex items-center justify-center h-screen bg-gray-800">
-            <p className="text-2xl font-semibold text-white">Vous n'avez pas d'offre en cours</p>
+            <p className="text-2xl font-semibold text-white">Vous n&apos;avez pas d&apos;offre en cours</p>
         </div>
         )
     }
@@ -33,14 +34,14 @@ export default function Accueil({ projects = [] }: { projects: Project[] }) {
                         <CardHeader>
                             {project.amountRaised >= project.goal ? (
                             <>
-                                <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover" />
+                                <Image width={480} height={480} src={project.imageUrl} alt={project.title} className="w-full h-full object-cover" />
                                 <div className="absolute top-2 left-2 bg-green-500 text-xs font-semibold px-2 py-2 rounded">
                                     <FaCheck />
                                 </div>
                             </>
                             ) : (
                             <>
-                                <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover" />
+                                <Image width={480} height={480} src={project.imageUrl} alt={project.title} className="w-full h-full object-cover" />
                                 <div className="absolute top-2 left-2 bg-orange-500 text-xs font-semibold px-2 py-2 rounded">
                                     <GrInProgress />
                                 </div>

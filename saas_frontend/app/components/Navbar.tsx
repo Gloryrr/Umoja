@@ -7,6 +7,15 @@ import Image from "next/image";
 import { HiSearch } from "react-icons/hi";
 import { IoIosTime } from "react-icons/io";
 import { apiGet, apiPost } from "@/app/services/internalApiClients";
+import { DarkThemeToggle } from "flowbite-react";
+
+interface SearchResult {
+  id: number;
+  titleOffre: string;
+  villeVisee: string;
+  regionVisee: string;
+  etatOffreDetail: string;
+}
 
 const NavbarApp = () => {
   const [navItems] = useState([
@@ -15,7 +24,7 @@ const NavbarApp = () => {
   ]);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchSearchResults = async (query: string) => {
@@ -27,7 +36,7 @@ const NavbarApp = () => {
     setIsLoading(true);
   
     try {
-      const username = localStorage.getItem("username") || "inconnu";
+      const username = typeof window !== 'undefined' ? localStorage.getItem('username') : null;
       const data = {
         "username": username,
         "title": query,
@@ -38,7 +47,7 @@ const NavbarApp = () => {
       if (response) {
         const offres = JSON.parse(response.offres).slice(0, 3);
         const offresAvecEtat = await Promise.all(
-          offres.map(async (offre: any) => {
+          offres.map(async (offre: { id: number; etatOffre: { id: number } }) => {
             try {
               console.log(offre);
               const etatResponse = await apiGet(`/etat-offre/${offre.etatOffre.id}`);
@@ -80,7 +89,7 @@ const NavbarApp = () => {
 
   return (
     <MegaMenu className="w-full">
-      <div className="flex items-center justify-between w-full py-4 border-b border-gray-300 px-4">
+      <div className="flex items-center justify-between w-full py-4 border-b border-gray-300 dark:border-gray-500 px-4">
         {/* Logo à gauche */}
         <Navbar.Brand href="/" className="flex items-center space-x-2">
           <Image
@@ -180,7 +189,7 @@ const NavbarApp = () => {
               ) : searchResults.length > 0 ? (
                 <>
                   <ul>
-                    {searchResults.map((result: any, index) => (
+                    {searchResults.map((result: SearchResult, index) => (
                       <li
                         key={index}
                         className="bg-white p-4 text-sm border-b hover:bg-gray-100 flex flex-col space-y-1"
@@ -217,65 +226,69 @@ const NavbarApp = () => {
           )}
         </div>
 
-        {/* Avatar à droite */}
-        <Dropdown
-          arrowIcon={false}
-          inline
-          label={
-            <Avatar
-              alt="User settings"
-              img="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-              rounded
-              className="h-10 w-10"
-            />
-          }
-        >
-          <Dropdown.Header>
-            <span className="block text-sm font-medium text-black">
-              {localStorage.getItem("username")
-                ? localStorage.getItem("username")
-                : "Bonnie Green"}
-            </span>
-            <span className="block truncate text-sm text-gray">
-              name@flowbite.com
-            </span>
-          </Dropdown.Header>
-          <Dropdown.Item>
-            <NavigationHandler>
-              {(handleNavigation: (path: string) => void) => (
-                <p onClick={() => handleNavigation(`/profil`)}>Mon profil</p>
-              )}
-            </NavigationHandler>
-          </Dropdown.Item>
-          <Dropdown.Item>
-            <NavigationHandler>
-              {(handleNavigation: (path: string) => void) => (
-                <p onClick={() => handleNavigation(`/mes-offres`)}>
-                  Mes projets
-                </p>
-              )}
-            </NavigationHandler>
-          </Dropdown.Item>
-          <Dropdown.Item>
-            <NavigationHandler>
-              {(handleNavigation: (path: string) => void) => (
-                <p onClick={() => handleNavigation(`/parametres`)}>
-                  Mes paramètres
-                </p>
-              )}
-            </NavigationHandler>
-          </Dropdown.Item>
-          <Dropdown.Divider />
-          <Dropdown.Item>
-            <NavigationHandler>
-              {(handleNavigation: (path: string) => void) => (
-                <p onClick={() => handleNavigation(`/disconnect`)}>
-                  Se déconnecter
-                </p>
-              )}
-            </NavigationHandler>
-          </Dropdown.Item>
-        </Dropdown>
+        <div className="flex">
+          <div className="mr-5">
+            <DarkThemeToggle/>
+          </div>
+
+          {/* Avatar à droite */}
+          <Dropdown
+            arrowIcon={false}
+            inline
+            label={
+              <Avatar
+                alt="User settings"
+                img="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+                rounded
+                className="h-10 w-10"
+              />
+            }
+          >
+            <Dropdown.Header>
+              <span className="block text-sm font-medium text-black">
+                {typeof window !== 'undefined' ? localStorage.getItem('username') : "Bonnie Green"}
+              </span>
+              <span className="block truncate text-sm text-gray">
+                name@flowbite.com
+              </span>
+            </Dropdown.Header>
+            <Dropdown.Item>
+              <NavigationHandler>
+                {(handleNavigation: (path: string) => void) => (
+                  <p onClick={() => handleNavigation(`/profil`)}>Mon profil</p>
+                )}
+              </NavigationHandler>
+            </Dropdown.Item>
+            <Dropdown.Item>
+              <NavigationHandler>
+                {(handleNavigation: (path: string) => void) => (
+                  <p onClick={() => handleNavigation(`/tableau-de-bord`)}>
+                    Mon tableau de bord
+                  </p>
+                )}
+              </NavigationHandler>
+            </Dropdown.Item>
+            <Dropdown.Item>
+              <NavigationHandler>
+                {(handleNavigation: (path: string) => void) => (
+                  <p onClick={() => handleNavigation(`/preferences-notifications`)}>
+                    Mes préférences
+                  </p>
+                )}
+              </NavigationHandler>
+            </Dropdown.Item>
+            <Dropdown.Divider />
+            <Dropdown.Item>
+              <NavigationHandler>
+                {(handleNavigation: (path: string) => void) => (
+                  <p onClick={() => handleNavigation(`/disconnect`)}>
+                    Se déconnecter
+                  </p>
+                )}
+              </NavigationHandler>
+            </Dropdown.Item>
+          </Dropdown>
+        </div>
       </div>
     </MegaMenu>
   );
