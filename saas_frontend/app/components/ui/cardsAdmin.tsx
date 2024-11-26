@@ -1,6 +1,7 @@
 import * as React from "react"
 import { cn } from "./utilsAdmin"
 import NavigationHandler from '../Router';
+import { LucideIcon } from 'lucide-react';
 
 const Card = React.forwardRef<
   HTMLDivElement,
@@ -67,7 +68,7 @@ CardContent.displayName = "CardContent"
 interface DashboardCardProps {
     title: string,
     description: string,
-    icon: any,
+    icon: LucideIcon,
     link: string
 }
 
@@ -77,7 +78,7 @@ const DashboardCard = ({ title, description, icon, link }: DashboardCardProps) =
         <div className="bg-black p-4 flex items-center justify-between">
           <CardTitle className="text-lg font-semibold text-white">{title}</CardTitle>
           <div className="bg-white rounded-full p-2">
-            {icon}
+            {React.createElement(icon)}
           </div>
         </div>
         <CardContent className="bg-white">

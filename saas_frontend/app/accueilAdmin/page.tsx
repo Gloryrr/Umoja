@@ -19,37 +19,37 @@ export default function AccueilAdmin() {
             <DashboardCard
               title="Utilisateurs"
               description="Gérer les comptes utilisateurs"
-              icon={<Users className="h-6 w-6" />}
+              icon={Users}
               link="/accueille"
             />
             <DashboardCard
               title="Concerts"
               description="Organiser et gérer les concerts"
-              icon={<Music className="h-6 w-6" />}
+              icon={Music}
               link="/accueille"
             />
             <DashboardCard
               title="Stades"
               description="Gérer les lieux de concerts"
-              icon={<Stadium className="h-6 w-6" />}
+              icon={Stadium}
               link="/accueille"
             />
             <DashboardCard
               title="Statistiques"
               description="Voir les statistiques globales"
-              icon={<BarChart3 className="h-6 w-6" />}
+              icon={BarChart3}
               link="/accueille"
             />
             <DashboardCard
               title="Calendrier"
               description="Planifier les événements"
-              icon={<Calendar className="h-6 w-6" />}
+              icon={Calendar}
               link="/accueille"
             />
             <DashboardCard
               title="Notifications"
               description="Gérer les alertes et messages"
-              icon={<Bell className="h-6 w-6" />}
+              icon={Bell}
               link="/accueille"
             />
           </div>
