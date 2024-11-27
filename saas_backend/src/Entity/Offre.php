@@ -90,6 +90,14 @@ class Offre
     #[ORM\Column]
     private ?int $placesMin = null;
 
+      /**
+     * Nombre de contrirbuteur à l'offre.
+     *
+     * @var int|null
+     */
+    #[ORM\Column]
+    private ?int $nb_contributeur = null;
+
     /**
      * Nombre maximum de places disponibles.
      *
@@ -412,6 +420,29 @@ class Offre
     public function setNbArtistesConcernes(int $nbArtistesConcernes): static
     {
         $this->nbArtistesConcernes = $nbArtistesConcernes;
+
+        return $this;
+    }
+
+     /**
+     * Obtient le nombre de contributeur par l'offre.
+     *
+     * @return int|null
+     */
+    public function getNbContributeur(): ?int
+    {
+        return $this->nb_contributeur;
+    }
+
+    /**
+     * Définit le nombre de contributeur par offre.
+     *
+     * @param int $nb_contributeur
+     * @return self
+     */
+    public function setNbContributeur(int $nb_contributeur): static
+    {
+        $this->nb_contributeur = $nb_contributeur;
 
         return $this;
     }
