@@ -2,9 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/*
+
 @import "flowbite";
-@import '../../../node_modules/flowbite/dist/flowbite.css';
+/*@import '../../../node_modules/flowbite/dist/flowbite.css';*/
 
 
 html {
@@ -22,14 +22,13 @@ p, h3 {
 .dark p, .dark h3 {
   @apply text-gray-100; 
 }
-*/
 
 
 :root {
-  --background: #05285C;
-  /*--background: white;*/
-  --foreground: #0054D1;
-  /*--foreground: white;*/
+  /* --background: #05285C; */
+  /* --background: white; */
+  /* --foreground: #0054D1; */
+  /* --foreground: white; */
   --font-fredoka: 'Fredoka', sans-serif;
   --font-nunito: 'Nunito', sans-serif;
 }
@@ -37,8 +36,8 @@ p, h3 {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* --background: #0a0a0a; */
+    /* --foreground: #ededed; */
   }
 }
 

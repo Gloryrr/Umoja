@@ -22,14 +22,14 @@ export default function ConsentementNotifications() {
 
   return (
     <div className="mt-10 mb-10 flex items-center justify-center px-4 py-8">
-      <div className="bg-white p-6 rounded-lg shadow-md max-w-lg w-full">
-        <h1 className="text-2xl font-bold text-center mb-4 text-gray-800">
+      <div className="p-6 rounded-lg shadow-md max-w-lg w-full">
+        <h1 className="text-2xl font-bold text-center mb-4">
           Consentement aux Notifications
         </h1>
-        <p className="text-sm text-gray-600 mb-2">
+        <p className="text-sm mb-2">
           En acceptant, vous autorisez <strong>UmoDJA</strong> à vous envoyer des emails pour :
         </p>
-        <ul className="list-disc pl-6 mb-6 text-sm text-gray-600">
+        <ul className="list-disc pl-6 mb-6 text-sm">
           <li>Des mises à jour sur vos projets</li>
           <li>Des invitations à participer à des offres</li>
           <li>Des actualités et événements musicaux exclusifs</li>
@@ -49,7 +49,7 @@ export default function ConsentementNotifications() {
                 onChange={handleCheckboxChange}
                 className="mr-2"
               />
-              <label htmlFor="consentement" className="text-sm text-gray-700">
+              <label htmlFor="consentement" className="text-sm">
                 J&apos;accepte de recevoir des notifications et emails de la part de UmoDJA.
               </label>
             </div>
@@ -58,8 +58,8 @@ export default function ConsentementNotifications() {
             </Button>
           </form>
         )}
-        <p className="text-xs text-gray-500 mt-4 text-center">
-          Vous pouvez révoquer votre consentement à tout moment depuis vos <a href="/parametres" className="text-blue-600 underline">paramètres</a>.
+        <p className="text-xs mt-4 text-center">
+          Vous pouvez révoquer votre consentement à tout moment depuis vos <a href="/preferences-notifications" className="text-blue-600 underline">préférences</a>.
         </p>
       </div>
     </div>
