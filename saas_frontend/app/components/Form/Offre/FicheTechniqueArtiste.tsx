@@ -49,24 +49,24 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
             {/* Section Backline et Éclairage */}
             <div className="grid grid-cols-2 gap-4 mb-5">
                 <div>
-                    <Label htmlFor="besoinBackline" value="Besoin Backline" />
+                    <Label htmlFor="besoinBackline" value="Besoin en backline:" />
                     <TextInput
                         id="besoinBackline"
                         name="besoinBackline"
                         value={ficheTechniqueArtiste.besoinBackline ?? ""}
                         onChange={handleFicheTechniqueArtisteChange}
-                        placeholder="Besoins en backline"
+                        placeholder="Nombre d'amplis, enceinte, etc..."
                         required
                     />
                 </div>
                 <div>
-                    <Label htmlFor="besoinEclairage" value="Besoin Éclairage" />
+                    <Label htmlFor="besoinEclairage" value="Besoin en éclairage:" />
                     <TextInput
                         id="besoinEclairage"
                         name="besoinEclairage"
                         value={ficheTechniqueArtiste.besoinEclairage ?? ""}
                         onChange={handleFicheTechniqueArtisteChange}
-                        placeholder="Besoins en éclairage"
+                        placeholder="Nombre de projecteurs, etc..."
                         required
                     />
                 </div>
@@ -75,24 +75,24 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
             {/* Section Équipements et Scène */}
             <div className="grid grid-cols-2 gap-4 mb-5">
                 <div>
-                    <Label htmlFor="besoinEquipements" value="Besoin Équipements" />
+                    <Label htmlFor="besoinEquipements" value="Besoin en équipements:" />
                     <TextInput
                         id="besoinEquipements"
                         name="besoinEquipements"
                         value={ficheTechniqueArtiste.besoinEquipements ?? ""}
                         onChange={handleFicheTechniqueArtisteChange}
-                        placeholder="Besoins en équipements"
+                        placeholder="Nombre de micros, etc..."
                         required
                     />
                 </div>
                 <div>
-                    <Label htmlFor="besoinScene" value="Besoin Scène" />
+                    <Label htmlFor="besoinScene" value="Besoin pour la scène:" />
                     <TextInput
                         id="besoinScene"
                         name="besoinScene"
                         value={ficheTechniqueArtiste.besoinScene ?? ""}
                         onChange={handleFicheTechniqueArtisteChange}
-                        placeholder="Besoins en scène"
+                        placeholder="Scène de 30m² minimum, etc..."
                         required
                     />
                 </div>
@@ -100,13 +100,13 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
 
             {/* Section Sonorisation */}
             <div className="mb-5">
-                <Label htmlFor="besoinSonorisation" value="Besoin Sonorisation" />
+                <Label htmlFor="besoinSonorisation" value="Besoin en sonorisation:" />
                 <TextInput
                     id="besoinSonorisation"
                     name="besoinSonorisation"
                     value={ficheTechniqueArtiste.besoinSonorisation ?? ""}
                     onChange={handleFicheTechniqueArtisteChange}
-                    placeholder="Besoins en sonorisation"
+                    placeholder="Console de mixage, etc..."
                     required
                 />
             </div>

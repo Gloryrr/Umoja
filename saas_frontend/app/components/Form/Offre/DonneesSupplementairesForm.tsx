@@ -1,8 +1,9 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { apiGet, apiPost } from '@/app/services/internalApiClients';
-import {TextInput, Label, Select, Button, Card} from 'flowbite-react';
+import { TextInput, Label, Button, Card } from 'flowbite-react';
 import { FiRefreshCw } from "react-icons/fi";
+import SelectCheckbox from '@/app/components/SelectCheckbox';
 
 interface DonneesSupplementairesFormProps {
     donneesSupplementaires: {
@@ -13,12 +14,12 @@ interface DonneesSupplementairesFormProps {
         artiste: string[];
         nbArtistes: number | null;
     };
-    onDonneesSupplementairesChange: (name: string, value: string|string[]|number) => void;
+    onDonneesSupplementairesChange: (name: string, value: string | string[] | number) => void;
 }
 
 const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
     donneesSupplementaires,
-    onDonneesSupplementairesChange
+    onDonneesSupplementairesChange,
 }) => {
     const [genresMusicaux, setGenresMusicaux] = useState<Array<{ nomGenreMusical: string }>>([]);
     const [selectedGenres, setSelectedGenres] = useState<string[]>(donneesSupplementaires.genreMusical);
@@ -38,47 +39,39 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                 console.error("Erreur lors du chargement des genres musicaux :", error);
             }
         };
-        
+
         const fetchReseauUtilisateur = async () => {
             try {
                 const username = typeof window !== 'undefined' ? localStorage.getItem('username') : "";
-                const data = {
-                    username: username,
-                };
+                const data = { username };
                 const datasUser = await apiPost('/utilisateur', JSON.parse(JSON.stringify(data)));
                 const reseauxListe: Array<{ nomReseau: string }> = JSON.parse(datasUser.utilisateur)[0].reseaux;
                 setReseaux(reseauxListe);
-                console.log(reseauxListe);
             } catch (error) {
                 console.error("Erreur lors du chargement des données utilisateurs :", error);
             }
         };
-        
+
         fetchGenresMusicaux();
         fetchReseauUtilisateur();
     }, []);
 
-    const handleGenreSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
-
-        if (selectedOptions.length <= genresMusicaux.length) {
-            setSelectedGenres(selectedOptions);
-            onDonneesSupplementairesChange('genreMusical', selectedOptions);
-            onDonneesSupplementairesChange('nbGenresMusicaux', selectedOptions.length);
+    const handleCheckboxChange = (name: string, value: string, checked: boolean) => {
+        let updatedList = name === "reseau" ? [...selectedReseaux] : [...selectedGenres];
+        if (checked) {
+            updatedList.push(value);
         } else {
-            alert(`Vous pouvez sélectionner un maximum de ${genresMusicaux.length} genres.`);
+            updatedList = updatedList.filter((item) => item !== value);
         }
-    };
 
-    const handleReseauxSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
-
-        if (selectedOptions.length <= reseaux.length) {
-            setSelectedReseaux(selectedOptions);
-            onDonneesSupplementairesChange('reseau', selectedOptions);
-            onDonneesSupplementairesChange('nbReseaux', selectedOptions.length);
-        } else {
-            alert(`Vous pouvez sélectionner un maximum de ${reseaux.length} réseaux.`);
+        if (name === "reseau") {
+            setSelectedReseaux(updatedList);
+            onDonneesSupplementairesChange('reseau', updatedList);
+            onDonneesSupplementairesChange('nbReseaux', updatedList.length);
+        } else if (name === "genreMusical") {
+            setSelectedGenres(updatedList);
+            onDonneesSupplementairesChange('genreMusical', updatedList);
+            onDonneesSupplementairesChange('nbGenresMusicaux', updatedList.length);
         }
     };
 
@@ -112,7 +105,6 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
 
     return (
         <Card className="shadow-none border-none mx-auto w-full">
-            {/* Section des artistes concernés */}
             <div className="flex flex-col rounded-lg mb-4">
                 <div className="flex justify-between items-center mb-4">
                     <h3 className="text-2xl font-semibold mb-4">Artistes Concernés</h3>
@@ -133,8 +125,8 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                             type="text"
                             value={artiste}
                             onChange={(e) => handleArtisteChange(index, e.target.value)}
-                            placeholder="Nom de l'artiste"
-                            className='w-full'
+                            placeholder="Nom de l'artiste..."
+                            className="w-full"
                         />
                         <Button color="failure" onClick={() => removeArtisteField(index)} size="sm" className="ml-2">
                             Supprimer
@@ -146,50 +138,25 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                 </Button>
             </div>
 
-            {/* Section Réseau et Genre Musical */}
             <div className="flex flex-col rounded-lg mb-4">
                 <h3 className="text-2xl font-semibold mb-4">Réseau et Genre Musical</h3>
-                <div className="grid grid-cols-2 gap-4">
-                    {/* Sélection des réseaux */}
-                    <div className="flex flex-col">
-                        <Label htmlFor="reseau" value="Réseau" />
-                        <Select
-                            id="reseau"
-                            name="reseau"
-                            value={selectedReseaux}
-                            onChange={handleReseauxSelectionChange}
-                            multiple
-                        >
-                            {reseaux.map((reseau, index) => (
-                                <option key={index} value={reseau.nomReseau}>
-                                    {reseau.nomReseau}
-                                </option>
-                            ))}
-                        </Select>
-                        <p className="text-sm mt-1">
-                            Vous pouvez sélectionner jusqu&apos;à {reseaux.length} réseaux.
-                        </p>
+                <div className="grid grid-cols-2 gap-3">
+                    <div>
+                        <SelectCheckbox
+                            domaineSelection="Réseaux :"
+                            options={reseaux.map((reseau, index) => ({ label: reseau.nomReseau, value: reseau.nomReseau }))}
+                            selectedValues={selectedReseaux}
+                            onSelectionChange={setSelectedReseaux}
+                        />
                     </div>
 
-                    {/* Sélection des genres musicaux */}
-                    <div className="flex flex-col">
-                        <Label htmlFor="genreMusical" value="Genre Musical" />
-                        <Select
-                            id="genreMusical"
-                            name="genreMusical"
-                            value={selectedGenres}
-                            onChange={handleGenreSelectionChange}
-                            multiple
-                        >
-                            {genresMusicaux.map((genre, index) => (
-                                <option key={index} value={genre.nomGenreMusical}>
-                                    {genre.nomGenreMusical}
-                                </option>
-                            ))}
-                        </Select>
-                        <p className="text-sm mt-1">
-                            Vous pouvez sélectionner jusqu&apos;à {genresMusicaux.length} genres musicaux.
-                        </p>
+                    <div>
+                        <SelectCheckbox
+                            domaineSelection="Genres musicaux :"
+                            options={genresMusicaux.map((genreMusical, index) => ({ label: genreMusical.nomGenreMusical, value: genreMusical.nomGenreMusical }))}
+                            selectedValues={selectedGenres}
+                            onSelectionChange={setSelectedGenres}
+                        />
                     </div>
                 </div>
             </div>
