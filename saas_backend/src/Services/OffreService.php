@@ -83,6 +83,40 @@ class OffreService
     }
 
     /**
+     * Récupère les offres qui appartiennent à un réseau et par leur titre et renvoie une réponse JSON.
+     *
+     * @param mixed $data Les données de l'offre à récupérer.
+     * @param UtilisateurRepository $utilisateurRepository Le repository des utilisateurs.
+     * @param OffreRepository $offreRepository Le repository des offres.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les offres.
+     */
+    public static function getOffresByTitle(
+        UtilisateurRepository $utilisateurRepository,
+        OffreRepository $offreRepository,
+        SerializerInterface $serializer,
+        mixed $data
+    ): JsonResponse {
+        $reseaux = $utilisateurRepository->findBy(['username' => $data['username']]);
+        $reseaux = $reseaux[0]->getReseaux();
+        $offres = [];
+        for ($i = 0; $i < sizeof($reseaux); $i++) {
+            $offresObject = $offreRepository->getOffresByTitleAndReseau($reseaux[$i]->getId(), $data['title']);
+            $offres = array_merge($offres, $offresObject);
+        }
+        $offreJSON = $serializer->serialize(
+            $offres,
+            'json',
+            ['groups' => ['offre:read']]
+        );
+        return new JsonResponse([
+            'offres' => $offreJSON,
+            'serialized' => true
+        ], Response::HTTP_OK, ['Access-Control-Allow-Origin' => '*']);
+    }
+
+    /**
      * Récupère une offre par son créateur et renvoie une réponse JSON.
      *
      * @param OffreRepository $offreRepository Le repository des offres.

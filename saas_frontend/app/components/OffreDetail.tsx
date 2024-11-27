@@ -151,7 +151,6 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
   const [etatOffre, setEtatOffre] = useState<EtatOffre | null>(null);
   const [conditionsFinancieres, setConditionsFinancieres] = useState<ConditionsFinancieres | null>(null);
   const [budgetEstimatif, setBudgetEstimatif] = useState<BudgetEstimatif | null>(null);
-  const [reponses, setReponses] = useState<Reponse[]>([]);
   const [commentaires, setCommentaires] = useState<Commentaire[]>([]);
   const [montantTotal, setMontantTotal] = useState<number>(0);
   const [montantTotalRecu, setMontantTotalRecu] = useState<number>(5);
@@ -171,7 +170,6 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
           fetchReponse(reponse.id).then((reponseData) => {
             allReponses.push(...reponseData);
             if (allReponses.length === data.reponses.length) {
-              setReponses(allReponses);
               setMontantTotalRecu(calculSommeTotalRecu(allReponses));
             }
           });
@@ -279,7 +277,7 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
     const data = JSON.stringify({
       commentaire: {
         idOffre: offre?.id,
-        username: localStorage.getItem("username"),
+        username: typeof window !== 'undefined' ? localStorage.getItem('username') : null,
         contenu: commentaire,
       },
     });

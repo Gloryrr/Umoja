@@ -59,6 +59,31 @@ class OffreController extends AbstractController
     }
 
     /**
+     * Récupère les offres fonction de leur titre et de leur appartenance à un réseau.
+     *
+     * @param Request $request, la requête avec les données de recherche
+     * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des Utilisateurs
+     * @param OffreRepository $offreRepository, la classe CRUD des Offres
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/offres/title', name: 'get_offres_by_title', methods: ['POST'])]
+    public function getOffresByTitle(
+        Request $request,
+        UtilisateurRepository $utilisateurRepository,
+        OffreRepository $offreRepository,
+        SerializerInterface $serializer,
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        return OffreService::getOffresByTitle(
+            $utilisateurRepository,
+            $offreRepository,
+            $serializer,
+            $data
+        );
+    }
+
+    /**
      * Récupère toutes les offres qui sont liés à un utilisateur en particulier.
      *
      * @param OffreRepository $offreRepository, la classe CRUD des Offres

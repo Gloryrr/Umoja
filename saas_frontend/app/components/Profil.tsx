@@ -1,9 +1,9 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Button, Card, TextInput, Label, Badge } from "flowbite-react";
 import { apiPatch, apiPost } from "@/app/services/internalApiClients";
 
-const UserProfile: React.FC = () => {
+const Profil: React.FC = () => {
     const [userInfo, setUserInfo] = useState({
         id: "",
         emailUtilisateur: "",
@@ -15,9 +15,10 @@ const UserProfile: React.FC = () => {
     const [editedUserInfo, setEditedUserInfo] = useState(userInfo);
     const [isEditing, setIsEditing] = useState(false);
 
-    const fetchUserProfile = async () => {
-        if (localStorage.isConnected === "true") {
-            const username = window.localStorage.getItem("username");
+    const fetchUserProfile = useCallback(async () => {
+        const isConnected = typeof window !== 'undefined' ? localStorage.getItem('isConnected') : null;
+        if (isConnected === "true") {
+            const username = typeof window !== 'undefined' ? localStorage.getItem('username') : "";
             const data = {
                 username,
             };
@@ -33,11 +34,11 @@ const UserProfile: React.FC = () => {
                 console.error("Erreur réseau :", error);
             }
         }
-    };
+    }, [userInfo]);
 
     useEffect(() => {
         fetchUserProfile();
-    }, []);
+    }, [fetchUserProfile]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -52,7 +53,7 @@ const UserProfile: React.FC = () => {
             const data = JSON.parse(JSON.stringify(editedUserInfo));
             await apiPatch(`/utilisateurs/update/${userInfo.id}`, data);
             setUserInfo(editedUserInfo);
-            localStorage.setItem("username", editedUserInfo.username);
+            if (typeof window !== 'undefined') localStorage.setItem("username", editedUserInfo.username);
         } catch (error) {
             console.error("Erreur lors de la sauvegarde des données utilisateur :", error);
         }
@@ -65,10 +66,10 @@ const UserProfile: React.FC = () => {
     };
 
     return (
-        <Card className="mx-auto w-[70%]">
+        <Card className="mx-auto mt-10 mb-10">
             <h2 className="text-2xl font-bold mb-4">Informations du Profil</h2>
             {isEditing ? (
-                <form className="flex flex-col gap-6">
+                <form className="flex flex-col gap-2">
                     <div>
                         <Label 
                             htmlFor="emailUtilisateur" 
@@ -148,7 +149,7 @@ const UserProfile: React.FC = () => {
                         />
                     </div>
 
-                    <div className="flex justify-end gap-4 mt-6">
+                    <div className="flex justify-end gap-2 mt-6">
                         <Button color="gray" size="lg" onClick={() => setIsEditing(false)} className="rounded-lg mt-2">
                             Annuler
                         </Button>
@@ -188,4 +189,4 @@ const UserProfile: React.FC = () => {
     );
 };
 
-export default UserProfile;
+export default Profil;

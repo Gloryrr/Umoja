@@ -1,26 +1,26 @@
 
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+// import localFont from "next/font/local";
 import { Fredoka, Nunito } from "next/font/google";
-import Head from "next/head";
+// import Head from "next/head";
 
 import "./globals.css";
 
-import NavbarApp, { NavBarConnectionInscription } from "./components/Navbar";
+import NavbarApp from "./components/Navbar";
 import Footer from "./components/Footer";
 
-import { ThemeModeScript } from "flowbite-react";
+// import { ThemeModeScript } from "flowbite-react";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+// const geistSans = localFont({
+//   src: "./fonts/GeistVF.woff",
+//   variable: "--font-geist-sans",
+//   weight: "100 900",
+// });
+// const geistMono = localFont({
+//   src: "./fonts/GeistMonoVF.woff",
+//   variable: "--font-geist-mono",
+//   weight: "100 900",
+// });
 
 const fredoka = Fredoka({
   weight: ["300", "400", "500", "600", "700"],
@@ -46,10 +46,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  let isConnected : boolean = false;
-  if (typeof window !== 'undefined') {
-    isConnected = localStorage.getItem('isConnected') == 'true' ? true : false;
-  }
+  // let isConnected : boolean = false;
+  // if (typeof window !== 'undefined') {
+  //   isConnected = localStorage.getItem('isConnected') == 'true' ? true : false;
+  // }
 
   return (
     <html lang="en">

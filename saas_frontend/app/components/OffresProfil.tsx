@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Card, Badge, Button, Pagination, Select } from "flowbite-react";
 import { apiPost, apiGet } from "@/app/services/internalApiClients";
 
@@ -34,38 +34,10 @@ const OffresProfil: React.FC = () => {
     const [offersPerPage, setOffersPerPage] = useState(10);
     const [totalOffers, setTotalOffers] = useState(0);
 
-    const fetchUserOffers = async () => {
-        const username = localStorage.getItem("username");
-        if (!username) {
-            setError("Nom d'utilisateur introuvable dans le localStorage.");
-            setIsLoading(false);
-            return;
-        }
-
-        try {
-            const data = { username };
-            const userResponse = await apiPost("/utilisateur", JSON.parse(JSON.stringify(data)));
-            if (!userResponse) {
-                setError("Aucune offre trouvée pour cet utilisateur.");
-                setIsLoading(false);
-                return;
-            }
-
-            const offerIds: string[] = JSON.parse(userResponse.utilisateur)[0].offres;
-            setTotalOffers(offerIds.length);
-            fetchPaginatedOffers(JSON.parse(userResponse.utilisateur)[0].id);
-        } catch (error) {
-            console.error("Erreur réseau :", error);
-            setError("Erreur lors de la récupération des offres.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const fetchPaginatedOffers = async (idUtilisateur : number) => {
+    const fetchPaginatedOffers = useCallback(async (idUtilisateur: number) => {
         const startIndex = (currentPage - 1) * offersPerPage;
         const endIndex = startIndex + offersPerPage;
-
+    
         try {
             const reponses = await apiGet(`/offre/utilisateur/${idUtilisateur}`);
             const offersData: Offre[] = JSON.parse(reponses.offre).slice(startIndex, endIndex);
@@ -76,11 +48,39 @@ const OffresProfil: React.FC = () => {
             // setError("Erreur lors de la récupération des offres paginées.");
             return; // on verra plus tard pour faire la gestion d'erreur.
         }
-    };
+    }, [currentPage, offersPerPage]);
+
+    const fetchUserOffers = useCallback(async () => {
+        const username = typeof window !== 'undefined' ? localStorage.getItem('username') : "";
+        if (!username) {
+            setError("Nom d'utilisateur introuvable dans le localStorage.");
+            setIsLoading(false);
+            return;
+        }
+    
+        try {
+            const data = { username };
+            const userResponse = await apiPost("/utilisateur", JSON.parse(JSON.stringify(data)));
+            if (!userResponse) {
+                setError("Aucune offre trouvée pour cet utilisateur.");
+                setIsLoading(false);
+                return;
+            }
+    
+            const offerIds: string[] = JSON.parse(userResponse.utilisateur)[0].offres;
+            setTotalOffers(offerIds.length);
+            fetchPaginatedOffers(JSON.parse(userResponse.utilisateur)[0].id);
+        } catch (error) {
+            console.error("Erreur réseau :", error);
+            setError("Erreur lors de la récupération des offres.");
+        } finally {
+            setIsLoading(false);
+        }
+    }, [fetchPaginatedOffers]);
 
     useEffect(() => {
         fetchUserOffers();
-    }, [currentPage, offersPerPage]);
+    }, [fetchUserOffers]);
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
