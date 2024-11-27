@@ -9,6 +9,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\UtilisateurRepository;
 use App\Services\LoginService;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class LoginController extends AbstractController
 {
@@ -21,9 +22,10 @@ class LoginController extends AbstractController
      *
      * @return JsonResponse
      */
-    #[Route('/api/v1/login', name: 'login_user', methods: ['GET'])]
+    #[Route('/api/v1/login', name: 'login_user', methods: ['POST'])]
     public function login(
         UtilisateurRepository $utilisateurRepository,
+        UserPasswordHasherInterface $passwordHasher,
         SerializerInterface $serializer,
         Request $request
     ): JsonResponse {
@@ -31,6 +33,7 @@ class LoginController extends AbstractController
         $data_login = json_decode($request->getContent(), true);
         return LoginService::login(
             $utilisateurRepository,
+            $passwordHasher,
             $serializer,
             $data_login
         );

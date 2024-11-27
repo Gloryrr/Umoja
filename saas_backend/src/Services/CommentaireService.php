@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Repository\CommentaireRepository;
+use App\Repository\OffreRepository;
+use App\Repository\UtilisateurRepository;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,20 +30,52 @@ class CommentaireService
     ): JsonResponse {
         // on récupère tous les Commentaires
         $commentaires = $commentaireRepository->findAll();
-        $commentairesJSON = $serializer->serialize($commentaires, 'json');
+        $commentairesJSON = $serializer->serialize(
+            $commentaires,
+            'json',
+            ['groups' => ['commentaire:read']]
+        );
         return new JsonResponse([
             'commentaires' => $commentairesJSON,
             'message' => "Liste des commentaires",
-            'reponse' => Response::HTTP_OK,
-            'headers' => [],
             'serialized' => true
-        ]);
+        ], Response::HTTP_OK);
+    }
+
+    /**
+     * Récupère un commentaire par son identifiant et renvoie une réponse JSON.
+     *
+     * @param int $id L'identifiant du commentaire à récupérer.
+     * @param CommentaireRepository $commentaireRepository Le repository des commentaires.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les commentaires.
+     */
+    public static function getCommentaireById(
+        int $id,
+        CommentaireRepository $commentaireRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        // on récupère tous les Commentaires
+        $commentaires = $commentaireRepository->find($id);
+        $commentairesJSON = $serializer->serialize(
+            $commentaires,
+            'json',
+            ['groups' => ['commentaire:read']]
+        );
+        return new JsonResponse([
+            'commentaires' => $commentairesJSON,
+            'message' => "Liste des commentaires",
+            'serialized' => true
+        ], Response::HTTP_OK);
     }
 
     /**
      * Crée un nouveau commentaire et renvoie une réponse JSON.
      *
      * @param CommentaireRepository $commentaireRepository Le repository des commentaires.
+     * @param OffreRepository $offreRepository Le repository des offres
+     * @param UtilisateurRepository $utilisateurRepository Le repository des offres
      * @param SerializerInterface $serializer Le service de sérialisation.
      * @param mixed $data Les données du commentaire à créer.
      *
@@ -52,6 +86,8 @@ class CommentaireService
      */
     public static function createCommentaire(
         CommentaireRepository $commentaireRepository,
+        OffreRepository $offreRepository,
+        UtilisateurRepository $utilisateurRepository,
         SerializerInterface $serializer,
         mixed $data
     ): JsonResponse {
@@ -61,31 +97,36 @@ class CommentaireService
                 throw new \InvalidArgumentException("Le contenu du commentaire est requis.");
             }
 
+            $offre = $offreRepository->find(intval($data['commentaire']['idOffre']));
+            $utilisateur = $utilisateurRepository->findBy(['username' => $data['commentaire']['username']]);
+
             // création de l'objet et instanciation des données de l'objet
             $commentaire = new Commentaire();
-            $commentaire->setCommentaire($data['commentaire']);
+            $commentaire->setCommentaire($data['commentaire']['contenu']);
+            $commentaire->setOffre($offre);
+            $commentaire->setUtilisateur($utilisateur[0]);
 
             // ajout du commentaire en base de données
             $rep = $commentaireRepository->inscritCommentaire($commentaire);
 
             // vérification de l'action en BDD
             if ($rep) {
-                $commentaireJSON = $serializer->serialize($commentaire, 'json');
+                $commentaireJSON = $serializer->serialize(
+                    $commentaire,
+                    'json',
+                    ['groups' => ['commentaire:read']]
+                );
                 return new JsonResponse([
                     'commentaire' => $commentaireJSON,
                     'message' => "commentaire inscrit !",
-                    'reponse' => Response::HTTP_CREATED,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_CREATED);
             }
             return new JsonResponse([
                 'commentaire' => null,
                 'message' => "commentaire non inscrit, merci de regarder l'erreur décrite",
-                'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
             throw new \RuntimeException("Erreur lors de la création du commentaire", $e->getCode());
         }
@@ -118,16 +159,14 @@ class CommentaireService
                 return new JsonResponse([
                     'commentaire' => null,
                     'message' => 'commentaire non trouvé, merci de donner un identifiant valide !',
-                    'reponse' => Response::HTTP_NOT_FOUND,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_NOT_FOUND);
             }
 
             // on vérifie qu'aucune données ne manque pour la mise à jour
             // et on instancie les données dans l'objet
-            if (isset($data['commentaire'])) {
-                $commentaire->setCommentaire($data['commentaire']);
+            if (isset($data['commentaire']['contenu'])) {
+                $commentaire->setCommentaire($data['commentaire']['contenu']);
             }
 
             // sauvegarde des modifications dans la BDD
@@ -135,23 +174,23 @@ class CommentaireService
 
             // si l'action à réussi
             if ($rep) {
-                $commentaire = $serializer->serialize($commentaire, 'json');
+                $commentaire = $serializer->serialize(
+                    $commentaire,
+                    'json',
+                    ['groups' => ['commentaire:read']]
+                );
 
                 return new JsonResponse([
                     'commentaire' => $commentaire,
                     'message' => "commentaire modifié avec succès",
-                    'reponse' => Response::HTTP_OK,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_OK);
             } else {
                 return new JsonResponse([
                     'commentaire' => null,
                     'message' => "commentaire non modifié, merci de vérifier l'erreur décrite",
-                    'reponse' => Response::HTTP_BAD_REQUEST,
-                    'headers' => [],
                     'serialized' => false
-                ]);
+                ], Response::HTTP_BAD_REQUEST);
             }
         } catch (\Exception $e) {
             throw new \RuntimeException("Erreur lors de la mise à jour du commentaire", $e->getCode());
@@ -180,10 +219,8 @@ class CommentaireService
             return new JsonResponse([
                 'commentaire' => null,
                 'message' => 'commentaire non trouvé, merci de fournir un identifiant valide',
-                'reponse' => Response::HTTP_NOT_FOUND,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         // suppression du commentaire en BDD
@@ -191,22 +228,22 @@ class CommentaireService
 
         // si l'action à réussi
         if ($rep) {
-            $commentaireJSON = $serializer->serialize($commentaire, 'json');
+            $commentaireJSON = $serializer->serialize(
+                $commentaire,
+                'json',
+                ['groups' => ['commentaire:read']]
+            );
             return new JsonResponse([
                 'commentaire' => $commentaireJSON,
                 'message' => 'commentaire supprimé',
-                'reponse' => Response::HTTP_NO_CONTENT,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NO_CONTENT);
         } else {
             return new JsonResponse([
                 'commentaire' => null,
                 'message' => 'commentaire non supprimé !',
-                'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 }

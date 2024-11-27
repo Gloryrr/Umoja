@@ -2,9 +2,8 @@
 
 namespace App\Controller;
 
-use App\Repository\AppartenirRepository;
 use App\Repository\GenreMusicalRepository;
-use App\Repository\PreferencerRepository;
+use App\Repository\PreferenceNotificationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -12,6 +11,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\UtilisateurRepository;
 use App\Services\UtilisateurService;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UtilisateurController extends AbstractController
 {
@@ -25,14 +25,31 @@ class UtilisateurController extends AbstractController
     #[Route('/api/v1/utilisateurs', name: 'get_utilisateurs', methods: ['GET'])]
     public function getUtilisateurs(
         UtilisateurRepository $utilisateurRepository,
-        AppartenirRepository $appartenirRepository,
-        PreferencerRepository $preferencerRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         return UtilisateurService::getUtilisateurs(
             $utilisateurRepository,
-            $appartenirRepository,
-            $preferencerRepository,
+            $serializer
+        );
+    }
+
+    /**
+     * Récupère un utilisateur par son nom.
+     *
+     * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des utilisateurs
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/utilisateur', name: 'get_utilisateurs_by_name', methods: ['POST'])]
+    public function getUtilisateur(
+        Request $request,
+        UtilisateurRepository $utilisateurRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        return UtilisateurService::getUtilisateur(
+            $utilisateurRepository,
+            $data,
             $serializer
         );
     }
@@ -49,11 +66,13 @@ class UtilisateurController extends AbstractController
     public function createUtilisateur(
         Request $request,
         UtilisateurRepository $utilisateurRepository,
+        UserPasswordHasherInterface $passwordHasher,
         SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
         return UtilisateurService::createUtilisateur(
             $utilisateurRepository,
+            $passwordHasher,
             $serializer,
             $data
         );
@@ -109,7 +128,7 @@ class UtilisateurController extends AbstractController
      *
      * @param Request $requete, la requête avec les données d'ajout
      * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des utilisateurs
-     * @param PreferencerRepository $preferencerRepository, CRUD des utilisateurs qui ont des genres préférés
+     *  CRUD des utilisateurs qui ont des genres préférés
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
@@ -117,7 +136,6 @@ class UtilisateurController extends AbstractController
     public function ajouteGenreMusicalUtilisateur(
         Request $request,
         UtilisateurRepository $utilisateurRepository,
-        PreferencerRepository $preferencerRepository,
         GenreMusicalRepository $genreMusicalRepository,
         SerializerInterface $serializer
     ): JsonResponse {
@@ -125,7 +143,6 @@ class UtilisateurController extends AbstractController
         return UtilisateurService::ajouteGenreMusicalUtilisateur(
             $data,
             $utilisateurRepository,
-            $preferencerRepository,
             $genreMusicalRepository,
             $serializer
         );
@@ -136,7 +153,7 @@ class UtilisateurController extends AbstractController
      *
      * @param Request $requete, la requête avec les données d'ajout
      * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des utilisateurs
-     * @param PreferencerRepository $preferencerRepository, CRUD des utilisateurs qui ont des genres préférés
+     *  CRUD des utilisateurs qui ont des genres préférés
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
@@ -144,7 +161,6 @@ class UtilisateurController extends AbstractController
     public function retireGenreMusicalUtilisateur(
         Request $request,
         UtilisateurRepository $utilisateurRepository,
-        PreferencerRepository $preferencerRepository,
         GenreMusicalRepository $genreMusicalRepository,
         SerializerInterface $serializer
     ): JsonResponse {
@@ -152,9 +168,67 @@ class UtilisateurController extends AbstractController
         return UtilisateurService::retireGenreMusicalUtilisateur(
             $data,
             $utilisateurRepository,
-            $preferencerRepository,
             $genreMusicalRepository,
             $serializer
+        );
+    }
+
+    /**
+     * Récupère les préférences de notification d'un utilisateur.
+     *
+     * @param string $username, le nom de l'utilisateur
+     * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des utilisateurs
+     * @param PreferenceNotificationRepository $preferenceNotificationRepository, la classe CRUD des préférences.
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route(
+        '/api/v1/utilisateur/preference-notification/{username}',
+        name: 'get_preference_notification_utilisateur',
+        methods: ['GET']
+    )]
+    public function getPreferenceNotificationUtilisateur(
+        string $username,
+        UtilisateurRepository $utilisateurRepository,
+        PreferenceNotificationRepository $preferenceNotificationRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        return UtilisateurService::getPreferenceNotificationUtilisateur(
+            $username,
+            $utilisateurRepository,
+            $preferenceNotificationRepository,
+            $serializer
+        );
+    }
+
+    /**
+     * Mets à jour les préférences de notification d'un utilisateur.
+     *
+     * @param string $username, le nom de l'utilisateur
+     * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des utilisateurs
+     * @param PreferenceNotificationRepository $preferenceNotificationRepository, la classe CRUD des préférences.
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route(
+        '/api/v1/utilisateur/preference-notification/update/{username}',
+        name: 'get_preference_update_notification_utilisateur',
+        methods: ['PATCH']
+    )]
+    public function updatePreferenceNotificationUtilisateur(
+        string $username,
+        UtilisateurRepository $utilisateurRepository,
+        PreferenceNotificationRepository $preferenceNotificationRepository,
+        SerializerInterface $serializer,
+        Request $request
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        return UtilisateurService::updatePreferenceNotificationUtilisateur(
+            $username,
+            $utilisateurRepository,
+            $preferenceNotificationRepository,
+            $serializer,
+            $data
         );
     }
 }

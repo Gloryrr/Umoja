@@ -31,6 +31,27 @@ class ConditionsFinancieresController extends AbstractController
     }
 
     /**
+     * Récupère une condition financière existante en fonction de son id.
+     *
+     * @param int $id, L'id de la conditon financière à récupérée
+     * @param ConditionsFinancieresRepository $conditionsFinancieresRepository, la repo CRUD des conditions financières
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/condition-financiere/{id}', name: 'get_condition_financiere_by_id', methods: ['GET'])]
+    public function getConditionFinanciereById(
+        int $id,
+        ConditionsFinancieresRepository $conditionsFinancieresRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        return ConditionsFinancieresService::getConditionFinanciereById(
+            $id,
+            $conditionsFinancieresRepository,
+            $serializer
+        );
+    }
+
+    /**
      * Crée une nouvelle conditions financière.
      *
      * @param Request $request

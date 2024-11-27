@@ -43,7 +43,7 @@ class TypeOffreRepository extends ServiceEntityRepository
      *
      * @throws \RuntimeException Si une erreur survient lors de l'enregistrement.
      */
-    public function inscritOffre(TypeOffre $offre): bool
+    public function inscritTypeOffre(TypeOffre $offre): bool
     {
         try {
             $this->getEntityManager()->persist($offre);
@@ -62,7 +62,7 @@ class TypeOffreRepository extends ServiceEntityRepository
      *
      * @throws \Exception Si une erreur survient lors de la mise à jour.
      */
-    public function updateOffre(TypeOffre $offre): ?bool
+    public function updateTypeOffre(TypeOffre $offre): ?bool
     {
         try {
             $this->getEntityManager()->persist($offre);
@@ -81,7 +81,7 @@ class TypeOffreRepository extends ServiceEntityRepository
      *
      * @throws \RuntimeException Si une erreur survient lors de la suppression.
      */
-    public function removeOffre(TypeOffre $offre): ?bool
+    public function removeTypeOffre(TypeOffre $offre): ?bool
     {
         try {
             $this->getEntityManager()->remove($offre);

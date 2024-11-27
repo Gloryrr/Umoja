@@ -42,3 +42,5 @@ elif [ $instruction == "8" ]; then
 fi
 
 # exécuter une requête SQL : docker-compose exec application php bin/console doctrine:query:sql "REQUETE SQL"
+# Créer la base de données : docker-compose exec application php bin/console doctrine:database:create
+# Supprimer la base de données : docker-compose exec application php bin/console doctrine:database:drop --force

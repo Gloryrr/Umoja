@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\CommentaireRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Représente un commentaire associé à une offre et un utilisateur.
@@ -14,50 +15,34 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: CommentaireRepository::class)]
 class Commentaire
 {
-    /**
-     * Identifiant unique du commentaire.
-     *
-     * @var int|null
-     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $idCommentaire = null;
+    #[Groups(['commentaire:read', 'utilisateur:read', 'offre:read'])]
+    private ?int $id = null;
 
-    /**
-     * Contenu du commentaire, limité à 500 caractères.
-     *
-     * @var string|null
-     */
     #[ORM\Column(length: 500)]
+    #[Groups(['commentaire:read', 'commentaire:write'])]
     private ?string $commentaire = null;
 
-    /**
-     * Utilisateur ayant écrit le commentaire.
-     *
-     * @var Utilisateur|null
-     */
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: "offresCommentees", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $idUtilisateur = null;
+    #[Groups(['commentaire:read', 'utilisateur:read'])]
+    private ?Utilisateur $utilisateur = null;
 
-    /**
-     * Offre sur laquelle le commentaire est posté.
-     *
-     * @var Offre|null
-     */
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: Offre::class, inversedBy: "commenteesPar", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Offre $idOffre = null;
+    #[Groups(['commentaire:read'])]
+    private ?Offre $offre = null;
 
     /**
      * Récupère l'identifiant du commentaire.
      *
      * @return int|null L'identifiant du commentaire ou null si non défini.
      */
-    public function getIdCommentaire(): ?int
+    public function getId(): ?int
     {
-        return $this->idCommentaire;
+        return $this->id;
     }
 
     /**
@@ -88,9 +73,9 @@ class Commentaire
      *
      * @return Utilisateur|null L'utilisateur ayant posté le commentaire.
      */
-    public function getIdUtilisateur(): ?Utilisateur
+    public function getUtilisateur(): ?Utilisateur
     {
-        return $this->idUtilisateur;
+        return $this->utilisateur;
     }
 
     /**
@@ -99,9 +84,9 @@ class Commentaire
      * @param Utilisateur|null $idUtilisateur L'utilisateur qui a posté le commentaire.
      * @return self Retourne l'instance de la classe Commentaire pour un chaînage fluide.
      */
-    public function setIdUtilisateur(?Utilisateur $idUtilisateur): static
+    public function setUtilisateur(?Utilisateur $utilisateur): static
     {
-        $this->idUtilisateur = $idUtilisateur;
+        $this->utilisateur = $utilisateur;
 
         return $this;
     }
@@ -111,9 +96,9 @@ class Commentaire
      *
      * @return Offre|null L'offre associée à ce commentaire.
      */
-    public function getIdOffre(): ?Offre
+    public function getOffre(): ?Offre
     {
-        return $this->idOffre;
+        return $this->offre;
     }
 
     /**
@@ -122,9 +107,9 @@ class Commentaire
      * @param Offre|null $idOffre L'offre sur laquelle le commentaire est posté.
      * @return self Retourne l'instance de la classe Commentaire pour un chaînage fluide.
      */
-    public function setIdOffre(?Offre $idOffre): static
+    public function setOffre(?Offre $offre): static
     {
-        $this->idOffre = $idOffre;
+        $this->offre = $offre;
 
         return $this;
     }

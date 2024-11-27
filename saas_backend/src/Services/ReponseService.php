@@ -2,7 +2,10 @@
 
 namespace App\Services;
 
+use App\Repository\EtatReponseRepository;
+use App\Repository\OffreRepository;
 use App\Repository\ReponseRepository;
+use App\Repository\UtilisateurRepository;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,14 +31,72 @@ class ReponseService
     ): JsonResponse {
         // On récupère toutes les réponses
         $reponses = $reponseRepository->findAll();
-        $reponsesJSON = $serializer->serialize($reponses, 'json');
+        $reponsesJSON = $serializer->serialize(
+            $reponses,
+            'json',
+            ['groups' => ['reponse:read']]
+        );
         return new JsonResponse([
             'reponses' => $reponsesJSON,
             'message' => "Liste des réponses",
-            'reponse' => Response::HTTP_OK,
-            'headers' => [],
             'serialized' => true
-        ]);
+        ], Response::HTTP_OK);
+    }
+
+    /**
+     * Récupère une réponse par son id et renvoie une réponse JSON.
+     *
+     * @param int $id L'identifiant de la réponse.
+     * @param ReponseRepository $reponseRepository Le repository des réponses.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les réponses.
+     */
+    public static function getReponse(
+        int $id,
+        ReponseRepository $reponseRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        // On récupère toutes les réponses
+        $reponses = $reponseRepository->findBy(['id' => $id]);
+        $reponsesJSON = $serializer->serialize(
+            $reponses,
+            'json',
+            ['groups' => ['reponse:read']]
+        );
+        return new JsonResponse([
+            'reponse' => $reponsesJSON,
+            'message' => "Liste des réponses",
+            'serialized' => true
+        ], Response::HTTP_OK);
+    }
+
+    /**
+     * Récupère toutes les réponses pour une offre donnée et renvoie une réponse JSON.
+     *
+     * @param int $id L'identifiant de l'offre.
+     * @param ReponseRepository $reponseRepository Le repository des réponses.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les réponses pour l'offre donnée.
+     */
+    public static function getReponsesPourOffre(
+        int $id,
+        ReponseRepository $reponseRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        // On récupère les réponses pour l'offre donnée
+        $reponses = $reponseRepository->findBy(['offre' => $id]);
+        $reponsesJSON = $serializer->serialize(
+            $reponses,
+            'json',
+            ['groups' => ['reponse:read']]
+        );
+        return new JsonResponse([
+            'reponses' => $reponsesJSON,
+            'message' => "Liste des réponses pour l'offre $id",
+            'serialized' => true
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -52,6 +113,9 @@ class ReponseService
      */
     public static function createReponse(
         ReponseRepository $reponseRepository,
+        UtilisateurRepository $utilisateurRepository,
+        OffreRepository $offreRepository,
+        EtatReponseRepository $etatReponseRepository,
         SerializerInterface $serializer,
         mixed $data
     ): JsonResponse {
@@ -59,11 +123,14 @@ class ReponseService
             // Vérifie que les données nécessaires sont présentes
             if (
                 (
-                empty($data['idEtatReponse']) ||
-                empty($data['idOffre']) ||
-                empty($data['dateDebut']) ||
-                empty($data['dateFin']) ||
-                empty($data['prixParticipation'])
+                    empty($data['idEtatReponse']) ||
+                    empty($data['idOffre']) ||
+                    empty($data['dateDebut']) ||
+                    empty($data['dateFin']) ||
+                    empty($data['prixParticipation']) ||
+                    empty($data['utilisateur']) ||
+                    empty($data['offre']) ||
+                    empty($data['etatReponse'])
                 )
             ) {
                 throw new \InvalidArgumentException("Toutes les données de la réponse sont requises.");
@@ -71,33 +138,62 @@ class ReponseService
 
             // Création de l'objet Reponse
             $reponse = new Reponse();
-            $reponse->setIdEtatReponse($data['idEtatReponse']);
-            $reponse->setIdOffre($data['idOffre']);
             $reponse->setDateDebut($data['dateDebut']);
             $reponse->setDateFin($data['dateFin']);
             $reponse->setPrixParticipation($data['prixParticipation']);
+
+            $utilisateur = $utilisateurRepository->find(intval($data['utilisateur']['idUtilisateur']));
+            if ($utilisateur === null) {
+                return new JsonResponse([
+                    'reponse_offre' => null,
+                    'message' => "Utilisateur non trouvé, merci de vérifier les données fournies",
+                    'serialized' => false
+                ], Response::HTTP_BAD_REQUEST);
+            }
+            $reponse->setUtilisateur($utilisateur);
+
+            $offre = $offreRepository->find(intval($data['offre']['idOffre']));
+            if ($offre === null) {
+                return new JsonResponse([
+                    'reponse_offre' => null,
+                    'message' => "Offre non trouvée, merci de vérifier les données fournies",
+                    'serialized' => false
+                ], Response::HTTP_BAD_REQUEST);
+            }
+            $reponse->setOffre($offre);
+
+            $etatReponse = $etatReponseRepository->find(intval($data['etatReponse']['nomEtatReponse']));
+            if ($etatReponse === null) {
+                return new JsonResponse([
+                    'reponse_offre' => null,
+                    'message' => "L'état de la réponse n'a pas été intialisée, merci de réitérer votre réponse",
+                    'serialized' => false
+                ], Response::HTTP_BAD_REQUEST);
+            }
+            $reponse->setetatReponse($etatReponse);
+
 
             // Ajout de la réponse en base de données
             $rep = $reponseRepository->ajouterReponse($reponse);
 
             // Vérification de l'insertion en BDD
             if ($rep) {
-                $reponseJSON = $serializer->serialize($reponse, 'json');
+                $reponseJSON = $serializer->serialize(
+                    $reponse,
+                    'json',
+                    ['groups' => ['reponse:read']]
+                );
                 return new JsonResponse([
                     'reponse_offre' => $reponseJSON,
                     'message' => "Réponse créée avec succès",
-                    'reponse' => Response::HTTP_CREATED,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_CREATED);
             }
             return new JsonResponse([
                 'reponse_offre' => null,
                 'message' => "Réponse non créée, merci de vérifier les données fournies",
-                'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
             throw new \RuntimeException("Erreur lors de la création de la réponse", $e->getCode());
         }
@@ -118,6 +214,7 @@ class ReponseService
     public static function updateReponse(
         int $id,
         ReponseRepository $reponseRepository,
+        EtatReponseRepository $etatReponseRepository,
         SerializerInterface $serializer,
         mixed $data
     ): JsonResponse {
@@ -130,18 +227,21 @@ class ReponseService
                 return new JsonResponse([
                     'reponse_offre' => null,
                     'message' => 'Réponse non trouvée, merci de fournir un identifiant valide !',
-                    'reponse' => Response::HTTP_NOT_FOUND,
-                    'headers' => [],
                     'serialized' => false
-                ]);
+                ], Response::HTTP_NOT_FOUND);
             }
 
             // Mise à jour des données de la réponse
-            if (isset($data['idEtatReponse'])) {
-                $reponse->setIdEtatReponse($data['idEtatReponse']);
-            }
-            if (isset($data['idOffre'])) {
-                $reponse->setIdOffre($data['idOffre']);
+            if (isset($data['etatReponse'])) {
+                $etatReponse = $etatReponseRepository->find(intval($data['etatReponse']['nomEtatReponse']));
+                if ($etatReponse === null) {
+                    return new JsonResponse([
+                        'reponse_offre' => null,
+                        'message' => "L'état de la réponse n'a pas été intialisée, merci de réitérer votre réponse",
+                        'serialized' => false
+                    ], Response::HTTP_BAD_REQUEST);
+                }
+                $reponse->setetatReponse($etatReponse);
             }
             if (isset($data['dateDebut'])) {
                 $reponse->setDateDebut($data['dateDebut']);
@@ -158,22 +258,22 @@ class ReponseService
 
             // Si la mise à jour a réussi
             if ($rep) {
-                $reponseJSON = $serializer->serialize($reponse, 'json');
+                $reponseJSON = $serializer->serialize(
+                    $reponse,
+                    'json',
+                    ['groups' => ['reponse:read']]
+                );
                 return new JsonResponse([
                     'reponse_offre' => $reponseJSON,
                     'message' => "Réponse mise à jour avec succès",
-                    'reponse' => Response::HTTP_OK,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_OK);
             } else {
                 return new JsonResponse([
                     'reponse_offre' => null,
                     'message' => "Réponse non mise à jour, merci de vérifier les données fournies",
-                    'reponse' => Response::HTTP_BAD_REQUEST,
-                    'headers' => [],
                     'serialized' => false
-                ]);
+                ], Response::HTTP_BAD_REQUEST);
             }
         } catch (\Exception $e) {
             throw new \RuntimeException("Erreur lors de la mise à jour de la réponse", $e->getCode());
@@ -202,10 +302,8 @@ class ReponseService
             return new JsonResponse([
                 'reponse_offre' => null,
                 'message' => 'Réponse non trouvée, merci de fournir un identifiant valide',
-                'reponse' => Response::HTTP_NOT_FOUND,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         // Suppression de la réponse dans la BDD
@@ -213,22 +311,22 @@ class ReponseService
 
         // Si la suppression a réussi
         if ($rep) {
-            $reponseJSON = $serializer->serialize($reponse, 'json');
+            $reponseJSON = $serializer->serialize(
+                $reponse,
+                'json',
+                ['groups' => ['reponse:read']]
+            );
             return new JsonResponse([
                 'reponse_offre' => $reponseJSON,
                 'message' => 'Réponse supprimée',
-                'reponse' => Response::HTTP_NO_CONTENT,
-                'headers' => [],
                 'serialized' => true
-            ]);
+            ], Response::HTTP_NO_CONTENT);
         } else {
             return new JsonResponse([
                 'reponse_offre' => null,
                 'message' => 'Réponse non supprimée !',
-                'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 }

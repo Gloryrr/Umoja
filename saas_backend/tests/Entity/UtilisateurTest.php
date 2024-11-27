@@ -32,15 +32,15 @@ class UtilisateurTest extends TestCase
     }
 
     /**
-     * Test de la méthode setIdUtilisateur() et getIdUtilisateur().
+     * Test de la méthode setId() et getId().
      *
      * Vérifie si l'identifiant d'un utilisateur peut être correctement
      * défini et récupéré.
      */
     public function testIdUtilisateur()
     {
-        $this->utilisateur->setIdUtilisateur(1);
-        $this->assertEquals(1, $this->utilisateur->getIdUtilisateur());
+        $this->utilisateur->setId(1);
+        $this->assertEquals(1, $this->utilisateur->getId());
     }
 
     /**
@@ -64,7 +64,7 @@ class UtilisateurTest extends TestCase
     public function testMdpUtilisateur()
     {
         $this->utilisateur->setMdpUtilisateur("password123");
-        $this->assertEquals("password123", $this->utilisateur->getMdpUtilisateur());
+        $this->assertEquals("password123", $this->utilisateur->getPassword());
     }
 
     /**
@@ -75,8 +75,8 @@ class UtilisateurTest extends TestCase
      */
     public function testRoleUtilisateur()
     {
-        $this->utilisateur->setRoleUtilisateur("USER");
-        $this->assertEquals("USER", $this->utilisateur->getRoleUtilisateur());
+        $this->utilisateur->setRoles("USER");
+        $this->assertEquals(["USER"], $this->utilisateur->getRoles());
     }
 
     /**

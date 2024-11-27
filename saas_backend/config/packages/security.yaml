@@ -1,0 +1,33 @@
+security:
+    enable_authenticator_manager: true
+    password_hashers:
+        App\Entity\Utilisateur:
+            algorithm: auto
+
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\Utilisateur
+                property: username
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        api:
+            pattern: ^/api/v1/
+            security: false
+            stateless: true
+            json_login:
+                check_path: /api/v1/login
+                username_path: username
+                password_path: mdpUtilisateur
+
+            # logout:
+            #     path: /api/v1/logout
+            #     target: /api/v1/login
+
+    access_control:
+        - { path: ^/api/v1/register$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        # - { path: ^/api/v1/, roles: ROLE_USER }

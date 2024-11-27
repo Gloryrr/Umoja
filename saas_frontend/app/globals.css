@@ -2,9 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@import "flowbite";
+/*@import '../../../node_modules/flowbite/dist/flowbite.css';*/
+
+
+html {
+  @apply bg-white text-gray-800;
+}
+
+html.dark {
+  @apply bg-gray-800 text-gray-100; 
+}
+
+p, h3 {
+  @apply text-gray-900;  
+}
+
+.dark p, .dark h3 {
+  @apply text-gray-100; 
+}
+
+
 :root {
-  --background: #05285C;
-  --foreground: #0054D1;
+  /* --background: #05285C; */
+  /* --background: white; */
+  /* --foreground: #0054D1; */
+  /* --foreground: white; */
   --font-fredoka: 'Fredoka', sans-serif;
   --font-nunito: 'Nunito', sans-serif;
 }
@@ -12,23 +36,33 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* --background: #0a0a0a; */
+    /* --foreground: #ededed; */
   }
 }
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  background: var(--background); 
   font-family: Arial, Helvetica, sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
-@layer utilities {
+ @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }
