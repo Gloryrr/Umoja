@@ -20,7 +20,7 @@ const NavigationHandler: React.FC<NavigationHandlerProps> = ({ children }) => {
     // await new Promise(resolve => setTimeout(resolve, 400));
 
     // Naviguer une fois l'animation terminée
-    router.push(`/umodja${path}`);
+    router.push(`${path}`);
   };
 
   return <>{children(handleNavigation)}</>;
