@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { apiGet, apiPost } from '@/app/services/internalApiClients';
-import { TextInput, Label, Button, Card } from 'flowbite-react';
+import { TextInput, Button, Card } from 'flowbite-react';
 import { FiRefreshCw } from "react-icons/fi";
 import SelectCheckbox from '@/app/components/SelectCheckbox';
 
@@ -125,7 +125,7 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                     <div>
                         <SelectCheckbox
                             domaineSelection="Réseaux :"
-                            options={reseaux.map((reseau, index) => ({ label: reseau.nomReseau, value: reseau.nomReseau }))}
+                            options={reseaux.map((reseau) => ({ label: reseau.nomReseau, value: reseau.nomReseau }))}
                             selectedValues={selectedReseaux}
                             onSelectionChange={(updatedReseaux) => {
                                 setSelectedReseaux(updatedReseaux);
@@ -138,7 +138,7 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                     <div>
                         <SelectCheckbox
                             domaineSelection="Genres musicaux :"
-                            options={genresMusicaux.map((genreMusical, index) => ({ label: genreMusical.nomGenreMusical, value: genreMusical.nomGenreMusical }))}
+                            options={genresMusicaux.map((genreMusical) => ({ label: genreMusical.nomGenreMusical, value: genreMusical.nomGenreMusical }))}
                             selectedValues={selectedGenres}
                             onSelectionChange={(updatedGenres) => {
                                 setSelectedGenres(updatedGenres);
