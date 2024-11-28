@@ -56,25 +56,6 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
         fetchReseauUtilisateur();
     }, []);
 
-    const handleCheckboxChange = (name: string, value: string, checked: boolean) => {
-        let updatedList = name === "reseau" ? [...selectedReseaux] : [...selectedGenres];
-        if (checked) {
-            updatedList.push(value);
-        } else {
-            updatedList = updatedList.filter((item) => item !== value);
-        }
-
-        if (name === "reseau") {
-            setSelectedReseaux(updatedList);
-            onDonneesSupplementairesChange('reseau', updatedList);
-            onDonneesSupplementairesChange('nbReseaux', updatedList.length);
-        } else if (name === "genreMusical") {
-            setSelectedGenres(updatedList);
-            onDonneesSupplementairesChange('genreMusical', updatedList);
-            onDonneesSupplementairesChange('nbGenresMusicaux', updatedList.length);
-        }
-    };
-
     const handleArtisteChange = (index: number, value: string) => {
         const updatedArtistes = [...artistes];
         updatedArtistes[index] = value;
@@ -146,7 +127,11 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                             domaineSelection="Réseaux :"
                             options={reseaux.map((reseau, index) => ({ label: reseau.nomReseau, value: reseau.nomReseau }))}
                             selectedValues={selectedReseaux}
-                            onSelectionChange={setSelectedReseaux}
+                            onSelectionChange={(updatedReseaux) => {
+                                setSelectedReseaux(updatedReseaux);
+                                onDonneesSupplementairesChange("reseau", updatedReseaux);
+                                onDonneesSupplementairesChange("nbReseaux", updatedReseaux.length);
+                            }}
                         />
                     </div>
 
@@ -155,7 +140,11 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                             domaineSelection="Genres musicaux :"
                             options={genresMusicaux.map((genreMusical, index) => ({ label: genreMusical.nomGenreMusical, value: genreMusical.nomGenreMusical }))}
                             selectedValues={selectedGenres}
-                            onSelectionChange={setSelectedGenres}
+                            onSelectionChange={(updatedGenres) => {
+                                setSelectedGenres(updatedGenres);
+                                onDonneesSupplementairesChange("genreMusical", updatedGenres);
+                                onDonneesSupplementairesChange("NbGenresMusicaux", updatedGenres.length);
+                            }}
                         />
                     </div>
                 </div>

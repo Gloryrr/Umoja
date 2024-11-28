@@ -323,7 +323,7 @@ class OffreService
                             $mailerService->sendEmail(
                                 $utilisateur->getEmailUtilisateur(),
                                 "Nouvelle offre",
-                                "<h1>Une nouvelle offre</h1> " +
+                                "<h1>Une nouvelle offre</h1> " .
                                 "<p>Une nouvelle offre a été ajoutée sur le réseau {$reseau->getNomReseau()}</p>"
                             );
                         }
