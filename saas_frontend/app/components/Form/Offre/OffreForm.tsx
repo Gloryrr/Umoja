@@ -83,6 +83,7 @@ const OffreForm: React.FC = () => {
     const valideFormulaire = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
+            console.log(JSON.parse(JSON.stringify(formData)));
             const offrePostee = await apiPost('/offre/create', JSON.parse(JSON.stringify(formData)));
             setOffreId(JSON.parse(offrePostee.offre).id);
             setTypeMessage("success");

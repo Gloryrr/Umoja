@@ -36,7 +36,7 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
     return (
         <Card className="shadow-none border-none mx-auto w-full">
             <div className="flex justify-between items-center mb-4">
-                <h3 className="text-2xl font-semibold mb-4">Extras de l&apos;offre</h3>
+                <h3 className="text-2xl font-semibold mb-4">Conditions spécifiques à l&apos;offre</h3>
                 <Button
                     color="gray"
                     onClick={handleReset}
@@ -51,25 +51,25 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
             {/* Section description et coût */}
             <div className="grid grid-cols-2 gap-4 mb-5">
                 <div>
-                    <Label htmlFor="descrExtras" value="Description de l'extras" />
+                    <Label htmlFor="descrExtras" value="Description de l'extras:" />
                     <TextInput
                         id="descrExtras"
                         name="descrExtras"
                         type="text"
                         value={extras.descrExtras ?? ""}
                         onChange={handleExtrasChange}
-                        placeholder="Description des Extras"
+                        placeholder="Transport offert pour les invités spéciaux..."
                     />
                 </div>
                 <div>
-                    <Label htmlFor="coutExtras" value="Coût des extras" />
+                    <Label htmlFor="coutExtras" value="Coût total des extras" />
                     <TextInput
                         id="coutExtras"
                         name="coutExtras"
                         type="number"
                         value={extras.coutExtras ?? ""}
                         onChange={handleExtrasChange}
-                        placeholder="Coût des Extras"
+                        placeholder="250... (en €)"
                     />
                 </div>
             </div>
@@ -77,25 +77,25 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
             {/* Section exclusivité et exception */}
             <div className="grid grid-cols-2 gap-4 mb-5">
                 <div>
-                    <Label htmlFor="exclusivite" value="Exclusivité proposée" />
+                    <Label htmlFor="exclusivite" value="Exclusivité proposée pour l'évènement:" />
                     <TextInput
                         id="exclusivite"
                         name="exclusivite"
                         type="text"
                         value={extras.exclusivite ?? ""}
                         onChange={handleExtrasChange}
-                        placeholder="Exclusivité"
+                        placeholder="Exclusivité territoriale..."
                     />
                 </div>
                 <div>
-                    <Label htmlFor="exception" value="Exception de l'extras" />
+                    <Label htmlFor="exception" value="Exception de l'extras:" />
                     <TextInput
                         id="exception"
                         name="exception"
                         type="text"
                         value={extras.exception ?? ""}
                         onChange={handleExtrasChange}
-                        placeholder="Exceptions"
+                        placeholder="Sauf pour les artistes suivants..."
                     />
                 </div>
             </div>
@@ -103,26 +103,26 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
             {/* Section ordre de passage et clauses de confidentialité */}
             <div className="grid gap-4 mb-5">
                 <div>
-                    <Label htmlFor="ordrePassage" value="Ordre de passage" />
+                    <Label htmlFor="ordrePassage" value="Ordre de passage des artistes durant l'évènement:" />
                     <TextInput
                         id="ordrePassage"
                         name="ordrePassage"
                         type="text"
                         value={extras.ordrePassage ?? ""}
                         onChange={handleExtrasChange}
-                        placeholder="Ordre de Passage"
+                        placeholder="Artiste 1 - Artiste 2 - Artiste 3..."
                         className='w-full'
                     />
                 </div>
             </div>
             <div>
-                <Label htmlFor="clausesConfidentialites" value="Clauses de confidentialité" />
+                <Label htmlFor="clausesConfidentialites" value="Clauses de confidentialité pour l'évènement:" />
                 <Textarea
                     id="clausesConfidentialites"
                     name="clausesConfidentialites"
                     value={extras.clausesConfidentialites ?? ""}
                     onChange={handleExtrasChange}
-                    placeholder="Clauses de Confidentialité"
+                    placeholder="Les artistes ne peuvent pas divulguer les informations de l'évènement..."
                     className='w-full'
                 />
             </div>
