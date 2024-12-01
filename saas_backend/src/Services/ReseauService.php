@@ -51,7 +51,7 @@ class ReseauService
      * @return JsonResponse La réponse JSON contenant les réseaux listés.
      */
     public static function getReseauByName(
-        String $name,
+        string $name,
         ReseauRepository $reseauRepository,
         SerializerInterface $serializer
     ): JsonResponse {
