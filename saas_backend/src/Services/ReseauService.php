@@ -43,6 +43,37 @@ class ReseauService
     }
 
     /**
+     * Récupère le réseau par rapport à son nom et renvoie une réponse JSON.
+     *
+     * @param ReseauRepository $reseauRepository Le repository des réseaux.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les réseaux listés.
+     */
+    public static function getReseauByName(
+        String $name,
+        ReseauRepository $reseauRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        try {
+            // on récupère tous les reseaux existants
+            $reseaux = $reseauRepository->findBy(['nomReseau' => $name]);
+            $reseauxJSON = $serializer->serialize(
+                $reseaux,
+                'json',
+                ['groups' => ['reseau:read']]
+            );
+            return new JsonResponse([
+                'reseau' => $reseauxJSON,
+                'message' => "Informations du réseau : {$name}",
+                'serialized' => true
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
      * Créer un nouveau réseau et renvoie une réponse JSON.
      *
      * @param ReseauRepository $reseauRepository Le repository des réseaux.
