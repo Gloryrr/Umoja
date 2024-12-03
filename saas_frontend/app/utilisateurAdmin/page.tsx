@@ -66,8 +66,7 @@ export default function UserManagement() {
 
   const handleAddUser = async (newUser: Omit<User, 'id_utilisateur'>) => {
     try {
-      
-  
+
       const userdata1 = {
         emailUtilisateur: newUser.emailUtilisateur,
         username: newUser.username,

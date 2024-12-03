@@ -18,13 +18,13 @@ export const apiGet = async (endpoint: string) => {
 };
 
 // Fonction POST
-export const apiPost = async (endpoint: string, data: JSON) => {
+export const apiPost = async (endpoint: string, data: string) => {
     const response = await fetch(`${endpoint}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: data,
     });
     return renvoieReponsePromise(response);
 };
@@ -32,7 +32,7 @@ export const apiPost = async (endpoint: string, data: JSON) => {
 // Fonction PUT
 export const apiPut = async (endpoint: string, data: JSON) => {
     const response = await fetch(`${endpoint}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
         },
