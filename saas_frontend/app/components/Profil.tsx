@@ -33,7 +33,7 @@ const Profil: React.FC = () => {
                 console.error("Erreur réseau :", error);
             }
         }
-    }, [userInfo]);
+    }, []);
 
     useEffect(() => {
         fetchUserProfile();

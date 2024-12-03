@@ -143,7 +143,7 @@ const DonneesSupplementairesForm: React.FC<DonneesSupplementairesFormProps> = ({
                             onSelectionChange={(updatedGenres) => {
                                 setSelectedGenres(updatedGenres);
                                 onDonneesSupplementairesChange("genreMusical", updatedGenres);
-                                onDonneesSupplementairesChange("NbGenresMusicaux", updatedGenres.length);
+                                onDonneesSupplementairesChange("nbGenresMusicaux", updatedGenres.length);
                             }}
                         />
                     </div>
