@@ -23,20 +23,20 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['utilisateur:read', 'utilisateur:write'])]
-    private ?int $id = null;
+    private int $id;
 
-    #[ORM\Column(length: 128)]
+    #[ORM\Column(length: 128, unique: true, nullable: false)]
     #[Groups(['utilisateur:read', 'utilisateur:write'])]
-    private ?string $emailUtilisateur = null;
+    private string $emailUtilisateur;
 
-    #[ORM\Column(length: 255)]
-    private ?string $mdpUtilisateur = null;
+    #[ORM\Column(length: 255, nullable: false)]
+    private string $mdpUtilisateur;
 
-    #[ORM\Column(length: 20)]
+    #[ORM\Column(length: 20, nullable: false)]
     #[Groups(['utilisateur:read', 'utilisateur:write'])]
-    private ?string $roleUtilisateur = null;
+    private string $roleUtilisateur;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50, nullable: false, unique: true)]
     #[Groups([
         'utilisateur:read',
         'utilisateur:write',
@@ -47,7 +47,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         'reponse:read',
         'preference_notification:read'
     ])]
-    private ?string $username = null;
+    private string $username;
 
     #[ORM\Column(length: 15, nullable: true)]
     #[Groups(['utilisateur:read', 'utilisateur:write'])]
@@ -113,9 +113,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Récupère l'identifiant de l'utilisateur.
      *
-     * @return int|null
+     * @return int
      */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -136,9 +136,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Récupère l'email de l'utilisateur.
      *
-     * @return string|null
+     * @return string
      */
-    public function getEmailUtilisateur(): ?string
+    public function getEmailUtilisateur(): string
     {
         return $this->emailUtilisateur;
     }
@@ -159,9 +159,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Récupère le mot de passe de l'utilisateur.
      *
-     * @return string|null
+     * @return string
      */
-    public function getPassword(): ?string
+    public function getPassword(): string
     {
         return $this->mdpUtilisateur;
     }
@@ -182,9 +182,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Récupère le numéro de téléphone de l'utilisateur.
      *
-     * @return string|null
+     * @return string
      */
-    public function getNumTelUtilisateur(): ?string
+    public function getNumTelUtilisateur(): string
     {
         return $this->numTelUtilisateur;
     }
@@ -192,7 +192,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Définit le numéro de téléphone de l'utilisateur.
      *
-     * @param string|null $numTelUtilisateur
+     * @param string $numTelUtilisateur
      * @return static
      */
     public function setNumTelUtilisateur(?string $numTelUtilisateur): static
@@ -209,7 +209,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      * Exemple : ['ROLE_USER'] ou ['ROLE_ADMIN'] donc son attribut sera un string comme 'ROLE_USER' ou 'ROLE_ADMIN'
      * Si l'utilisateur à 'ROLE_ADMIN', il est évident qu'il a aussi les droits 'ROLE_USER' implicitement.
      *
-     * @return string|null
+     * @return string
      */
     public function getRoles(): array
     {
@@ -232,9 +232,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Récupère le nom de l'utilisateur.
      *
-     * @return string|null
+     * @return string
      */
-    public function getNomUtilisateur(): ?string
+    public function getNomUtilisateur(): string
     {
         return $this->nomUtilisateur;
     }
@@ -255,9 +255,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Récupère le prénom de l'utilisateur.
      *
-     * @return string|null
+     * @return string
      */
-    public function getPrenomUtilisateur(): ?string
+    public function getPrenomUtilisateur(): string
     {
         return $this->prenomUtilisateur;
     }
@@ -278,9 +278,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Récupère le nom d'utilisateur (username).
      *
-     * @return string|null
+     * @return string
      */
-    public function getUsername(): ?string
+    public function getUsername(): string
     {
         return $this->username;
     }
@@ -301,9 +301,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Implémentation de la méthode de l'interface UserInterface.
      *
-     * @return string|null
+     * @return string
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // Implémentation de la méthode de l'interface UserInterface.
         // Cette méthode ne fait rien, mais doit être implémentée.
@@ -434,7 +434,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPreferenceNotification(): ?PreferenceNotification
+    public function getPreferenceNotification(): PreferenceNotification
     {
         return $this->preferenceNotification;
     }

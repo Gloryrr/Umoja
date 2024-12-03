@@ -21,11 +21,11 @@ class EtatReponse
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
     #[Groups(['etat_reponse:read'])]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\Column(type: "string", length: 100)]
     #[Groups(['etat_reponse:read', 'etat_reponse:write', 'reponse:read'])]
-    private ?string $nomEtatReponse = null;
+    private string $nomEtatReponse;
 
     #[ORM\Column(type: "string", length: 255)]
     #[Groups(['etat_reponse:read', 'etat_reponse:write'])]
@@ -44,9 +44,9 @@ class EtatReponse
     /**
      * Obtient l'identifiant de l'état de réponse
      *
-     * @return int|null
+     * @return int
      */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -54,7 +54,7 @@ class EtatReponse
     /**
      * Obtient le nom de l'état de réponse
      *
-     * @return string|null
+     * @return string
      */
     public function getNomEtatReponse(): ?string
     {
@@ -76,7 +76,7 @@ class EtatReponse
     /**
      * Obtient la description de l'état de réponse
      *
-     * @return string|null
+     * @return string
      */
     public function getDescriptionEtatReponse(): ?string
     {

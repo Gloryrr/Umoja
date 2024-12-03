@@ -21,17 +21,16 @@ class EtatOffre
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['etat_offre:read', 'offre:read'])]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\Column(length: 50)]
     #[Groups(['etat_offre:read', 'etat_offre:write'])]
-    private ?string $nomEtat = null;
+    private string $nomEtat;
 
     #[ORM\OneToMany(targetEntity: Offre::class, mappedBy: "etatOffre", orphanRemoval: true, cascade: ["remove"])]
     #[Groups(['etat_offre:read'])]
     #[MaxDepth(1)]
     private Collection $offres;
-
 
     public function __construct()
     {
@@ -41,9 +40,9 @@ class EtatOffre
     /**
      * Récupère l'identifiant de l'état d'offre.
      *
-     * @return int|null
+     * @return int
      */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -51,9 +50,9 @@ class EtatOffre
     /**
      * Récupère le nom de l'état de l'offre.
      *
-     * @return string|null
+     * @return string
      */
-    public function getNomEtat(): ?string
+    public function getNomEtat(): string
     {
         return $this->nomEtat;
     }

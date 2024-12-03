@@ -20,7 +20,7 @@ class Reponse
     /**
      * L'identifiant unique de la réponse.
      *
-     * @var int|null
+     * @var int
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -31,72 +31,72 @@ class Reponse
         'offre:read',
         'etat_reponse:read',
     ])]
-    private ?int $id = null;
+    private int $id;
 
     /**
      * L'état de la réponse.
      *
-     * @var EtatReponse|null
+     * @var EtatReponse
      */
     #[ORM\ManyToOne(targetEntity: EtatReponse::class, inversedBy: "reponses", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['reponse:read', 'reponse:write'])]
-    private ?EtatReponse $etatReponse = null;
+    private EtatReponse $etatReponse;
 
     /**
      * L'offre associée à la réponse.
      *
-     * @var Offre|null
+     * @var Offre
      */
     #[ORM\ManyToOne(targetEntity: Offre::class, inversedBy: "reponses", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['reponse:read', 'reponse:write'])]
-    private ?Offre $offre = null;
+    private Offre $offre;
 
     /**
      * L'utilisateur qui a fait la réponse.
      *
-     * @var Utilisateur|null
+     * @var Utilisateur
      */
     #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: "reponses", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     #[Groups(['reponse:read', 'reponse:write', 'utilisateur:read'])]
-    private ?Utilisateur $utilisateur = null;
+    private Utilisateur $utilisateur;
 
     /**
      * La date de début de la participation à l'offre.
      *
-     * @var \DateTimeInterface|null
+     * @var \DateTimeInterface
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(['reponse:read', 'reponse:write'])]
-    private ?\DateTimeInterface $dateDebut = null;
+    private \DateTimeInterface $dateDebut;
 
     /**
      * La date de fin de la participation à l'offre.
      *
-     * @var \DateTimeInterface|null
+     * @var \DateTimeInterface
      */
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(['reponse:read', 'reponse:write'])]
-    private ?\DateTimeInterface $dateFin = null;
+    private \DateTimeInterface $dateFin;
 
     /**
      * Le montant du prix de participation à l'offre.
      *
-     * @var float|null
+     * @var float
      */
     #[ORM\Column]
     #[Groups(['reponse:read', 'reponse:write'])]
-    private ?float $prixParticipation = null;
+    private float $prixParticipation;
 
     /**
      * Retourne l'identifiant de la réponse.
      *
-     * @return int|null
+     * @return int
      * L'identifiant unique de la réponse.
      */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -104,10 +104,10 @@ class Reponse
     /**
      * Retourne l'état de la réponse.
      *
-     * @return EtatReponse|null
+     * @return EtatReponse
      * L'état associé à cette réponse.
      */
-    public function getEtatReponse(): ?EtatReponse
+    public function getEtatReponse(): EtatReponse
     {
         return $this->etatReponse;
     }
@@ -115,7 +115,7 @@ class Reponse
     /**
      * Définit l'état de la réponse.
      *
-     * @param EtatReponse|null $idEtatReponse
+     * @param EtatReponse $idEtatReponse
      * L'état associé à cette réponse.
      *
      * @return static
@@ -130,10 +130,10 @@ class Reponse
     /**
      * Retourne l'offre associée à cette réponse.
      *
-     * @return Offre|null
+     * @return Offre
      * L'offre à laquelle cette réponse est liée.
      */
-    public function getOffre(): ?Offre
+    public function getOffre(): Offre
     {
         return $this->offre;
     }
@@ -141,7 +141,7 @@ class Reponse
     /**
      * Définit l'offre associée à cette réponse.
      *
-     * @param Offre|null $idOffre
+     * @param Offre $idOffre
      * L'offre à laquelle cette réponse sera liée.
      *
      * @return static
@@ -156,10 +156,10 @@ class Reponse
     /**
      * Retourne l'offre associée à cette réponse.
      *
-     * @return Utilisateur|null
+     * @return Utilisateur
      * L'offre à laquelle cette réponse est liée.
      */
-    public function getUtilisateur(): ?Utilisateur
+    public function getUtilisateur(): Utilisateur
     {
         return $this->utilisateur;
     }
@@ -167,7 +167,7 @@ class Reponse
     /**
      * Définit l'offre associée à cette réponse.
      *
-     * @param Utilisateur|null $idOffre
+     * @param Utilisateur $idOffre
      * L'offre à laquelle cette réponse sera liée.
      *
      * @return static
@@ -182,10 +182,10 @@ class Reponse
     /**
      * Retourne la date de début de la participation à l'offre.
      *
-     * @return \DateTimeInterface|null
+     * @return \DateTimeInterface
      * La date de début de la participation.
      */
-    public function getDateDebut(): ?\DateTimeInterface
+    public function getDateDebut(): \DateTimeInterface
     {
         return $this->dateDebut;
     }
@@ -208,10 +208,10 @@ class Reponse
     /**
      * Retourne la date de fin de la participation à l'offre.
      *
-     * @return \DateTimeInterface|null
+     * @return \DateTimeInterface
      * La date de fin de la participation.
      */
-    public function getDateFin(): ?\DateTimeInterface
+    public function getDateFin(): \DateTimeInterface
     {
         return $this->dateFin;
     }
@@ -234,10 +234,10 @@ class Reponse
     /**
      * Retourne le montant du prix de participation à l'offre.
      *
-     * @return float|null
+     * @return float
      * Le montant du prix de participation.
      */
-    public function getPrixParticipation(): ?float
+    public function getPrixParticipation(): float
     {
         return $this->prixParticipation;
     }

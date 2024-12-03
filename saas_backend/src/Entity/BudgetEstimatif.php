@@ -16,23 +16,23 @@ class BudgetEstimatif
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['budget_estimatif:read', 'offre:read'])]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\Column]
     #[Groups(['budget_estimatif:read', 'budget_estimatif:write'])]
-    private ?int $cachetArtiste = null;
+    private int $cachetArtiste;
 
     #[ORM\Column]
     #[Groups(['budget_estimatif:read', 'budget_estimatif:write'])]
-    private ?int $fraisDeplacement = null;
+    private int $fraisDeplacement;
 
     #[ORM\Column]
     #[Groups(['budget_estimatif:read', 'budget_estimatif:write'])]
-    private ?int $fraisHebergement = null;
+    private int $fraisHebergement;
 
     #[ORM\Column]
     #[Groups(['budget_estimatif:read', 'budget_estimatif:write'])]
-    private ?int $fraisRestauration = null;
+    private int $fraisRestauration;
 
     #[ORM\OneToMany(targetEntity: Offre::class, mappedBy: "budgetEstimatif", orphanRemoval: true, cascade: ["remove"])]
     #[Groups(['budget_estimatif:read'])]
@@ -48,9 +48,9 @@ class BudgetEstimatif
     /**
      * Récupère l'identifiant du budget estimatif.
      *
-     * @return int|null
+     * @return int
      */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -58,9 +58,9 @@ class BudgetEstimatif
     /**
      * insert l'identifiant du budget estimatif.
      *
-     * @return int|null
+     * @return int
      */
-    public function setId(int $id): ?int
+    public function setId(int $id): int
     {
         return $this->id = $id;
     }
@@ -68,9 +68,9 @@ class BudgetEstimatif
     /**
      * Récupère le montant du cachet de l'artiste.
      *
-     * @return int|null
+     * @return int
      */
-    public function getCachetArtiste(): ?int
+    public function getCachetArtiste(): int
     {
         return $this->cachetArtiste;
     }
@@ -91,9 +91,9 @@ class BudgetEstimatif
     /**
      * Récupère le montant des frais de déplacement.
      *
-     * @return int|null
+     * @return int
      */
-    public function getFraisDeplacement(): ?int
+    public function getFraisDeplacement(): int
     {
         return $this->fraisDeplacement;
     }
@@ -114,9 +114,9 @@ class BudgetEstimatif
     /**
      * Récupère le montant des frais d'hébergement.
      *
-     * @return int|null
+     * @return int
      */
-    public function getFraisHebergement(): ?int
+    public function getFraisHebergement(): int
     {
         return $this->fraisHebergement;
     }
@@ -137,9 +137,9 @@ class BudgetEstimatif
     /**
      * Récupère le montant des frais de restauration.
      *
-     * @return int|null
+     * @return int
      */
-    public function getFraisRestauration(): ?int
+    public function getFraisRestauration(): int
     {
         return $this->fraisRestauration;
     }
