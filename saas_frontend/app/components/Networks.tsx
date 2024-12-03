@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Spinner, Card, TextInput, Select } from "flowbite-react";
+import { Button, Spinner, Card, Dropdown, Checkbox, Select } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { apiGet, apiPost } from "@/app/services/internalApiClients";
 import { MdArrowLeft, MdArrowRight } from "react-icons/md";
@@ -17,29 +17,27 @@ interface GenreMusical {
 }
 
 export function Networks() {
-    const [reseaux, setReseaux] = useState<Reseau[]>([]);
     const [genresMusicaux, setGenresMusicaux] = useState<GenreMusical[]>([]);
     const [filteredReseaux, setFilteredReseaux] = useState<Reseau[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [searchQuery, setSearchQuery] = useState("");
     const [sortOption, setSortOption] = useState("nomCroissant");
     const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
     const itemsPerPage = 10;
 
-    const [nomReseauChoisi, setNomReseauChoisi] = useState<string>();
+    const [nomReseauChoisi, setNomReseauChoisi] = useState<string | null>();
 
     const getNetworksAndGenresMusicaux = async () => {
         const username = localStorage.getItem("username");
-        let responses = await apiPost(
+        const responses = await apiPost(
             "/utilisateur",
             JSON.parse(JSON.stringify({ username }))
         );
         if (responses) {
             const fetchedReseaux = JSON.parse(responses.utilisateur)[0].reseaux || [];
-            setReseaux(fetchedReseaux);
+            console.log(fetchedReseaux);
             setFilteredReseaux(fetchedReseaux);
         }
-        let responsesGenres = await apiGet("/genres-musicaux");
+        const responsesGenres = await apiGet("/genres-musicaux");
         if (responsesGenres) {
             const genresMusicaux = JSON.parse(responsesGenres.genres_musicaux);
             console.log("Genres musicaux :", genresMusicaux);
@@ -50,12 +48,6 @@ export function Networks() {
     useEffect(() => {
         getNetworksAndGenresMusicaux();
     }, []);
-
-    const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const query = event.target.value;
-        setSearchQuery(query);
-        filterNetworks(query);
-    };
 
     const handleSort = (option: string) => {
         setSortOption(option);
@@ -78,16 +70,17 @@ export function Networks() {
         setFilteredReseaux(sortedReseaux);
     };
 
-    const filterNetworks = (query: string) => {
-        let filtered = reseaux.filter((reseau) =>
-            reseau.nomReseau.toLowerCase().includes(query.toLowerCase())
-        );
-        setFilteredReseaux(filtered);
-    };
-
     const handleNetworkClick = (nomReseau: string) => {
         console.log(`Naviguer vers le réseau : ${nomReseau}`);
         setNomReseauChoisi(nomReseau);
+    };
+
+    const toggleGenre = (genre: string) => {
+        setSelectedGenres((prevGenres) =>
+            prevGenres.includes(genre)
+                ? prevGenres.filter((g) => g !== genre)
+                : [...prevGenres, genre]
+        );
     };
 
     const totalPages = Math.ceil(filteredReseaux.length / itemsPerPage);
@@ -106,10 +99,6 @@ export function Networks() {
         }
     };
 
-    const goToPage = (page: number) => {
-        setCurrentPage(page);
-    };
-
     const chooseImageRandom = () => {
         const images = [
             "/images/offre-musique.webp",
@@ -118,6 +107,10 @@ export function Networks() {
             "/images/offre-musique-4.webp",
         ];
         return images[Math.floor(Math.random() * images.length)];
+    };
+
+    const resetNetwork = () => {
+        setNomReseauChoisi(null);
     };
 
     if (!nomReseauChoisi) {
@@ -132,27 +125,27 @@ export function Networks() {
     
                 {/* Barre de recherche, sélection de tri et genres */}
                 <div className="flex justify-between items-center w-full max-w-6xl mb-6">
-                    {/* Afficher et barre de recherche */}
-                    <div className="flex items-center">
-                        <span className="mr-2">Afficher</span>
-                        <TextInput
-                            type="text"
-                            placeholder="Rechercher un réseau..."
-                            value={searchQuery}
-                            onChange={handleSearch}
-                            className="w-full mr-2"
-                        />
-                        <Select
-                            value={selectedGenres}
-                            onChange={(updatedGenres) => {console.log(updatedGenres)}}
+                    <div className="flex">
+                        <p className="mr-5">Afficher par</p>
+                        
+                        {/* Filtres par genres musicaux */}
+                        <Dropdown
+                            label="Genres musicaux"
+                            inline={true}
+                            size="sm"
+                            className="max-h-64 overflow-y-auto"
+                            dismissOnClick={false}
                         >
-                            <option value="">Genres musicaux</option>
                             {genresMusicaux.map((genreMusical, index) => (
-                                <option key={index} value={genreMusical.nomGenreMusical}>
-                                    {genreMusical.nomGenreMusical}
-                                </option>
+                                <Dropdown.Item key={index} className="flex items-center gap-2">
+                                <Checkbox
+                                    checked={selectedGenres.includes(genreMusical.nomGenreMusical)}
+                                    onChange={() => toggleGenre(genreMusical.nomGenreMusical)}
+                                />
+                                <span>{genreMusical.nomGenreMusical}</span>
+                                </Dropdown.Item>
                             ))}
-                        </Select>
+                        </Dropdown>
                     </div>
     
                     {/* Trier par */}
@@ -165,7 +158,7 @@ export function Networks() {
                         >
                             <option value="nomCroissant">Nom (A-Z)</option>
                             <option value="nomDecroissant">Nom (Z-A)</option>
-                            <option value="utilisateurs">Nombre d'utilisateurs</option>
+                            <option value="utilisateurs">Nombre d&apos;utilisateurs</option>
                         </Select>
                     </div>
                 </div>
@@ -270,6 +263,7 @@ export function Networks() {
             <div>
                 <NetworksOffres 
                     networksName={nomReseauChoisi}
+                    resetNetwork={resetNetwork}
                 />
             </div>
         )

@@ -1,33 +1,35 @@
-"use client";
-
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { apiPost } from "@/app/services/internalApiClients";
 import { Card, Button, Pagination, Select } from "flowbite-react";
 import { useRouter } from "next/navigation";
+import { FaArrowAltCircleLeft } from "react-icons/fa";
 
 interface NetworksOffresProps {
-    networksName: string;
+    networksName: string | null;
+    resetNetwork: () => void;
 }
 
-function NetworksOffres({ networksName }: NetworksOffresProps) {
-    const [offresByReseaux, setOffresByReseaux] = useState([]);
-    const [offres, setOffres] = useState([]);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [sortOption, setSortOption] = useState("dateCroissant");
-    const [currentPage, setCurrentPage] = useState(1);
+interface Offre {
+    id: number;
+    titleOffre: string;
+    descrTournee: string;
+    deadLine: string;
+}
+
+function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
+    const [offres, setOffres] = useState<Offre[]>([]);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [sortOption, setSortOption] = useState<string>("dateCroissant");
+    const [currentPage, setCurrentPage] = useState<number>(1);
     const itemsPerPage = 10;
     const router = useRouter();
 
-    const getOffresNetworks = async (name: string) => {
+    const getOffresNetworks = useCallback(async (name: string) => {
         try {
-            const data = {
-                nomReseau: name,
-            };
+            const data = { nomReseau: name };
             const responses = await apiPost(`/reseau`, JSON.parse(JSON.stringify(data)));
             const reseau = JSON.parse(responses.reseau)?.[0];
             if (reseau) {
-                setOffresByReseaux(reseau.offres);
-
                 const listeIds = reseau.offres.map((offre: { id: number }) => offre.id);
                 await getOffresByListId(listeIds);
             } else {
@@ -36,15 +38,13 @@ function NetworksOffres({ networksName }: NetworksOffresProps) {
         } catch (error) {
             console.error("Erreur lors de la récupération des offres :", error);
         }
-    };
+    }, []);
 
     const getOffresByListId = async (listeId: number[]) => {
         try {
-            const data = {
-                listeIdOffre: listeId,
-            };
+            const data = { listeIdOffre: listeId };
             const responses = await apiPost(`/offres`, JSON.parse(JSON.stringify(data)));
-            const offresDetails = JSON.parse(responses.offres);
+            const offresDetails: Offre[] = JSON.parse(responses.offres);
             if (offresDetails) {
                 setOffres(offresDetails);
             } else {
@@ -59,7 +59,7 @@ function NetworksOffres({ networksName }: NetworksOffresProps) {
         if (networksName) {
             getOffresNetworks(networksName);
         }
-    }, [networksName]);
+    }, [networksName, getOffresNetworks]); // Added getOffresNetworks to dependencies
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
@@ -73,11 +73,11 @@ function NetworksOffres({ networksName }: NetworksOffresProps) {
         setSortOption(event.target.value);
     };
 
-    const filteredOffres = offres.filter((offre: any) =>
+    const filteredOffres = offres.filter((offre) =>
         offre.titleOffre.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const sortedOffres = filteredOffres.sort((a: any, b: any) => {
+    const sortedOffres = filteredOffres.sort((a, b) => {
         switch (sortOption) {
             case "dateCroissant":
                 return new Date(a.deadLine).getTime() - new Date(b.deadLine).getTime();
@@ -99,7 +99,15 @@ function NetworksOffres({ networksName }: NetworksOffresProps) {
 
     return (
         <div className="p-6">
-            <h1 className="text-2xl font-bold mb-4">Bienvenue dans le réseau : {networksName}</h1>
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold">Réseau : {networksName}</h1>
+                <div className="flex">
+                    <Button onClick={resetNetwork} color="light">
+                        <FaArrowAltCircleLeft className="mr-2" size={18} />
+                        Retour aux réseaux
+                    </Button>
+                </div>
+            </div>
 
             {/* Barre de recherche */}
             <div className="flex gap-4 mb-6">
@@ -132,7 +140,7 @@ function NetworksOffres({ networksName }: NetworksOffresProps) {
             {/* Affichage des offres */}
             {currentOffres.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {currentOffres.map((offre: any) => (
+                    {currentOffres.map((offre) => (
                         <Card key={offre.id} className="shadow-md">
                             <h5 className="text-xl font-bold">{offre.titleOffre}</h5>
                             <p className="text-gray-700">{offre.descrTournee}</p>
