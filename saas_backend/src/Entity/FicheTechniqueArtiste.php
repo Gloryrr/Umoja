@@ -17,7 +17,7 @@ class FicheTechniqueArtiste
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['fiche_technique_artiste:read'])]
-    private int $id;
+    private int $id = 0;
 
     #[ORM\Column(type: Types::TEXT, nullable: false)]
     #[Groups(['fiche_technique_artiste:read', 'fiche_technique_artiste:write'])]

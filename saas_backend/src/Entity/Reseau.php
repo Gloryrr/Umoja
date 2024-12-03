@@ -26,7 +26,7 @@ class Reseau
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['reseau:read'])]
-    private int $id;
+    private int $id = 0;
 
     /**
      * Le nom du réseau.

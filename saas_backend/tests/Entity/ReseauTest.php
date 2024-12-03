@@ -54,7 +54,7 @@ class ReseauTest extends TestCase
      */
     public function testGetIdInitial()
     {
-        $this->assertNull($this->reseau->getId());
+        $this->assertEquals(0, $this->reseau->getId());
     }
 
     /**

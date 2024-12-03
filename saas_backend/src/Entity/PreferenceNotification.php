@@ -21,7 +21,7 @@ class PreferenceNotification
         'utilisateur:read',
     ])]
     #[MaxDepth(1)]
-    private int $id;
+    private int $id = 0;
 
     #[ORM\Column]
     #[Groups(['preference_notification:read', 'preference_notification:write'])]

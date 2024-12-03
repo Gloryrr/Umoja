@@ -31,7 +31,7 @@ class Reponse
         'offre:read',
         'etat_reponse:read',
     ])]
-    private int $id;
+    private int $id = 0;
 
     /**
      * L'état de la réponse.

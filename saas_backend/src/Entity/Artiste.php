@@ -16,7 +16,7 @@ class Artiste
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['artiste:read'])]
-    private int $id;
+    private int $id = 0;
 
     #[ORM\Column(length: 50)]
     #[Groups([

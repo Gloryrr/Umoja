@@ -22,7 +22,7 @@ class ConditionsFinancieres
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['conditions_financieres:read', 'offre:read'])]
-    private int $id;
+    private int $id = 0;
 
     #[ORM\Column]
     #[Groups(['conditions_financieres:read', 'conditions_financieres:write'])]

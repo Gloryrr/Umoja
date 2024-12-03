@@ -21,7 +21,7 @@ class Extras
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['extras:read', 'offre:read'])]
-    private int $id;
+    private int $id = 0;
 
     #[ORM\Column(length: 255, nullable: false)]
     #[Groups(['extras:read', 'extras:write'])]

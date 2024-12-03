@@ -21,7 +21,7 @@ class EtatOffre
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['etat_offre:read', 'offre:read'])]
-    private int $id;
+    private int $id = 0;
 
     #[ORM\Column(length: 50)]
     #[Groups(['etat_offre:read', 'etat_offre:write'])]

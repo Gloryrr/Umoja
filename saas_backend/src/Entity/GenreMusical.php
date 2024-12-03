@@ -24,7 +24,7 @@ class GenreMusical
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['genre_musical:read'])]
-    private int $id;
+    private int $id = 0;
 
     /**
      * @var string Le nom du genre musical.

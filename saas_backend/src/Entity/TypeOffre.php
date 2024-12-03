@@ -21,7 +21,7 @@ class TypeOffre
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['type_offre:read'])]
-    private int $id;
+    private int $id = 0;
 
     /**
      * Nom du type d'offre.

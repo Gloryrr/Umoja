@@ -19,7 +19,7 @@ class Commentaire
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['commentaire:read', 'utilisateur:read', 'offre:read'])]
-    private int $id;
+    private int $id = 0;
 
     #[ORM\Column(length: 500)]
     #[Groups(['commentaire:read', 'commentaire:write'])]

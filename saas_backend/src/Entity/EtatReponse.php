@@ -21,7 +21,7 @@ class EtatReponse
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
     #[Groups(['etat_reponse:read'])]
-    private int $id;
+    private int $id = 0;
 
     #[ORM\Column(type: "string", length: 100)]
     #[Groups(['etat_reponse:read', 'etat_reponse:write', 'reponse:read'])]

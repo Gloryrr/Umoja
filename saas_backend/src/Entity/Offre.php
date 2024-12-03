@@ -39,7 +39,7 @@ class Offre
         'commentaire:read',
         'reponse:read',
     ])]
-    private int $id;
+    private int $id = 0;
 
     #[ORM\Column(length: 50)]
     #[Groups(['offre:read', 'offre:write'])]
