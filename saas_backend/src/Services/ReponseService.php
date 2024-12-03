@@ -46,6 +46,34 @@ class ReponseService
     /**
      * Récupère une réponse par son id et renvoie une réponse JSON.
      *
+     * @param int $id, L,'identifiant de la réponse
+     * @param ReponseRepository $reponseRepository Le repository des réponses.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les réponses.
+     */
+    public static function getReponseById(
+        int $id,
+        ReponseRepository $reponseRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        // On récupère toutes les réponses
+        $reponses = $reponseRepository->findBy(['id' => $id]);
+        $reponsesJSON = $serializer->serialize(
+            $reponses,
+            'json',
+            ['groups' => ['reponse:read']]
+        );
+        return new JsonResponse([
+            'reponses' => $reponsesJSON,
+            'message' => "Liste des réponses",
+            'serialized' => true
+        ], Response::HTTP_OK);
+    }
+
+    /**
+     * Récupère une réponse par son id et renvoie une réponse JSON.
+     *
      * @param int $id L'identifiant de la réponse.
      * @param ReponseRepository $reponseRepository Le repository des réponses.
      * @param SerializerInterface $serializer Le service de sérialisation.

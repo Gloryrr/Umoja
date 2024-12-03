@@ -27,9 +27,25 @@ class FicheTechniqueArtisteController extends AbstractController
     }
 
     /**
+     * Récupère une fichie technique à partir de son id.
+     */
+    #[Route('/api/v1/fiches-technique/{id}', name: 'get_fiches_technique_by_id', methods: ['GET'])]
+    public function getFichesTechniqueById(
+        int $id,
+        FicheTechniqueArtisteRepository $ficheTechniqueArtisteRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        return FicheTechniqueArtisteService::getFichesTechniqueArtisteById(
+            $id,
+            $ficheTechniqueArtisteRepository,
+            $serializer
+        );
+    }
+
+    /**
      * Crée une nouvelle fiche technique d'artiste.
      */
-    #[Route('/api/v1/fiche-technique', name: 'create_fiche_technique', methods: ['POST'])]
+    #[Route('/api/v1/fiche-technique/create', name: 'create_fiche_technique', methods: ['POST'])]
     public function createFicheTechnique(
         Request $request,
         FicheTechniqueArtisteRepository $ficheTechniqueArtisteRepository,
@@ -46,7 +62,7 @@ class FicheTechniqueArtisteController extends AbstractController
     /**
      * Met à jour une fiche technique d'artiste existante.
      */
-    #[Route('/api/v1/fiche-technique/{id}', name: 'update_fiche_technique', methods: ['PATCH'])]
+    #[Route('/api/v1/fiche-technique/update/{id}', name: 'update_fiche_technique', methods: ['PATCH'])]
     public function updateFicheTechnique(
         int $id,
         Request $request,
@@ -65,7 +81,7 @@ class FicheTechniqueArtisteController extends AbstractController
     /**
      * Supprime une fiche technique d'artiste.
      */
-    #[Route('/api/v1/fiches-techniques/{id}', name: 'delete_fiche_technique', methods: ['DELETE'])]
+    #[Route('/api/v1/fiches-techniques/delete/{id}', name: 'delete_fiche_technique', methods: ['DELETE'])]
     public function deleteFicheTechnique(
         int $id,
         FicheTechniqueArtisteRepository $ficheTechniqueArtisteRepository,
