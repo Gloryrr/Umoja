@@ -20,11 +20,32 @@ class ArtisteController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/v1/artistes', name: 'get_artistes', methods: ['GET'])]
-    public function getartistes(
+    public function getArtistes(
         ArtisteRepository $artisteRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         return Artisteservice::getArtistes(
+            $artisteRepository,
+            $serializer
+        );
+    }
+
+    /**
+     * Récupère un artiste par rapport à son id.
+     *
+     * @param int $id, L'identifiant de l'artiste
+     * @param ArtisteRepository $artisteRepository, la classe CRUD des artistes
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/artiste/{id}', name: 'get_artiste_by_id', methods: ['GET'])]
+    public function getArtisteById(
+        int $id,
+        ArtisteRepository $artisteRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        return Artisteservice::getArtisteById(
+            $id,
             $artisteRepository,
             $serializer
         );

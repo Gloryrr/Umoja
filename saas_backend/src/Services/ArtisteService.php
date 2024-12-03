@@ -39,6 +39,30 @@ class ArtisteService
     }
 
     /**
+     * Récupère un artiste par son id et renvoie une réponse JSON.
+     *
+     * @param int $id, L'identifiant de l'artiste
+     * @param ArtisteRepository $artisteRepository Le repository des artistes.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les artistes.
+     */
+    public static function getArtisteById(
+        int $id,
+        ArtisteRepository $artisteRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        // on récupère tous les artistes
+        $artistes = $artisteRepository->findBy(['id' => $id]);
+        $artistesJSON = $serializer->serialize($artistes, 'json', ['groups' => ['artiste:read']]);
+        return new JsonResponse([
+            'artistes' => $artistesJSON,
+            'message' => "Liste des artistes",
+            'serialized' => true
+        ], Response::HTTP_OK);
+    }
+
+    /**
      * Crée un nouveau artiste et renvoie une réponse JSON.
      *
      * @param ArtisteRepository $artisteRepository Le repository des artistes.

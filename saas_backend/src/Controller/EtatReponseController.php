@@ -31,6 +31,27 @@ class EtatReponseController extends AbstractController
     }
 
     /**
+     * Récupère un état de réponse par son id.
+     *
+     * @param int $id, L'identifiant de l'état de réponse
+     * @param EtatReponseRepository $etatReponseRepository, la classe CRUD des états de réponse
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/etats-reponse/{id}', name: 'get_etat_reponse_by_id', methods: ['GET'])]
+    public function getEtatReponseById(
+        int $id,
+        EtatReponseRepository $etatReponseRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        return EtatReponseService::getEtatReponseById(
+            $id,
+            $etatReponseRepository,
+            $serializer
+        );
+    }
+
+    /**
      * Crée un nouvel état de réponse.
      *
      * @param Request $request

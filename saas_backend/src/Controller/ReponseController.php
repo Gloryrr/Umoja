@@ -39,6 +39,27 @@ class ReponseController extends AbstractController
     }
 
     /**
+     * Récupère une réponse par son id.
+     *
+     * @param int $id, L'identifiant d'une réponse
+     * @param ReponseRepository $reponseRepository, le repository CRUD des réponses
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/reponse/{id}', name: 'get_reponse_by_id', methods: ['GET'])]
+    public function getReponseById(
+        int $id,
+        ReponseRepository $reponseRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        return ReponseService::getReponseById(
+            $id,
+            $reponseRepository,
+            $serializer
+        );
+    }
+
+    /**
      * Récupère toutes les réponses existantes pour une offre donnée.
      *
      * @param int $id, l'identifiant de l'offre

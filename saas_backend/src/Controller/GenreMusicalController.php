@@ -31,6 +31,27 @@ class GenreMusicalController extends AbstractController
     }
 
     /**
+     * Récupère un genre musical par son id.
+     *
+     * @param int $id, L'identifiant du genre musical
+     * @param GenreMusicalRepository $genreMusicalRepository, la classe CRUD des genres musicaux
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/genre-musical/{id}', name: 'get_genre_musical_by_id', methods: ['GET'])]
+    public function getGenreMusicalById(
+        int $id,
+        GenreMusicalRepository $genreMusicalRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        return GenreMusicalService::getGenreMusicalById(
+            $id,
+            $genreMusicalRepository,
+            $serializer
+        );
+    }
+
+    /**
      * Crée un nouveau genre musical.
      *
      * @param Request $request

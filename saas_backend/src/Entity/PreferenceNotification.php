@@ -21,22 +21,22 @@ class PreferenceNotification
         'utilisateur:read',
     ])]
     #[MaxDepth(1)]
-    private ?int $id = null;
+    private int $id = 0;
 
     #[ORM\Column]
     #[Groups(['preference_notification:read', 'preference_notification:write'])]
     #[MaxDepth(1)]
-    private ?bool $email_nouvelle_offre = null;
+    private bool $email_nouvelle_offre;
 
     #[ORM\Column]
     #[Groups(['preference_notification:read', 'preference_notification:write'])]
     #[MaxDepth(1)]
-    private ?bool $email_update_offre = null;
+    private bool $email_update_offre;
 
     #[ORM\Column]
     #[Groups(['preference_notification:read', 'preference_notification:write'])]
     #[MaxDepth(1)]
-    private ?bool $reponse_offre = null;
+    private bool $reponse_offre;
 
     /**
      * @var Collection<int, Utilisateur>
@@ -52,12 +52,12 @@ class PreferenceNotification
         $this->utilisateur = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function isEmailNouvelleOffre(): ?bool
+    public function isEmailNouvelleOffre(): bool
     {
         return $this->email_nouvelle_offre;
     }
@@ -69,7 +69,7 @@ class PreferenceNotification
         return $this;
     }
 
-    public function isEmailUpdateOffre(): ?bool
+    public function isEmailUpdateOffre(): bool
     {
         return $this->email_update_offre;
     }
@@ -81,7 +81,7 @@ class PreferenceNotification
         return $this;
     }
 
-    public function isReponseOffre(): ?bool
+    public function isReponseOffre(): bool
     {
         return $this->reponse_offre;
     }

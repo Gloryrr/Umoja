@@ -18,7 +18,7 @@ use App\Services\TypeOffreService;
 class TypeOffreController extends AbstractController
 {
     /**
-     * Récupère toutes les offres de type existantes.
+     * Récupère toutes les types d'offres existants.
      *
      * @param TypeOffreRepository $typeOffreRepository, le repository CRUD des offres de type
      * @param SerializerInterface $serializer, le serializer JSON pour les offres de type
@@ -30,6 +30,27 @@ class TypeOffreController extends AbstractController
         SerializerInterface $serializer
     ): JsonResponse {
         return TypeOffreService::getTypesOffre(
+            $typeOffreRepository,
+            $serializer
+        );
+    }
+
+    /**
+     * Récupère un type d'offre par son id existantes.
+     *
+     * @param int $id, L'identifiant du type de l'offre
+     * @param TypeOffreRepository $typeOffreRepository, le repository CRUD des offres de type
+     * @param SerializerInterface $serializer, le serializer JSON pour les offres de type
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/type-offre/{id}', name: 'get_type_offre_by_id', methods: ['GET'])]
+    public function getTypeOffreById(
+        int $id,
+        TypeOffreRepository $typeOffreRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        return TypeOffreService::getTypeOffreById(
+            $id,
             $typeOffreRepository,
             $serializer
         );

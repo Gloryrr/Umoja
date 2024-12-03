@@ -45,6 +45,34 @@ class GenreMusicalService
     }
 
     /**
+     * Récupère un genre musical et renvoie une réponse JSON.
+     *
+     * @param int $id, L'identifiant d'un genre musical
+     * @param GenreMusicalRepository $genreMusicalRepository Le repository des genres musicaux.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les genres musicaux.
+     */
+    public static function getGenreMusicalById(
+        int $id,
+        GenreMusicalRepository $genreMusicalRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        // on récupère tous les genresMusicaux
+        $genresMusicaux = $genreMusicalRepository->findBy(['id' => $id]);
+        $genresMusicauxJSON = $serializer->serialize(
+            $genresMusicaux,
+            'json',
+            ['groups' => ['genre_musical:read']]
+        );
+        return new JsonResponse([
+            'genres_musicaux' => $genresMusicauxJSON,
+            'message' => "Liste des genres musicaux",
+            'serialized' => true
+        ], Response::HTTP_OK);
+    }
+
+    /**
      * Crée un nouveau genre musical et renvoie une réponse JSON.
      *
      * @param GenreMusicalRepository $genreMusicalRepository Le repository des genres musicaux.
