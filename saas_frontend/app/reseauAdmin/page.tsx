@@ -5,42 +5,53 @@ import { apiGet, apiPost, apiPut, apiDelete } from '../services/externalApiClien
 import AddUserModal from '../components/ui/addUserModal';
 import EditUserModal from '../components/ui/EditUserModal';
 import Table from '../components/ui/tableAdmin';
+import AddReseauModal from '../components/ui/addReseauModal';
+import EditReseauModal from '../components/ui/EditReseauModal';
 
 type Reseaux = {
   id: number;
-  nom : string;
+  nomReseau : string;
   id_utilisateur: number;
   id_genre_musique: number;
   offre: number;
 };
 
+type ReseauAll = {
+  id: number;
+  nomReseau : string;
+};
+
+
+
+
 
 const columns = [
   { header: 'Nom', accessor: 'nomReseau' },
   { header: 'Actions', accessor: 'actions' },
-  { header: 'Utilisateur', accessor: 'gotoReseauUtilisateurAdmin' },
-  { header: 'Genre musical', accessor: 'gotoReseauGenreMusicalAdmin' },
+  { header: 'Utilisateurs', accessor: 'utilisateurs' },
 ];
 
 
-export default function UserManagement() {
-  const [originalUsers, setOriginalUsers] = useState<Reseaux[]>([]);
-  const [filteredUsers, setFilteredUsers] = useState<Reseaux[]>([]);
+export default function ReseauManagement() {
+  const [originalReseaux, setOriginalReseau] = useState<Reseaux[]>([]);
+  const [filteredReseaux, setFilteredReseau] = useState<Reseaux[]>([]);
 
-  const [isAddUserOpen, setIsAddUserOpen] = useState(false)
-  const [isEditUserOpen, setIsEditUserOpen] = useState(false)
-  const [currentUser, setCurrentUser] = useState<Reseaux | null>(null)
+
+  const [isAddReseauOpen, setIsAddReseauOpen] = useState(false)
+  const [isEditReseauOpen, setIsEditReseauOpen] = useState(false)
+  const [currentReseau, setCurrentReseau] = useState<Reseaux | null>(null)
+
+  const [lookUsersReseauOpen, setLookUsersReseauOpen] = useState(false)
 
   const handleSearch = (searchTerm: string) => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
-    const filtered = originalUsers.filter(user =>
-      user.nom.toLowerCase().includes(lowerCaseSearchTerm)
+    const filtered = originalReseaux.filter(user =>
+      user.nomReseau.toLowerCase().includes(lowerCaseSearchTerm)
     );
-    setFilteredUsers(filtered);
+    setFilteredReseau(filtered);
   };
 
-
-  async function loadUtilisateur(){
+  async function loadReseaux(){
     try {
       
     const fetchData = await apiGet('http://127.0.0.1:8000/api/v1/reseaux');
@@ -49,31 +60,26 @@ export default function UserManagement() {
 
     console.log(utilisateursArray);
     if (Array.isArray(utilisateursArray)) {
-      setOriginalUsers(utilisateursArray);
-      setFilteredUsers(utilisateursArray);
+      setOriginalReseau(utilisateursArray);
+      setFilteredReseau(utilisateursArray);
     }
     } catch (error) {
       
     }
   }
 
-  const handleAddUser = async (newUser: Omit<Reseaux, 'id_utilisateur'>) => {
+  const handleAddReseau = async (newReseau: Omit<Reseaux, 'id_utilisateur'>) => {
     try {
 
-      const userdata1 = {
-        emailUtilisateur: newUser.emailUtilisateur,
-        username: newUser.username,
-        mdpUtilisateur: "defaultpassword", // Assuming a default password for new users
-        numTelUtilisateur: newUser.numTelUtilisateur ?? "",
-        nomUtilisateur: newUser.nomUtilisateur ?? "",
-        prenomUtilisateur: newUser.prenomUtilisateur ?? ""
+      const reseauData = {
+        nomReseau: newReseau.nomReseau,
       };
       
+      console.log(newReseau);
+      await apiPost('http://127.0.0.1:8000/api/v1/reseau/create', JSON.stringify(reseauData));
+      setIsAddReseauOpen(false);
 
-      await apiPost('http://127.0.0.1:8000/api/v1/reseaux/create', JSON.stringify(userdata1));
-      setIsAddUserOpen(false);
-
-      loadUtilisateur();
+      loadReseaux();
 
       
     } catch (error) {
@@ -81,14 +87,15 @@ export default function UserManagement() {
     }
   };
 
-  const handleEditUser = async (updatedReseau: Reseaux) => {
+  const handleEditReseau = async (updatedReseau: Reseaux) => {
     try {
-      const userData: JSON = JSON.parse(JSON.stringify(updatedReseau));
-      await apiPut(`http://127.0.0.1:8000/api/v1/reseaux/update/${updatedReseau.id}`, userData);
+      const ReseauData: JSON = JSON.parse(JSON.stringify(updatedReseau));
+      console.log(updatedReseau);
+      await apiPut(`http://127.0.0.1:8000/api/v1/reseau/update/${updatedReseau.id}`, ReseauData);
 
-      loadUtilisateur();
+      loadReseaux();
 
-      setIsEditUserOpen(false);
+      setIsEditReseauOpen(false);
     } catch (error) {
       console.error('Erreur lors de la modification de l\'utilisateur:', error);
     }
@@ -97,37 +104,50 @@ export default function UserManagement() {
   const handleDeleteUser = async (id: number) => {
     try {
         console.log(id);
-        await apiDelete(`http://127.0.0.1:8000/api/v1/reseaux/delete/${id}`);
-        loadUtilisateur();
-        console.log(`Utilisateur ${id} supprimé avec succès.`);
+        await apiDelete(`http://127.0.0.1:8000/api/v1/reseau/delete/${id}`);
+        loadReseaux();
+        console.log(`Reseau ${id} supprimé avec succès.`);
     } catch (error) {
         console.error('Erreur lors de la suppression de l\'utilisateur:', error);
     }
 };
 
   useEffect(() => {
-    loadUtilisateur();
+    loadReseaux();
   }, []);
 
 
-  const data = filteredUsers.map((user) => ({
-    ...user,
+  const data = filteredReseaux.map((reseau) => ({
+    ...reseau,
     actions: (
       <div className="flex space-x-2">
         <button
           onClick={() => {
-            setCurrentUser(user);
-            setIsEditUserOpen(true);
+            setCurrentReseau(reseau);
+            setIsEditReseauOpen(true);
           }}
           className="p-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
           <Pencil className="h-4 w-4" />
         </button>
         <button
-          onClick={() => handleDeleteUser(user.id)}
+          onClick={() => handleDeleteUser(reseau.id)}
           className="p-1 bg-red-100 text-red-600 rounded hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
         >
           <Trash2 className="h-4 w-4" />
+        </button>
+      </div>
+    ),
+    utilisateurs: (
+      <div className="flex space-x-2">
+        <button
+          onClick={() => {
+            setCurrentReseau(reseau);
+            setLookUsersReseauOpen(true);
+          }}
+          className="p-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          Voir
         </button>
       </div>
     ),
@@ -135,20 +155,20 @@ export default function UserManagement() {
   
   return (
     <div className="container mx-auto p-6 space-y-8">
-      <h1 className="text-3xl font-bold">Gestion des Utilisateurs</h1>
+      <h1 className="text-3xl font-bold">Gestion des Reseaux</h1>
 
       <div className="flex justify-between items-center">
         <input
           className="max-w-sm px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Rechercher un utilisateur..."
+          placeholder="Rechercher un reseau ..."
           onChange={(e) => handleSearch(e.target.value)}
         />
         <button
-          onClick={() => setIsAddUserOpen(true)}
+          onClick={() => setIsAddReseauOpen(true)}
           className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
           <PlusCircle className="inline-block mr-2 h-4 w-4" />
-          Ajouter un Utilisateur
+          Ajouter un reseau
         </button>
       </div>
 
@@ -157,11 +177,15 @@ export default function UserManagement() {
       </div>
 
       {/* Modale pour l'ajout et l'édition d'utilisateur */}
-      {isAddUserOpen && (
-        <AddUserModal onAddUser={handleAddUser} onClose={() => setIsAddUserOpen(false)} />
+      {isAddReseauOpen && (
+        <AddReseauModal onAddReseau={handleAddReseau} onClose={() => setIsAddReseauOpen(false)} />
       )}
-      {isEditUserOpen && currentUser && (
-        <EditUserModal user={currentUser} onEditUser={handleEditUser} onClose={() => setIsEditUserOpen(false)} />
+      {isEditReseauOpen && currentReseau && (
+        <EditReseauModal reseau={currentReseau} onEditReseau={handleEditReseau} onClose={() => setIsEditReseauOpen(false)} />
+      )}
+
+      {lookUsersReseauOpen && currentReseau && (
+        <LookUsersReseauModal reseau={currentReseau} onClose={() => setLookUsersReseauOpen(false)} />
       )}
     </div>
   );
