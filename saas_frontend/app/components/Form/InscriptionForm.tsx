@@ -19,7 +19,7 @@ const InscriptionForm = () => {
   };
 
   return (
-    <div className="w-[35vw] bg-transparent text-white rounded-lg p-8 font-nunito">
+    <div className="w-[35vw] bg-transparent text-black rounded-lg p-8 font-nunito">
       <h1 className="text-8xl text-center pb-12 font-fredoka">Inscris-toi !</h1>
       <form onSubmit={onSubmit}>
 
@@ -29,7 +29,7 @@ const InscriptionForm = () => {
             value={nom}
             onChange={(e) => setNom(e.target.value)}
             placeholder="Nom"
-            className="w-full h-full bg-transparent outline-none border-solid border-2 border-white rounded-full text-lg text-white p-5 pr-12 placeholder-white"
+            className="w-full h-full bg-transparent outline-none border-solid border-2 border-black rounded-full text-lg text-black p-5 pr-12 placeholder-black"
           />
         </div>
 
@@ -39,7 +39,7 @@ const InscriptionForm = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Username"
-            className="w-full h-full bg-transparent outline-none border-solid border-2 border-white rounded-full text-lg text-white p-5 pr-12 placeholder-white"
+            className="w-full h-full bg-transparent outline-none border-solid border-2 border-black rounded-full text-lg text-black p-5 pr-12 placeholder-black"
           />
           <FaUser className='absolute right-5 top-1/2 transform -translate-y-1/2 text-lg'/>
 
@@ -51,7 +51,7 @@ const InscriptionForm = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
-            className="w-full h-full bg-transparent outline-none border-solid border-2 border-white rounded-full text-lg text-white p-5 pr-12 placeholder-white"
+            className="w-full h-full bg-transparent outline-none border-solid border-2 border-black rounded-full text-lg text-black p-5 pr-12 placeholder-black"
           />
         </div>
 
@@ -61,7 +61,7 @@ const InscriptionForm = () => {
             value={numero}
             onChange={(e) => setNumero(e.target.value)}
             placeholder="Numéro"
-            className="w-full h-full bg-transparent outline-none border-solid border-2 border-white rounded-full text-lg text-white p-5 pr-12 placeholder-white"
+            className="w-full h-full bg-transparent outline-none border-solid border-2 border-black rounded-full text-lg text-black p-5 pr-12 placeholder-black"
           />
         </div>
 
@@ -72,7 +72,7 @@ const InscriptionForm = () => {
             onChange={(e) => setPassword(e.target.value)}
             type="password"
             placeholder="Mot de passe"
-            className="w-full h-full bg-transparent outline-none border-solid border-2 border-white rounded-full text-lg text-white p-5 pr-12 placeholder-white"
+            className="w-full h-full bg-transparent outline-none border-solid border-2 border-black rounded-full text-lg text-black p-5 pr-12 placeholder-black"
           />
         </div>
 
@@ -83,7 +83,7 @@ const InscriptionForm = () => {
             onChange={(e) => setRePassword(e.target.value)}
             type="password"
             placeholder="Confirmer mot de passe"
-            className="w-full h-full bg-transparent outline-none border-solid border-2 border-white rounded-full text-lg text-white p-5 pr-12 placeholder-white"
+            className="w-full h-full bg-transparent outline-none border-solid border-2 border-black rounded-full text-lg text-black p-5 pr-12 placeholder-black"
           />
         </div>
 
@@ -93,14 +93,14 @@ const InscriptionForm = () => {
             value={role}
             onChange={(e) => setRole(e.target.value)}
             placeholder="Rôle"
-            className="w-full h-full bg-transparent outline-none border-solid border-2 border-white rounded-full text-lg text-white p-5 pr-12 placeholder-white"
+            className="w-full h-full bg-transparent outline-none border-solid border-2 border-black rounded-full text-lg text-black p-5 pr-12 placeholder-black"
           />
         </div>
 
         {/* Bouton submit */}
         <button
           type="submit"
-          className="w-full h-11 bg-blue-700 text-white border-none outline-none rounded-full shadow-md cursor-pointer text-lg font-bold"
+          className="w-full h-11 bg-blue-700 text-black border-none outline-none rounded-full shadow-md cursor-pointer text-lg font-bold"
         >
           Submit
         </button>
@@ -108,7 +108,7 @@ const InscriptionForm = () => {
           <p>Tu as déjà un compte ? 
           <NavigationHandler>
           {(handleNavigation: (path: string) => void) => (
-            <a onClick={() => handleNavigation('/connexion')} className="text-white no-underline font-semibold hover:underline">Connexion</a>
+            <a onClick={() => handleNavigation('/')} className="text-black no-underline font-semibold hover:underline cursor-pointer">Connexion</a>
           )}
           </NavigationHandler>
           </p>
