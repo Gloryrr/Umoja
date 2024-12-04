@@ -103,7 +103,7 @@ const NavbarApp = () => {
       <MegaMenu className="w-full">
         <div className="flex items-center justify-between w-full py-4 border-b border-gray-300 dark:border-gray-500 px-4">
           {/* Logo à gauche */}
-          <Navbar.Brand href="/" className="flex items-center space-x-2">
+          <Navbar.Brand href="/accueil" className="flex items-center space-x-2">
             <Image
               width={28}
               height={28}

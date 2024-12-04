@@ -31,7 +31,7 @@ export function connection_form() {
       setToastMessage('Connexion réussie ! Redirection en cours...');
       setToastType('success');
       setShowToast(true);
-      setTimeout(() => window.location.href = '/home', 1000);
+      setTimeout(() => window.location.href = '/accueil', 1000);
     } else {
       localStorage.setItem('isConnected', 'false');
       setToastMessage('Compte introuvable, veuillez vérifier vos identifiants.');
