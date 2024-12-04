@@ -4,7 +4,7 @@ import { Footer } from "flowbite-react";
 import { Mail } from "lucide-react";
 
 function FooterComponent() {
-  if (typeof window !== "undefined" && localStorage.getItem("isConnected") === "true") {
+  if (typeof window !== "undefined" && sessionStorage.getItem("isConnected") === "true") {
     return (
       <Footer container className="py-12 rounded-none border-t border-dark dark:border-gray-500">
         <div className="w-full mx-auto">
@@ -94,6 +94,7 @@ function FooterComponent() {
     if (window.location.pathname !== "/") {
       window.location.href = "/";
     }
+    return <></>;
   }
 }
 

@@ -6,7 +6,7 @@ import { apiGet, apiPatch } from '@/app/services/internalApiClients';
 import { DarkThemeToggle, Flowbite } from "flowbite-react";
 
 const PreferencesNotifications: React.FC = () => {
-  const username = typeof window !== 'undefined' ? localStorage.getItem('username') : "";
+  const username = typeof window !== 'undefined' ? sessionStorage.getItem('username') : "";
   const [loading, setLoading] = useState(false);
   const [preferences, setPreferences] = useState({
     email_nouvelle_offre: false,

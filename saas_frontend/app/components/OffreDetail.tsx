@@ -277,7 +277,7 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
     const data = JSON.stringify({
       commentaire: {
         idOffre: offre?.id,
-        username: typeof window !== 'undefined' ? localStorage.getItem('username') : null,
+        username: typeof window !== 'undefined' ? sessionStorage.getItem('username') : null,
         contenu: commentaire,
       },
     });

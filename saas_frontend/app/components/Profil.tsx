@@ -16,9 +16,9 @@ const Profil: React.FC = () => {
     const [isEditing, setIsEditing] = useState(false);
 
     const fetchUserProfile = useCallback(async () => {
-        const isConnected = typeof window !== 'undefined' ? localStorage.getItem('isConnected') : null;
+        const isConnected = typeof window !== 'undefined' ? sessionStorage.getItem('isConnected') : null;
         if (isConnected === "true") {
-            const username = typeof window !== 'undefined' ? localStorage.getItem('username') : "";
+            const username = typeof window !== 'undefined' ? sessionStorage.getItem('username') : "";
             const data = {
                 username,
             };
@@ -52,7 +52,7 @@ const Profil: React.FC = () => {
             const data = JSON.parse(JSON.stringify(editedUserInfo));
             await apiPatch(`/utilisateurs/update/${userInfo.id}`, data);
             setUserInfo(editedUserInfo);
-            if (typeof window !== 'undefined') localStorage.setItem("username", editedUserInfo.username);
+            if (typeof window !== 'undefined') sessionStorage.setItem("username", editedUserInfo.username);
         } catch (error) {
             console.error("Erreur lors de la sauvegarde des données utilisateur :", error);
         }

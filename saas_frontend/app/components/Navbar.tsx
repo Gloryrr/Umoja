@@ -36,7 +36,7 @@ const NavbarApp = () => {
     setIsLoading(true);
   
     try {
-      const username = typeof window !== 'undefined' ? localStorage.getItem('username') : null;
+      const username = typeof window !== 'undefined' ? sessionStorage.getItem('username') : null;
       const data = {
         "username": username,
         "title": query,
@@ -88,17 +88,13 @@ const NavbarApp = () => {
   }, [searchQuery]); 
 
   const deconnexion = () => {
-    localStorage.setItem('isConnected', 'false');
-    localStorage.setItem('username', '');
-    localStorage.setItem('token', '');
+    sessionStorage.setItem('isConnected', 'false');
+    sessionStorage.setItem('username', '');
+    sessionStorage.setItem('token', '');
     window.location.href = '/';
   };
   
-  if (typeof window !== 'undefined' && localStorage.getItem('isConnected') === 'false') {
-    if (window.location.pathname !== '/') {
-      window.location.href = '/';
-    }
-  } else {
+  if (typeof window !== 'undefined' && sessionStorage.getItem('isConnected') === 'true') {
     return (
       <MegaMenu className="w-full">
         <div className="flex items-center justify-between w-full py-4 border-b border-gray-300 dark:border-gray-500 px-4">
@@ -258,7 +254,7 @@ const NavbarApp = () => {
             >
               <Dropdown.Header>
                 <span className="block text-sm font-medium text-black">
-                  {typeof window !== 'undefined' ? localStorage.getItem('username') : "Bonnie Green"}
+                  {typeof window !== 'undefined' ? sessionStorage.getItem('username') : "Bonnie Green"}
                 </span>
                 <span className="block truncate text-sm text-gray">
                   name@flowbite.com
@@ -300,6 +296,11 @@ const NavbarApp = () => {
         </div>
       </MegaMenu>
     );
+  } else {
+    if (typeof window !== 'undefined' && window.location.pathname !== "/") {
+      window.location.href = "/";
+    }
+    return <></>;
   }
 };
 
