@@ -29,7 +29,7 @@ export default function Accueil() {
 
     if (projects.length === 0) {
         return (
-            <div className="flex items-center justify-center h-screen bg-gray-800">
+            <div className="flex items-center justify-center h-screen w-full bg-gray-800">
                 <p className="text-2xl font-semibold text-white">Vous n&apos;avez pas d&apos;offre en cours</p>
             </div>
         );
