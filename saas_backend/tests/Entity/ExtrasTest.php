@@ -40,7 +40,7 @@ class ExtrasTest extends TestCase
     public function testGetId(): void
     {
         // L'ID est généré automatiquement, donc il devrait être null à l'initialisation
-        $this->assertNull($this->extras->getId());
+        $this->assertEquals(0, $this->extras->getId());
     }
 
     /**

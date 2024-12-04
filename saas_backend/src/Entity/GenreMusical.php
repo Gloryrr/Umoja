@@ -18,16 +18,16 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 class GenreMusical
 {
     /**
-     * @var int|null L'identifiant unique du genre musical.
+     * @var int L'identifiant unique du genre musical.
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['genre_musical:read'])]
-    private ?int $id = null;
+    private int $id = 0;
 
     /**
-     * @var string|null Le nom du genre musical.
+     * @var string Le nom du genre musical.
      * Doit avoir une longueur maximale de 50 caractères.
      */
     #[ORM\Column(length: 50)]
@@ -39,7 +39,7 @@ class GenreMusical
         'reseau:read',
         'offres:read',
     ])]
-    private ?string $nomGenreMusical = null;
+    private string $nomGenreMusical;
 
     #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: "genresMusicaux", cascade: ["persist"])]
     #[Groups(['genre_musical:read'])]
@@ -75,9 +75,9 @@ class GenreMusical
     /**
      * Récupère l'identifiant du genre musical.
      *
-     * @return int|null
+     * @return int
      */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -85,9 +85,9 @@ class GenreMusical
     /**
      * Récupère le nom du genre musical.
      *
-     * @return string|null
+     * @return string
      */
-    public function getNomGenreMusical(): ?string
+    public function getNomGenreMusical(): string
     {
         return $this->nomGenreMusical;
     }

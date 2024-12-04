@@ -1,9 +1,15 @@
 const renvoieReponsePromise = async (response: Response) => {
     if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Erreur de requête');
+        throw new Error(`HTTP error! status: ${response.status}`);
     }
-    return response.json();
+
+    // Vérifiez s'il y a un contenu dans la réponse
+    const contentType = response.headers.get('Content-Type');
+    if (contentType && contentType.includes('application/json')) {
+        return response.json(); // Parse uniquement si le contenu est JSON
+    }
+    
+    return null; // Pas de contenu, retourner `null`
 };
 
 // Fonction GET
@@ -18,13 +24,13 @@ export const apiGet = async (endpoint: string) => {
 };
 
 // Fonction POST
-export const apiPost = async (endpoint: string, data: JSON) => {
+export const apiPost = async (endpoint: string, data: string) => {
     const response = await fetch(`${endpoint}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: data,
     });
     return renvoieReponsePromise(response);
 };
@@ -32,7 +38,7 @@ export const apiPost = async (endpoint: string, data: JSON) => {
 // Fonction PUT
 export const apiPut = async (endpoint: string, data: JSON) => {
     const response = await fetch(`${endpoint}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
         },

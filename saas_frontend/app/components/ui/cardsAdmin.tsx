@@ -86,7 +86,10 @@ const DashboardCard = ({ title, description, icon, link }: DashboardCardProps) =
           <NavigationHandler>
             {(handleNavigation) => (
               <a
-                onClick={() => handleNavigation(link)}
+              onClick={() => {
+                console.log('Clic détecté');
+                handleNavigation(link);
+              }}
                 className="mt-4 px-6 py-3 bg-black text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 inline-block"
               >
                 <h2 className="font-semibold">Voir plus</h2>

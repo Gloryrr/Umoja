@@ -143,7 +143,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                     value={detailOffre.titleOffre ?? ""}
                     onChange={handleDetailOffreChange}
                     required
-                    placeholder="Indiquer le titre de l'Offre"
+                    placeholder="Offre de ..."
                     className="mt-1"
                 />
             </div>
@@ -163,7 +163,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
 
             <div className="grid grid-cols-2 gap-4 mb-5">
                 <div>
-                    <Label htmlFor="dateMinProposee" value="Date Min Proposée:" />
+                    <Label htmlFor="dateMinProposee" value="Date de début du projet:" />
                     <TextInput
                         type="date"
                         id="dateMinProposee"
@@ -177,7 +177,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                 </div>
 
                 <div>
-                    <Label htmlFor="dateMaxProposee" value="Date Max Proposée:" />
+                    <Label htmlFor="dateMaxProposee" value="Date de fin du projet:" />
                     <TextInput
                         type="date"
                         id="dateMaxProposee"
@@ -199,14 +199,14 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                     value={detailOffre.descrTournee ?? ""}
                     onChange={handleDetailOffreChange}
                     required
-                    placeholder="La description de la tournée"
+                    placeholder="Ce projet consiste en ..."
                     className="mt-1"
                 />
             </div>
 
             <div className="grid grid-cols-2 gap-4 mb-5">
                 <div>
-                    <Label htmlFor="villeVisee" value="Ville Visée:" />
+                    <Label htmlFor="villeVisee" value="Ville de l'évènement:" />
                     <TextInput
                         type="text"
                         id="villeVisee"
@@ -214,7 +214,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         value={detailOffre.villeVisee ?? ""}
                         onChange={handleCityInputChange}
                         required
-                        placeholder="Dans quelle ville se déroulera l'offre"
+                        placeholder="Orléans..."
                         className="mt-1"
                     />
                 </div>
@@ -234,7 +234,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
 
             <div className="grid grid-cols-2 gap-4 mb-5">
                 <div>
-                    <Label htmlFor="placesMin" value="Places Minimum:" />
+                    <Label htmlFor="placesMin" value="Places requises au minimum pour l'évènement:" />
                     <TextInput
                         type="number"
                         id="placesMin"
@@ -242,13 +242,13 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         value={placesMin ?? ""}
                         onChange={handleDetailOffreChange}
                         required
-                        placeholder="Nombre de places minimum"
+                        placeholder="150..."
                         className="mt-1"
                     />
                 </div>
 
                 <div>
-                    <Label htmlFor="placesMax" value="Places Maximum:" />
+                    <Label htmlFor="placesMax" value="Places requises au maximum pour l'évènement:" />
                     <TextInput
                         type="number"
                         id="placesMax"
@@ -257,7 +257,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         onChange={handleDetailOffreChange}
                         required
                         min={placesMin ?? ""}
-                        placeholder="Nombre de places maximum"
+                        placeholder="300..."
                         className="mt-1"
                     />
                 </div>
@@ -265,7 +265,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
 
             <div className="grid grid-cols-2 gap-4 mb-5">
                 <div>
-                    <Label htmlFor="nbArtistesConcernes" value="Nombre d'Artistes Concernés:" />
+                    <Label htmlFor="nbArtistesConcernes" value="Nombre d'artistes concernés par l'évènement:" />
                     <TextInput
                         type="number"
                         id="nbArtistesConcernes"
@@ -273,13 +273,13 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         value={detailOffre.nbArtistesConcernes ?? ""}
                         onChange={handleDetailOffreChange}
                         required
-                        placeholder="Nombre d'artistes concernés"
+                        placeholder="4..."
                         className="mt-1"
                     />
                 </div>
 
                 <div>
-                    <Label htmlFor="nbInvitesConcernes" value="Nombre d'Invités Concernés:" />
+                    <Label htmlFor="nbInvitesConcernes" value="Nombre d'invités concernés particuliers:" />
                     <TextInput
                         type="number"
                         id="nbInvitesConcernes"
@@ -287,7 +287,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         value={detailOffre.nbInvitesConcernes ?? ""}
                         onChange={handleDetailOffreChange}
                         required
-                        placeholder="Nombre d'invités concernés"
+                        placeholder="3..."
                         className="mt-1"
                     />
                 </div>
@@ -302,7 +302,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                             value={lien}
                             onChange={(e) => handleLienChange(index, e.target.value)}
                             required
-                            placeholder="Lien promotionnel de l'artiste"
+                            placeholder="https://www.spotify.com..."
                             className="w-full"
                         />
                         <Button

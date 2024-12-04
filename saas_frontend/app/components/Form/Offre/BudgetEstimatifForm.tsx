@@ -46,27 +46,27 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
 
             <div className="grid grid-cols-2 gap-4 mb-5">
                 <div>
-                    <Label htmlFor="cachetArtiste" value="Cachet Artiste:" />
+                    <Label htmlFor="cachetArtiste" value="Cachet de l'artiste:" />
                     <TextInput
                         type="number"
                         id="cachetArtiste"
                         name="cachetArtiste"
                         value={budgetEstimatif.cachetArtiste ?? ""}
                         onChange={handleBudgetEstimatifChange}
-                        placeholder="Cachet de l'artiste"
+                        placeholder="150... (en €)"
                         required
                         className="mt-1"
                     />
                 </div>
                 <div>
-                    <Label htmlFor="fraisDeplacement" value="Frais de Déplacement:" />
+                    <Label htmlFor="fraisDeplacement" value="Frais de déplacement total:" />
                     <TextInput
                         type="number"
                         id="fraisDeplacement"
                         name="fraisDeplacement"
                         value={budgetEstimatif.fraisDeplacement ?? ""}
                         onChange={handleBudgetEstimatifChange}
-                        placeholder="Frais de déplacement"
+                        placeholder="500... (en €)"
                         required
                         className="mt-1"
                     />
@@ -75,27 +75,27 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
 
             <div className="grid grid-cols-2 gap-4 mb-5">
                 <div>
-                    <Label htmlFor="fraisHebergement" value="Frais d'Hébergement:" />
+                    <Label htmlFor="fraisHebergement" value="Frais d'hébergement total:" />
                     <TextInput
                         type="number"
                         id="fraisHebergement"
                         name="fraisHebergement"
                         value={budgetEstimatif.fraisHebergement ?? ""}
                         onChange={handleBudgetEstimatifChange}
-                        placeholder="Frais d'hébergement"
+                        placeholder="200... (en €)"
                         required
                         className="mt-1"
                     />
                 </div>
                 <div>
-                    <Label htmlFor="fraisRestauration" value="Frais de Restauration:" />
+                    <Label htmlFor="fraisRestauration" value="Frais de restauration total:" />
                     <TextInput
                         type="number"
                         id="fraisRestauration"
                         name="fraisRestauration"
                         value={budgetEstimatif.fraisRestauration ?? ""}
                         onChange={handleBudgetEstimatifChange}
-                        placeholder="Frais de restauration"
+                        placeholder="75... (en €)"
                         required
                         className="mt-1"
                     />

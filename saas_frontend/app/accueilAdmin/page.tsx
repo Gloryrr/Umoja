@@ -5,7 +5,7 @@ import { Users, Music, StickerIcon as Stadium, BarChart3, Calendar, Bell } from 
 
 export default function AccueilAdmin() {
     return (
-    <div className="h-full z-[-1] w-full bg-cover bg-center bg-no-repeat flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="h-full w-full bg-cover bg-center bg-no-repeat flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="h-full  w-full space-y-8 backdrop-blur-sm bg-white/30 p-8 rounded-2xl shadow-2xl">
           <div className="text-center">
             <h2 className="mt-6 text-4xl font-extrabold text-gray-900">
@@ -20,7 +20,7 @@ export default function AccueilAdmin() {
               title="Utilisateurs"
               description="Gérer les comptes utilisateurs"
               icon={Users}
-              link="/accueille"
+              link="/utilisateurAdmin"
             />
             <DashboardCard
               title="Concerts"

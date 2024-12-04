@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20241109210430 extends AbstractMigration
+final class Version20241203211158 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -30,6 +30,7 @@ final class Version20241109210430 extends AbstractMigration
         $this->addSql('CREATE SEQUENCE fiche_technique_artiste_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE genre_musical_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE offre_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE preference_notification_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE reponse_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE reseau_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE type_offre_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
@@ -48,13 +49,13 @@ final class Version20241109210430 extends AbstractMigration
         $this->addSql('CREATE TABLE conditions_financieres (id INT NOT NULL, minimun_garanti INT NOT NULL, conditions_paiement TEXT NOT NULL, pourcentage_recette DOUBLE PRECISION NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE etat_offre (id INT NOT NULL, nom_etat VARCHAR(50) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE etat_reponse (id INT NOT NULL, nom_etat_reponse VARCHAR(100) NOT NULL, description_etat_reponse VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE TABLE extras (id INT NOT NULL, descr_extras VARCHAR(255) DEFAULT NULL, cout_extras INT DEFAULT NULL, exclusivite VARCHAR(255) DEFAULT NULL, exception VARCHAR(255) DEFAULT NULL, ordre_passage VARCHAR(255) DEFAULT NULL, clauses_confidentialites VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE TABLE fiche_technique_artiste (id INT NOT NULL, besoin_sonorisation TEXT DEFAULT NULL, besoin_eclairage TEXT DEFAULT NULL, besoin_scene TEXT DEFAULT NULL, besoin_backline TEXT DEFAULT NULL, besoin_equipements TEXT DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE extras (id INT NOT NULL, descr_extras VARCHAR(255) NOT NULL, cout_extras INT NOT NULL, exclusivite VARCHAR(255) NOT NULL, exception VARCHAR(255) NOT NULL, ordre_passage VARCHAR(255) NOT NULL, clauses_confidentialites VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE fiche_technique_artiste (id INT NOT NULL, besoin_sonorisation TEXT NOT NULL, besoin_eclairage TEXT NOT NULL, besoin_scene TEXT NOT NULL, besoin_backline TEXT NOT NULL, besoin_equipements TEXT NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE genre_musical (id INT NOT NULL, nom_genre_musical VARCHAR(50) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE rattacher (genre_musical_id INT NOT NULL, offre_id INT NOT NULL, PRIMARY KEY(genre_musical_id, offre_id))');
         $this->addSql('CREATE INDEX IDX_C10DF74DFFFD05DC ON rattacher (genre_musical_id)');
         $this->addSql('CREATE INDEX IDX_C10DF74D4CC8505A ON rattacher (offre_id)');
-        $this->addSql('CREATE TABLE offre (id INT NOT NULL, extras_id INT NOT NULL, etat_offre_id INT NOT NULL, type_offre_id INT NOT NULL, conditions_financieres_id INT NOT NULL, budget_estimatif_id INT NOT NULL, fiche_technique_artiste_id INT NOT NULL, utilisateur_id INT NOT NULL, title_offre VARCHAR(50) NOT NULL, dead_line TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, descr_tournee VARCHAR(500) NOT NULL, date_min_proposee TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, date_max_proposee TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, ville_visee VARCHAR(50) NOT NULL, region_visee VARCHAR(50) NOT NULL, places_min INT NOT NULL, places_max INT NOT NULL, nb_artistes_concernes INT NOT NULL, nb_invites_concernes INT NOT NULL, liens_promotionnels VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE offre (id INT NOT NULL, extras_id INT NOT NULL, etat_offre_id INT NOT NULL, type_offre_id INT NOT NULL, conditions_financieres_id INT NOT NULL, budget_estimatif_id INT NOT NULL, fiche_technique_artiste_id INT NOT NULL, utilisateur_id INT NOT NULL, title_offre VARCHAR(50) NOT NULL, dead_line TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, descr_tournee VARCHAR(500) NOT NULL, date_min_proposee TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, date_max_proposee TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, ville_visee VARCHAR(50) NOT NULL, region_visee VARCHAR(50) NOT NULL, places_min INT NOT NULL, nb_contributeur INT NOT NULL, places_max INT NOT NULL, nb_artistes_concernes INT NOT NULL, nb_invites_concernes INT NOT NULL, liens_promotionnels VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_AF86866F955D4F3F ON offre (extras_id)');
         $this->addSql('CREATE INDEX IDX_AF86866FD11DF8CA ON offre (etat_offre_id)');
         $this->addSql('CREATE INDEX IDX_AF86866F813777A6 ON offre (type_offre_id)');
@@ -62,6 +63,7 @@ final class Version20241109210430 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_AF86866FBDD7A196 ON offre (budget_estimatif_id)');
         $this->addSql('CREATE INDEX IDX_AF86866FC3E139A ON offre (fiche_technique_artiste_id)');
         $this->addSql('CREATE INDEX IDX_AF86866FFB88E14F ON offre (utilisateur_id)');
+        $this->addSql('CREATE TABLE preference_notification (id INT NOT NULL, email_nouvelle_offre BOOLEAN NOT NULL, email_update_offre BOOLEAN NOT NULL, reponse_offre BOOLEAN NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE reponse (id INT NOT NULL, etat_reponse_id INT NOT NULL, offre_id INT NOT NULL, utilisateur_id INT NOT NULL, date_debut TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, date_fin TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, prix_participation DOUBLE PRECISION NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_5FB6DEC766548797 ON reponse (etat_reponse_id)');
         $this->addSql('CREATE INDEX IDX_5FB6DEC74CC8505A ON reponse (offre_id)');
@@ -74,7 +76,10 @@ final class Version20241109210430 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_2D710CF2445D170C ON poster (reseau_id)');
         $this->addSql('CREATE INDEX IDX_2D710CF24CC8505A ON poster (offre_id)');
         $this->addSql('CREATE TABLE type_offre (id INT NOT NULL, nom_type_offre VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE TABLE utilisateur (id INT NOT NULL, email_utilisateur VARCHAR(128) NOT NULL, mdp_utilisateur VARCHAR(255) NOT NULL, role_utilisateur VARCHAR(20) NOT NULL, username VARCHAR(50) NOT NULL, num_tel_utilisateur VARCHAR(15) DEFAULT NULL, nom_utilisateur VARCHAR(50) DEFAULT NULL, prenom_utilisateur VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE utilisateur (id INT NOT NULL, preference_notification_id INT DEFAULT NULL, email_utilisateur VARCHAR(128) NOT NULL, mdp_utilisateur VARCHAR(255) NOT NULL, role_utilisateur VARCHAR(20) NOT NULL, username VARCHAR(50) NOT NULL, num_tel_utilisateur VARCHAR(15) DEFAULT NULL, nom_utilisateur VARCHAR(50) DEFAULT NULL, prenom_utilisateur VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_1D1C63B3BDC1F04 ON utilisateur (email_utilisateur)');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_1D1C63B3F85E0677 ON utilisateur (username)');
+        $this->addSql('CREATE INDEX IDX_1D1C63B39D5D70F2 ON utilisateur (preference_notification_id)');
         $this->addSql('CREATE TABLE preferencer (utilisateur_id INT NOT NULL, genre_musical_id INT NOT NULL, PRIMARY KEY(utilisateur_id, genre_musical_id))');
         $this->addSql('CREATE INDEX IDX_9E369663FB88E14F ON preferencer (utilisateur_id)');
         $this->addSql('CREATE INDEX IDX_9E369663FFFD05DC ON preferencer (genre_musical_id)');
@@ -103,6 +108,7 @@ final class Version20241109210430 extends AbstractMigration
         $this->addSql('ALTER TABLE lier ADD CONSTRAINT FK_B133E8FAFFFD05DC FOREIGN KEY (genre_musical_id) REFERENCES genre_musical (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE poster ADD CONSTRAINT FK_2D710CF2445D170C FOREIGN KEY (reseau_id) REFERENCES reseau (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE poster ADD CONSTRAINT FK_2D710CF24CC8505A FOREIGN KEY (offre_id) REFERENCES offre (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE utilisateur ADD CONSTRAINT FK_1D1C63B39D5D70F2 FOREIGN KEY (preference_notification_id) REFERENCES preference_notification (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE preferencer ADD CONSTRAINT FK_9E369663FB88E14F FOREIGN KEY (utilisateur_id) REFERENCES utilisateur (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE preferencer ADD CONSTRAINT FK_9E369663FFFD05DC FOREIGN KEY (genre_musical_id) REFERENCES genre_musical (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE appartenir ADD CONSTRAINT FK_A2A0D90CFB88E14F FOREIGN KEY (utilisateur_id) REFERENCES utilisateur (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
@@ -123,6 +129,7 @@ final class Version20241109210430 extends AbstractMigration
         $this->addSql('DROP SEQUENCE fiche_technique_artiste_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE genre_musical_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE offre_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE preference_notification_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE reponse_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE reseau_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE type_offre_id_seq CASCADE');
@@ -149,6 +156,7 @@ final class Version20241109210430 extends AbstractMigration
         $this->addSql('ALTER TABLE lier DROP CONSTRAINT FK_B133E8FAFFFD05DC');
         $this->addSql('ALTER TABLE poster DROP CONSTRAINT FK_2D710CF2445D170C');
         $this->addSql('ALTER TABLE poster DROP CONSTRAINT FK_2D710CF24CC8505A');
+        $this->addSql('ALTER TABLE utilisateur DROP CONSTRAINT FK_1D1C63B39D5D70F2');
         $this->addSql('ALTER TABLE preferencer DROP CONSTRAINT FK_9E369663FB88E14F');
         $this->addSql('ALTER TABLE preferencer DROP CONSTRAINT FK_9E369663FFFD05DC');
         $this->addSql('ALTER TABLE appartenir DROP CONSTRAINT FK_A2A0D90CFB88E14F');
@@ -166,6 +174,7 @@ final class Version20241109210430 extends AbstractMigration
         $this->addSql('DROP TABLE genre_musical');
         $this->addSql('DROP TABLE rattacher');
         $this->addSql('DROP TABLE offre');
+        $this->addSql('DROP TABLE preference_notification');
         $this->addSql('DROP TABLE reponse');
         $this->addSql('DROP TABLE reseau');
         $this->addSql('DROP TABLE lier');

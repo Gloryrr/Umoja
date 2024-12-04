@@ -83,6 +83,32 @@ class OffreService
     }
 
     /**
+     * Récupère une liste d'offre par rapport à une litse d'identifiant et renvoie une réponse JSON.
+     *
+     * @param mixed $data, La liste d'identifiant
+     * @param OffreRepository $offreRepository Le repository des offres.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les offres.
+     */
+    public static function getOffresByListId(
+        OffreRepository $offreRepository,
+        SerializerInterface $serializer,
+        mixed $data
+    ): JsonResponse {
+        $offres = $offreRepository->getOffresByListId($data['listeIdOffre']);
+        $offresJSON = $serializer->serialize(
+            $offres,
+            'json',
+            ['groups' => ['offre:read']]
+        );
+        return new JsonResponse([
+            'offres' => $offresJSON,
+            'serialized' => true
+        ], Response::HTTP_OK, ['Access-Control-Allow-Origin' => '*']);
+    }
+
+    /**
      * Récupère les offres qui appartiennent à un réseau et par leur titre et renvoie une réponse JSON.
      *
      * @param mixed $data Les données de l'offre à récupérer.
@@ -220,6 +246,7 @@ class OffreService
                 $liensPromotionnels .= "{$lien};";
             }
             $offre->setLiensPromotionnels($liensPromotionnels);
+            $offre->setNbContributeur(0);
 
             $extras = new Extras();
             $extras->setDescrExtras($data['extras']['descrExtras']);
@@ -296,19 +323,20 @@ class OffreService
 
             $nb_artistes = intval($data['donneesSupplementaires']['nbArtistes']);
             for ($i = 0; $i < $nb_artistes; $i++) {
-                $artiste = $artisteRepository->trouveArtisteByName($data['donneesSupplementaires']['artiste'][$i]);
-                switch (sizeof($artiste)) {
-                    case 0:
-                        $artisteObject = new Artiste();
-                        $artisteObject->setNomArtiste($data['donneesSupplementaires']['artiste'][$i]);
-                        $artisteObject->setDescrArtiste("Artiste quelconque");
-                        $artisteRepository->inscritArtiste($artisteObject);
-                        break;
+                // $artiste = $artisteRepository->trouveArtisteByName($data['donneesSupplementaires']['artiste'][$i]);
+                // print_r($artiste);
+                // switch (sizeof($artiste)) {
+                    // case 0:
+                $artisteObject = new Artiste();
+                $artisteObject->setNomArtiste($data['donneesSupplementaires']['artiste'][$i]);
+                $artisteObject->setDescrArtiste("Artiste quelconque");
+                $artisteRepository->inscritArtiste($artisteObject);
+                        // break;
 
-                    default:
-                        $offre->addArtiste($artiste[0]);
-                        break;
-                }
+                    // default:
+                        // $offre->addArtiste($artiste[0]);
+                        // break;
+                // }
             }
 
             // ajout de l'offre en base de données
@@ -323,7 +351,7 @@ class OffreService
                             $mailerService->sendEmail(
                                 $utilisateur->getEmailUtilisateur(),
                                 "Nouvelle offre",
-                                "<h1>Une nouvelle offre</h1> " +
+                                "<h1>Une nouvelle offre</h1> " .
                                 "<p>Une nouvelle offre a été ajoutée sur le réseau {$reseau->getNomReseau()}</p>"
                             );
                         }

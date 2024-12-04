@@ -26,7 +26,6 @@ const Profil: React.FC = () => {
                 const response = await apiPost("/utilisateur", JSON.parse(JSON.stringify(data)));
                 if (response) {
                     setUserInfo(JSON.parse(response.utilisateur)[0]);
-                    console.log(userInfo);
                 } else {
                     console.error("Erreur lors de la récupération des données utilisateur.");
                 }
@@ -34,7 +33,7 @@ const Profil: React.FC = () => {
                 console.error("Erreur réseau :", error);
             }
         }
-    }, [userInfo]);
+    }, []);
 
     useEffect(() => {
         fetchUserProfile();

@@ -39,104 +39,104 @@ class Offre
         'commentaire:read',
         'reponse:read',
     ])]
-    private ?int $id = null;
+    private int $id = 0;
 
     #[ORM\Column(length: 50)]
     #[Groups(['offre:read', 'offre:write'])]
-    private ?string $titleOffre = null;
+    private string $titleOffre;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(['offre:read', 'offre:write'])]
-    private ?\DateTimeInterface $deadLine = null;
+    private \DateTimeInterface $deadLine;
 
     #[ORM\Column(length: 500)]
     #[Groups(['offre:read', 'offre:write'])]
-    private ?string $descrTournee = null;
+    private string $descrTournee;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(['offre:read', 'offre:write'])]
-    private ?\DateTimeInterface $dateMinProposee = null;
+    private \DateTimeInterface $dateMinProposee;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(['offre:read', 'offre:write'])]
-    private ?\DateTimeInterface $dateMaxProposee = null;
+    private \DateTimeInterface $dateMaxProposee;
 
     #[ORM\Column(length: 50)]
     #[Groups(['offre:read', 'offre:write'])]
-    private ?string $villeVisee = null;
+    private string $villeVisee;
 
     #[ORM\Column(length: 50)]
     #[Groups(['offre:read', 'offre:write'])]
-    private ?string $regionVisee = null;
+    private string $regionVisee;
 
     #[ORM\Column]
     #[Groups(['offre:read', 'offre:write'])]
-    private ?int $placesMin = null;
+    private int $placesMin;
 
       /**
      * Nombre de contrirbuteur à l'offre.
      *
-     * @var int|null
+     * @var int
      */
     #[ORM\Column]
-    private ?int $nb_contributeur = null;
+    private int $nb_contributeur;
 
     /**
      * Nombre maximum de places disponibles.
      *
-     * @var int|null
+     * @var int
      */
 
     #[ORM\Column]
     #[Groups(['offre:read', 'offre:write'])]
-    private ?int $placesMax = null;
+    private int $placesMax;
 
     #[ORM\Column]
     #[Groups(['offre:read', 'offre:write'])]
-    private ?int $nbArtistesConcernes = null;
+    private int $nbArtistesConcernes;
 
     #[ORM\Column]
     #[Groups(['offre:read', 'offre:write'])]
-    private ?int $nbInvitesConcernes = null;
+    private int $nbInvitesConcernes;
 
     #[ORM\Column(length: 255)]
     #[Groups(['offre:read', 'offre:write'])]
-    private ?string $liensPromotionnels = null;
+    private string $liensPromotionnels;
 
     #[ORM\ManyToOne(targetEntity: Extras::class, inversedBy: "offres", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['offre:read', 'offre:write'])]
-    private ?Extras $extras = null;
+    private Extras $extras;
 
     #[ORM\ManyToOne(targetEntity: EtatOffre::class, inversedBy: "offres", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['offre:read', 'offre:write'])]
-    private ?EtatOffre $etatOffre = null;
+    private EtatOffre $etatOffre;
 
     #[ORM\ManyToOne(targetEntity: TypeOffre::class, inversedBy: "offres", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['offre:read', 'offre:write'])]
-    private ?TypeOffre $typeOffre = null;
+    private TypeOffre $typeOffre;
 
     #[ORM\ManyToOne(targetEntity: ConditionsFinancieres::class, inversedBy: "offres", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['offre:read', 'offre:write'])]
-    private ?ConditionsFinancieres $conditionsFinancieres = null;
+    private ConditionsFinancieres $conditionsFinancieres;
 
     #[ORM\ManyToOne(targetEntity: BudgetEstimatif::class, inversedBy: "offres", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['offre:read', 'offre:write'])]
-    private ?BudgetEstimatif $budgetEstimatif = null;
+    private BudgetEstimatif $budgetEstimatif;
 
     #[ORM\ManyToOne(targetEntity: FicheTechniqueArtiste::class, inversedBy: "offres", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['offre:read', 'offre:write'])]
-    private ?FicheTechniqueArtiste $ficheTechniqueArtiste = null;
+    private FicheTechniqueArtiste $ficheTechniqueArtiste;
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: "offres", cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['offre:read', 'offre:write'])]
-    private ?Utilisateur $utilisateur = null;
+    private Utilisateur $utilisateur;
 
     #[ORM\ManyToMany(targetEntity: Artiste::class, mappedBy: "offres", cascade: ["persist"])]
     #[Groups(['offre:read', 'offre:write'])]
@@ -185,9 +185,9 @@ class Offre
     /**
      * Obtient le titre de l'offre.
      *
-     * @return string|null
+     * @return string
      */
-    public function getTitleOffre(): ?string
+    public function getTitleOffre(): string
     {
         return $this->titleOffre;
     }
@@ -208,9 +208,9 @@ class Offre
     /**
      * Obtient la date limite pour répondre à l'offre.
      *
-     * @return \DateTimeInterface|null
+     * @return \DateTimeInterface
      */
-    public function getDeadLine(): ?\DateTimeInterface
+    public function getDeadLine(): \DateTimeInterface
     {
         return $this->deadLine;
     }
@@ -231,9 +231,9 @@ class Offre
     /**
      * Obtient la description de la tournée.
      *
-     * @return string|null
+     * @return string
      */
-    public function getDescrTournee(): ?string
+    public function getDescrTournee(): string
     {
         return $this->descrTournee;
     }
@@ -253,9 +253,9 @@ class Offre
     /**
      * Obtient la date minimale proposée pour la tournée.
      *
-     * @return \DateTimeInterface|null
+     * @return \DateTimeInterface
      */
-    public function getDateMinProposee(): ?\DateTimeInterface
+    public function getDateMinProposee(): \DateTimeInterface
     {
         return $this->dateMinProposee;
     }
@@ -275,9 +275,9 @@ class Offre
     /**
      * Obtient la date maximale proposée pour la tournée.
      *
-     * @return \DateTimeInterface|null
+     * @return \DateTimeInterface
      */
-    public function getDateMaxProposee(): ?\DateTimeInterface
+    public function getDateMaxProposee(): \DateTimeInterface
     {
         return $this->dateMaxProposee;
     }
@@ -297,9 +297,9 @@ class Offre
     /**
      * Obtient la ville visée par la tournée.
      *
-     * @return string|null
+     * @return string
      */
-    public function getVilleVisee(): ?string
+    public function getVilleVisee(): string
     {
         return $this->villeVisee;
     }
@@ -319,9 +319,9 @@ class Offre
     /**
      * Obtient la région visée par la tournée.
      *
-     * @return string|null
+     * @return string
      */
-    public function getRegionVisee(): ?string
+    public function getRegionVisee(): string
     {
         return $this->regionVisee;
     }
@@ -341,9 +341,9 @@ class Offre
     /**
      * Obtient le nombre minimum de places disponibles.
      *
-     * @return int|null
+     * @return int
      */
-    public function getPlacesMin(): ?int
+    public function getPlacesMin(): int
     {
         return $this->placesMin;
     }
@@ -364,9 +364,9 @@ class Offre
     /**
      * Obtient le nombre maximum de places disponibles.
      *
-     * @return int|null
+     * @return int
      */
-    public function getPlacesMax(): ?int
+    public function getPlacesMax(): int
     {
         return $this->placesMax;
     }
@@ -387,9 +387,9 @@ class Offre
     /**
      * Obtient le nombre d'artistes concernés par l'offre.
      *
-     * @return int|null
+     * @return int
      */
-    public function getNbArtistesConcernes(): ?int
+    public function getNbArtistesConcernes(): int
     {
         return $this->nbArtistesConcernes;
     }
@@ -410,9 +410,9 @@ class Offre
      /**
      * Obtient le nombre de contributeur par l'offre.
      *
-     * @return int|null
+     * @return int
      */
-    public function getNbContributeur(): ?int
+    public function getNbContributeur(): int
     {
         return $this->nb_contributeur;
     }
@@ -433,9 +433,9 @@ class Offre
     /**
      * Obtient le nombre d'invités concernés par l'offre.
      *
-     * @return int|null
+     * @return int
      */
-    public function getNbInvitesConcernes(): ?int
+    public function getNbInvitesConcernes(): int
     {
         return $this->nbInvitesConcernes;
     }
@@ -456,9 +456,9 @@ class Offre
     /**
      * Obtient les liens promotionnels associés à l'offre.
      *
-     * @return string|null
+     * @return string
      */
-    public function getLiensPromotionnels(): ?string
+    public function getLiensPromotionnels(): string
     {
         return $this->liensPromotionnels;
     }
@@ -479,9 +479,9 @@ class Offre
     /**
      * Récupère l'entité Extras associée à cette offre.
      *
-     * @return Extras|null L'entité Extras associée ou null si aucune n'est définie.
+     * @return Extras L'entité Extras associée ou null si aucune n'est définie.
      */
-    public function getExtras(): ?Extras
+    public function getExtras(): Extras
     {
         return $this->extras;
     }
@@ -489,7 +489,7 @@ class Offre
     /**
      * Définit l'entité Extras associée à cette offre.
      *
-     * @param Extras|null $extras L'entité Extras à associer à l'offre.
+     * @param Extras $extras L'entité Extras à associer à l'offre.
      * @return static Retourne l'instance actuelle pour chaînage des méthodes.
      */
     public function setExtras(?Extras $extras): static
@@ -502,9 +502,9 @@ class Offre
     /**
      * Récupère l'entité EtatOffre associée à cette offre.
      *
-     * @return EtatOffre|null L'état de l'offre ou null si aucun n'est défini.
+     * @return EtatOffre L'état de l'offre ou null si aucun n'est défini.
      */
-    public function getEtatOffre(): ?EtatOffre
+    public function getEtatOffre(): EtatOffre
     {
         return $this->etatOffre;
     }
@@ -512,7 +512,7 @@ class Offre
     /**
      * Définit l'entité EtatOffre associée à cette offre.
      *
-     * @param EtatOffre|null $etatOffre L'entité EtatOffre à associer à l'offre.
+     * @param EtatOffre $etatOffre L'entité EtatOffre à associer à l'offre.
      * @return static Retourne l'instance actuelle pour chaînage des méthodes.
      */
     public function setEtatOffre(?EtatOffre $etatOffre): static
@@ -525,9 +525,9 @@ class Offre
     /**
      * Récupère l'entité TypeOffre associée à cette offre.
      *
-     * @return TypeOffre|null Le type de l'offre ou null si aucun n'est défini.
+     * @return TypeOffre Le type de l'offre ou null si aucun n'est défini.
      */
-    public function getTypeOffre(): ?TypeOffre
+    public function getTypeOffre(): TypeOffre
     {
         return $this->typeOffre;
     }
@@ -535,7 +535,7 @@ class Offre
     /**
      * Définit l'entité TypeOffre associée à cette offre.
      *
-     * @param TypeOffre|null $typeOffre Le type d'offre à associer à cette instance.
+     * @param TypeOffre $typeOffre Le type d'offre à associer à cette instance.
      * @return static Retourne l'instance actuelle pour chaînage des méthodes.
      */
     public function setTypeOffre(?TypeOffre $typeOffre): static
@@ -548,9 +548,9 @@ class Offre
     /**
      * Récupère l'entité ConditionsFinancieres associée à cette offre.
      *
-     * @return ConditionsFinancieres|null Les conditions financières de l'offre ou null si aucune n'est définie.
+     * @return ConditionsFinancieres Les conditions financières de l'offre ou null si aucune n'est définie.
      */
-    public function getConditionsFinancieres(): ?ConditionsFinancieres
+    public function getConditionsFinancieres(): ConditionsFinancieres
     {
         return $this->conditionsFinancieres;
     }
@@ -558,7 +558,7 @@ class Offre
     /**
      * Définit l'entité ConditionsFinancieres associée à cette offre.
      *
-     * @param ConditionsFinancieres|null $conditionsFinancieres Les conditions financières à associer à l'offre.
+     * @param ConditionsFinancieres $conditionsFinancieres Les conditions financières à associer à l'offre.
      * @return static Retourne l'instance actuelle pour chaînage des méthodes.
      */
     public function setConditionsFinancieres(?ConditionsFinancieres $conditionsFinancieres): static
@@ -571,9 +571,9 @@ class Offre
     /**
      * Récupère l'entité BudgetEstimatif associée à cette offre.
      *
-     * @return BudgetEstimatif|null Le budget estimatif de l'offre ou null si aucun n'est défini.
+     * @return BudgetEstimatif Le budget estimatif de l'offre ou null si aucun n'est défini.
      */
-    public function getBudgetEstimatif(): ?BudgetEstimatif
+    public function getBudgetEstimatif(): BudgetEstimatif
     {
         return $this->budgetEstimatif;
     }
@@ -581,7 +581,7 @@ class Offre
     /**
      * Définit l'entité BudgetEstimatif associée à cette offre.
      *
-     * @param BudgetEstimatif|null $budgetEstimatif Le budget estimatif à associer à l'offre.
+     * @param BudgetEstimatif $budgetEstimatif Le budget estimatif à associer à l'offre.
      * @return static Retourne l'instance actuelle pour chaînage des méthodes.
      */
     public function setBudgetEstimatif(?BudgetEstimatif $budgetEstimatif): static
@@ -594,9 +594,9 @@ class Offre
     /**
      * Récupère l'entité FicheTechniqueArtiste associée à cette offre.
      *
-     * @return FicheTechniqueArtiste|null La fiche technique de l'artiste liée à l'offre ou null si aucune n'est définie
+     * @return FicheTechniqueArtiste La fiche technique de l'artiste liée à l'offre ou null si aucune n'est définie
      */
-    public function getFicheTechniqueArtiste(): ?FicheTechniqueArtiste
+    public function getFicheTechniqueArtiste(): FicheTechniqueArtiste
     {
         return $this->ficheTechniqueArtiste;
     }
@@ -604,7 +604,7 @@ class Offre
     /**
      * Définit l'entité FicheTechniqueArtiste associée à cette offre.
      *
-     * @param FicheTechniqueArtiste|null $ficheTechniqueArtiste La fiche technique de l'artiste à associer à l'offre.
+     * @param FicheTechniqueArtiste $ficheTechniqueArtiste La fiche technique de l'artiste à associer à l'offre.
      * @return static Retourne l'instance actuelle pour chaînage des méthodes.
      */
     public function setFicheTechniqueArtiste(?FicheTechniqueArtiste $ficheTechniqueArtiste): static
@@ -614,7 +614,7 @@ class Offre
         return $this;
     }
 
-    public function getUtilisateur(): ?Utilisateur
+    public function getUtilisateur(): Utilisateur
     {
         return $this->utilisateur;
     }

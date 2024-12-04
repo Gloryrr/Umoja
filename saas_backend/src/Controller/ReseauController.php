@@ -33,6 +33,27 @@ class ReseauController extends AbstractController
     }
 
     /**
+     * Récupère les informations d'un réseau par rapport à son nom.
+     *
+     * @param ReseauRepository $ReseauRepository, la classe CRUD des réseaux
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/reseau', name: 'get_reseau_by_name', methods: ['POST'])]
+    public function getReseauByName(
+        Request $request,
+        ReseauRepository $ReseauRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        return ReseauService::getReseauByName(
+            $data['nomReseau'],
+            $ReseauRepository,
+            $serializer
+        );
+    }
+
+    /**
      * Crée un nouveau réseau.
      *
      * @param Request $request
