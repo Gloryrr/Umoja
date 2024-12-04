@@ -118,12 +118,12 @@ export default function connection_form() {
       <form action="">
 
         <div className="relative w-full h-1/2 my-8">
-          <input type="text" placeholder="Nom d'utilisateur" required className="w-full h-full bg-transparent outline-none border-solid  border-2 border-black rounded-full text-lg text-black p-5 pr-12 placeholder-white" />
+          <input type="text" placeholder="Nom d'utilisateur" required className="w-full h-full bg-transparent outline-none border-solid  border-2 border-black rounded-full text-lg text-black p-5 pr-12 placeholder-black" />
           <FaUser className='absolute right-5 top-1/2 transform -translate-y-1/2 text-lg' />
         </div>
 
         <div className="relative w-full h-1/2 my-8">
-          <input type="password" placeholder="Mot De Passe" required className="w-full h-full bg-transparent  outline-none border-solid border-2 border-black rounded-full text-lg text-black p-5 pr-12 placeholder-white" />
+          <input type="password" placeholder="Mot De Passe" required className="w-full h-full bg-transparent  outline-none border-solid border-2 border-black rounded-full text-lg text-black p-5 pr-12 placeholder-black" />
           <FaLock className='absolute right-5 top-1/2 transform -translate-y-1/2 text-lg' />
         </div>
 
@@ -138,7 +138,7 @@ export default function connection_form() {
           <p>Tu n&apos;as pas encore de compte ? 
           <NavigationHandler>
             {(handleNavigation: (path: string) => void) => (
-              <a onClick={() => handleNavigation('/inscription')} className="text-black no-underline font-semibold hover:underline">Inscription</a>
+              <a onClick={() => handleNavigation('/inscription')} className="text-black no-underline font-semibold hover:underline cursor-pointer">Inscription</a>
             )}
           </NavigationHandler>
           </p>
