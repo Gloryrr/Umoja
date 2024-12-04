@@ -6,16 +6,6 @@ import AddUserModal from '../components/ui/addUserModal';
 import EditUserModal from '../components/ui/EditUserModal';
 import Table from '../components/ui/tableAdmin';
 
-type User = {
-  id: number;
-  emailUtilisateur: string;
-  username: string;
-  numTelUtilisateur?: string;
-  nomUtilisateur?: string;
-  prenomUtilisateur?: string;
-  role_utilisateur?: string;
-};
-
 
 const columns = [
   { header: 'Pseudo', accessor: 'username' },

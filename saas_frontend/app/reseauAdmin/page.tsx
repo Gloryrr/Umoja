@@ -2,11 +2,10 @@
 import React, { useState, useEffect } from 'react'
 import { PlusCircle, Pencil, Trash2 } from 'lucide-react'
 import { apiGet, apiPost, apiPut, apiDelete } from '../services/externalApiClients'
-import AddUserModal from '../components/ui/addUserModal';
-import EditUserModal from '../components/ui/EditUserModal';
 import Table from '../components/ui/tableAdmin';
 import AddReseauModal from '../components/ui/addReseauModal';
 import EditReseauModal from '../components/ui/EditReseauModal';
+import LookUsersReseauModal from '../components/ui/LookUsersReseauModal';
 
 type Reseaux = {
   id: number;
@@ -68,6 +67,29 @@ export default function ReseauManagement() {
     }
   }
 
+
+  const handleDeleteUserInReseau = async (
+      reseau: {id: number; nom: string; utilisateurs: User[] },
+      userId: number
+    ) => {
+    // Filtrer les utilisateurs pour exclure celui dont l'ID correspond
+    const updatedUsers = reseau.utilisateurs.filter((user) => user.id !== userId);
+  
+    // Mettre à jour les utilisateurs du réseau
+    reseau.utilisateurs = updatedUsers;
+    const user = { id: userId };
+
+    const ReseauData: JSON = JSON.parse(JSON.stringify(user));
+  
+
+    await apiDelete(`http://127.0.0.1:8000/api/v1/reseau/delete-member/${userId}`);
+    console.log(`Utilisateur avec l'ID ${userId} supprimé du réseau ${reseau.id}`);
+    console.log("Utilisateurs mis à jour :", updatedUsers);
+  
+    // Vous pouvez inclure une mise à jour de l'état ou une logique d'API ici
+  };
+  
+
   const handleAddReseau = async (newReseau: Omit<Reseaux, 'id_utilisateur'>) => {
     try {
 
@@ -108,7 +130,7 @@ export default function ReseauManagement() {
         loadReseaux();
         console.log(`Reseau ${id} supprimé avec succès.`);
     } catch (error) {
-        console.error('Erreur lors de la suppression de l\'utilisateur:', error);
+        console.error('Erreur lors de la suppression du reseau:', error);
     }
 };
 
@@ -184,8 +206,9 @@ export default function ReseauManagement() {
         <EditReseauModal reseau={currentReseau} onEditReseau={handleEditReseau} onClose={() => setIsEditReseauOpen(false)} />
       )}
 
+      
       {lookUsersReseauOpen && currentReseau && (
-        <LookUsersReseauModal reseau={currentReseau} onClose={() => setLookUsersReseauOpen(false)} />
+        <LookUsersReseauModal reseau={currentReseau} onDeleteUser={handleDeleteUserInReseau} onClose={() => setLookUsersReseauOpen(false)} />
       )}
     </div>
   );
