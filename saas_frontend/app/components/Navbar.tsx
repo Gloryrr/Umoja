@@ -85,213 +85,226 @@ const NavbarApp = () => {
     }, 300);
   
     return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery]);  
+  }, [searchQuery]); 
 
-  return (
-    <MegaMenu className="w-full">
-      <div className="flex items-center justify-between w-full py-4 border-b border-gray-300 dark:border-gray-500 px-4">
-        {/* Logo à gauche */}
-        <Navbar.Brand href="/" className="flex items-center space-x-2">
-          <Image
-            width={28}
-            height={28}
-            src="/favicon.ico"
-            alt="Flowbite React Logo"
-          />
-          <span className="text-xl font-semibold whitespace-nowrap dark:text-white">
-            UmoDJA
-          </span>
-        </Navbar.Brand>
-
-        {/* Navigation Links au centre */}
-        <NavigationHandler>
-          {(handleNavigation) => (
-            <nav className="flex items-center space-x-10 font-medium">
-              {navItems.map((item) => (
-                <a
-                  key={item.id}
-                  href="#"
-                  onClick={() => handleNavigation(item.href)}
-                  className="hover:text-primary-600 dark:hover:text-primary-500 text-center whitespace-nowrap"
-                >
-                  {item.text}
-                </a>
-              ))}
-              <MegaMenu.Dropdown toggle={<span className="cursor-pointer">Services</span>}>
-                <ul className="grid grid-cols-3 gap-4 p-4">
-                  <li>
-                    <a
-                      href="/networks"
-                      className="hover:text-primary-600 dark:hover:text-primary-500"
-                    >
-                      Mes réseaux
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="/contact"
-                      className="hover:text-primary-600 dark:hover:text-primary-500"
-                    >
-                      Contactez-nous
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="/offre/public"
-                      className="hover:text-primary-600 dark:hover:text-primary-500"
-                    >
-                      Découvrir les projets
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="hover:text-primary-600 dark:hover:text-primary-500"
-                    >
-                      Support Center
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="hover:text-primary-600 dark:hover:text-primary-500"
-                    >
-                      License
-                    </a>
-                  </li>
-                </ul>
-              </MegaMenu.Dropdown>
-            </nav>
-          )}
-        </NavigationHandler>
-
-        {/* Barre de recherche */}
-        <div className="relative w-1/3">
-          <form
-            onSubmit={(e) => e.preventDefault()}
-            className="relative flex items-center"
-          >
-            <input
-              type="text"
-              placeholder="Rechercher un projet dans vos réseaux..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none"
+  const deconnexion = () => {
+    localStorage.setItem('isConnected', 'false');
+    localStorage.setItem('username', '');
+    localStorage.setItem('token', '');
+    window.location.href = '/';
+  };
+  
+  if (typeof window !== 'undefined' && localStorage.getItem('isConnected') === 'false') {
+    if (window.location.pathname !== '/') {
+      window.location.href = '/';
+    }
+  } else {
+    return (
+      <MegaMenu className="w-full">
+        <div className="flex items-center justify-between w-full py-4 border-b border-gray-300 dark:border-gray-500 px-4">
+          {/* Logo à gauche */}
+          <Navbar.Brand href="/" className="flex items-center space-x-2">
+            <Image
+              width={28}
+              height={28}
+              src="/favicon.ico"
+              alt="Flowbite React Logo"
             />
-            <HiSearch className="absolute right-4 text-gray-500" />
-          </form>
+            <span className="text-xl font-semibold whitespace-nowrap dark:text-white">
+              UmoDJA
+            </span>
+          </Navbar.Brand>
 
-          {/* Résultats de recherche dynamiques */}
-          {searchQuery.length >= 2 && (
-            <div className="absolute z-10 w-full mt-2 border border-gray-300 rounded-md shadow-lg">
-              {isLoading ? (
-                <p className="p-2 text-sm">Chargement...</p>
-              ) : searchResults.length > 0 ? (
-                <>
-                  <ul>
-                    {searchResults.map((result: SearchResult, index) => (
-                      <li
-                        key={index}
-                        className="bg-white p-4 text-sm border-b hover:bg-gray-100 flex flex-col space-y-1"
-                      >
-                        {/* Titre de l'offre */}
-                        <h3 className="text-base font-bold">{result.titleOffre}</h3>
-
-                        {/* Ville et région */}
-                        <p className="text-gray-600">
-                          {result.villeVisee}, {result.regionVisee}
-                        </p>
-
-                        {/* État de l'offre */}
-                        <div className="flex items-center space-x-2">
-                          <IoIosTime color="blue" />
-                          <p>{result.etatOffreDetail}</p>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                  <button
-                    onClick={() => window.location.href = "/offres/resultats"}
-                    className="block w-full p-2 text-sm text-center rounded-b-md text-primary-600 hover:bg-gray-100"
+          {/* Navigation Links au centre */}
+          <NavigationHandler>
+            {(handleNavigation) => (
+              <nav className="flex items-center space-x-10 font-medium">
+                {navItems.map((item) => (
+                  <a
+                    key={item.id}
+                    href="#"
+                    onClick={() => handleNavigation(item.href)}
+                    className="hover:text-primary-600 dark:hover:text-primary-500 text-center whitespace-nowrap"
                   >
-                    Voir tous les résultats
-                  </button>
-                </>
-              ) : (
-                <p className="p-2 text-sm text-gray-500">
-                  Aucun résultat trouvé.
-                </p>
-              )}
-            </div>
-          )}
-        </div>
+                    {item.text}
+                  </a>
+                ))}
+                <MegaMenu.Dropdown toggle={<span className="cursor-pointer">Services</span>}>
+                  <ul className="grid grid-cols-3 gap-4 p-4">
+                    <li>
+                      <a
+                        href="/networks"
+                        className="hover:text-primary-600 dark:hover:text-primary-500"
+                      >
+                        Mes réseaux
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="/contact"
+                        className="hover:text-primary-600 dark:hover:text-primary-500"
+                      >
+                        Contactez-nous
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="/offre/public"
+                        className="hover:text-primary-600 dark:hover:text-primary-500"
+                      >
+                        Découvrir les projets
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        className="hover:text-primary-600 dark:hover:text-primary-500"
+                      >
+                        Support Center
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        className="hover:text-primary-600 dark:hover:text-primary-500"
+                      >
+                        License
+                      </a>
+                    </li>
+                  </ul>
+                </MegaMenu.Dropdown>
+              </nav>
+            )}
+          </NavigationHandler>
 
-        <div className="flex">
-          <div className="mr-5">
-            <DarkThemeToggle/>
+          {/* Barre de recherche */}
+          <div className="relative w-1/3">
+            <form
+              onSubmit={(e) => e.preventDefault()}
+              className="relative flex items-center"
+            >
+              <input
+                type="text"
+                placeholder="Rechercher un projet dans vos réseaux..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none"
+              />
+              <HiSearch className="absolute right-4 text-gray-500" />
+            </form>
+
+            {/* Résultats de recherche dynamiques */}
+            {searchQuery.length >= 2 && (
+              <div className="absolute z-10 w-full mt-2 border border-gray-300 rounded-md shadow-lg">
+                {isLoading ? (
+                  <p className="p-2 text-sm">Chargement...</p>
+                ) : searchResults.length > 0 ? (
+                  <>
+                    <ul>
+                      {searchResults.map((result: SearchResult, index) => (
+                        <li
+                          key={index}
+                          className="bg-white p-4 text-sm border-b hover:bg-gray-100 flex flex-col space-y-1"
+                        >
+                          {/* Titre de l'offre */}
+                          <h3 className="text-base font-bold">{result.titleOffre}</h3>
+
+                          {/* Ville et région */}
+                          <p className="text-gray-600">
+                            {result.villeVisee}, {result.regionVisee}
+                          </p>
+
+                          {/* État de l'offre */}
+                          <div className="flex items-center space-x-2">
+                            <IoIosTime color="blue" />
+                            <p>{result.etatOffreDetail}</p>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                    <button
+                      onClick={() => window.location.href = "/offres/resultats"}
+                      className="block w-full p-2 text-sm text-center rounded-b-md text-primary-600 hover:bg-gray-100"
+                    >
+                      Voir tous les résultats
+                    </button>
+                  </>
+                ) : (
+                  <p className="p-2 text-sm text-gray-500">
+                    Aucun résultat trouvé.
+                  </p>
+                )}
+              </div>
+            )}
           </div>
 
-          {/* Avatar à droite */}
-          <Dropdown
-            arrowIcon={false}
-            inline
-            label={
-              <Avatar
-                alt="User settings"
-                img="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-                rounded
-                className="h-10 w-10"
-              />
-            }
-          >
-            <Dropdown.Header>
-              <span className="block text-sm font-medium text-black">
-                {typeof window !== 'undefined' ? localStorage.getItem('username') : "Bonnie Green"}
-              </span>
-              <span className="block truncate text-sm text-gray">
-                name@flowbite.com
-              </span>
-            </Dropdown.Header>
-            <Dropdown.Item>
-              <NavigationHandler>
-                {(handleNavigation: (path: string) => void) => (
-                  <p onClick={() => handleNavigation(`/profil`)}>Mon profil</p>
-                )}
-              </NavigationHandler>
-            </Dropdown.Item>
-            <Dropdown.Item>
-              <NavigationHandler>
-                {(handleNavigation: (path: string) => void) => (
-                  <p onClick={() => handleNavigation(`/tableau-de-bord`)}>
-                    Mon tableau de bord
-                  </p>
-                )}
-              </NavigationHandler>
-            </Dropdown.Item>
-            <Dropdown.Item>
-              <NavigationHandler>
-                {(handleNavigation: (path: string) => void) => (
-                  <p onClick={() => handleNavigation(`/preferences-notifications`)}>
-                    Mes préférences
-                  </p>
-                )}
-              </NavigationHandler>
-            </Dropdown.Item>
-            <Dropdown.Divider />
-            <Dropdown.Item>
-              <NavigationHandler>
-                {(handleNavigation: (path: string) => void) => (
-                  <p onClick={() => handleNavigation(`/disconnect`)}>
-                    Se déconnecter
-                  </p>
-                )}
-              </NavigationHandler>
-            </Dropdown.Item>
-          </Dropdown>
+          <div className="flex">
+            <div className="mr-5">
+              <DarkThemeToggle/>
+            </div>
+
+            {/* Avatar à droite */}
+            <Dropdown
+              arrowIcon={false}
+              inline
+              label={
+                <Avatar
+                  alt="User settings"
+                  img="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+                  rounded
+                  className="h-10 w-10"
+                />
+              }
+            >
+              <Dropdown.Header>
+                <span className="block text-sm font-medium text-black">
+                  {typeof window !== 'undefined' ? localStorage.getItem('username') : "Bonnie Green"}
+                </span>
+                <span className="block truncate text-sm text-gray">
+                  name@flowbite.com
+                </span>
+              </Dropdown.Header>
+              <Dropdown.Item>
+                <NavigationHandler>
+                  {(handleNavigation: (path: string) => void) => (
+                    <p onClick={() => handleNavigation(`/profil`)}>Mon profil</p>
+                  )}
+                </NavigationHandler>
+              </Dropdown.Item>
+              <Dropdown.Item>
+                <NavigationHandler>
+                  {(handleNavigation: (path: string) => void) => (
+                    <p onClick={() => handleNavigation(`/tableau-de-bord`)}>
+                      Mon tableau de bord
+                    </p>
+                  )}
+                </NavigationHandler>
+              </Dropdown.Item>
+              <Dropdown.Item>
+                <NavigationHandler>
+                  {(handleNavigation: (path: string) => void) => (
+                    <p onClick={() => handleNavigation(`/preferences-notifications`)}>
+                      Mes préférences
+                    </p>
+                  )}
+                </NavigationHandler>
+              </Dropdown.Item>
+              <Dropdown.Divider />
+              <Dropdown.Item>
+                <NavigationHandler>
+                  {(handleNavigation: (path: string) => void) => (
+                    <p onClick={() => deconnexion()}>
+                      Se déconnecter
+                    </p>
+                  )}
+                </NavigationHandler>
+              </Dropdown.Item>
+            </Dropdown>
+          </div>
         </div>
-      </div>
-    </MegaMenu>
-  );
+      </MegaMenu>
+    );
+  }
 };
 
 export default NavbarApp;
