@@ -70,7 +70,7 @@ const OffreForm: React.FC = () => {
             nbArtistes: null
         },
         utilisateur: {
-            username : typeof window !== 'undefined' ? localStorage.getItem('username') : ""
+            username : typeof window !== 'undefined' ? sessionStorage.getItem('username') : ""
         }
     });
 

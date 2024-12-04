@@ -26,15 +26,15 @@ function ConnectionForm() {
       console.log(response);
 
       if (response.token) {
-        localStorage.setItem("isConnected", "true");
-        localStorage.setItem("username", data.username);
-        localStorage.setItem("token", response.token);
+        sessionStorage.setItem("isConnected", "true");
+        sessionStorage.setItem("username", data.username);
+        sessionStorage.setItem("token", response.token);
         setToastMessage("Connexion réussie ! Redirection en cours...");
         setToastType("success");
         setShowToast(true);
         setTimeout(() => (window.location.href = "/accueil"), 1000);
       } else {
-        localStorage.setItem("isConnected", "false");
+        sessionStorage.setItem("isConnected", "false");
         setToastMessage("Compte introuvable, veuillez vérifier vos identifiants.");
         setToastType("failure");
         setShowToast(true);

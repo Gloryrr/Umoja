@@ -27,7 +27,7 @@ export function Networks() {
     const [nomReseauChoisi, setNomReseauChoisi] = useState<string | null>();
 
     const getNetworksAndGenresMusicaux = async () => {
-        const username = localStorage.getItem("username");
+        const username = sessionStorage.getItem("username");
         const responses = await apiPost(
             "/utilisateur",
             JSON.parse(JSON.stringify({ username }))

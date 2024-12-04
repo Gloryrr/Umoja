@@ -11,7 +11,7 @@ const renvoieReponsePromise = async (response: Response) => {
 
 // Fonction GET
 export const apiGet = async (endpoint: string) => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     const response = await fetch(`${BASE_URL}${endpoint}`, {
         method: 'GET',
         headers: {
@@ -34,7 +34,7 @@ export const apiPost = async (endpoint: string, data: JSON) => {
         });
         return renvoieReponsePromise(response);
     } else {
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
         const response = await fetch(`${BASE_URL}${endpoint}`, {
             method: 'POST',
             headers: {
@@ -49,7 +49,7 @@ export const apiPost = async (endpoint: string, data: JSON) => {
 
 // Fonction PATCH
 export const apiPatch = async (endpoint: string, data: JSON) => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     const response = await fetch(`${BASE_URL}${endpoint}`, {
         method: 'PATCH',
         headers: {
@@ -63,7 +63,7 @@ export const apiPatch = async (endpoint: string, data: JSON) => {
 
 // Fonction DELETE
 export const apiDelete = async (endpoint: string) => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     const response = await fetch(`${BASE_URL}${endpoint}`, {
         method: 'DELETE',
         headers: {
