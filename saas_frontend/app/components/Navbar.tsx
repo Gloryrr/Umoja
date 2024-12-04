@@ -291,13 +291,9 @@ const NavbarApp = () => {
               </Dropdown.Item>
               <Dropdown.Divider />
               <Dropdown.Item>
-                <NavigationHandler>
-                  {(handleNavigation: (path: string) => void) => (
-                    <p onClick={() => deconnexion()}>
-                      Se déconnecter
-                    </p>
-                  )}
-                </NavigationHandler>
+                <p onClick={() => { deconnexion() } }>
+                  Se déconnecter
+                </p>
               </Dropdown.Item>
             </Dropdown>
           </div>
