@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Repository\UtilisateurRepository;
 use App\Services\UtilisateurService;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 
 class UtilisateurController extends AbstractController
 {
@@ -58,6 +59,8 @@ class UtilisateurController extends AbstractController
      * Crée un nouvel utilisateur.
      *
      * @param Request $request
+     * @param JWTTokenManagerInterface $JWTManager, le service de gestion des tokens JWT
+     * @param UserPasswordHasherInterface $passwordHasher, le service de hashage des mots de passe
      * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des utilisateurs
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
@@ -65,12 +68,14 @@ class UtilisateurController extends AbstractController
     #[Route('/api/v1/utilisateurs/create', name: 'create_utilisateur', methods: ['POST'])]
     public function createUtilisateur(
         Request $request,
+        JWTTokenManagerInterface $JWTManager,
         UtilisateurRepository $utilisateurRepository,
         UserPasswordHasherInterface $passwordHasher,
         SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
         return UtilisateurService::createUtilisateur(
+            $JWTManager,
             $utilisateurRepository,
             $passwordHasher,
             $serializer,

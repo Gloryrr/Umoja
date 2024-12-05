@@ -5,6 +5,9 @@ import { useEffect, useState } from "react";
 import { apiGet, apiPost } from "@/app/services/internalApiClients";
 import { MdArrowLeft, MdArrowRight } from "react-icons/md";
 import NetworksOffres from "@/app/components/NetworksOffres";
+import { IoMdMailOpen, IoMdPeople } from "react-icons/io";
+import { MdQueueMusic } from "react-icons/md";
+import { FaGear } from "react-icons/fa6";
 
 interface Reseau {
     nomReseau: string;
@@ -18,7 +21,7 @@ interface GenreMusical {
 
 export function Networks() {
     const [genresMusicaux, setGenresMusicaux] = useState<GenreMusical[]>([]);
-    const [filteredReseaux, setFilteredReseaux] = useState<Reseau[]>([]);
+    const [filteredReseaux, setFilteredReseaux] = useState<Reseau[] | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [sortOption, setSortOption] = useState("nomCroissant");
     const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
@@ -52,22 +55,24 @@ export function Networks() {
     const handleSort = (option: string) => {
         setSortOption(option);
         let sortedReseaux;
-        if (option === "nomCroissant") {
-            sortedReseaux = [...filteredReseaux].sort((a, b) =>
-                a.nomReseau.localeCompare(b.nomReseau)
-            );
-        } else if (option === "nomDecroissant") {
-            sortedReseaux = [...filteredReseaux].sort((a, b) =>
-                b.nomReseau.localeCompare(a.nomReseau)
-            );
-        } else if (option === "utilisateurs") {
-            sortedReseaux = [...filteredReseaux].sort((a, b) =>
-                b.nombreUtilisateurs - a.nombreUtilisateurs
-            );
-        } else {
-            sortedReseaux = filteredReseaux;
+        if (filteredReseaux) {
+            if (option === "nomCroissant") {
+                sortedReseaux = [...filteredReseaux].sort((a, b) =>
+                    a.nomReseau.localeCompare(b.nomReseau)
+                );
+            } else if (option === "nomDecroissant") {
+                sortedReseaux = [...filteredReseaux].sort((a, b) =>
+                    b.nomReseau.localeCompare(a.nomReseau)
+                );
+            } else if (option === "utilisateurs") {
+                sortedReseaux = [...filteredReseaux].sort((a, b) =>
+                    b.nombreUtilisateurs - a.nombreUtilisateurs
+                );
+            } else {
+                sortedReseaux = filteredReseaux;
+            }
+            setFilteredReseaux(sortedReseaux);
         }
-        setFilteredReseaux(sortedReseaux);
     };
 
     const handleNetworkClick = (nomReseau: string) => {
@@ -83,9 +88,13 @@ export function Networks() {
         );
     };
 
-    const totalPages = Math.ceil(filteredReseaux.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const currentItems = filteredReseaux.slice(startIndex, startIndex + itemsPerPage);
+    if (filteredReseaux) {
+        const totalPages = Math.ceil(filteredReseaux.length / itemsPerPage);
+        const currentItems = filteredReseaux.slice(startIndex, startIndex + itemsPerPage);
+    }
+    const totalPages = 1;
+    const currentItems : Reseau[] = [];
 
     const goToNextPage = () => {
         if (currentPage < totalPages) {
@@ -118,53 +127,75 @@ export function Networks() {
             <div className="min-h-screen p-6 flex flex-col items-center">
                 {/* Titre et description */}
                 <header className="mb-10 text-center max-w-2xl">
-                    <h1 className="text-2xl font-bold mb-4">
-                        {filteredReseaux.length} réseaux auxquels vous appartenez. Explorez les pour découvrir les évènements musicaux.
-                    </h1>
+                    {filteredReseaux && filteredReseaux.length > 0 && (
+                        <h1 className="text-2xl font-bold mb-4">
+                            {filteredReseaux != null ? filteredReseaux.length : 0} réseaux auxquels vous appartenez. Explorez les pour découvrir les évènements musicaux.
+                        </h1>
+                    )}
+                    {filteredReseaux && filteredReseaux.length == 0 && (
+                        <h1 className="text-2xl font-bold">
+                            Vous n&apos;êtes dans aucun réseau. Contactez notre administrateur pour vous ajoutez à des réseaux.
+                        </h1>
+                    )}
                 </header>
     
                 {/* Barre de recherche, sélection de tri et genres */}
-                <div className="flex justify-between items-center w-full max-w-6xl mb-6">
-                    <div className="flex">
-                        <p className="mr-5">Afficher par</p>
-                        
-                        {/* Filtres par genres musicaux */}
-                        <Dropdown
-                            label="Genres musicaux"
-                            inline={true}
-                            size="sm"
-                            className="max-h-64 overflow-y-auto"
-                            dismissOnClick={false}
-                        >
-                            {genresMusicaux.map((genreMusical, index) => (
-                                <Dropdown.Item key={index} className="flex items-center gap-2">
-                                <Checkbox
-                                    checked={selectedGenres.includes(genreMusical.nomGenreMusical)}
-                                    onChange={() => toggleGenre(genreMusical.nomGenreMusical)}
-                                />
-                                <span>{genreMusical.nomGenreMusical}</span>
-                                </Dropdown.Item>
-                            ))}
-                        </Dropdown>
+                {filteredReseaux && filteredReseaux.length > 0 && (
+                    <div className="flex justify-between items-center w-full max-w-6xl mb-6">
+                        <div className="flex">
+                            <p className="mr-5">Afficher par</p>
+                            
+                            {/* Filtres par genres musicaux */}
+                            <Dropdown
+                                label="Genres musicaux"
+                                inline={true}
+                                size="sm"
+                                className="max-h-64 overflow-y-auto"
+                                dismissOnClick={false}
+                            >
+                                {genresMusicaux.map((genreMusical, index) => (
+                                    <Dropdown.Item key={index} className="flex items-center gap-2">
+                                    <Checkbox
+                                        checked={selectedGenres.includes(genreMusical.nomGenreMusical)}
+                                        onChange={() => toggleGenre(genreMusical.nomGenreMusical)}
+                                    />
+                                    <span>{genreMusical.nomGenreMusical}</span>
+                                    </Dropdown.Item>
+                                ))}
+                            </Dropdown>
+                        </div>
+                        {/* Trier par */}
+                        <div className="flex items-center">
+                            <span className="mr-2">Trier par</span>
+                            <Select
+                                value={sortOption}
+                                onChange={(e) => handleSort(e.target.value)}
+                                className="w-40"
+                            >
+                                <option value="nomCroissant">Nom (A-Z)</option>
+                                <option value="nomDecroissant">Nom (Z-A)</option>
+                                <option value="utilisateurs">Nombre d&apos;utilisateurs</option>
+                            </Select>
+                        </div>
                     </div>
-    
-                    {/* Trier par */}
-                    <div className="flex items-center">
-                        <span className="mr-2">Trier par</span>
-                        <Select
-                            value={sortOption}
-                            onChange={(e) => handleSort(e.target.value)}
-                            className="w-40"
-                        >
-                            <option value="nomCroissant">Nom (A-Z)</option>
-                            <option value="nomDecroissant">Nom (Z-A)</option>
-                            <option value="utilisateurs">Nombre d&apos;utilisateurs</option>
-                        </Select>
+                )} 
+                {filteredReseaux && filteredReseaux.length == 0 && (
+                    <div>
+                        <div className="flex items-center justify-center w-full h-full">
+                            <Button
+                                size="lg"
+                                className="mt-4"
+                                href="/contact"
+                            >
+                                Contactez notre administrateur en cliquant ici
+                                <IoMdMailOpen className="ml-2" size={24} />
+                            </Button>
+                        </div>
                     </div>
-                </div>
+                )}
     
                 {/* Pagination en haut */}
-                {filteredReseaux.length > 0 && (
+                {filteredReseaux && filteredReseaux.length > 0 && (
                     <div className="flex justify-center items-center w-full max-w-6xl mb-6">
                         <Button
                             size="sm"
@@ -194,7 +225,7 @@ export function Networks() {
     
                 {/* Liste des réseaux */}
                 <div className="w-full max-w-6xl">
-                    {filteredReseaux.length > 0 ? (
+                    {filteredReseaux && filteredReseaux.length != null ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                             {currentItems.map((reseau, index) => (
                                 <Card
@@ -229,7 +260,7 @@ export function Networks() {
                 </div>
     
                 {/* Pagination en bas */}
-                {filteredReseaux.length > 0 && (
+                {filteredReseaux && filteredReseaux.length > 0 && (
                     <div className="flex justify-center items-center w-full max-w-6xl mt-6">
                         <Button
                             size="sm"
