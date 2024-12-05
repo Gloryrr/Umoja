@@ -163,6 +163,10 @@ class Offre
     #[MaxDepth(1)]
     private Collection $reponses;
 
+    #[ORM\Column(type: Types::BLOB, nullable: true)]
+    #[Groups(['offre:read', 'offre:write'])]
+    private $image = null;
+
     public function __construct()
     {
         $this->artistes = new ArrayCollection();
@@ -734,6 +738,18 @@ class Offre
                 $reponse->setOffre(null);
             }
         }
+        return $this;
+    }
+
+    public function getImage(): mixed
+    {
+        return $this->image;
+    }
+
+    public function setImage($image): static
+    {
+        $this->image = $image;
+
         return $this;
     }
 }

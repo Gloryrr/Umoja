@@ -216,6 +216,7 @@ class OffreService
                 empty($data['budgetEstimatif']) &&
                 empty($data['ficheTechniqueArtiste']) &&
                 empty($data['utilisateur']) &&
+                empty($data['image']) &&
                 empty($data['donneesSupplementaires']['reseau']) &&
                 empty($data['donneesSupplementaires']['genreMusical']) &&
                 empty($data['donneesSupplementaires']['artiste'])
@@ -239,6 +240,7 @@ class OffreService
                 intval($data['detailOffre']['nbArtistesConcernes'])
             );
             $offre->setNbInvitesConcernes(intval($data['detailOffre']['nbInvitesConcernes']));
+            $offre->setImage($data['image']); // doit être sous la forme d'un Blob
 
             $liens = $data['detailOffre']['liensPromotionnels'];
             $liensPromotionnels = "";
@@ -449,6 +451,12 @@ class OffreService
             }
             if (isset($data['detailOffre']['liensPromotionnels'])) {
                 $offre->setLiensPromotionnels($data['detailOffre']['liensPromotionnels']);
+            }
+            if (isset($data['detailOffre']['liensPromotionnels'])) {
+                $offre->setLiensPromotionnels($data['detailOffre']['liensPromotionnels']);
+            }
+            if (isset($data['image'])) {
+                $offre->setImage($data['image']);
             }
             if (isset($data['etatOffre'])) {
                 $etatOffre = new EtatOffre();
