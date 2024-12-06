@@ -38,6 +38,8 @@ const TableDesOffres = () => {
             try {
                 const response = await apiGet(`/offre/utilisateur/${idUtilisateur}`);
                 const allOffers: Offre[] = JSON.parse(response.offre);
+                console.log(response.offre);
+
 
                 const offersWithStates = await Promise.all(
                     allOffers.map(async (offre) => {

@@ -89,12 +89,8 @@ export function Networks() {
     };
 
     const startIndex = (currentPage - 1) * itemsPerPage;
-    if (filteredReseaux) {
-        const totalPages = Math.ceil(filteredReseaux.length / itemsPerPage);
-        const currentItems = filteredReseaux.slice(startIndex, startIndex + itemsPerPage);
-    }
-    const totalPages = 1;
-    const currentItems : Reseau[] = [];
+    const totalPages = filteredReseaux ? Math.ceil(filteredReseaux.length / itemsPerPage) : 1;
+    const currentItems = filteredReseaux ? filteredReseaux.slice(startIndex, startIndex + itemsPerPage) : [];
 
     const goToNextPage = () => {
         if (currentPage < totalPages) {
@@ -225,7 +221,7 @@ export function Networks() {
     
                 {/* Liste des réseaux */}
                 <div className="w-full max-w-6xl">
-                    {filteredReseaux && filteredReseaux.length != null ? (
+                    {filteredReseaux && filteredReseaux.length != 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                             {currentItems.map((reseau, index) => (
                                 <Card
@@ -291,7 +287,7 @@ export function Networks() {
         );
     } else {
         return (
-            <div>
+            <div className="">
                 <NetworksOffres 
                     networksName={nomReseauChoisi}
                     resetNetwork={resetNetwork}

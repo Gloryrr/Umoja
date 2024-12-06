@@ -85,6 +85,7 @@ async function fetchOffreDetails(id: number): Promise<Offre> {
   if (!response) {
     throw new Error("Erreur lors de la récupération des détails de l'offre");
   }
+  console.log(response.offre);
   return JSON.parse(response.offre);
 }
 
