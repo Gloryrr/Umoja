@@ -51,7 +51,7 @@ class OffreService
             ['groups' => ['offre:read']]
         );
         return new JsonResponse([
-            'offres' => $offresJSON,
+            'offres' => json_decode($offresJSON, true),
             'serialized' => true
         ], Response::HTTP_OK, ['Access-Control-Allow-Origin' => '*']);
     }
@@ -71,13 +71,14 @@ class OffreService
         int $id
     ): JsonResponse {
         $offre = $offreRepository->find($id);
+        $offre->setImage($offre->getImage());
         $offreJSON = $serializer->serialize(
             $offre,
             'json',
             ['groups' => ['offre:read']]
         );
         return new JsonResponse([
-            'offre' => $offreJSON,
+            'offre' => json_decode($offreJSON, true),
             'serialized' => true
         ], Response::HTTP_OK, ['Access-Control-Allow-Origin' => '*']);
     }
@@ -97,6 +98,9 @@ class OffreService
         mixed $data
     ): JsonResponse {
         $offres = $offreRepository->getOffresByListId($data['listeIdOffre']);
+        for ($i = 0; $i < sizeof($offres); $i++) {
+            $offres[$i]->setImage($offres[$i]->getImage());
+        }
         $offresJSON = $serializer->serialize(
             $offres,
             'json',
@@ -129,6 +133,7 @@ class OffreService
         $offres = [];
         for ($i = 0; $i < sizeof($reseaux); $i++) {
             $offresObject = $offreRepository->getOffresByTitleAndReseau($reseaux[$i]->getId(), $data['title']);
+            $offresObject[$i]->setImage($offresObject[$i]->getImage());
             $offres = array_merge($offres, $offresObject);
         }
         $offreJSON = $serializer->serialize(
@@ -156,14 +161,17 @@ class OffreService
         SerializerInterface $serializer,
         int $id
     ): JsonResponse {
-        $offre = $offreRepository->findBy(['utilisateur' => $id]);
+        $offres = $offreRepository->findBy(['utilisateur' => $id]);
+        for ($i = 0; $i < sizeof($offres); $i++) {
+            $offres[$i]->setImage($offres[$i]->getImage());
+        }
         $offreJSON = $serializer->serialize(
-            $offre,
+            $offres,
             'json',
             ['groups' => ['offre:read']]
         );
         return new JsonResponse([
-            'offre' => $offreJSON,
+            'offres' => $offreJSON,
             'serialized' => true
         ], Response::HTTP_OK, ['Access-Control-Allow-Origin' => '*']);
     }
@@ -216,10 +224,10 @@ class OffreService
                 empty($data['budgetEstimatif']) &&
                 empty($data['ficheTechniqueArtiste']) &&
                 empty($data['utilisateur']) &&
-                empty($data['image']) &&
                 empty($data['donneesSupplementaires']['reseau']) &&
                 empty($data['donneesSupplementaires']['genreMusical']) &&
-                empty($data['donneesSupplementaires']['artiste'])
+                empty($data['donneesSupplementaires']['artiste']) &&
+                empty($data['image']['file'])
                 )
             ) {
                 throw new \InvalidArgumentException("L'offre n'est pas complète.");
@@ -240,7 +248,7 @@ class OffreService
                 intval($data['detailOffre']['nbArtistesConcernes'])
             );
             $offre->setNbInvitesConcernes(intval($data['detailOffre']['nbInvitesConcernes']));
-            $offre->setImage($data['image']); // doit être sous la forme d'un Blob
+            $offre->setImage($data['image']['file']);
 
             $liens = $data['detailOffre']['liensPromotionnels'];
             $liensPromotionnels = "";
@@ -454,9 +462,6 @@ class OffreService
             }
             if (isset($data['detailOffre']['liensPromotionnels'])) {
                 $offre->setLiensPromotionnels($data['detailOffre']['liensPromotionnels']);
-            }
-            if (isset($data['image'])) {
-                $offre->setImage($data['image']);
             }
             if (isset($data['etatOffre'])) {
                 $etatOffre = new EtatOffre();
