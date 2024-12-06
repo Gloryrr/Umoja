@@ -756,8 +756,8 @@ class Offre
         }
         return base64_encode($binaryData);
     }
-    
-    
+
+
     public function setImage(mixed $image): self
     {
         if (is_array($image)) {
@@ -771,7 +771,7 @@ class Offre
         } else {
             $this->image = null;
         }
-    
+
         return $this;
-    }    
+    }
 }
