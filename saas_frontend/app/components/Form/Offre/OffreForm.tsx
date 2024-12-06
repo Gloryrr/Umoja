@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { Accordion, Button, Alert, Timeline } from 'flowbite-react';
+import { Accordion, Button, Alert, Timeline, FileInput, Label } from 'flowbite-react';
 import ExtrasForm from '@/app/components/Form/Offre/ExtrasForm';
 import ConditionsFinancieresForm from '@/app/components/Form/Offre/ConditionsFinancieresForm';
 import BudgetEstimatifForm from '@/app/components/Form/Offre/BudgetEstimatifForm';
@@ -63,14 +63,17 @@ const OffreForm: React.FC = () => {
         },
         donneesSupplementaires: {
             reseau: [],
-            nbReseaux: null,
+            nbReseaux: 0,
             genreMusical: [],
-            nbGenresMusicaux: null,
+            nbGenresMusicaux: 0,
             artiste: [],
-            nbArtistes: null
+            nbArtistes: 0
         },
         utilisateur: {
             username : typeof window !== 'undefined' ? sessionStorage.getItem('username') : ""
+        },
+        image: {
+            file: null
         }
     });
 
@@ -83,7 +86,6 @@ const OffreForm: React.FC = () => {
     const valideFormulaire = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            console.log(JSON.parse(JSON.stringify(formData)));
             const offrePostee = await apiPost('/offre/create', JSON.parse(JSON.stringify(formData)));
             setOffreId(JSON.parse(offrePostee.offre).id);
             setTypeMessage("success");
@@ -194,6 +196,47 @@ const OffreForm: React.FC = () => {
             artiste.length > 0 && 
             nbArtistes != null && nbArtistes > 0;
     };
+
+    const updateField = (
+        section: keyof FormData,
+        field: string,
+        value: any
+    ) => {
+        const valueAsList = Array.isArray(value) 
+            ? value 
+            : Object.values(value || {});
+    
+        setFormData((prevData) => ({
+            ...prevData,
+            [section]: {
+                ...prevData[section],
+                [field]: valueAsList
+            },
+        }));
+    };
+
+    const updateFieldWithBlob = async (
+        section: keyof FormData,
+        field: string,
+        file: File | null
+    ) => {
+        if (!file) {
+            updateField(section, field, null);
+            return;
+        }
+    
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const uint8Array = new Uint8Array(arrayBuffer);
+            const base64String = btoa(String.fromCharCode(...uint8Array));
+            console.log(section, field, base64String); 
+    
+            updateField(section, field, base64String);
+        } catch (error) {
+            console.error("Erreur lors de la conversion du fichier en base64:", error);
+        }
+    };
+          
 
     const getPointColor = (isValid: boolean) => {
         return isValid ? 'bg-green-500' : 'bg-red-500';
@@ -331,6 +374,18 @@ const OffreForm: React.FC = () => {
                             </Accordion.Content>
                         </Accordion.Panel>
                     </Accordion>
+                    <div>
+                        <Label htmlFor="file-upload-helper-text" value="Ajouter une image de référence" />
+                        <FileInput
+                            id="file-upload-helper-text"
+                            helperText="JPEG or JPG"
+                            accept=".jpg,.jpeg"
+                            onChange={(e) => {
+                                const file = e.target.files?.[0] || null;
+                                updateFieldWithBlob("image", "file", file);
+                            }}
+                        />
+                    </div>
 
                     <div className="flex justify-end mt-8">
                         <Button type="submit">

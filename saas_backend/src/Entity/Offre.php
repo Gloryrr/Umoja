@@ -741,14 +741,36 @@ class Offre
         return $this;
     }
 
-    public function getImage(): mixed
+    public function getImage(): ?string
     {
-        return $this->image;
+        if ($this->image === null) {
+            return null;
+        }
+        if (is_resource($this->image)) {
+            $binaryData = stream_get_contents($this->image);
+        } else {
+            $binaryData = $this->image;
+        }
+        if (base64_encode(base64_decode($binaryData, true)) === $binaryData) {
+            return $binaryData;
+        }
+        return base64_encode($binaryData);
     }
 
-    public function setImage($image): static
+
+    public function setImage(mixed $image): self
     {
-        $this->image = $image;
+        if (is_array($image)) {
+            $this->image = implode('', $image);
+        } elseif (is_string($image)) {
+            if (base64_decode($image, true) !== false) {
+                $this->image = base64_decode($image);
+            } else {
+                $this->image = $image;
+            }
+        } else {
+            $this->image = null;
+        }
 
         return $this;
     }

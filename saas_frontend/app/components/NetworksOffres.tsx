@@ -14,6 +14,7 @@ interface Offre {
     titleOffre: string;
     descrTournee: string;
     deadLine: string;
+    image : any;
 }
 
 function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
@@ -46,6 +47,7 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
             const responses = await apiPost(`/offres`, JSON.parse(JSON.stringify(data)));
             const offresDetails: Offre[] = JSON.parse(responses.offres);
             if (offresDetails) {
+                console.log(offresDetails);
                 setOffres(offresDetails);
             } else {
                 console.warn("Aucun détail trouvé pour les offres.");
@@ -59,7 +61,7 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
         if (networksName) {
             getOffresNetworks(networksName);
         }
-    }, [networksName, getOffresNetworks]); // Added getOffresNetworks to dependencies
+    }, [networksName, getOffresNetworks]);
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
@@ -91,6 +93,7 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
                 return 0;
         }
     });
+    
 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
@@ -142,16 +145,22 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {currentOffres.map((offre) => (
                         <Card key={offre.id} className="shadow-md">
+                            <img 
+                                src={`data:image/jpg;base64,${offre.image}`} 
+                                alt={offre.titleOffre} 
+                                className="w-full h-48 object-cover" 
+                            />
                             <h5 className="text-xl font-bold">{offre.titleOffre}</h5>
                             <p className="text-gray-700">{offre.descrTournee}</p>
                             <p className="text-sm text-gray-500">Date limite : {offre.deadLine}</p>
+                            
                             <Button
                                 onClick={() => router.push(`/mes-offres/detail/${offre.id}`)}
                                 className="mt-4"
                             >
                                 Voir détail
                             </Button>
-                        </Card>
+                        </Card>                                                          
                     ))}
                 </div>
             ) : (

@@ -84,4 +84,7 @@ export type FormData = {
     ficheTechniqueArtiste: FicheTechniqueArtiste;
     donneesSupplementaires: DonneesSupplementaires;
     utilisateur: Utilisateur;
+    image: {
+        file: ArrayBuffer | null;
+    };
 };
