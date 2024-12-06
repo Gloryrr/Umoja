@@ -23,7 +23,7 @@ function ConnectionForm() {
 
     try {
       const response = await apiPost("/login", JSON.parse(JSON.stringify(data)));
-      console.log(response);
+      (response);
 
       if (response.token) {
         sessionStorage.setItem("isConnected", "true");

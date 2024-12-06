@@ -86,7 +86,7 @@ async function fetchOffreDetails(id: number): Promise<Offre> {
     throw new Error("Erreur lors de la récupération des détails de l'offre");
   }
   console.log(response.offre);
-  return JSON.parse(response.offre);
+  return response.offre;
 }
 
 async function fetchExtrasOffre(idExtras: number): Promise<Extras[]> {
@@ -179,9 +179,14 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
         console.log(data.commenteesPar);
         data.commenteesPar.forEach((commentaire) => {
           fetchCommentaire(commentaire.id).then((commentaireData) => {
-            allCommentaires.push(...commentaireData);
+            console.log(commentaireData);
+            if (Array.isArray(commentaireData)) {
+              allCommentaires.push(...commentaireData);
+            } else {
+                allCommentaires.push(commentaireData); 
+            }
             if (allCommentaires.length === data.commenteesPar.length) {
-              setCommentaires(allCommentaires);
+              setCommentaires(allCommentaires.sort((a, b) => b.id - a.id));
             }
           });
         });
@@ -271,8 +276,6 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
       setError("Le commentaire ne peut pas être vide.");
       return;
     }
-
-    setLoading(true);
     setError("");
 
     const data = JSON.stringify({
@@ -284,14 +287,18 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
     });
 
     try {
-      await apiPost("/commentaire/create", JSON.parse(data));
+      await apiPost("/commentaire/create", JSON.parse(data)).then((response) => {
+        e.preventDefault();
+
+        if (response.error) {
+          throw new Error(response.error);
+        }
+        setCommentaires([JSON.parse(response.commentaire), ...commentaires]);
+      });
       setCommentaire("");
-      alert("Commentaire ajouté avec succès !");
     } catch (err) {
       setError("Une erreur est survenue lors de l'ajout du commentaire.");
       throw err;
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -308,8 +315,8 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
   }
 
   return (
-    <div className="p-6">
-      <Button href={"/accueil"} className="mb-4 w-[15%]">
+    <div className="p-6 ml-[10%] mr-[10%]">
+      <Button href={"/accueil"} className="mb-4 w-[10%]">
         <HiArrowLeft className="mr-2" />
         <span>Retour</span>
       </Button>

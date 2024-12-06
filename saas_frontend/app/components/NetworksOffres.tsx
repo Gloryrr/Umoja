@@ -47,7 +47,7 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
             const responses = await apiPost(`/offres`, JSON.parse(JSON.stringify(data)));
             const offresDetails: Offre[] = JSON.parse(responses.offres);
             if (offresDetails) {
-                console.log(offresDetails);
+                (offresDetails);
                 setOffres(offresDetails);
             } else {
                 console.warn("Aucun détail trouvé pour les offres.");

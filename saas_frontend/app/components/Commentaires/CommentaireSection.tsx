@@ -15,6 +15,7 @@ interface CommentSectionProps {
 }
 
 const CommentSection = ({ commentaires }: CommentSectionProps) => {
+    (commentaires);
     const [isVisible, setIsVisible] = useState(true);
 
     const toggleCommentsVisibility = () => {
@@ -53,18 +54,18 @@ const CommentSection = ({ commentaires }: CommentSectionProps) => {
                         commentaires.map((commentaire, index) => (
                             <div key={index} className="mb-6 p-4 border rounded-lg shadow-md">
                                 <div className="flex items-center space-x-4">
-                                    <Image
-                                        src={/* commentaire.utilisateur.avatar || */"/favicon.ico"}
-                                        alt={commentaire.utilisateur.username}
-                                        className="w-7 h-7 rounded-full"
-                                        width={28}
-                                        height={28}
-                                    />
+                                <Image
+                                    src="/favicon.ico"
+                                    alt={commentaire.utilisateur?.username || 'Utilisateur inconnu'}
+                                    className="w-7 h-7 rounded-full"
+                                    width={28}
+                                    height={28}
+                                />
                                     <div>
-                                        <p className="font-semibold text-lg">{commentaire.utilisateur.username}</p>
+                                        <p className="font-semibold text-lg">{commentaire.utilisateur?.username || "Utilisateur inconnu"}</p>
                                     </div>
                                 </div>
-                                <p className="mt-2">{commentaire.commentaire}</p>
+                                <p className="mt-2">{commentaire.commentaire || "pas de commentaire"}</p>
                             </div>
                         ))
                     )}
