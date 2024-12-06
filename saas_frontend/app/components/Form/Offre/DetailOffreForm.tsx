@@ -17,7 +17,6 @@ interface DetailOffreFormProps {
         placesMax: number | null;
         nbArtistesConcernes: number | null;
         nbInvitesConcernes: number | null;
-        liensPromotionnels: string[];
     };
     onDetailOffreChange: (name: string, value: string | number | string[]) => void;
 }
@@ -26,7 +25,6 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
     detailOffre,
     onDetailOffreChange,
 }) => {
-    const [liensPromotionnels, setLiensPromotionnels] = useState<string[]>(detailOffre.liensPromotionnels || ['']);
     const [placesMin, setPlacesMin] = useState(detailOffre.placesMin);
     const [placesMax, setPlacesMax] = useState(detailOffre.placesMax);
 
@@ -62,27 +60,6 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
         }
     };
 
-    const handleUpdateLien = (newLiens: string[]) => {
-        setLiensPromotionnels(newLiens);
-        onDetailOffreChange('liensPromotionnels', newLiens);
-    };
-    
-    const handleLienChange = (index: number, value: string) => {
-        const newLiens = [...liensPromotionnels];
-        newLiens[index] = value;
-        handleUpdateLien(newLiens);
-    };
-    
-    const handleAddLien = () => {
-        handleUpdateLien([...liensPromotionnels, '']);
-    };
-    
-    const handleRemoveLien = (index: number) => {
-        const newLiens = liensPromotionnels.filter((_, i) => i !== index);
-        handleUpdateLien(newLiens);
-    };
-    
-
     const handleCityInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
         onDetailOffreChange("villeVisee", value);
@@ -106,7 +83,6 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
         onDetailOffreChange("placesMax", "");
         onDetailOffreChange("nbArtistesConcernes", "");
         onDetailOffreChange("nbInvitesConcernes", "");
-        onDetailOffreChange("liensPromotionnels", []);
     };
 
     // const handleCitySelect = async (city: string) => {
@@ -291,35 +267,6 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                         className="mt-1"
                     />
                 </div>
-            </div>
-
-            <div className="mb-5">
-                <h3 className="text-2xl font-semibold mb-4">Liens Promotionnels:</h3>
-                {liensPromotionnels.map((lien, index) => (
-                    <div key={index} className="flex items-center mb-2">
-                        <TextInput
-                            type="url"
-                            value={lien}
-                            onChange={(e) => handleLienChange(index, e.target.value)}
-                            required
-                            placeholder="https://www.spotify.com..."
-                            className="w-full"
-                        />
-                        <Button
-                            color="failure"
-                            onClick={() => handleRemoveLien(index)}
-                            className="ml-2"
-                        >
-                            Supprimer
-                        </Button>
-                    </div>
-                ))}
-                <Button
-                    onClick={handleAddLien}
-                    className="mt-2 w-full"
-                >
-                    Ajouter un lien
-                </Button>
             </div>
         </Card>
     );    

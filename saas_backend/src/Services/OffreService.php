@@ -216,7 +216,6 @@ class OffreService
                 empty($data['detailOffre']['placesMax']) &&
                 empty($data['detailOffre']['nbArtistesConcernes']) &&
                 empty($data['detailOffre']['nbInvitesConcernes']) &&
-                empty($data['detailOffre']['liensPromotionnels']) &&
                 empty($data['extras']) &&
                 empty($data['etatOffre']) &&
                 empty($data['typeOffre']) &&
@@ -250,7 +249,7 @@ class OffreService
             $offre->setNbInvitesConcernes(intval($data['detailOffre']['nbInvitesConcernes']));
             $offre->setImage($data['image']['file']);
 
-            $liens = $data['detailOffre']['liensPromotionnels'];
+            $liens = $data['ficheTechniqueArtiste']['liensPromotionnels'];
             $liensPromotionnels = "";
             foreach ($liens as $lien) {
                 $liensPromotionnels .= "{$lien};";
@@ -263,7 +262,7 @@ class OffreService
             $extras->setCoutExtras(intval($data['extras']['coutExtras']));
             $extras->setExclusivite($data['extras']['exclusivite']);
             $extras->setException($data['extras']['exception']);
-            $extras->setOrdrePassage($data['extras']['ordrePassage']);
+            $extras->setOrdrePassage($data['ficheTechniqueArtiste']['ordrePassage']);
             $extras->setClausesConfidentialites($data['extras']['clausesConfidentialites']);
             $offre->setExtras($extras);
 
@@ -331,14 +330,14 @@ class OffreService
                 $offre->addGenreMusical($genreMusical[0]);
             }
 
-            $nb_artistes = intval($data['donneesSupplementaires']['nbArtistes']);
+            $nb_artistes = intval($data['ficheTechniqueArtiste']['nbArtistes']);
             for ($i = 0; $i < $nb_artistes; $i++) {
-                // $artiste = $artisteRepository->trouveArtisteByName($data['donneesSupplementaires']['artiste'][$i]);
+                // $artiste = $artisteRepository->trouveArtisteByName($data['ficheTechniqueArtiste']['artiste'][$i]);
                 // print_r($artiste);
                 // switch (sizeof($artiste)) {
                     // case 0:
                 $artisteObject = new Artiste();
-                $artisteObject->setNomArtiste($data['donneesSupplementaires']['artiste'][$i]);
+                $artisteObject->setNomArtiste($data['ficheTechniqueArtiste']['artiste'][$i]);
                 $artisteObject->setDescrArtiste("Artiste quelconque");
                 $artisteRepository->inscritArtiste($artisteObject);
                         // break;
@@ -457,11 +456,8 @@ class OffreService
             if (isset($data['detailOffre']['nbInvitesConcernes'])) {
                 $offre->setNbInvitesConcernes($data['detailOffre']['nbInvitesConcernes']);
             }
-            if (isset($data['detailOffre']['liensPromotionnels'])) {
-                $offre->setLiensPromotionnels($data['detailOffre']['liensPromotionnels']);
-            }
-            if (isset($data['detailOffre']['liensPromotionnels'])) {
-                $offre->setLiensPromotionnels($data['detailOffre']['liensPromotionnels']);
+            if (isset($data['ficheTechniqueArtiste']['liensPromotionnels'])) {
+                $offre->setLiensPromotionnels($data['ficheTechniqueArtiste']['liensPromotionnels']);
             }
             if (isset($data['etatOffre'])) {
                 $etatOffre = new EtatOffre();
@@ -506,31 +502,31 @@ class OffreService
                 }
                 $offre->setBudgetEstimatif($budgetEstimatif);
             }
-            if (isset($data['donneesSupplementaires']['ficheTechniqueArtiste'])) {
+            if (isset($data['ficheTechniqueArtiste'])) {
                 $ficheTechniqueArtiste = new FicheTechniqueArtiste();
-                if (isset($data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinBackline'])) {
+                if (isset($data['ficheTechniqueArtiste']['besoinBackline'])) {
                     $ficheTechniqueArtiste->setBesoinBackline(
-                        $data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinBackline']
+                        $data['ficheTechniqueArtiste']['besoinBackline']
                     );
                 }
-                if (isset($data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinEclairage'])) {
+                if (isset($data['ficheTechniqueArtiste']['besoinEclairage'])) {
                     $ficheTechniqueArtiste->setBesoinEclairage(
-                        $data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinEclairage']
+                        $data['ficheTechniqueArtiste']['besoinEclairage']
                     );
                 }
-                if (isset($data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinEquipements'])) {
+                if (isset($data['ficheTechniqueArtiste']['besoinEquipements'])) {
                     $ficheTechniqueArtiste->setBesoinEquipements(
-                        $data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinEquipements']
+                        $data['ficheTechniqueArtiste']['besoinEquipements']
                     );
                 }
-                if (isset($data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinScene'])) {
+                if (isset($data['ficheTechniqueArtiste']['besoinScene'])) {
                     $ficheTechniqueArtiste->setBesoinScene(
-                        $data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinScene']
+                        $data['ficheTechniqueArtiste']['besoinScene']
                     );
                 }
-                if (isset($data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinSonorisation'])) {
+                if (isset($data['ficheTechniqueArtiste']['besoinSonorisation'])) {
                     $ficheTechniqueArtiste->setBesoinSonorisation(
-                        $data['donneesSupplementaires']['ficheTechniqueArtiste']['besoinSonorisation']
+                        $data['ficheTechniqueArtiste']['besoinSonorisation']
                     );
                 }
                 $offre->setFicheTechniqueArtiste($ficheTechniqueArtiste);

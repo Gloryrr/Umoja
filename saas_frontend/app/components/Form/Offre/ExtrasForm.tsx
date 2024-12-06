@@ -9,7 +9,6 @@ interface ExtrasFormProps {
         coutExtras: number | null;
         exclusivite: string | null;
         exception: string | null;
-        ordrePassage: string | null;
         clausesConfidentialites: string | null;
     };
     onExtrasChange: (name: string, value: string) => void;
@@ -29,7 +28,6 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
         onExtrasChange("coutExtras", "");
         onExtrasChange("exclusivite", "");
         onExtrasChange("exception", "");
-        onExtrasChange("ordrePassage", "");
         onExtrasChange("clausesConfidentialites", "");
     };
 
@@ -99,22 +97,7 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
                     />
                 </div>
             </div>
-
-            {/* Section ordre de passage et clauses de confidentialité */}
-            <div className="grid gap-4 mb-5">
-                <div>
-                    <Label htmlFor="ordrePassage" value="Ordre de passage des artistes durant l'évènement:" />
-                    <TextInput
-                        id="ordrePassage"
-                        name="ordrePassage"
-                        type="text"
-                        value={extras.ordrePassage ?? ""}
-                        onChange={handleExtrasChange}
-                        placeholder="Artiste 1 - Artiste 2 - Artiste 3..."
-                        className='w-full'
-                    />
-                </div>
-            </div>
+            
             <div>
                 <Label htmlFor="clausesConfidentialites" value="Clauses de confidentialité pour l'évènement:" />
                 <Textarea

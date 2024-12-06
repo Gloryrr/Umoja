@@ -37,8 +37,8 @@ const TableDesOffres = () => {
             const startIndex = (currentPage - 1) * offersPerPage;
             try {
                 const response = await apiGet(`/offre/utilisateur/${idUtilisateur}`);
-                const allOffers: Offre[] = JSON.parse(response.offre);
-                console.log(response.offre);
+                const allOffers: Offre[] = JSON.parse(response.offres);
+                (response.offres);
 
 
                 const offersWithStates = await Promise.all(

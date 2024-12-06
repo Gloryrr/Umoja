@@ -37,13 +37,13 @@ export function Networks() {
         );
         if (responses) {
             const fetchedReseaux = JSON.parse(responses.utilisateur)[0].reseaux || [];
-            console.log(fetchedReseaux);
+            (fetchedReseaux);
             setFilteredReseaux(fetchedReseaux);
         }
         const responsesGenres = await apiGet("/genres-musicaux");
         if (responsesGenres) {
             const genresMusicaux = JSON.parse(responsesGenres.genres_musicaux);
-            console.log("Genres musicaux :", genresMusicaux);
+            ("Genres musicaux :", genresMusicaux);
             setGenresMusicaux(genresMusicaux);
         }
     };
@@ -76,7 +76,7 @@ export function Networks() {
     };
 
     const handleNetworkClick = (nomReseau: string) => {
-        console.log(`Naviguer vers le réseau : ${nomReseau}`);
+        (`Naviguer vers le réseau : ${nomReseau}`);
         setNomReseauChoisi(nomReseau);
     };
 

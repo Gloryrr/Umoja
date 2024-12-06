@@ -2,6 +2,7 @@
 import React from 'react';
 import { TextInput, Label, Card, Button } from 'flowbite-react';
 import { FiRefreshCw } from "react-icons/fi";
+import { useState } from 'react';
 
 interface FicheTechniqueArtisteFormProps {
     ficheTechniqueArtiste: {
@@ -10,14 +11,20 @@ interface FicheTechniqueArtisteFormProps {
         besoinEquipements: string | null;
         besoinScene: string | null;
         besoinSonorisation: string | null;
+        ordrePassage: string | null;
+        liensPromotionnels: string[];
+        artiste: string[];
+        nbArtistes: number | null;
     };
-    onFicheTechniqueChange: (name: string, value: string) => void;
+    onFicheTechniqueChange: (name: string, value: string | string[] | number) => void;
 }
 
 const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
     ficheTechniqueArtiste,
     onFicheTechniqueChange,
 }) => {
+    const [liensPromotionnels, setLiensPromotionnels] = useState<string[]>(ficheTechniqueArtiste.liensPromotionnels || ['']);
+    const [artistes, setArtistes] = useState<string[]>(ficheTechniqueArtiste.artiste);
     const handleFicheTechniqueArtisteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         onFicheTechniqueChange(name, value);
@@ -29,6 +36,49 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
         onFicheTechniqueChange("besoinEquipements", "");
         onFicheTechniqueChange("besoinScene", "");
         onFicheTechniqueChange("besoinSonorisation", "");
+        onFicheTechniqueChange("ordrePassage", "");
+        onFicheTechniqueChange("liensPromotionnels", []);
+        onFicheTechniqueChange("artiste", []);
+        onFicheTechniqueChange("nbArtistes", 0);
+    };
+
+    const handleUpdateLien = (newLiens: string[]) => {
+        setLiensPromotionnels(newLiens);
+        onFicheTechniqueChange('liensPromotionnels', newLiens);
+    };
+
+    const handleLienChange = (index: number, value: string) => {
+        const newLiens = [...liensPromotionnels];
+        newLiens[index] = value;
+        handleUpdateLien(newLiens);
+    };
+    
+    const handleAddLien = () => {
+        handleUpdateLien([...liensPromotionnels, '']);
+    };
+    
+    const handleRemoveLien = (index: number) => {
+        const newLiens = liensPromotionnels.filter((_, i) => i !== index);
+        handleUpdateLien(newLiens);
+    };
+
+    const handleArtisteChange = (index: number, value: string) => {
+        const updatedArtistes = [...artistes];
+        updatedArtistes[index] = value;
+        setArtistes(updatedArtistes);
+        onFicheTechniqueChange('artiste', updatedArtistes);
+        onFicheTechniqueChange('nbArtistes', updatedArtistes.length);
+    };
+
+    const addArtisteField = () => {
+        setArtistes([...artistes, ""]);
+    };
+
+    const removeArtisteField = (index: number) => {
+        const updatedArtistes = artistes.filter((_, i) => i !== index);
+        setArtistes(updatedArtistes);
+        onFicheTechniqueChange('artiste', updatedArtistes);
+        onFicheTechniqueChange('nbArtistes', updatedArtistes.length);
     };
 
     return (
@@ -109,6 +159,72 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                     placeholder="Console de mixage, etc..."
                     required
                 />
+            </div>
+            <div className="flex flex-col rounded-lg mb-4">
+                <div className="items-center">
+                    <h3 className="text-2xl font-semibold mb-4">Artistes Concernés</h3>
+                </div>
+
+                {artistes.map((artiste, index) => (
+                    <div key={index} className="flex items-center mb-2">
+                        <TextInput
+                            type="text"
+                            value={artiste}
+                            onChange={(e) => handleArtisteChange(index, e.target.value)}
+                            placeholder="Nom de l'artiste..."
+                            className="w-full"
+                        />
+                        <Button color="failure" onClick={() => removeArtisteField(index)} size="sm" className="ml-2">
+                            Supprimer
+                        </Button>
+                    </div>
+                ))}
+                <Button onClick={addArtisteField} className="mt-2 w-full">
+                    Ajouter un artiste
+                </Button>
+            </div>
+            {/* Section ordre de passage et clauses de confidentialité */}
+            <div className="grid gap-4 mb-5">
+                <div>
+                    <Label htmlFor="ordrePassage" value="Ordre de passage des artistes durant l'évènement:" />
+                    <TextInput
+                        id="ordrePassage"
+                        name="ordrePassage"
+                        type="text"
+                        value={ficheTechniqueArtiste.ordrePassage ?? ""}
+                        onChange={handleFicheTechniqueArtisteChange}
+                        placeholder="Artiste 1 - Artiste 2 - Artiste 3..."
+                        className='w-full'
+                    />
+                </div>
+            </div>
+            <div className="mb-5">
+                <h3 className="text-2xl font-semibold mb-4">Liens Promotionnels:</h3>
+                {liensPromotionnels.map((lien, index) => (
+                    <div key={index} className="flex items-center mb-2">
+                        <TextInput
+                            type="url"
+                            value={lien}
+                            onChange={(e) => handleLienChange(index, e.target.value)}
+                            required
+                            placeholder="https://www.spotify.com..."
+                            className="w-full"
+                        />
+                        <Button
+                            color="failure"
+                            onClick={() => handleRemoveLien(index)}
+                            className="ml-2"
+                        >
+                            Supprimer
+                        </Button>
+                    </div>
+                ))}
+                <Button
+                    onClick={handleAddLien}
+                    className="mt-2 w-full"
+                >
+                    Ajouter un lien
+                </Button>
             </div>
         </Card>
     );

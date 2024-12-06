@@ -49,7 +49,7 @@ const NavbarApp = () => {
         const offresAvecEtat = await Promise.all(
           offres.map(async (offre: { id: number; etatOffre: { id: number } }) => {
             try {
-              console.log(offre);
+              (offre);
               const etatResponse = await apiGet(`/etat-offre/${offre.etatOffre.id}`);
               return {
                 ...offre,
