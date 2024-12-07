@@ -20,6 +20,7 @@ interface SearchResult {
 const NavbarApp = () => {
   const [navItems] = useState([
     { id: 1, text: "Accueil", href: "/accueil" },
+    { id: 2, text: "Mes réseaux", href: "/networks" },
     { id: 3, text: "Créer un projet", href: "/offre" },
   ]);
 
@@ -127,14 +128,6 @@ const NavbarApp = () => {
                 ))}
                 <MegaMenu.Dropdown toggle={<span className="cursor-pointer">Services</span>}>
                   <ul className="grid grid-cols-3 gap-4 p-4">
-                    <li>
-                      <a
-                        href="/networks"
-                        className="hover:text-primary-600 dark:hover:text-primary-500"
-                      >
-                        Mes réseaux
-                      </a>
-                    </li>
                     <li>
                       <a
                         href="/contact"
