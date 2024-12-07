@@ -1,0 +1,1362 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Umodja API documentation",
+        "description": "Documentation de l'API avec OpenAPI (Swagger).",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/v1/artistes": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re tous les artistes existants.",
+                "operationId": "get_get_artistes",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/artiste/{id}": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re un artiste par rapport \u00e0 son id.",
+                "operationId": "get_get_artiste_by_id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/artiste/create": {
+            "post": {
+                "summary": "Cr\u00e9e un nouveau artiste.",
+                "operationId": "post_create_artiste",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/artiste/update/{id}": {
+            "patch": {
+                "summary": "Met \u00e0 jour un artiste existant.",
+                "operationId": "patch_update_artiste",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/artiste/delete/{id}": {
+            "delete": {
+                "summary": "Supprime un artiste.",
+                "operationId": "delete_delete_artiste",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/budgets-estimatifs": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re tous les budgets estimatifs existants.",
+                "operationId": "get_get_budgets_estimatifs",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/budget-estimatif/{id}": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re le budget estimatif cibl\u00e9 en fonction de son identifiant existants.",
+                "operationId": "get_get_budget_estimatif_by_id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/budget-estimatif/create": {
+            "post": {
+                "summary": "Cr\u00e9e un nouveau budget estimatif.",
+                "operationId": "post_create_budget_estimatif",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/budget-estimatif/update/{id}": {
+            "patch": {
+                "summary": "Met \u00e0 jour un budget estimatif existant.",
+                "operationId": "patch_update_budget_estimatif",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/budget-estimatif/delete/{id}": {
+            "delete": {
+                "summary": "Supprime un budget estimatif.",
+                "operationId": "delete_delete_budget_estimatif",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/commentaires": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re tous les commentaires existants.",
+                "operationId": "get_get_commentaires",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/commentaire/{id}": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re un commentaire \u00e0 partir de son id.",
+                "operationId": "get_get_commentaire_by_id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/commentaire/create": {
+            "post": {
+                "summary": "Cr\u00e9e un nouveau commentaire.",
+                "operationId": "post_create_commentaire",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/commentaire/update/{id}": {
+            "patch": {
+                "summary": "Met \u00e0 jour un commentaire existant.",
+                "operationId": "patch_update_commentaire",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/commentaire/delete/{id}": {
+            "delete": {
+                "summary": "Supprime un commentaire.",
+                "operationId": "delete_delete_commentaire",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/conditions-financieres": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re toutes les conditions financi\u00e8res existantes.",
+                "operationId": "get_get_conditions_financieres",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/condition-financiere/{id}": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re une condition financi\u00e8re existante en fonction de son id.",
+                "operationId": "get_get_condition_financiere_by_id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/condition-financiere/create": {
+            "post": {
+                "summary": "Cr\u00e9e une nouvelle conditions financi\u00e8re.",
+                "operationId": "post_create_condition_financiere",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/condition-financiere/update/{id}": {
+            "patch": {
+                "summary": "Met \u00e0 jour une condition financi\u00e8re existante.",
+                "operationId": "patch_update_condition_financiere",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/condition-financiere/delete/{id}": {
+            "delete": {
+                "summary": "Supprime une condition financi\u00e8re.",
+                "operationId": "delete_delete_condition_financiere",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/envoi-email": {
+            "post": {
+                "operationId": "post_envoi_email",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/etats-offre": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re tous les \u00e9tats d'offre existants.",
+                "operationId": "get_get_etats_offre",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/etat-offre/{id}": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re un \u00e9tat d'offre existants.",
+                "operationId": "get_get_etat_offre_by_id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/etat-offre/create": {
+            "post": {
+                "summary": "Cr\u00e9e un nouveau genre musical.",
+                "operationId": "post_create_etat_offre",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/etat-offre/update/{id}": {
+            "patch": {
+                "summary": "Met \u00e0 jour un genre  existant.",
+                "operationId": "patch_update_etat_offre",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/etat-offre/delete/{id}": {
+            "delete": {
+                "summary": "Supprime un genre musical.",
+                "operationId": "delete_delete_etat_offre",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/etats-reponse": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re tous les \u00e9tats de r\u00e9ponse existants.",
+                "operationId": "get_get_etats_reponse",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/etats-reponse/{id}": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re un \u00e9tat de r\u00e9ponse par son id.",
+                "operationId": "get_get_etat_reponse_by_id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/etat-reponse/create": {
+            "post": {
+                "summary": "Cr\u00e9e un nouvel \u00e9tat de r\u00e9ponse.",
+                "operationId": "post_create_etat_reponse",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/etat-reponse/update/{id}": {
+            "patch": {
+                "summary": "Met \u00e0 jour un \u00e9tat de r\u00e9ponse existant.",
+                "operationId": "patch_update_etat_reponse",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/etat-reponse/delete/{id}": {
+            "delete": {
+                "summary": "Supprime un \u00e9tat de r\u00e9ponse.",
+                "operationId": "delete_delete_etat_reponse",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/extras": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re tous les extras.",
+                "operationId": "get_get_extras",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/extras/{id}": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re un extras en focntion de son id.",
+                "operationId": "get_get_extras_by_id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/extras/create": {
+            "post": {
+                "summary": "Cr\u00e9e un nouvel extra.",
+                "operationId": "post_create_extra",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/extras/update/{id}": {
+            "patch": {
+                "summary": "Met \u00e0 jour un extra existant.",
+                "operationId": "patch_update_extra",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/extras/delete/{id}": {
+            "delete": {
+                "summary": "Supprime un extra.",
+                "operationId": "delete_delete_extra",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/fiches-techniques": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re toutes les fiches techniques d'artistes.",
+                "operationId": "get_get_fiches_techniques",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/fiches-technique/{id}": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re une fichie technique \u00e0 partir de son id.",
+                "operationId": "get_get_fiches_technique_by_id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/fiche-technique/create": {
+            "post": {
+                "summary": "Cr\u00e9e une nouvelle fiche technique d'artiste.",
+                "operationId": "post_create_fiche_technique",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/fiche-technique/update/{id}": {
+            "patch": {
+                "summary": "Met \u00e0 jour une fiche technique d'artiste existante.",
+                "operationId": "patch_update_fiche_technique",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/fiches-techniques/delete/{id}": {
+            "delete": {
+                "summary": "Supprime une fiche technique d'artiste.",
+                "operationId": "delete_delete_fiche_technique",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/genres-musicaux": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re tous les genres musicaux existants.",
+                "operationId": "get_get_genres_musicaux",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/genre-musical/{id}": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re un genre musical par son id.",
+                "operationId": "get_get_genre_musical_by_id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/genre-musical/create": {
+            "post": {
+                "summary": "Cr\u00e9e un nouveau genre musical.",
+                "operationId": "post_create_genre_musical",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/genre-musical/update/{id}": {
+            "patch": {
+                "summary": "Met \u00e0 jour un genre  existant.",
+                "operationId": "patch_update_genre_musical",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/login": {
+            "post": {
+                "summary": "V\u00e9rifie et accepte la connexion des utilisateurs pour leur compte.",
+                "operationId": "post_login_user",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/offres": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re tous les Offres.",
+                "operationId": "get_get_Offres",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "summary": "R\u00e9cup\u00e8re une liste d'offres en fonction d'une liste d'identifiant.",
+                "operationId": "post_get_offres_by_liste_id",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/offre/{id}": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re une offre en particuli\u00e8re en fonction de son id.",
+                "operationId": "get_get_offre",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/offres/title": {
+            "post": {
+                "summary": "R\u00e9cup\u00e8re les offres fonction de leur titre et de leur appartenance \u00e0 un r\u00e9seau.",
+                "operationId": "post_get_offres_by_title",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/offre/utilisateur/{id}": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re toutes les offres qui sont li\u00e9s \u00e0 un utilisateur en particulier.",
+                "operationId": "get_get_offre_by_utilisateur",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/offre/create": {
+            "post": {
+                "summary": "Cr\u00e9e une nouvelle Offre.",
+                "operationId": "post_create_offre",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/offre/update/{id}": {
+            "patch": {
+                "summary": "Met \u00e0 jour une Offre existante.",
+                "operationId": "patch_update_offre",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/offre/delete/{id}": {
+            "delete": {
+                "summary": "Supprime une Offre.",
+                "operationId": "delete_delete_offre",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/offre/add-artiste": {
+            "post": {
+                "summary": "Ajoute un artiste \u00e0 l'offre",
+                "operationId": "post_add_artiste_offre",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/offre/delete-artiste": {
+            "delete": {
+                "summary": "Supprime un artiste de l'offre",
+                "operationId": "delete_delete_artiste_offre",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/offre/add-genre-musical": {
+            "post": {
+                "summary": "Ajoute un genre musical pr\u00e9f\u00e9r\u00e9 \u00e0 une offre",
+                "operationId": "post_add_genre_musical_offre",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/offre/delete-genre-musical": {
+            "delete": {
+                "summary": "Retire un genre musical pr\u00e9f\u00e9r\u00e9 du r\u00e9seau",
+                "operationId": "delete_delete_genre_musical_offre",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/register": {
+            "post": {
+                "summary": "V\u00e9rifie et accepte la connexion des utilisateurs pour leur compte.",
+                "operationId": "post_register_user",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/reponses": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re toutes les r\u00e9ponses existantes.",
+                "operationId": "get_get_reponses",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/reponse/{id}": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re une r\u00e9ponse par son id.",
+                "operationId": "get_get_reponse_by_id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/reponse/create": {
+            "post": {
+                "summary": "Cr\u00e9e une nouvelle r\u00e9ponse.",
+                "operationId": "post_create_reponse",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/reponse/update/{id}": {
+            "patch": {
+                "summary": "Met \u00e0 jour une r\u00e9ponse existante.",
+                "operationId": "patch_update_reponse",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/reponse/delete/{id}": {
+            "delete": {
+                "summary": "Supprime une r\u00e9ponse.",
+                "operationId": "delete_delete_reponse",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/reseaux": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re tous les r\u00e9seaux existants.",
+                "operationId": "get_get_reseaux",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/reseau": {
+            "post": {
+                "summary": "R\u00e9cup\u00e8re les informations d'un r\u00e9seau par rapport \u00e0 son nom.",
+                "operationId": "post_get_reseau_by_name",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/reseau/create": {
+            "post": {
+                "summary": "Cr\u00e9e un nouveau r\u00e9seau.",
+                "operationId": "post_create_reseau",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/reseau/update/{id}": {
+            "patch": {
+                "summary": "Met \u00e0 jour un genre  existant.",
+                "operationId": "patch_update_reseau",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/reseau/delete/{id}": {
+            "delete": {
+                "summary": "Supprime un r\u00e9seau.",
+                "operationId": "delete_delete_reseau",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/reseau/add-membre": {
+            "post": {
+                "summary": "Ajoute un utilisateur au r\u00e9seau",
+                "operationId": "post_add_membre",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/reseau/delete-membre": {
+            "delete": {
+                "summary": "Supprime un utilisateur au r\u00e9seau",
+                "operationId": "delete_delete_membre",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/type-offres": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re toutes les types d'offres existants.",
+                "operationId": "get_get_types_offre",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/type-offre/{id}": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re un type d'offre par son id existantes.",
+                "operationId": "get_get_type_offre_by_id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/type-offre/create": {
+            "post": {
+                "summary": "Cr\u00e9e une nouvelle offre de type.",
+                "operationId": "post_create_type_offre",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/type-offre/update/{id}": {
+            "patch": {
+                "summary": "Met \u00e0 jour une offre de type existante.",
+                "operationId": "patch_update_type_offre",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/type-offre/delete/{id}": {
+            "delete": {
+                "summary": "Supprime une offre de type.",
+                "operationId": "delete_delete_type_offre",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/utilisateurs": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re tous les utilisateurs.",
+                "operationId": "get_get_utilisateurs",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/utilisateur": {
+            "post": {
+                "summary": "R\u00e9cup\u00e8re un utilisateur par son nom.",
+                "operationId": "post_get_utilisateurs_by_name",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/utilisateurs/create": {
+            "post": {
+                "summary": "Cr\u00e9e un nouvel utilisateur.",
+                "operationId": "post_create_utilisateur",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/utilisateurs/update/{id}": {
+            "patch": {
+                "summary": "Met \u00e0 jour un utilisateur existant.",
+                "operationId": "patch_update_utilisateur",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/utilisateurs/delete/{id}": {
+            "delete": {
+                "summary": "Supprime un utilisateur.",
+                "operationId": "delete_delete_utilisateur",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/utilisateur/add-genre-musical": {
+            "post": {
+                "summary": "Ajoute un genre musical pr\u00e9f\u00e9r\u00e9 \u00e0 l'utilisateur",
+                "operationId": "post_add_genre_musical",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/utilisateur/delete-genre-musical": {
+            "delete": {
+                "summary": "Retire un genre musical pr\u00e9f\u00e9r\u00e9 aux pr\u00e9f\u00e9rences de l'utilisateur",
+                "operationId": "delete_delete_genre_musical",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/utilisateur/preference-notification/{username}": {
+            "get": {
+                "summary": "R\u00e9cup\u00e8re les pr\u00e9f\u00e9rences de notification d'un utilisateur.",
+                "operationId": "get_get_preference_notification_utilisateur",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/utilisateur/preference-notification/update/{username}": {
+            "patch": {
+                "summary": "Mets \u00e0 jour les pr\u00e9f\u00e9rences de notification d'un utilisateur.",
+                "operationId": "patch_get_preference_update_notification_utilisateur",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        }
+    }
+}

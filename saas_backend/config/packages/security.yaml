@@ -12,7 +12,7 @@ security:
 
     firewalls:
         dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            pattern: ^/(_(profiler|wdt)|css|images|js|(/api/doc))/
             security: false
 
         register: 
@@ -39,3 +39,4 @@ security:
         - { path: ^/api/v1/register$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/v1/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/v1/, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/doc/swagger/ui, roles: ROLE_ADMIN }

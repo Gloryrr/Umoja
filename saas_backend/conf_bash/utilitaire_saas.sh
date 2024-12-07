@@ -17,7 +17,8 @@ echo -e "\t4. Créer un Controller"
 echo -e "\t5. Exécuter les tests unittaires"
 echo -e "\t6. Checker le coverage des tests"
 echo -e "\t7. Vérifier la qualité du code"
-echo -e "\t8. Corriger la qualité du code\n"
+echo -e "\t8. Corriger la qualité du code"
+echo -e "\t9. Générer la documentaiton openapi\n"
 
 read -p "Entrer l'instruction demandée : " instruction
 
@@ -39,6 +40,8 @@ elif [ $instruction == "7" ]; then
     vendor/bin/phpcs -p --standard=PSR12 src
 elif [ $instruction == "8" ]; then
     vendor/bin/phpcbf src
+elif [ $instruction == "9" ]; then
+    docker-compose exec application php bin/console nelmio:apidoc:dump --format=json > doc/openapi.json
 fi
 
 # exécuter une requête SQL : docker-compose exec application php bin/console doctrine:query:sql "REQUETE SQL"
