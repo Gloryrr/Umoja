@@ -67,7 +67,7 @@ function ConnectionForm() {
           <div className="relative w-full h-1/2">
             <TextInput
               type="password"
-              placeholder="Mot De Passe"
+              placeholder="Mot de passe"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -87,7 +87,7 @@ function ConnectionForm() {
           </div>
 
           <Button
-            className="w-full h-11 border-none outline-none rounded-full shadow-md cursor-pointer text-lg font-bold"
+            className="w-full border-none outline-none rounded-full shadow-md cursor-pointer text-lg font-bold"
             type="submit"
           >
             Se connecter
