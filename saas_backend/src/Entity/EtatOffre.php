@@ -18,10 +18,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 class EtatOffre
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
     #[Groups(['etat_offre:read', 'offre:read'])]
-    private int $id = 0;
+    private int $id;
 
     #[ORM\Column(length: 50)]
     #[Groups(['etat_offre:read', 'etat_offre:write'])]
@@ -45,6 +45,19 @@ class EtatOffre
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * Définit l'identifiant de l'état d'offre.
+     *
+     * @param int $id L'identifiant à assigner à l'état d'offre.
+     * @return static
+     */
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**

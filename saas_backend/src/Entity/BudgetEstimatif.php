@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 class BudgetEstimatif
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
     #[Groups(['budget_estimatif:read', 'offre:read'])]
     private int $id;
@@ -60,9 +60,11 @@ class BudgetEstimatif
      *
      * @return int
      */
-    public function setId(int $id): int
+    public function setId(int $id): static
     {
-        return $this->id = $id;
+        $this->id = $id;
+
+        return $this;
     }
 
     /**

@@ -243,7 +243,7 @@ class ExtrasService
                 'extra' => $extraJSON,
                 'message' => 'Extra supprimé avec succès.',
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         }
 
         return new JsonResponse([
@@ -296,7 +296,7 @@ class ExtrasService
                 'extras' => $extrasJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'extras' => null,
@@ -350,7 +350,7 @@ class ExtrasService
                 'extras' => $extrasJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'extras' => null,

@@ -23,10 +23,10 @@ class Reseau
      * @var int
      */
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
     #[Groups(['reseau:read'])]
-    private int $id = 0;
+    private int $id;
 
     /**
      * Le nom du réseau.
@@ -95,6 +95,18 @@ class Reseau
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * Définit l'id de l'instance
+     * 
+     * @param int
+     */
+    public function setId(int $id) : static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**

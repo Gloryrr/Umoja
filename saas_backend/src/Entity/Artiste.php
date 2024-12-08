@@ -13,10 +13,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 class Artiste
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
     #[Groups(['artiste:read'])]
-    private int $id = 0;
+    private int $id;
 
     #[ORM\Column(length: 50)]
     #[Groups([
@@ -56,6 +56,13 @@ class Artiste
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getNomArtiste(): string

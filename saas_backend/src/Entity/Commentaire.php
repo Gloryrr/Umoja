@@ -16,10 +16,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Commentaire
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
     #[Groups(['commentaire:read', 'utilisateur:read', 'offre:read'])]
-    private int $id = 0;
+    private int $id;
 
     #[ORM\Column(length: 500)]
     #[Groups(['commentaire:read', 'commentaire:write'])]
@@ -43,6 +43,19 @@ class Commentaire
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * Définit l'identifiant du commentaire.
+     *
+     * @param int $id L'identifiant du commentaire.
+     * @return self Retourne l'instance de la classe Commentaire pour un chaînage fluide.
+     */
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**

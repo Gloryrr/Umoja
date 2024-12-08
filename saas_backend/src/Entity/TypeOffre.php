@@ -18,10 +18,10 @@ class TypeOffre
      * @var int
      */
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
     #[Groups(['type_offre:read'])]
-    private int $id = 0;
+    private int $id;
 
     /**
      * Nom du type d'offre.
@@ -51,6 +51,13 @@ class TypeOffre
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getNomTypeOffre(): string

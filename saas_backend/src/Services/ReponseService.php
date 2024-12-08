@@ -348,7 +348,7 @@ class ReponseService
                 'reponse_offre' => $reponseJSON,
                 'message' => 'Réponse supprimée',
                 'serialized' => true
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'reponse_offre' => null,

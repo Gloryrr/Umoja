@@ -18,10 +18,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 class Extras
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
     #[Groups(['extras:read', 'offre:read'])]
-    private int $id = 0;
+    private int $id;
 
     #[ORM\Column(length: 255, nullable: false)]
     #[Groups(['extras:read', 'extras:write'])]
@@ -65,6 +65,19 @@ class Extras
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * Définit l'identifiant des extras.
+     *
+     * @param int $id Le nouvel identifiant.
+     * @return static Retourne l'instance courante pour le chaînage de méthodes.
+     */
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**

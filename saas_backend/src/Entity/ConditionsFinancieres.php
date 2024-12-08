@@ -19,10 +19,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 class ConditionsFinancieres
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
     #[Groups(['conditions_financieres:read', 'offre:read'])]
-    private int $id = 0;
+    private int $id;
 
     #[ORM\Column]
     #[Groups(['conditions_financieres:read', 'conditions_financieres:write'])]
@@ -60,6 +60,19 @@ class ConditionsFinancieres
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * Définit l'identifiant unique des conditions financières.
+     *
+     * @param int $id
+     * @return static
+     */
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**

@@ -40,7 +40,7 @@ class ConditionsFinancieresTest extends TestCase
      */
     public function testIdCF()
     {
-        // Ici, comme l'ID est généré automatiquement, on ne teste que la récupération (par défaut null).
+        $this->conditionsFinancieres->setId(0);
         $this->assertEquals(0, $this->conditionsFinancieres->getId());
     }
 

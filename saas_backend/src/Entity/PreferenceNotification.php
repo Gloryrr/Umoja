@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 class PreferenceNotification
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
     #[Groups([
         'preference_notification:read',
@@ -21,7 +21,7 @@ class PreferenceNotification
         'utilisateur:read',
     ])]
     #[MaxDepth(1)]
-    private int $id = 0;
+    private int $id;
 
     #[ORM\Column]
     #[Groups(['preference_notification:read', 'preference_notification:write'])]
@@ -55,6 +55,13 @@ class PreferenceNotification
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function setId(int $id) : static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function isEmailNouvelleOffre(): bool

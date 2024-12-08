@@ -23,7 +23,7 @@ class Reponse
      * @var int
      */
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
     #[Groups([
         'reponse:read',
@@ -31,7 +31,7 @@ class Reponse
         'offre:read',
         'etat_reponse:read',
     ])]
-    private int $id = 0;
+    private int $id;
 
     /**
      * L'état de la réponse.
@@ -99,6 +99,18 @@ class Reponse
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * Définit l'id de l'instance
+     * 
+     * @param int
+     */
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+        
+        return $this;
     }
 
     /**

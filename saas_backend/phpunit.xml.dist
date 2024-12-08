@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit bootstrap="vendor/autoload.php">
+    <php>
+        <env name="RESET" value="0" />
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak" /> <!-- https://github.com/symfony/symfony/pull/24867 -->
+        <env name="APP_ENV" value="test"/>
+        <env name="KERNEL_CLASS" value="App\Kernel" />
+        <env name="CORS_ALLOW_ORIGIN_SERVEUR_FRONT" value="^http?://localhost:8000$"/>
+        <env name="DATABASE_URL" value="postgresql://postgres:postgres@BDD:5432/saas"/>
+        <env name="JWT_SECRET_KEY" value="%kernel.project_dir%/config/jwt/private.pem"/>
+        <env name="JWT_PUBLIC_KEY" value="%kernel.project_dir%/config/jwt/public.pem"/>
+        <env name="JWT_PASSPHRASE" value="umodja"/>
+    </php>
+
     <testsuites>
         <testsuite name="Application Test Suite">
             <directory>./tests</directory>

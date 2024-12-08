@@ -40,7 +40,8 @@ class CommentaireTest extends TestCase
      */
     public function testGetId()
     {
-        $this->assertEquals(0, $this->commentaire->getId());
+        $this->commentaire->setId(1);
+        $this->assertEquals(1, $this->commentaire->getId());
     }
 
     /**

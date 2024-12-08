@@ -39,6 +39,7 @@ class OffreTest extends TestCase
      */
     public function testGetIdInitial(): void
     {
+        $this->offre->setId(0);
         $this->assertEquals(0, $this->offre->getId());
     }
 

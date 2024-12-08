@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 class Offre
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
     #[Groups([
         'offre:read',
@@ -39,7 +39,7 @@ class Offre
         'commentaire:read',
         'reponse:read',
     ])]
-    private int $id = 0;
+    private int $id;
 
     #[ORM\Column(length: 50)]
     #[Groups(['offre:read', 'offre:write'])]
@@ -184,6 +184,19 @@ class Offre
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * Définit l'id de l'offre
+     *
+     * @param int $id
+     * @return self
+     */
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**
