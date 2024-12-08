@@ -759,11 +759,11 @@ class Offre
         if ($this->image === null) {
             return null;
         }
-        if (is_resource($this->image)) {
-            $binaryData = stream_get_contents($this->image);
-        } else {
-            $binaryData = $this->image;
-        }
+
+        $binaryData = is_resource($this->image) ? 
+            stream_get_contents($this->image) : 
+            $this->image;
+
         if (base64_encode(base64_decode($binaryData, true)) === $binaryData) {
             return $binaryData;
         }
@@ -776,11 +776,9 @@ class Offre
         if (is_array($image)) {
             $this->image = implode('', $image);
         } elseif (is_string($image)) {
-            if (base64_decode($image, true) !== false) {
-                $this->image = base64_decode($image);
-            } else {
+            base64_decode($image, true) !== false ? 
+                $this->image = base64_decode($image) : 
                 $this->image = $image;
-            }
         } else {
             $this->image = null;
         }
