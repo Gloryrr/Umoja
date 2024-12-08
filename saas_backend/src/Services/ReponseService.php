@@ -151,14 +151,11 @@ class ReponseService
             // Vérifie que les données nécessaires sont présentes
             if (
                 (
-                    empty($data['idEtatReponse']) ||
                     empty($data['idOffre']) ||
                     empty($data['dateDebut']) ||
                     empty($data['dateFin']) ||
                     empty($data['prixParticipation']) ||
-                    empty($data['utilisateur']) ||
-                    empty($data['offre']) ||
-                    empty($data['etatReponse'])
+                    empty($data['username'])
                 )
             ) {
                 throw new \InvalidArgumentException("Toutes les données de la réponse sont requises.");
@@ -166,21 +163,21 @@ class ReponseService
 
             // Création de l'objet Reponse
             $reponse = new Reponse();
-            $reponse->setDateDebut($data['dateDebut']);
-            $reponse->setDateFin($data['dateFin']);
+            $reponse->setDateDebut(new \DateTime($data['dateDebut']));
+            $reponse->setDateFin(new \DateTime($data['dateFin']));
             $reponse->setPrixParticipation($data['prixParticipation']);
 
-            $utilisateur = $utilisateurRepository->find(intval($data['utilisateur']['idUtilisateur']));
-            if ($utilisateur === null) {
+            $utilisateur = $utilisateurRepository->trouveUtilisateurByUsername($data['username']);
+            if ($utilisateur === null || count($utilisateur) === 0) {
                 return new JsonResponse([
                     'reponse_offre' => null,
                     'message' => "Utilisateur non trouvé, merci de vérifier les données fournies",
                     'serialized' => false
                 ], Response::HTTP_BAD_REQUEST);
             }
-            $reponse->setUtilisateur($utilisateur);
+            $reponse->setUtilisateur($utilisateur[0]);
 
-            $offre = $offreRepository->find(intval($data['offre']['idOffre']));
+            $offre = $offreRepository->find(intval($data['idOffre']));
             if ($offre === null) {
                 return new JsonResponse([
                     'reponse_offre' => null,
@@ -190,7 +187,7 @@ class ReponseService
             }
             $reponse->setOffre($offre);
 
-            $etatReponse = $etatReponseRepository->find(intval($data['etatReponse']['nomEtatReponse']));
+            $etatReponse = $etatReponseRepository->find(1);
             if ($etatReponse === null) {
                 return new JsonResponse([
                     'reponse_offre' => null,
@@ -198,7 +195,7 @@ class ReponseService
                     'serialized' => false
                 ], Response::HTTP_BAD_REQUEST);
             }
-            $reponse->setetatReponse($etatReponse);
+            $reponse->setEtatReponse($etatReponse);
 
 
             // Ajout de la réponse en base de données
@@ -223,7 +220,7 @@ class ReponseService
                 'serialized' => false
             ], Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
-            throw new \RuntimeException("Erreur lors de la création de la réponse", $e->getCode());
+            throw new \RuntimeException("Erreur lors de la création de la réponse", $e->getCode() . $e->getMessage());
         }
     }
 
@@ -261,7 +258,17 @@ class ReponseService
 
             // Mise à jour des données de la réponse
             if (isset($data['etatReponse'])) {
-                $etatReponse = $etatReponseRepository->find(intval($data['etatReponse']['nomEtatReponse']));
+                $etatReponse = null;
+                switch ($data['etatReponse']['nomEtatReponse']) {
+                    case 'Validée':
+                        $etatReponse = $etatReponseRepository->find(2); // est l'ID de validation
+                        break;
+                    case 'Refusée':
+                        $etatReponse = $etatReponseRepository->find(3); // est l'ID de refus
+                        break;
+                    default:
+                        break;
+                }
                 if ($etatReponse === null) {
                     return new JsonResponse([
                         'reponse_offre' => null,
@@ -269,13 +276,13 @@ class ReponseService
                         'serialized' => false
                     ], Response::HTTP_BAD_REQUEST);
                 }
-                $reponse->setetatReponse($etatReponse);
+                $reponse->setEtatReponse($etatReponse);
             }
             if (isset($data['dateDebut'])) {
-                $reponse->setDateDebut($data['dateDebut']);
+                $reponse->setDateDebut(new \DateTime($data['dateDebut']));
             }
             if (isset($data['dateFin'])) {
-                $reponse->setDateFin($data['dateFin']);
+                $reponse->setDateFin(new \DateTime($data['dateFin']));
             }
             if (isset($data['prixParticipation'])) {
                 $reponse->setPrixParticipation($data['prixParticipation']);
