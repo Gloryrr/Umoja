@@ -101,7 +101,7 @@ function ValidationsOffres({ idOffre }: { idOffre: number }) {
     }
 
     // Appliquer les filtres de l'état
-    function applyFilters(selectedStates: any) {
+    function applyFilters(selectedStates: { enAttente: boolean; validee: boolean; refusee: boolean }) {
         const filtered = propositionsDeContributions.filter((prop) => {
             return (
                 (selectedStates.enAttente && prop.etatReponse.nomEtatReponse === "En Attente") ||
@@ -143,7 +143,7 @@ function ValidationsOffres({ idOffre }: { idOffre: number }) {
                         onClick={() => handleNavigation(`/mes-offres/detail/${idOffre}`)}
                         className="mb-6"
                     >
-                        Détail de l'offre
+                        Détail de l&apos;offre
                     </Button>
                 )}
             </NavigationHandler>
@@ -151,7 +151,7 @@ function ValidationsOffres({ idOffre }: { idOffre: number }) {
             <Button
                 className="mb-6"
             >
-                Barre de progression de l'offre
+                Barre de progression de l&apos;offre
             </Button>
 
             {successMessage && (

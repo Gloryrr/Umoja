@@ -340,7 +340,7 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
                 <p className="mt-2">Avancement de la cagnotte : {calculPourcentageMontantTotalRecu()} %</p>
               </div>
         
-              {/* Détails de l'offre */}
+              {/* Détails de l&apos;offre */}
               <h2 className="text-2xl font-bold mt-8">Offre</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -519,7 +519,7 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
                   onClick={() => handleNavigation(`/propositions/${offreId}`)}
                   className="mb-6 ml-[15%]"
               >
-                  Les propositions de l'offre
+                  Les propositions de l&apos;offre
               </Button>
           )}
       </NavigationHandler>

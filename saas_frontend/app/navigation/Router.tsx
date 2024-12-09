@@ -10,7 +10,6 @@ const NavigationHandler: React.FC<NavigationHandlerProps> = ({ children }) => {
   const router = useRouter();
 
   const handleNavigation = async (path: string) => {
-    ('Navigating to' + path);
     // Précharge la page sans changer immédiatement
     // await router.prefetch(path); await inutil ???
 

@@ -5,9 +5,7 @@ import { useEffect, useState } from "react";
 import { apiGet, apiPost } from "@/app/services/internalApiClients";
 import { MdArrowLeft, MdArrowRight } from "react-icons/md";
 import NetworksOffres from "@/app/components/NetworksOffres";
-import { IoMdMailOpen, IoMdPeople } from "react-icons/io";
-import { MdQueueMusic } from "react-icons/md";
-import { FaGear } from "react-icons/fa6";
+import { IoMdMailOpen } from "react-icons/io";
 
 interface Reseau {
     nomReseau: string;
@@ -37,13 +35,11 @@ export function Networks() {
         );
         if (responses) {
             const fetchedReseaux = JSON.parse(responses.utilisateur)[0].reseaux || [];
-            (fetchedReseaux);
             setFilteredReseaux(fetchedReseaux);
         }
         const responsesGenres = await apiGet("/genres-musicaux");
         if (responsesGenres) {
             const genresMusicaux = JSON.parse(responsesGenres.genres_musicaux);
-            ("Genres musicaux :", genresMusicaux);
             setGenresMusicaux(genresMusicaux);
         }
     };
@@ -76,7 +72,6 @@ export function Networks() {
     };
 
     const handleNetworkClick = (nomReseau: string) => {
-        (`Naviguer vers le réseau : ${nomReseau}`);
         setNomReseauChoisi(nomReseau);
     };
 

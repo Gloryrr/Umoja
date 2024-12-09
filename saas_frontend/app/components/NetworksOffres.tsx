@@ -3,6 +3,7 @@ import { apiPost } from "@/app/services/internalApiClients";
 import { Card, Button, Pagination, Select } from "flowbite-react";
 import { useRouter } from "next/navigation";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
+import Image from "next/image";
 
 interface NetworksOffresProps {
     networksName: string | null;
@@ -14,7 +15,7 @@ interface Offre {
     titleOffre: string;
     descrTournee: string;
     deadLine: string;
-    image : any;
+    image : string;
 }
 
 function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
@@ -47,7 +48,6 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
             const responses = await apiPost(`/offres`, JSON.parse(JSON.stringify(data)));
             const offresDetails: Offre[] = JSON.parse(responses.offres);
             if (offresDetails) {
-                (offresDetails);
                 setOffres(offresDetails);
             } else {
                 console.warn("Aucun détail trouvé pour les offres.");
@@ -145,7 +145,7 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {currentOffres.map((offre) => (
                         <Card key={offre.id} className="shadow-md">
-                            <img 
+                            <Image 
                                 src={`data:image/jpg;base64,${offre.image}`} 
                                 alt={offre.titleOffre} 
                                 className="w-full h-48 object-cover" 
