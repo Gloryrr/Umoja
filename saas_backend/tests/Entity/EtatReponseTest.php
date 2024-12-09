@@ -38,6 +38,7 @@ class EtatReponseTest extends TestCase
      */
     public function testGetId()
     {
+        $this->etatReponse->setId(0);
         $this->assertEquals(0, $this->etatReponse->getId());
     }
 

@@ -5,6 +5,7 @@ import { Button, Label, Modal, Progress, Accordion, Textarea } from "flowbite-re
 import { HiArrowLeft, HiPencil, HiTrash } from "react-icons/hi";
 import { apiGet, apiDelete, apiPost } from "@/app/services/internalApiClients";
 import CommentaireSection from "@/app/components/Commentaires/CommentaireSection";
+import NavigationHandler from "../navigation/Router";
 
 interface Offre {
   id: string;
@@ -321,7 +322,7 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
         <span>Retour</span>
       </Button>
   
-      <Accordion className="ml-[20%] mr-[20%]" collapseAll>
+      <Accordion className="ml-[15%] mr-[15%]" collapseAll>
         <Accordion.Panel>
           <Accordion.Title>Détails de l&apos;offre</Accordion.Title>
           <Accordion.Content>
@@ -339,7 +340,7 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
                 <p className="mt-2">Avancement de la cagnotte : {calculPourcentageMontantTotalRecu()} %</p>
               </div>
         
-              {/* Détails de l'offre */}
+              {/* Détails de l&apos;offre */}
               <h2 className="text-2xl font-bold mt-8">Offre</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -490,7 +491,7 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
         </Modal.Footer>
       </Modal>
       {/* Zone de commentaires */}
-      <div className="mt-10 ml-[20%] mr-[20%] mx-auto">
+      <div className="mt-10 ml-[15%] mr-[15%] mx-auto">
         <h2 className="font-semibold mb-2">Commentaires</h2>
         <form onSubmit={handleCommentSubmit}>
           <Textarea
@@ -507,7 +508,21 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
           </Button>
         </form>
       </div>
+
       <CommentaireSection commentaires={commentaires} />
+
+      
+      {/* Accès au détail de l'offre */}
+      <NavigationHandler>
+          {(handleNavigation) => (
+              <Button
+                  onClick={() => handleNavigation(`/propositions/${offreId}`)}
+                  className="mb-6 ml-[15%]"
+              >
+                  Les propositions de l&apos;offre
+              </Button>
+          )}
+      </NavigationHandler>
     </div>
   );  
 }

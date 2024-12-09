@@ -225,7 +225,7 @@ class TypeOffreService
                 'type_offre' => $typeOffreJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'type_offre' => null,
@@ -278,7 +278,7 @@ class TypeOffreService
                 'type_offre' => $typeOffreJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'type_offre' => null,
@@ -331,7 +331,7 @@ class TypeOffreService
                 'type_offre' => $typeOffreJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'type_offre' => null,

@@ -38,7 +38,8 @@ class ArtisteTest extends TestCase
      */
     public function testGetId()
     {
-        $this->assertEquals(0, $this->artiste->getId());
+        $this->artiste->setId(1);
+        $this->assertEquals(1, $this->artiste->getId());
     }
 
     /**

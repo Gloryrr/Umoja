@@ -20,7 +20,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
     #[Groups(['utilisateur:read', 'utilisateur:write'])]
     private int $id;

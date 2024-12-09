@@ -274,7 +274,7 @@ class UtilisateurService
                 'utilisateur' => $utilisateurJSON,
                 'message' => 'Utilisateur supprimé',
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'utilisateur' => null,
@@ -327,7 +327,7 @@ class UtilisateurService
                 'object' => $utilisateurJSON,
                 'message' => "genre musical ajouté aux préférences de l'utilisateur.",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'object' => null,
@@ -380,7 +380,7 @@ class UtilisateurService
                 'object' => $utilisateurJSON,
                 'message' => "genre musical retiré aux préférences de l'utilisateur.",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'object' => null,
@@ -434,7 +434,7 @@ class UtilisateurService
                 'object' => $utilisateurJSON,
                 'message' => "Offre ajoutée aux créations de l'utilisateur.",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'object' => null,
@@ -488,7 +488,7 @@ class UtilisateurService
                 'object' => $utilisateurJSON,
                 'message' => "offre retiré aux préférences de l'utilisateur.",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'object' => null,

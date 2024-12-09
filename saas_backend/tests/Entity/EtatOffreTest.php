@@ -54,6 +54,7 @@ class EtatOffreTest extends TestCase
      */
     public function testGetIdInitial()
     {
+        $this->etatOffre->setId(0);
         $this->assertEquals(0, $this->etatOffre->getId());
     }
 

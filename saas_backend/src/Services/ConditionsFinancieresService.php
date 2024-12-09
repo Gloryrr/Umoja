@@ -236,7 +236,7 @@ class ConditionsFinancieresService
                 'condition_financiere' => $conditionsFinancieresJSON,
                 'message' => 'condition financière supprimée',
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'condition_financiere' => null,
@@ -289,7 +289,7 @@ class ConditionsFinancieresService
                 'condition_financiere' => $conditionsFinancieresJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'condition_financiere' => null,
@@ -343,7 +343,7 @@ class ConditionsFinancieresService
                 'condition_financiere' => $conditionsFinancieresJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'condition_financiere' => null,

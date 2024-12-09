@@ -40,6 +40,7 @@ class ReponseTest extends TestCase
      */
     public function testGetId()
     {
+        $this->reponse->setId(0);
         $this->assertEquals(0, $this->reponse->getId());
     }
 

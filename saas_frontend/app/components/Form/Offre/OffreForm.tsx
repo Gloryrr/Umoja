@@ -235,7 +235,7 @@ const OffreForm: React.FC = () => {
             nbGenresMusicaux != null && nbGenresMusicaux > 0;
     };
 
-    const onDonneesSupplementairesChange = (name: string, value: any) => {
+    const onDonneesSupplementairesChange = (name: string, value: string[] | number) => {
         setFormData((prevData) => ({
             ...prevData,
             donneesSupplementaires: {
@@ -248,7 +248,7 @@ const OffreForm: React.FC = () => {
     const updateField = (
         section: keyof FormData,
         field: string,
-        value: any
+        value: string | null
     ) => {
         const valueAsList = Array.isArray(value) 
             ? value 

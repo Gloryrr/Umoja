@@ -227,7 +227,7 @@ class EtatOffreService
                 'etat_offre' => $etatOffreJSON,
                 'message' => "État d'offre supprimée",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'etat_offre' => null,
@@ -280,7 +280,7 @@ class EtatOffreService
                 'etat_offre' => $etatOffreJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'etat_offre' => null,
@@ -334,7 +334,7 @@ class EtatOffreService
                 'etat_offre' => $etatOffreJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'etat_offre' => null,

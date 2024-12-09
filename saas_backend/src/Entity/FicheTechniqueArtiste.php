@@ -14,10 +14,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 class FicheTechniqueArtiste
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
     #[Groups(['fiche_technique_artiste:read'])]
-    private int $id = 0;
+    private int $id;
 
     #[ORM\Column(type: Types::TEXT, nullable: false)]
     #[Groups(['fiche_technique_artiste:read', 'fiche_technique_artiste:write'])]
@@ -62,6 +62,18 @@ class FicheTechniqueArtiste
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * Définit l'identifiant de la fiche technique.
+     *
+     * @param int $id
+     */
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**

@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 class Offre
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
     #[Groups([
         'offre:read',
@@ -39,7 +39,7 @@ class Offre
         'commentaire:read',
         'reponse:read',
     ])]
-    private int $id = 0;
+    private int $id;
 
     #[ORM\Column(length: 50)]
     #[Groups(['offre:read', 'offre:write'])]
@@ -184,6 +184,19 @@ class Offre
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * Définit l'id de l'offre
+     *
+     * @param int $id
+     * @return self
+     */
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**
@@ -746,11 +759,11 @@ class Offre
         if ($this->image === null) {
             return null;
         }
-        if (is_resource($this->image)) {
-            $binaryData = stream_get_contents($this->image);
-        } else {
-            $binaryData = $this->image;
-        }
+
+        $binaryData = is_resource($this->image) ?
+            stream_get_contents($this->image) :
+            $this->image;
+
         if (base64_encode(base64_decode($binaryData, true)) === $binaryData) {
             return $binaryData;
         }
@@ -763,11 +776,9 @@ class Offre
         if (is_array($image)) {
             $this->image = implode('', $image);
         } elseif (is_string($image)) {
-            if (base64_decode($image, true) !== false) {
-                $this->image = base64_decode($image);
-            } else {
+            base64_decode($image, true) !== false ?
+                $this->image = base64_decode($image) :
                 $this->image = $image;
-            }
         } else {
             $this->image = null;
         }
