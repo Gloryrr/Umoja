@@ -99,10 +99,10 @@ class Reseau
 
     /**
      * Définit l'id de l'instance
-     * 
+     *
      * @param int
      */
-    public function setId(int $id) : static
+    public function setId(int $id): static
     {
         $this->id = $id;
 

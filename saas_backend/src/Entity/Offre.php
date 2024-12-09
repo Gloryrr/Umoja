@@ -760,8 +760,8 @@ class Offre
             return null;
         }
 
-        $binaryData = is_resource($this->image) ? 
-            stream_get_contents($this->image) : 
+        $binaryData = is_resource($this->image) ?
+            stream_get_contents($this->image) :
             $this->image;
 
         if (base64_encode(base64_decode($binaryData, true)) === $binaryData) {
@@ -776,8 +776,8 @@ class Offre
         if (is_array($image)) {
             $this->image = implode('', $image);
         } elseif (is_string($image)) {
-            base64_decode($image, true) !== false ? 
-                $this->image = base64_decode($image) : 
+            base64_decode($image, true) !== false ?
+                $this->image = base64_decode($image) :
                 $this->image = $image;
         } else {
             $this->image = null;
