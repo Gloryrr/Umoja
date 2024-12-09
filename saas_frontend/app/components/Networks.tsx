@@ -6,6 +6,7 @@ import { apiGet, apiPost } from "@/app/services/internalApiClients";
 import { MdArrowLeft, MdArrowRight } from "react-icons/md";
 import NetworksOffres from "@/app/components/NetworksOffres";
 import { IoMdMailOpen } from "react-icons/io";
+import Image from "next/image";
 
 interface Reseau {
     nomReseau: string;
@@ -222,8 +223,6 @@ export function Networks() {
                                 <Card
                                     key={index}
                                     className="max-w-sm"
-                                    imgAlt="Image"
-                                    imgSrc={chooseImageRandom()}
                                 >
                                     <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                                         {reseau.nomReseau}
@@ -233,7 +232,6 @@ export function Networks() {
                                     </p>
                                     <Button
                                         size="sm"
-                                        color="dark"
                                         className="mt-4"
                                         onClick={() => handleNetworkClick(reseau.nomReseau)}
                                     >
