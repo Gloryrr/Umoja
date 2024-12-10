@@ -10,5 +10,10 @@ export default function DetailPage() {
     return <p>Erreur : ID de l&apos;offre manquant.</p>;
   }
 
-  return <OffreDetail offreId={Array.isArray(id) ? parseInt(id[0], 10) : parseInt(id, 10)} />;
+  return (
+    <div className="w-full">
+      <OffreDetail offreId={Array.isArray(id) ? parseInt(id[0], 10) : parseInt(id, 10)} />;
+    </div>
+  );
+
 }

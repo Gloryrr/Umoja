@@ -5,7 +5,7 @@ interface SelectCheckboxProps {
     options: Array<{ label: string; value: string }>;
     selectedValues: string[];
     onSelectionChange: (selected: string[]) => void;
-    domaineSelection: string;
+    domaineSelection: string | null;
 }
 
 const SelectCheckbox: React.FC<SelectCheckboxProps> = ({ domaineSelection, options, selectedValues, onSelectionChange }) => {
@@ -20,7 +20,9 @@ const SelectCheckbox: React.FC<SelectCheckboxProps> = ({ domaineSelection, optio
 
     return (
         <div className="relative">
-            <Label htmlFor="checkbox-select" value={`${domaineSelection}`} />
+            {domaineSelection && (
+                <Label htmlFor="checkbox-select" value={`${domaineSelection}`} />
+            )}
             <Button
                 id="checkbox-select"
                 onClick={() => setIsOpen(!isOpen)}

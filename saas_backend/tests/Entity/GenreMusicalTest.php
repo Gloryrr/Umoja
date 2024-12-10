@@ -51,7 +51,8 @@ class GenreMusicalTest extends TestCase
      */
     public function testGetIdInitial()
     {
-        $this->assertNull($this->genreMusical->getId());
+        $this->genreMusical->setId(0);
+        $this->assertEquals(0, $this->genreMusical->getId());
     }
 
     /**

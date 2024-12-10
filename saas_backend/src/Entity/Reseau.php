@@ -20,19 +20,19 @@ class Reseau
     /**
      * L'identifiant unique du réseau.
      *
-     * @var int|null
+     * @var int
      */
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
     #[Groups(['reseau:read'])]
-    private ?int $id = null;
+    private int $id;
 
     /**
      * Le nom du réseau.
      * Doit avoir une longueur maximale de 100 caractères.
      *
-     * @var string|null
+     * @var string
      */
     #[ORM\Column(length: 100)]
     #[Groups([
@@ -42,7 +42,7 @@ class Reseau
         'offre:read',
         'genre_musical:read',
     ])]
-    private ?string $nomReseau = null;
+    private string $nomReseau;
 
     /**
      * Les utilisateurs associés au réseau.
@@ -90,19 +90,31 @@ class Reseau
     /**
      * Récupère l'identifiant du réseau.
      *
-     * @return int|null
+     * @return int
      */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
+     * Définit l'id de l'instance
+     *
+     * @param int
+     */
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
      * Récupère le nom du réseau.
      *
-     * @return string|null
+     * @return string
      */
-    public function getNomReseau(): ?string
+    public function getNomReseau(): string
     {
         return $this->nomReseau;
     }

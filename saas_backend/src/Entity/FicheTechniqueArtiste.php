@@ -14,30 +14,30 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 class FicheTechniqueArtiste
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
     #[Groups(['fiche_technique_artiste:read'])]
-    private ?int $id = null;
+    private int $id;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: false)]
     #[Groups(['fiche_technique_artiste:read', 'fiche_technique_artiste:write'])]
-    private ?string $besoinSonorisation = null;
+    private string $besoinSonorisation;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: false)]
     #[Groups(['fiche_technique_artiste:read', 'fiche_technique_artiste:write'])]
-    private ?string $besoinEclairage = null;
+    private string $besoinEclairage;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: false)]
     #[Groups(['fiche_technique_artiste:read', 'fiche_technique_artiste:write'])]
-    private ?string $besoinScene = null;
+    private string $besoinScene;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: false)]
     #[Groups(['fiche_technique_artiste:read', 'fiche_technique_artiste:write'])]
-    private ?string $besoinBackline = null;
+    private string $besoinBackline;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: false)]
     #[Groups(['fiche_technique_artiste:read', 'fiche_technique_artiste:write'])]
-    private ?string $besoinEquipements = null;
+    private string $besoinEquipements;
 
     #[ORM\OneToMany(
         targetEntity: Offre::class,
@@ -57,19 +57,31 @@ class FicheTechniqueArtiste
     /**
      * Récupère l'identifiant de la fiche technique.
      *
-     * @return int|null
+     * @return int
      */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
+     * Définit l'identifiant de la fiche technique.
+     *
+     * @param int $id
+     */
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
      * Récupère les besoins en sonorisation de l'offre.
      *
-     * @return string|null
+     * @return string
      */
-    public function getBesoinSonorisation(): ?string
+    public function getBesoinSonorisation(): string
     {
         return $this->besoinSonorisation;
     }
@@ -77,10 +89,10 @@ class FicheTechniqueArtiste
     /**
      * Définit les besoins en sonorisation de l'offre.
      *
-     * @param string|null $besoinSonorisation
+     * @param string $besoinSonorisation
      * @return static
      */
-    public function setBesoinSonorisation(?string $besoinSonorisation): static
+    public function setBesoinSonorisation(string $besoinSonorisation): static
     {
         $this->besoinSonorisation = $besoinSonorisation;
 
@@ -90,9 +102,9 @@ class FicheTechniqueArtiste
     /**
      * Récupère les besoins en éclairage de l'offre.
      *
-     * @return string|null
+     * @return string
      */
-    public function getBesoinEclairage(): ?string
+    public function getBesoinEclairage(): string
     {
         return $this->besoinEclairage;
     }
@@ -100,10 +112,10 @@ class FicheTechniqueArtiste
     /**
      * Définit les besoins en éclairage de l'offre.
      *
-     * @param string|null $besoinEclairage
+     * @param string $besoinEclairage
      * @return static
      */
-    public function setBesoinEclairage(?string $besoinEclairage): static
+    public function setBesoinEclairage(string $besoinEclairage): static
     {
         $this->besoinEclairage = $besoinEclairage;
 
@@ -113,9 +125,9 @@ class FicheTechniqueArtiste
     /**
      * Récupère les besoins en scène de l'offre.
      *
-     * @return string|null
+     * @return string
      */
-    public function getBesoinScene(): ?string
+    public function getBesoinScene(): string
     {
         return $this->besoinScene;
     }
@@ -123,10 +135,10 @@ class FicheTechniqueArtiste
     /**
      * Définit les besoins en scène de l'offre.
      *
-     * @param string|null $besoinScene
+     * @param string $besoinScene
      * @return static
      */
-    public function setBesoinScene(?string $besoinScene): static
+    public function setBesoinScene(string $besoinScene): static
     {
         $this->besoinScene = $besoinScene;
 
@@ -136,9 +148,9 @@ class FicheTechniqueArtiste
     /**
      * Récupère les besoins en backline de l'offre.
      *
-     * @return string|null
+     * @return string
      */
-    public function getBesoinBackline(): ?string
+    public function getBesoinBackline(): string
     {
         return $this->besoinBackline;
     }
@@ -146,10 +158,10 @@ class FicheTechniqueArtiste
     /**
      * Définit les besoins en backline de l'offre.
      *
-     * @param string|null $besoinBackline
+     * @param string $besoinBackline
      * @return static
      */
-    public function setBesoinBackline(?string $besoinBackline): static
+    public function setBesoinBackline(string $besoinBackline): static
     {
         $this->besoinBackline = $besoinBackline;
 
@@ -159,9 +171,9 @@ class FicheTechniqueArtiste
     /**
      * Récupère les besoins en équipements de l'offre.
      *
-     * @return string|null
+     * @return string
      */
-    public function getBesoinEquipements(): ?string
+    public function getBesoinEquipements(): string
     {
         return $this->besoinEquipements;
     }
@@ -169,10 +181,10 @@ class FicheTechniqueArtiste
     /**
      * Définit les besoins en équipements de l'offre.
      *
-     * @param string|null $besoinEquipements
+     * @param string $besoinEquipements
      * @return static
      */
-    public function setBesoinEquipements(?string $besoinEquipements): static
+    public function setBesoinEquipements(string $besoinEquipements): static
     {
         $this->besoinEquipements = $besoinEquipements;
 

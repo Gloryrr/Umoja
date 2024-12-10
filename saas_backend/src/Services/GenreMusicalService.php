@@ -45,6 +45,34 @@ class GenreMusicalService
     }
 
     /**
+     * Récupère un genre musical et renvoie une réponse JSON.
+     *
+     * @param int $id, L'identifiant d'un genre musical
+     * @param GenreMusicalRepository $genreMusicalRepository Le repository des genres musicaux.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les genres musicaux.
+     */
+    public static function getGenreMusicalById(
+        int $id,
+        GenreMusicalRepository $genreMusicalRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        // on récupère tous les genresMusicaux
+        $genresMusicaux = $genreMusicalRepository->findBy(['id' => $id]);
+        $genresMusicauxJSON = $serializer->serialize(
+            $genresMusicaux,
+            'json',
+            ['groups' => ['genre_musical:read']]
+        );
+        return new JsonResponse([
+            'genres_musicaux' => $genresMusicauxJSON,
+            'message' => "Liste des genres musicaux",
+            'serialized' => true
+        ], Response::HTTP_OK);
+    }
+
+    /**
      * Crée un nouveau genre musical et renvoie une réponse JSON.
      *
      * @param GenreMusicalRepository $genreMusicalRepository Le repository des genres musicaux.
@@ -202,7 +230,7 @@ class GenreMusicalService
                 'genre_musical' => $GenreMusicalJSON,
                 'message' => 'Genre musical supprimé',
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'genre_musical' => null,
@@ -255,7 +283,7 @@ class GenreMusicalService
                 'genre_musical' => $genreMusicalJSON,
                 'message' => "Utilisateur ajouté au genre musical",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'genre_musical' => null,
@@ -308,7 +336,7 @@ class GenreMusicalService
                 'genre_musical' => $genreMusicalJSON,
                 'message' => "Utilisateur retiré",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'genre_musical' => null,
@@ -362,7 +390,7 @@ class GenreMusicalService
                 'genre_musical' => $genreMusicalJSON,
                 'message' => "Artiste ajouté au genre musical",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'genre_musical' => null,
@@ -415,7 +443,7 @@ class GenreMusicalService
                 'genre_musical' => $genreMusicalJSON,
                 'message' => "Genre musical supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'genre_musical' => null,
@@ -468,7 +496,7 @@ class GenreMusicalService
                 'genre_musical' => $genreMusicalJSON,
                 'message' => "Réseau lié au genre musical",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'genre_musical' => null,
@@ -521,7 +549,7 @@ class GenreMusicalService
                 'genre_musical' => $genreMusicalJSON,
                 'message' => "Réseau retiré du genre de musique",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'genre_musical' => null,
@@ -574,7 +602,7 @@ class GenreMusicalService
                 'genre_musical' => $genreMusicalJSON,
                 'message' => "Offre ajouté au genre musical",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'genre_musical' => null,
@@ -628,7 +656,7 @@ class GenreMusicalService
                 'genre_musical' => $genreMusicalJSON,
                 'message' => "Offre retiré du genre de musique",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'genre_musical' => null,

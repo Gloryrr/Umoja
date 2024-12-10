@@ -11,7 +11,7 @@ export default function Offre() {
                 <NavigationHandler>
                     {(handleNavigation: (path: string) => void) => (
                         <Button
-                            onClick={() => handleNavigation('/home')}
+                            onClick={() => handleNavigation('/accueil')}
                         >
                             Retour à l&apos;accueil
                         </Button>

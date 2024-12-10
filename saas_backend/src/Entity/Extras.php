@@ -18,34 +18,34 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 class Extras
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
     #[Groups(['extras:read', 'offre:read'])]
-    private ?int $id = null;
+    private int $id;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: false)]
     #[Groups(['extras:read', 'extras:write'])]
-    private ?string $descrExtras = null;
+    private string $descrExtras;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(nullable: false)]
     #[Groups(['extras:read', 'extras:write'])]
-    private ?int $coutExtras = null;
+    private int $coutExtras;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: false)]
     #[Groups(['extras:read', 'extras:write'])]
-    private ?string $exclusivite = null;
+    private string $exclusivite;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: false)]
     #[Groups(['extras:read', 'extras:write'])]
-    private ?string $exception = null;
+    private string $exception;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: false)]
     #[Groups(['extras:read', 'extras:write'])]
-    private ?string $ordrePassage = null;
+    private string $ordrePassage;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: false)]
     #[Groups(['extras:read', 'extras:write'])]
-    private ?string $clausesConfidentialites = null;
+    private string $clausesConfidentialites;
 
     #[ORM\OneToMany(targetEntity: Offre::class, mappedBy: "extras", orphanRemoval: true, cascade: ["remove"])]
     #[Groups(['extras:read'])]
@@ -60,19 +60,32 @@ class Extras
     /**
      * Récupère l'identifiant des extras.
      *
-     * @return int|null L'identifiant des extras, ou null s'il n'est pas défini.
+     * @return int L'identifiant des extras.
      */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
+     * Définit l'identifiant des extras.
+     *
+     * @param int $id Le nouvel identifiant.
+     * @return static Retourne l'instance courante pour le chaînage de méthodes.
+     */
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
      * Récupère la description des extras.
      *
-     * @return string|null La description des extras, ou null si aucune n'est définie.
+     * @return string La description des extras.
      */
-    public function getDescrExtras(): ?string
+    public function getDescrExtras(): string
     {
         return $this->descrExtras;
     }
@@ -80,10 +93,10 @@ class Extras
     /**
      * Définit la description des extras.
      *
-     * @param string|null $descrExtras La nouvelle description.
+     * @param string $descrExtras La nouvelle description.
      * @return static Retourne l'instance courante pour le chaînage de méthodes.
      */
-    public function setDescrExtras(?string $descrExtras): static
+    public function setDescrExtras(string $descrExtras): static
     {
         $this->descrExtras = $descrExtras;
 
@@ -93,9 +106,9 @@ class Extras
     /**
      * Récupère le coût des extras.
      *
-     * @return int|null Le coût des extras, ou null s'il n'est pas défini.
+     * @return int Le coût des extras.
      */
-    public function getCoutExtras(): ?int
+    public function getCoutExtras(): int
     {
         return $this->coutExtras;
     }
@@ -103,10 +116,10 @@ class Extras
     /**
      * Définit le coût des extras.
      *
-     * @param int|null $coutExtras Le nouveau coût des extras.
+     * @param int $coutExtras Le nouveau coût des extras.
      * @return static Retourne l'instance courante pour le chaînage de méthodes.
      */
-    public function setCoutExtras(?int $coutExtras): static
+    public function setCoutExtras(int $coutExtras): static
     {
         $this->coutExtras = $coutExtras;
 
@@ -116,9 +129,9 @@ class Extras
     /**
      * Récupère l'exclusivité des extras.
      *
-     * @return string|null L'exclusivité des extras, ou null si aucune n'est définie.
+     * @return string L'exclusivité des extras.
      */
-    public function getExclusivite(): ?string
+    public function getExclusivite(): string
     {
         return $this->exclusivite;
     }
@@ -126,10 +139,10 @@ class Extras
     /**
      * Définit l'exclusivité des extras.
      *
-     * @param string|null $exclusivite La nouvelle exclusivité.
+     * @param string $exclusivite La nouvelle exclusivité.
      * @return static Retourne l'instance courante pour le chaînage de méthodes.
      */
-    public function setExclusivite(?string $exclusivite): static
+    public function setExclusivite(string $exclusivite): static
     {
         $this->exclusivite = $exclusivite;
 
@@ -139,9 +152,9 @@ class Extras
     /**
      * Récupère l'exception des extras.
      *
-     * @return string|null L'exception des extras, ou null si aucune n'est définie.
+     * @return string L'exception des extras.
      */
-    public function getException(): ?string
+    public function getException(): string
     {
         return $this->exception;
     }
@@ -149,10 +162,10 @@ class Extras
     /**
      * Définit l'exception des extras.
      *
-     * @param string|null $exception La nouvelle exception.
+     * @param string $exception La nouvelle exception.
      * @return static Retourne l'instance courante pour le chaînage de méthodes.
      */
-    public function setException(?string $exception): static
+    public function setException(string $exception): static
     {
         $this->exception = $exception;
 
@@ -162,9 +175,9 @@ class Extras
     /**
      * Récupère l'ordre de passage des extras.
      *
-     * @return string|null L'ordre de passage, ou null s'il n'est pas défini.
+     * @return string L'ordre de passage.
      */
-    public function getOrdrePassage(): ?string
+    public function getOrdrePassage(): string
     {
         return $this->ordrePassage;
     }
@@ -172,10 +185,10 @@ class Extras
     /**
      * Définit l'ordre de passage des extras.
      *
-     * @param string|null $ordrePassage Le nouvel ordre de passage.
+     * @param string $ordrePassage Le nouvel ordre de passage.
      * @return static Retourne l'instance courante pour le chaînage de méthodes.
      */
-    public function setOrdrePassage(?string $ordrePassage): static
+    public function setOrdrePassage(string $ordrePassage): static
     {
         $this->ordrePassage = $ordrePassage;
 
@@ -185,9 +198,9 @@ class Extras
     /**
      * Récupère les clauses de confidentialité des extras.
      *
-     * @return string|null Les clauses de confidentialité, ou null si aucune n'est définie.
+     * @return string Les clauses de confidentialité.
      */
-    public function getClausesConfidentialites(): ?string
+    public function getClausesConfidentialites(): string
     {
         return $this->clausesConfidentialites;
     }
@@ -195,10 +208,10 @@ class Extras
     /**
      * Définit les clauses de confidentialité des extras.
      *
-     * @param string|null $clausesConfidentialites Les nouvelles clauses de confidentialité.
+     * @param string $clausesConfidentialites Les nouvelles clauses de confidentialité.
      * @return static Retourne l'instance courante pour le chaînage de méthodes.
      */
-    public function setClausesConfidentialites(?string $clausesConfidentialites): static
+    public function setClausesConfidentialites(string $clausesConfidentialites): static
     {
         $this->clausesConfidentialites = $clausesConfidentialites;
 

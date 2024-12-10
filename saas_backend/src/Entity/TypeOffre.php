@@ -15,23 +15,23 @@ class TypeOffre
 /**
      * Identifiant unique du type d'offre.
      *
-     * @var int|null
+     * @var int
      */
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
     #[Groups(['type_offre:read'])]
-    private ?int $id = null;
+    private int $id;
 
     /**
      * Nom du type d'offre.
      * Doit avoir une longueur maximale de 255 caractères.
      *
-     * @var string|null
+     * @var string
      */
     #[ORM\Column(length: 255)]
     #[Groups(['type_offre:read', 'type_offre:write', 'offre:read'])]
-    private ?string $nomTypeOffre = null;
+    private string $nomTypeOffre;
 
     /**
      * Les offres associées à ce type d'offre.
@@ -48,12 +48,19 @@ class TypeOffre
         $this->offres = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getNomTypeOffre(): ?string
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    public function getNomTypeOffre(): string
     {
         return $this->nomTypeOffre;
     }

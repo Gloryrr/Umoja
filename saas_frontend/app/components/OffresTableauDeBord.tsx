@@ -37,7 +37,7 @@ const TableDesOffres = () => {
             const startIndex = (currentPage - 1) * offersPerPage;
             try {
                 const response = await apiGet(`/offre/utilisateur/${idUtilisateur}`);
-                const allOffers: Offre[] = JSON.parse(response.offre);
+                const allOffers: Offre[] = JSON.parse(response.offres);
 
                 const offersWithStates = await Promise.all(
                     allOffers.map(async (offre) => {
@@ -69,9 +69,9 @@ const TableDesOffres = () => {
     );
 
     const fetchUserOffers = useCallback(async () => {
-        const username = typeof window !== 'undefined' ? localStorage.getItem('username') : null;
+        const username = typeof window !== 'undefined' ? sessionStorage.getItem('username') : null;
         if (!username) {
-            setError("Nom d'utilisateur introuvable dans le localStorage.");
+            setError("Nom d'utilisateur introuvable dans le sessionStorage.");
             setIsLoading(false);
             return;
         }

@@ -54,7 +54,8 @@ class TypeOffreTest extends TestCase
      */
     public function testGetIdInitial()
     {
-        $this->assertNull($this->typeOffre->getId());
+        $this->typeOffre->setId(0);
+        $this->assertEquals(0, $this->typeOffre->getId());
     }
 
     /**

@@ -42,6 +42,34 @@ class FicheTechniqueArtisteService
     }
 
     /**
+     * Récupère une fiche technique d'artiste par son id et renvoie une réponse JSON.
+     *
+     * @param int $id, L'identifiant de la fiche tehcnique
+     * @param FicheTechniqueArtisteRepository $ficheTechniqueArtisteRepository, le repository des fiches techniques.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les fiches techniques des artistes.
+     */
+    public static function getFichesTechniqueArtisteById(
+        int $id,
+        FicheTechniqueArtisteRepository $ficheTechniqueArtisteRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        // on récupère toutes les fiches techniques
+        $fichesTechniquesArtiste = $ficheTechniqueArtisteRepository->findBy(['id' => $id]);
+        $fichesTechniquesArtisteJSON = $serializer->serialize(
+            $fichesTechniquesArtiste,
+            'json',
+            ['groups' => ['fiche_technique_artiste:read']]
+        );
+        return new JsonResponse([
+            'fiches_techniques_artistes' => $fichesTechniquesArtisteJSON,
+            'message' => "Liste des fiches techniques des artistes",
+            'serialized' => true
+        ], Response::HTTP_OK);
+    }
+
+    /**
      * Créer une nouvelle fiche technique d'artiste et renvoie une réponse JSON.
      *
      * @param FicheTechniqueArtisteRepository $ficheTechniqueArtisteRepository Le repository des fiches techniques.
@@ -230,7 +258,7 @@ class FicheTechniqueArtisteService
                 'fiche_technique_artiste' => $ficheTechniqueArtisteJSON,
                 'message' => "fiche technique de l'artiste supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'fiche_technique_artiste' => null,
@@ -283,7 +311,7 @@ class FicheTechniqueArtisteService
                 'fiche_technique_artiste' => $ficheTechniqueArtisteJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'fiche_technique_artiste' => null,
@@ -337,7 +365,7 @@ class FicheTechniqueArtisteService
                 'fiche_technique_artiste' => $ficheTechniqueArtisteJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'fiche_technique_artiste' => null,

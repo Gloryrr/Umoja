@@ -32,6 +32,18 @@ class OffreTest extends TestCase
     }
 
     /**
+     * Test de la méthode getId().
+     *
+     * Vérifie que l'identifiant est null par défaut avant
+     * toute génération.
+     */
+    public function testGetIdInitial(): void
+    {
+        $this->offre->setId(0);
+        $this->assertEquals(0, $this->offre->getId());
+    }
+
+    /**
      * Test de la méthode getTitleOffre() et setTitleOffre().
      *
      * Vérifie si le titre de l'offre peut être correctement

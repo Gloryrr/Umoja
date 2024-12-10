@@ -40,7 +40,8 @@ class ReponseTest extends TestCase
      */
     public function testGetId()
     {
-        $this->assertNull($this->reponse->getId());
+        $this->reponse->setId(0);
+        $this->assertEquals(0, $this->reponse->getId());
     }
 
     /**
@@ -106,17 +107,5 @@ class ReponseTest extends TestCase
         $this->reponse->setPrixParticipation($prixParticipation);
 
         $this->assertEquals($prixParticipation, $this->reponse->getPrixParticipation());
-    }
-
-    /**
-     * Test de la méthode setPrixParticipation() avec un prix null.
-     *
-     * Vérifie si le prix de participation peut être mis à null.
-     */
-    public function testSetPrixParticipationNull()
-    {
-        $this->reponse->setPrixParticipation(null);
-
-        $this->assertNull($this->reponse->getPrixParticipation());
     }
 }

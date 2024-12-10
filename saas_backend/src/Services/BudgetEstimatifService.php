@@ -241,7 +241,7 @@ class BudgetEstimatifService
                 'budget_estimatif' => $budgetEstimatifJSON,
                 'message' => 'budget estimatif supprimé',
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'budget_estimatif' => null,
@@ -294,7 +294,7 @@ class BudgetEstimatifService
                 'budget_estimatif' => $budgetEstimatifJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'budget_estimatif' => null,
@@ -348,7 +348,7 @@ class BudgetEstimatifService
                 'budget_estimatif' => $budgetEstimatifJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'budget_estimatif' => null,

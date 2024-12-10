@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20241128135009 extends AbstractMigration
+final class Version20241205123755 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -49,13 +49,13 @@ final class Version20241128135009 extends AbstractMigration
         $this->addSql('CREATE TABLE conditions_financieres (id INT NOT NULL, minimun_garanti INT NOT NULL, conditions_paiement TEXT NOT NULL, pourcentage_recette DOUBLE PRECISION NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE etat_offre (id INT NOT NULL, nom_etat VARCHAR(50) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE etat_reponse (id INT NOT NULL, nom_etat_reponse VARCHAR(100) NOT NULL, description_etat_reponse VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE TABLE extras (id INT NOT NULL, descr_extras VARCHAR(255) DEFAULT NULL, cout_extras INT DEFAULT NULL, exclusivite VARCHAR(255) DEFAULT NULL, exception VARCHAR(255) DEFAULT NULL, ordre_passage VARCHAR(255) DEFAULT NULL, clauses_confidentialites VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE TABLE fiche_technique_artiste (id INT NOT NULL, besoin_sonorisation TEXT DEFAULT NULL, besoin_eclairage TEXT DEFAULT NULL, besoin_scene TEXT DEFAULT NULL, besoin_backline TEXT DEFAULT NULL, besoin_equipements TEXT DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE extras (id INT NOT NULL, descr_extras VARCHAR(255) NOT NULL, cout_extras INT NOT NULL, exclusivite VARCHAR(255) NOT NULL, exception VARCHAR(255) NOT NULL, ordre_passage VARCHAR(255) NOT NULL, clauses_confidentialites VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE fiche_technique_artiste (id INT NOT NULL, besoin_sonorisation TEXT NOT NULL, besoin_eclairage TEXT NOT NULL, besoin_scene TEXT NOT NULL, besoin_backline TEXT NOT NULL, besoin_equipements TEXT NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE genre_musical (id INT NOT NULL, nom_genre_musical VARCHAR(50) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE rattacher (genre_musical_id INT NOT NULL, offre_id INT NOT NULL, PRIMARY KEY(genre_musical_id, offre_id))');
         $this->addSql('CREATE INDEX IDX_C10DF74DFFFD05DC ON rattacher (genre_musical_id)');
         $this->addSql('CREATE INDEX IDX_C10DF74D4CC8505A ON rattacher (offre_id)');
-        $this->addSql('CREATE TABLE offre (id INT NOT NULL, extras_id INT NOT NULL, etat_offre_id INT NOT NULL, type_offre_id INT NOT NULL, conditions_financieres_id INT NOT NULL, budget_estimatif_id INT NOT NULL, fiche_technique_artiste_id INT NOT NULL, utilisateur_id INT NOT NULL, title_offre VARCHAR(50) NOT NULL, dead_line TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, descr_tournee VARCHAR(500) NOT NULL, date_min_proposee TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, date_max_proposee TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, ville_visee VARCHAR(50) NOT NULL, region_visee VARCHAR(50) NOT NULL, places_min INT NOT NULL, nb_contributeur INT NOT NULL, places_max INT NOT NULL, nb_artistes_concernes INT NOT NULL, nb_invites_concernes INT NOT NULL, liens_promotionnels VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE offre (id INT NOT NULL, extras_id INT NOT NULL, etat_offre_id INT NOT NULL, type_offre_id INT NOT NULL, conditions_financieres_id INT NOT NULL, budget_estimatif_id INT NOT NULL, fiche_technique_artiste_id INT NOT NULL, utilisateur_id INT NOT NULL, title_offre VARCHAR(50) NOT NULL, dead_line TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, descr_tournee VARCHAR(500) NOT NULL, date_min_proposee TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, date_max_proposee TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, ville_visee VARCHAR(50) NOT NULL, region_visee VARCHAR(50) NOT NULL, places_min INT NOT NULL, nb_contributeur INT NOT NULL, places_max INT NOT NULL, nb_artistes_concernes INT NOT NULL, nb_invites_concernes INT NOT NULL, liens_promotionnels VARCHAR(255) NOT NULL, image BYTEA DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_AF86866F955D4F3F ON offre (extras_id)');
         $this->addSql('CREATE INDEX IDX_AF86866FD11DF8CA ON offre (etat_offre_id)');
         $this->addSql('CREATE INDEX IDX_AF86866F813777A6 ON offre (type_offre_id)');
@@ -77,6 +77,8 @@ final class Version20241128135009 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_2D710CF24CC8505A ON poster (offre_id)');
         $this->addSql('CREATE TABLE type_offre (id INT NOT NULL, nom_type_offre VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE utilisateur (id INT NOT NULL, preference_notification_id INT DEFAULT NULL, email_utilisateur VARCHAR(128) NOT NULL, mdp_utilisateur VARCHAR(255) NOT NULL, role_utilisateur VARCHAR(20) NOT NULL, username VARCHAR(50) NOT NULL, num_tel_utilisateur VARCHAR(15) DEFAULT NULL, nom_utilisateur VARCHAR(50) DEFAULT NULL, prenom_utilisateur VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_1D1C63B3BDC1F04 ON utilisateur (email_utilisateur)');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_1D1C63B3F85E0677 ON utilisateur (username)');
         $this->addSql('CREATE INDEX IDX_1D1C63B39D5D70F2 ON utilisateur (preference_notification_id)');
         $this->addSql('CREATE TABLE preferencer (utilisateur_id INT NOT NULL, genre_musical_id INT NOT NULL, PRIMARY KEY(utilisateur_id, genre_musical_id))');
         $this->addSql('CREATE INDEX IDX_9E369663FB88E14F ON preferencer (utilisateur_id)');

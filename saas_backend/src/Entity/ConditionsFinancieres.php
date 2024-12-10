@@ -19,22 +19,22 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 class ConditionsFinancieres
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
     #[Groups(['conditions_financieres:read', 'offre:read'])]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\Column]
     #[Groups(['conditions_financieres:read', 'conditions_financieres:write'])]
-    private ?int $minimunGaranti = null;
+    private int $minimunGaranti;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['conditions_financieres:read', 'conditions_financieres:write'])]
-    private ?string $conditionsPaiement = null;
+    private string $conditionsPaiement;
 
     #[ORM\Column]
     #[Groups(['conditions_financieres:read', 'conditions_financieres:write'])]
-    private ?float $pourcentageRecette = null;
+    private float $pourcentageRecette;
 
     #[ORM\OneToMany(
         targetEntity: Offre::class,
@@ -55,19 +55,32 @@ class ConditionsFinancieres
     /**
      * Récupère l'identifiant unique des conditions financières.
      *
-     * @return int|null
+     * @return int
      */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
+     * Définit l'identifiant unique des conditions financières.
+     *
+     * @param int $id
+     * @return static
+     */
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
      * Récupère le montant minimum garanti.
      *
-     * @return int|null
+     * @return int
      */
-    public function getMinimunGaranti(): ?int
+    public function getMinimunGaranti(): int
     {
         return $this->minimunGaranti;
     }
@@ -88,9 +101,9 @@ class ConditionsFinancieres
     /**
      * Récupère les conditions de paiement.
      *
-     * @return string|null
+     * @return string
      */
-    public function getConditionsPaiement(): ?string
+    public function getConditionsPaiement(): string
     {
         return $this->conditionsPaiement;
     }
@@ -111,9 +124,9 @@ class ConditionsFinancieres
     /**
      * Récupère le pourcentage de recette.
      *
-     * @return float|null
+     * @return float
      */
-    public function getPourcentageRecette(): ?float
+    public function getPourcentageRecette(): float
     {
         return $this->pourcentageRecette;
     }

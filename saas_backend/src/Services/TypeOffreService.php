@@ -42,6 +42,34 @@ class TypeOffreService
     }
 
     /**
+     * Récupère un type d'offre par son id et renvoie une réponse JSON.
+     *
+     * @param int $id, Li'dentifiant du type de l'offre
+     * @param TypeOffreRepository $typeOffreRepository Le repository des types d'offre.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les types d'offre.
+     */
+    public static function getTypeOffreById(
+        int $id,
+        TypeOffreRepository $typeOffreRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        // on récupère tous les types d'offre
+        $typesOffre = $typeOffreRepository->findBy(['id' => $id]);
+        $typesOffreJSON = $serializer->serialize(
+            $typesOffre,
+            'json',
+            ['groups' => ['type_offre:read']]
+        );
+        return new JsonResponse([
+            'types_offre' => $typesOffreJSON,
+            'message' => "Liste des types d'offre",
+            'serialized' => true
+        ], Response::HTTP_OK);
+    }
+
+    /**
      * Crée un nouveau type d'offre et renvoie une réponse JSON.
      *
      * @param TypeOffreRepository $typeOffreRepository Le repository des types d'offre.
@@ -197,7 +225,7 @@ class TypeOffreService
                 'type_offre' => $typeOffreJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'type_offre' => null,
@@ -250,7 +278,7 @@ class TypeOffreService
                 'type_offre' => $typeOffreJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'type_offre' => null,
@@ -303,7 +331,7 @@ class TypeOffreService
                 'type_offre' => $typeOffreJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'type_offre' => null,

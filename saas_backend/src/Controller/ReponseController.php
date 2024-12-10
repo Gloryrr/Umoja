@@ -67,7 +67,7 @@ class ReponseController extends AbstractController
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
-    #[Route('/api/v1/reponse/{id}', name: 'get_reponses_pour_offre', methods: ['GET'])]
+    #[Route('/api/v1/reponse/{id}', name: 'get_reponses_by_id', methods: ['GET'])]
     public function getReponse(
         int $id,
         ReponseRepository $reponseRepository,

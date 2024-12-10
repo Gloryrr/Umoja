@@ -13,10 +13,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 class Artiste
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
     #[Groups(['artiste:read'])]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\Column(length: 50)]
     #[Groups([
@@ -25,7 +25,7 @@ class Artiste
         'genre_musical:read',
         'offre:read',
     ])]
-    private ?string $nomArtiste = null;
+    private string $nomArtiste;
 
     #[ORM\Column(length: 500, nullable: true)]
     #[Groups(['artiste:read', 'artiste:write'])]
@@ -53,12 +53,19 @@ class Artiste
         $this->offres = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getNomArtiste(): ?string
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    public function getNomArtiste(): string
     {
         return $this->nomArtiste;
     }

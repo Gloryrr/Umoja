@@ -42,6 +42,34 @@ class EtatReponseService
     }
 
     /**
+     * Récupère un état de réponse par son id et renvoie une réponse JSON.
+     *
+     * @param int $id, L'identifiant de l'état de réponse
+     * @param EtatReponseRepository $etatReponseRepository Le repository des états de réponse.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les états de réponse.
+     */
+    public static function getEtatReponseById(
+        int $id,
+        EtatReponseRepository $etatReponseRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        // on récupère tous les états
+        $etatsReponse = $etatReponseRepository->findBy(['id' => $id]);
+        $etatsReponseJSON = $serializer->serialize(
+            $etatsReponse,
+            'json',
+            ['groups' => ['etat_reponse:read']]
+        );
+        return new JsonResponse([
+            'etats_reponse' => $etatsReponseJSON,
+            'message' => "Liste des états de réponse",
+            'serialized' => true
+        ], Response::HTTP_OK);
+    }
+
+    /**
      * Crée un nouvel état de réponse et renvoie une réponse JSON.
      *
      * @param EtatReponseRepository $etatReponseRepository Le repository des états de réponse.
@@ -201,7 +229,7 @@ class EtatReponseService
                 'etat_reponse' => $etatReponseJSON,
                 'message' => "État de réponse supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'etat_reponse' => null,
@@ -254,7 +282,7 @@ class EtatReponseService
                 'etats_reponses' => $etatReponseJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'etats_reponses' => null,
@@ -308,7 +336,7 @@ class EtatReponseService
                 'etats_reponses' => $etatReponseJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'etats_reponses' => null,

@@ -43,6 +43,37 @@ class ReseauService
     }
 
     /**
+     * Récupère le réseau par rapport à son nom et renvoie une réponse JSON.
+     *
+     * @param ReseauRepository $reseauRepository Le repository des réseaux.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les réseaux listés.
+     */
+    public static function getReseauByName(
+        string $name,
+        ReseauRepository $reseauRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        try {
+            // on récupère tous les reseaux existants
+            $reseaux = $reseauRepository->findBy(['nomReseau' => $name]);
+            $reseauxJSON = $serializer->serialize(
+                $reseaux,
+                'json',
+                ['groups' => ['reseau:read']]
+            );
+            return new JsonResponse([
+                'reseau' => $reseauxJSON,
+                'message' => "Informations du réseau : {$name}",
+                'serialized' => true
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
      * Créer un nouveau réseau et renvoie une réponse JSON.
      *
      * @param ReseauRepository $reseauRepository Le repository des réseaux.
@@ -200,7 +231,7 @@ class ReseauService
                 'reseau' => $reseauJSON,
                 'message' => 'réseau supprimé',
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'reseau' => null,
@@ -254,7 +285,7 @@ class ReseauService
                 'reseau' => $reseauJSON,
                 'message' => 'membre ajouté au réseau.',
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'reseau' => null,
@@ -308,7 +339,7 @@ class ReseauService
                 'reseau' => $reseauJSON,
                 'message' => 'membre retiré du réseau.',
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'reseau' => null,
@@ -362,7 +393,7 @@ class ReseauService
                 'reseau' => $reseauJSON,
                 'message' => 'genre musical ajouté au réseau',
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'reseau' => null,
@@ -416,7 +447,7 @@ class ReseauService
                 'reseau' => $reseauJSON,
                 'message' => 'genre musical retiré du réseau',
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'reseau' => null,
