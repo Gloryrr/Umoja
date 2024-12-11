@@ -1,7 +1,8 @@
 "use client"
 
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import NumberInputModal from '../components/ui/modalResponse';
 import { /*FaHeart, FaCode,*/ FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
 
 type Project = {
@@ -45,11 +46,25 @@ const projects: Project[] = [
     // Add more projects as needed
 ];
 
+
+
+
 function ProjectDetailsContent({ projects }: { projects: Project[] }) {
     const searchParams = useSearchParams();
     const id = searchParams.get('id');
     const project = projects.find(p => p.id === Number(id));
-
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const handleOpenModal = () => {
+        setIsModalOpen(true);
+      };
+    
+      const handleCloseModal = () => {
+        setIsModalOpen(false);
+      };
+    
+    const handleSubmitNumber = (startDate: Date | null, endDate: Date | null, price: number | null): void => {
+      setIsModalOpen(false);
+    };
     if (!project) {
         return <div className="flex items-center justify-center h-screen bg-gray-900 text-white">Project not found</div>;
     }
@@ -103,9 +118,18 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
                             </p>
                         </div>
                         <div className="flex justify-center space-x-4">
-                            <button className="bg-white text-black px-8 py-4 rounded-full font-semibold hover:bg-gray-200 transition duration-300">
-                                Contribuer
-                            </button>
+                            <button
+                                className="bg-white text-black px-8 py-4 rounded-full font-semibold hover:bg-gray-200 transition duration-300"
+                                onClick={handleOpenModal}
+                                >
+                                Repondre
+                                </button>
+
+                                <NumberInputModal
+                                isOpen={isModalOpen}
+                                onClose={handleCloseModal}
+                                onSubmit={handleSubmitNumber}
+                                />
                             <button className="bg-gray-800 text-white px-6 py-4 rounded-full font-semibold hover:bg-gray-700 transition duration-300">
                                 <FaFacebookF />
                             </button>
