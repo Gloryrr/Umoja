@@ -151,7 +151,6 @@ interface Commentaire {
 }
 
 export default function OffreDetail({ offreId }: OffreDetailProps) {
-  const [username, setUsername] = useState("");
   const [commentaire, setCommentaire] = useState("");
   const [offre, setOffre] = useState<Offre | null>(null);
   const [loading, setLoading] = useState(true);
@@ -281,7 +280,6 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
     setError("");
 
     await apiGet("/me").then(async (response) => {
-      setUsername(response.utilisateur);
       const data = JSON.stringify({
         commentaire: {
           idOffre: offre?.id,

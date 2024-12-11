@@ -7,3 +7,5 @@ type User = {
   prenomUtilisateur?: string;
   role_utilisateur?: string;
 };
+
+export default User;

@@ -49,10 +49,10 @@ class UtilisateurService
 
     /**
      * Récupère l'utilisateur par rapport à son token JWT et renvoie une réponse JSON.
-     * 
+     *
      * @param Security $security Le service de sécurité pour récupérer l'utilisateur connecté.
      * @param SerializerInterface $serializer, pour convertir les données en JSON.
-     * 
+     *
      * @return JsonResponse La réponse JSON contenant les informations de l'utilisateur.
      */
     public static function getMe(
@@ -65,7 +65,8 @@ class UtilisateurService
         if (!$user) {
             return new JsonResponse(
                 ['error' => 'Utilisateur non authentifié'],
-            401);
+                401
+            );
         }
 
         // Sérialise l'utilisateur pour retourner ses informations
@@ -74,7 +75,7 @@ class UtilisateurService
             'json',
             ['groups' => ['utilisateur:read']]
         );
-        
+
         return new JsonResponse([
             'utilisateur' => json_decode($dataUser, true),
             'message' => "Utilisateur trouvé",

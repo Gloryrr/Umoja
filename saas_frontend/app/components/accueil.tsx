@@ -34,14 +34,14 @@ export default function Accueil({ projects = [] }: { projects: Project[] }) {
                         <CardHeader>
                             {project.amountRaised >= project.goal ? (
                             <>
-                                <Image width={480} height={480} src={project.imageUrl} alt={project.title} className="w-full h-full object-cover" />
+                                <Image width={280} height={280} src={project.imageUrl} alt={project.title} className="w-full h-full object-cover" />
                                 <div className="absolute top-2 left-2 bg-green-500 text-xs font-semibold px-2 py-2 rounded">
                                     <FaCheck />
                                 </div>
                             </>
                             ) : (
                             <>
-                                <Image width={480} height={480} src={project.imageUrl} alt={project.title} className="w-full h-full object-cover" />
+                                <Image width={280} height={280} src={project.imageUrl} alt={project.title} className="w-full h-full object-cover" />
                                 <div className="absolute top-2 left-2 bg-orange-500 text-xs font-semibold px-2 py-2 rounded">
                                     <GrInProgress />
                                 </div>

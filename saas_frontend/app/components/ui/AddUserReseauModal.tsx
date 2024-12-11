@@ -51,7 +51,7 @@ const AddReseauModal: React.FC<AddReseauModalProps> = ({reseau, onAddUserInResea
         <h2 className="text-2xl font-semibold mb-4">Ajouter un utilisateur au reseau </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium">Choisir le nom d'utilisateur </label>
+            <label className="block text-sm font-medium">Choisir le nom d&apos;utilisateur </label>
             <select
               name="idUtilisateur"
               onChange={(e) => {

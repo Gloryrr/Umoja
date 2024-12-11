@@ -25,7 +25,6 @@ interface Offre {
 }
 
 const TableDesOffres = () => {
-    const [username, setUsername] = useState("");
     const [offres, setOffres] = useState<Offre[]>([]);
     const [offresTaille, setOffresTaille] = useState<number>(0);
     const [isLoading, setIsLoading] = useState(true);
@@ -71,9 +70,6 @@ const TableDesOffres = () => {
 
     const fetchUserOffers = useCallback(async () => {
         await apiGet("/me").then(async (response) => {
-            setUsername(response.utilisateur);
-            console.log(response.utilisateur);
-    
             try {
                 const data = { "username" : response.utilisateur };
                 const userResponse = await apiPost("/utilisateur", JSON.parse(JSON.stringify(data)));

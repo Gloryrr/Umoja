@@ -16,14 +16,10 @@ type Reseaux = {
   offre: number;
 };
 
-type ReseauAll = {
-  id: number;
-  nomReseau : string;
-};
-
-
-
-
+// type ReseauAll = {
+//   id: number;
+//   nomReseau : string;
+// };
 
 const columns = [
   { header: 'Nom', accessor: 'nomReseau' },
@@ -68,7 +64,7 @@ export default function ReseauManagement() {
       setFilteredReseau(utilisateursArray);
     }
     } catch (error) {
-      
+      console.error('Erreur lors du chargement des utilisateurs:', error);
     }
   }
 

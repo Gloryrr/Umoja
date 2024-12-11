@@ -50,7 +50,7 @@ export default function UserManagement() {
       setFilteredUsers(utilisateursArray);
     }
     } catch (error) {
-      
+      console.error('Erreur lors du chargement des utilisateurs:', error);
     }
   }
 

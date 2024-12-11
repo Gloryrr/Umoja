@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { apiPost } from "../../services/internalApiClients"; // Ensure this import is correct
+import { apiPost, /*apiGet*/ } from "@/app/services/internalApiClients"; // Ensure this import is correct
 
 interface NumberInputModalProps {
+  username: string;
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (startDate: Date | null, endDate: Date | null, price: number | null) => void;
 }
 
-const NumberInputModal: React.FC<NumberInputModalProps> = ({ isOpen, onClose, onSubmit }) => {
+const NumberInputModal: React.FC<NumberInputModalProps> = ({ username, isOpen, onClose, onSubmit }) => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [price, setPrice] = useState<number | null>(null);
@@ -18,19 +19,20 @@ const NumberInputModal: React.FC<NumberInputModalProps> = ({ isOpen, onClose, on
     if (startDate !== null && endDate !== null && price !== null) {
       const urlParams = new URLSearchParams(window.location.search);
       const idOffre = urlParams.get('id');
+      console.log(username);
       const reponse = {
-        username: sessionStorage.getItem("username"),
+        username: username,
         idOffre: idOffre,
         dateDebut: startDate,
         dateFin: endDate,
         prixParticipation: price
       };
       try {
-        await apiPost('/reponse/create', JSON.parse(JSON.stringify(reponse))); // Convert to JSON string and parse back to object
+        await apiPost('/reponse/create', JSON.parse(JSON.stringify(reponse)));
         onSubmit(startDate, endDate, price);
       } catch (error) {
         console.error('Error:', error);
-      }
+      } 
     }
   };
 

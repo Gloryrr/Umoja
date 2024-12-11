@@ -100,7 +100,7 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
     const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
         setSortOption(event.target.value);
 
-    const handleFilterChange = (setter: (value: any) => void) =>
+    const handleFilterChange = (setter: (value: string) => void) =>
         (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
             setter(event.target.value);
 
