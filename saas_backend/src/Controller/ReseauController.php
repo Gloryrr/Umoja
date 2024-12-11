@@ -8,10 +8,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\ReseauRepository;
-use App\Repository\AppartenirRepository;
 use App\Repository\UtilisateurRepository;
 use App\Repository\GenreMusicalRepository;
-use App\Repository\LierRepository;
 use App\Services\ReseauService;
 
 class ReseauController extends AbstractController
@@ -26,14 +24,31 @@ class ReseauController extends AbstractController
     #[Route('/api/v1/reseaux', name: 'get_reseaux', methods: ['GET'])]
     public function getReseaux(
         ReseauRepository $ReseauRepository,
-        AppartenirRepository $appartenirRepository,
-        LierRepository $lierRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         return ReseauService::getReseaux(
             $ReseauRepository,
-            $appartenirRepository,
-            $lierRepository,
+            $serializer
+        );
+    }
+
+    /**
+     * Récupère les informations d'un réseau par rapport à son nom.
+     *
+     * @param ReseauRepository $ReseauRepository, la classe CRUD des réseaux
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/reseau', name: 'get_reseau_by_name', methods: ['POST'])]
+    public function getReseauByName(
+        Request $request,
+        ReseauRepository $ReseauRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        return ReseauService::getReseauByName(
+            $data['nomReseau'],
+            $ReseauRepository,
             $serializer
         );
     }
@@ -112,7 +127,6 @@ class ReseauController extends AbstractController
      * @param Request $requete, la requête avec les données d'jaout
      * @param ReseauRepository $reseauRepository, la classe CRUD des réseaux
      * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des utilisateurs
-     * @param AppartenirRepository $appartenirRepository, CRUD des utilisateurs qui appartiennent à des réseaux
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
@@ -121,7 +135,6 @@ class ReseauController extends AbstractController
         Request $request,
         ReseauRepository $reseauRepository,
         UtilisateurRepository $utilisateurRepository,
-        AppartenirRepository $appartenirRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
@@ -129,7 +142,6 @@ class ReseauController extends AbstractController
             $data,
             $reseauRepository,
             $utilisateurRepository,
-            $appartenirRepository,
             $serializer
         );
     }
@@ -140,7 +152,6 @@ class ReseauController extends AbstractController
      * @param Request $request, la requête avec les données de suppression
      * @param ReseauRepository $reseauRepository, la classe CRUD des réseaux
      * @param UtilisateurRepository $utilisateurRepository, la classe CRUD des utilisateurs
-     * @param AppartenirRepository $appartenirRepository, CRUD des utilisateurs qui appartiennent à des réseaux
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
@@ -149,7 +160,6 @@ class ReseauController extends AbstractController
         Request $request,
         ReseauRepository $reseauRepository,
         UtilisateurRepository $utilisateurRepository,
-        AppartenirRepository $appartenirRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
@@ -157,7 +167,6 @@ class ReseauController extends AbstractController
             $data,
             $reseauRepository,
             $utilisateurRepository,
-            $appartenirRepository,
             $serializer
         );
     }
@@ -168,7 +177,6 @@ class ReseauController extends AbstractController
      * @param Request $requete, la requête avec les données d'jaout
      * @param ReseauRepository $reseauRepository, la classe CRUD des réseaux
      * @param GenreMusicalRepository $genreMusicalRepository, la classe CRUD des genres musicaux
-     * @param LierRepository $lierRepository, la classe CRUD des utilisateurs qui appartiennent à des réseaux
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
@@ -177,7 +185,6 @@ class ReseauController extends AbstractController
         Request $request,
         ReseauRepository $reseauRepository,
         GenreMusicalRepository $genreMusicalRepository,
-        LierRepository $lierRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
@@ -185,7 +192,6 @@ class ReseauController extends AbstractController
             $data,
             $reseauRepository,
             $genreMusicalRepository,
-            $lierRepository,
             $serializer
         );
     }
@@ -196,7 +202,6 @@ class ReseauController extends AbstractController
      * @param Request $requete, la requête avec les données d'jaout
      * @param ReseauRepository $reseauRepository, la classe CRUD des réseaux
      * @param GenreMusicalRepository $genreMusicalRepository, la classe CRUD des genres musicaux
-     * @param LierRepository $lierRepository, la classe CRUD des utilisateurs qui appartiennent à des réseaux
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
@@ -205,7 +210,6 @@ class ReseauController extends AbstractController
         Request $request,
         ReseauRepository $reseauRepository,
         GenreMusicalRepository $genreMusicalRepository,
-        LierRepository $lierRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
@@ -213,7 +217,6 @@ class ReseauController extends AbstractController
             $data,
             $reseauRepository,
             $genreMusicalRepository,
-            $lierRepository,
             $serializer
         );
     }

@@ -5,6 +5,10 @@ namespace App\Entity;
 use App\Repository\ConditionsFinancieresRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * Classe représentant les conditions financières d'une salle ou d'un contrat.
@@ -14,49 +18,69 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ConditionsFinancieresRepository::class)]
 class ConditionsFinancieres
 {
-    /**
-     * @var int|null L'identifiant unique des conditions financières.
-     */
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
-    private ?int $idCF = null;
+    #[Groups(['conditions_financieres:read', 'offre:read'])]
+    private int $id;
 
-    /**
-     * @var int|null Le montant minimum garanti pour une transaction ou un contrat.
-     */
     #[ORM\Column]
-    private ?int $minimunGaranti = null;
+    #[Groups(['conditions_financieres:read', 'conditions_financieres:write'])]
+    private int $minimunGaranti;
 
-    /**
-     * @var string|null Les conditions de paiement associées.
-     * Peut contenir des détails sur les délais de paiement, les modalités, etc.
-     */
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $conditionsPaiement = null;
+    #[Groups(['conditions_financieres:read', 'conditions_financieres:write'])]
+    private string $conditionsPaiement;
 
-    /**
-     * @var float|null Le pourcentage de recette appliqué sur les transactions.
-     */
     #[ORM\Column]
-    private ?float $pourcentageRecette = null;
+    #[Groups(['conditions_financieres:read', 'conditions_financieres:write'])]
+    private float $pourcentageRecette;
+
+    #[ORM\OneToMany(
+        targetEntity: Offre::class,
+        mappedBy: "conditionsFinancieres",
+        orphanRemoval: true,
+        cascade: ["remove"]
+    )]
+    #[Groups(['conditions_financieres:read'])]
+    #[MaxDepth(1)]
+    private Collection $offres;
+
+
+    public function __construct()
+    {
+        $this->offres = new ArrayCollection();
+    }
 
     /**
      * Récupère l'identifiant unique des conditions financières.
      *
-     * @return int|null
+     * @return int
      */
-    public function getIdCF(): ?int
+    public function getId(): int
     {
-        return $this->idCF;
+        return $this->id;
+    }
+
+    /**
+     * Définit l'identifiant unique des conditions financières.
+     *
+     * @param int $id
+     * @return static
+     */
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**
      * Récupère le montant minimum garanti.
      *
-     * @return int|null
+     * @return int
      */
-    public function getMinimunGaranti(): ?int
+    public function getMinimunGaranti(): int
     {
         return $this->minimunGaranti;
     }
@@ -77,9 +101,9 @@ class ConditionsFinancieres
     /**
      * Récupère les conditions de paiement.
      *
-     * @return string|null
+     * @return string
      */
-    public function getConditionsPaiement(): ?string
+    public function getConditionsPaiement(): string
     {
         return $this->conditionsPaiement;
     }
@@ -100,9 +124,9 @@ class ConditionsFinancieres
     /**
      * Récupère le pourcentage de recette.
      *
-     * @return float|null
+     * @return float
      */
-    public function getPourcentageRecette(): ?float
+    public function getPourcentageRecette(): float
     {
         return $this->pourcentageRecette;
     }
@@ -117,6 +141,30 @@ class ConditionsFinancieres
     {
         $this->pourcentageRecette = $pourcentageRecette;
 
+        return $this;
+    }
+
+    public function getOffres(): Collection
+    {
+        return $this->offres;
+    }
+
+    public function addOffre(Offre $offre): self
+    {
+        if (!$this->offres->contains($offre)) {
+            $this->offres[] = $offre;
+            $offre->setConditionsFinancieres($this);
+        }
+        return $this;
+    }
+
+    public function removeOffre(Offre $offre): self
+    {
+        if ($this->offres->removeElement($offre)) {
+            if ($offre->getConditionsFinancieres() === $this) {
+                $offre->setConditionsFinancieres(null);
+            }
+        }
         return $this;
     }
 }

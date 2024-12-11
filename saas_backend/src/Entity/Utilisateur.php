@@ -2,8 +2,14 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * Classe représentant un Utilisateur.
@@ -11,85 +17,118 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass=UtilisateurRepository::class)
  */
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
-class Utilisateur
+class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    /**
-     * @var int|null L'identifiant unique de l'utilisateur.
-     */
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
-    private ?int $idUtilisateur = null;
+    #[Groups(['utilisateur:read', 'utilisateur:write'])]
+    private int $id;
 
-    /**
-     * @var string|null L'email de l'utilisateur.
-     * Doit être unique et respecter un format valide.
-     */
-    #[ORM\Column(length: 128)]
-    private ?string $emailUtilisateur = null;
+    #[ORM\Column(length: 128, unique: true, nullable: false)]
+    #[Groups(['utilisateur:read', 'utilisateur:write'])]
+    private string $emailUtilisateur;
 
-    /**
-     * @var string|null Le mot de passe de l'utilisateur.
-     * Doit être stocké de manière sécurisée (hashé).
-     */
-    #[ORM\Column(length: 255)]
-    private ?string $mdpUtilisateur = null;
+    #[ORM\Column(length: 255, nullable: false)]
+    private string $mdpUtilisateur;
 
-    /**
-     * @var string|null Le rôle de l'utilisateur.
-     * Ex: USER, ADMIN.
-     * Notes: Le rôle peut être concatené si le user à plusieurs rôles ("USER:ADMIN").
-     */
-    #[ORM\Column(length: 20)]
-    private ?string $roleUtilisateur = null;
+    #[ORM\Column(length: 20, nullable: false)]
+    #[Groups(['utilisateur:read', 'utilisateur:write'])]
+    private string $roleUtilisateur;
 
-    /**
-     * @var string|null Le nom d'utilisateur (username).
-     * Utilisé pour l'authentification.
-     */
-    #[ORM\Column(length: 50)]
-    private ?string $username = null;
+    #[ORM\Column(length: 50, nullable: false, unique: true)]
+    #[Groups([
+        'utilisateur:read',
+        'utilisateur:write',
+        'offre:read',
+        'genre_musical:read',
+        'reseau:read',
+        'commentaire:read',
+        'reponse:read',
+        'preference_notification:read'
+    ])]
+    private string $username;
 
-    /**
-     * @var string|null Le numéro de téléphone de l'utilisateur.
-     * Peut être nul.
-     */
     #[ORM\Column(length: 15, nullable: true)]
+    #[Groups(['utilisateur:read', 'utilisateur:write'])]
     private ?string $numTelUtilisateur = null;
 
-    /**
-     * @var string|null Le nom de l'utilisateur.
-     * Peut être nul.
-     */
     #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['utilisateur:read', 'utilisateur:write'])]
     private ?string $nomUtilisateur = null;
 
-    /**
-     * @var string|null Le prénom de l'utilisateur.
-     * Peut être nul.
-     */
     #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['utilisateur:read', 'utilisateur:write'])]
     private ?string $prenomUtilisateur = null;
+
+    #[ORM\ManyToMany(targetEntity: GenreMusical::class, inversedBy: "utilisateurs", cascade: ["persist"])]
+    #[ORM\JoinTable(name: "preferencer")]
+    #[ORM\JoinColumn(name: "utilisateur_id", onDelete: "CASCADE")]
+    #[ORM\InverseJoinColumn(name: "genre_musical_id", onDelete: "CASCADE")]
+    #[Groups(['utilisateur:read'])]
+    #[MaxDepth(1)]
+    private Collection $genresMusicaux;
+
+    #[ORM\ManyToMany(targetEntity: Reseau::class, inversedBy: "utilisateurs", cascade: ["persist"])]
+    #[ORM\JoinTable(name: "appartenir")]
+    #[ORM\JoinColumn(name: "utilisateur_id", onDelete: "CASCADE")]
+    #[ORM\InverseJoinColumn(name: "reseau_id", onDelete: "CASCADE")]
+    #[Groups(['utilisateur:read', 'utilisateur:write'])]
+    #[MaxDepth(1)]
+    private Collection $reseaux;
+
+    #[ORM\OneToMany(targetEntity: Offre::class, mappedBy: "utilisateur", orphanRemoval: true, cascade: ["remove"])]
+    #[Groups(['utilisateur:read'])]
+    #[MaxDepth(1)]
+    private Collection $offres;
+
+    #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: "utilisateur", orphanRemoval: true, cascade:["remove"])]
+    #[Groups(['utilisateur:read'])]
+    #[MaxDepth(1)]
+    private Collection $offresCommentees;
+
+    #[ORM\OneToMany(targetEntity: Reponse::class, mappedBy: "utilisateur", orphanRemoval: true, cascade: ["remove"])]
+    #[Groups(['utilisateur:read'])]
+    #[MaxDepth(1)]
+    private Collection $reponses;
+
+    #[ORM\ManyToOne(targetEntity: PreferenceNotification::class, inversedBy: 'utilisateur', cascade: ["persist"])]
+    #[ORM\JoinColumn]
+    #[Groups(['utilisateur:read', 'utilisateur:write'])]
+    #[MaxDepth(1)]
+    private PreferenceNotification $preferenceNotification;
+
+    /**
+     * Constructeur de la classe.
+     */
+    public function __construct()
+    {
+        $this->genresMusicaux = new ArrayCollection();
+        $this->reseaux = new ArrayCollection();
+        $this->offres = new ArrayCollection();
+        $this->offresCommentees = new ArrayCollection();
+        $this->reponses = new ArrayCollection();
+    }
 
     /**
      * Récupère l'identifiant de l'utilisateur.
      *
-     * @return int|null
+     * @return int
      */
-    public function getIdUtilisateur(): ?int
+    public function getId(): int
     {
-        return $this->idUtilisateur;
+        return $this->id;
     }
 
     /**
      * Définit l'identifiant de l'utilisateur.
      *
-     * @param int $idUtilisateur
+     * @param int $id
      * @return static
      */
-    public function setIdUtilisateur(int $idUtilisateur): static
+    public function setId(int $id): static
     {
-        $this->idUtilisateur = $idUtilisateur;
+        $this->id = $id;
 
         return $this;
     }
@@ -97,9 +136,9 @@ class Utilisateur
     /**
      * Récupère l'email de l'utilisateur.
      *
-     * @return string|null
+     * @return string
      */
-    public function getEmailUtilisateur(): ?string
+    public function getEmailUtilisateur(): string
     {
         return $this->emailUtilisateur;
     }
@@ -120,9 +159,9 @@ class Utilisateur
     /**
      * Récupère le mot de passe de l'utilisateur.
      *
-     * @return string|null
+     * @return string
      */
-    public function getMdpUtilisateur(): ?string
+    public function getPassword(): string
     {
         return $this->mdpUtilisateur;
     }
@@ -143,9 +182,9 @@ class Utilisateur
     /**
      * Récupère le numéro de téléphone de l'utilisateur.
      *
-     * @return string|null
+     * @return string
      */
-    public function getNumTelUtilisateur(): ?string
+    public function getNumTelUtilisateur(): string
     {
         return $this->numTelUtilisateur;
     }
@@ -153,7 +192,7 @@ class Utilisateur
     /**
      * Définit le numéro de téléphone de l'utilisateur.
      *
-     * @param string|null $numTelUtilisateur
+     * @param string $numTelUtilisateur
      * @return static
      */
     public function setNumTelUtilisateur(?string $numTelUtilisateur): static
@@ -164,13 +203,17 @@ class Utilisateur
     }
 
     /**
-     * Récupère le rôle de l'utilisateur.
+     * Récupère le rôle de l'utilisateur, implémentation des fonctions d'interfaces.
+     * Même si on renvoie une liste, l'utilisateur n'a qu'un rôle dans la hiérarchie
      *
-     * @return string|null
+     * Exemple : ['ROLE_USER'] ou ['ROLE_ADMIN'] donc son attribut sera un string comme 'ROLE_USER' ou 'ROLE_ADMIN'
+     * Si l'utilisateur à 'ROLE_ADMIN', il est évident qu'il a aussi les droits 'ROLE_USER' implicitement.
+     *
+     * @return string
      */
-    public function getRoleUtilisateur(): ?string
+    public function getRoles(): array
     {
-        return $this->roleUtilisateur;
+        return [$this->roleUtilisateur];
     }
 
     /**
@@ -179,7 +222,7 @@ class Utilisateur
      * @param string $roleUtilisateur
      * @return static
      */
-    public function setRoleUtilisateur(string $roleUtilisateur): static
+    public function setRoles(string $roleUtilisateur): static
     {
         $this->roleUtilisateur = $roleUtilisateur;
 
@@ -189,9 +232,9 @@ class Utilisateur
     /**
      * Récupère le nom de l'utilisateur.
      *
-     * @return string|null
+     * @return string
      */
-    public function getNomUtilisateur(): ?string
+    public function getNomUtilisateur(): string
     {
         return $this->nomUtilisateur;
     }
@@ -212,9 +255,9 @@ class Utilisateur
     /**
      * Récupère le prénom de l'utilisateur.
      *
-     * @return string|null
+     * @return string
      */
-    public function getPrenomUtilisateur(): ?string
+    public function getPrenomUtilisateur(): string
     {
         return $this->prenomUtilisateur;
     }
@@ -235,9 +278,9 @@ class Utilisateur
     /**
      * Récupère le nom d'utilisateur (username).
      *
-     * @return string|null
+     * @return string
      */
-    public function getUsername(): ?string
+    public function getUsername(): string
     {
         return $this->username;
     }
@@ -251,6 +294,154 @@ class Utilisateur
     public function setUsername(string $username): static
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * Implémentation de la méthode de l'interface UserInterface.
+     *
+     * @return string
+     */
+    public function eraseCredentials(): void
+    {
+        // Implémentation de la méthode de l'interface UserInterface.
+        // Cette méthode ne fait rien, mais doit être implémentée.
+    }
+
+    /**
+     * Implémentation de la méthode de l'interface PasswordAuthenticatedUserInterface.
+     * Renvoie un string interpolé des identifiants de l'utilisateur: "email;username".
+     *
+     * @return string
+     */
+    public function getUserIdentifier(): string
+    {
+        return $this->username;
+    }
+
+    public function getGenresMusicaux(): Collection
+    {
+        return $this->genresMusicaux;
+    }
+
+    public function addGenreMusical(GenreMusical $genreMusical): self
+    {
+        if (!$this->genresMusicaux->contains($genreMusical)) {
+            $this->genresMusicaux->add($genreMusical);
+            $genreMusical->addUtilisateur($this);
+        }
+        return $this;
+    }
+
+    public function removeGenreMusical(GenreMusical $genreMusical): self
+    {
+        if ($this->genresMusicaux->removeElement($genreMusical)) {
+            $genreMusical->removeUtilisateur($this);
+        }
+        return $this;
+    }
+
+    public function getReseaux(): Collection
+    {
+        return $this->reseaux;
+    }
+
+    public function addReseau(Reseau $reseau): self
+    {
+        if (!$this->reseaux->contains($reseau)) {
+            $this->reseaux->add($reseau);
+            $reseau->addUtilisateur($this);
+        }
+        return $this;
+    }
+
+    public function removeReseau(Reseau $reseau): self
+    {
+        if ($this->reseaux->removeElement($reseau)) {
+            $reseau->removeUtilisateur($this);
+        }
+        return $this;
+    }
+
+    public function getOffres(): Collection
+    {
+        return $this->offres;
+    }
+
+    public function addOffre(Offre $offre): self
+    {
+        if (!$this->offres->contains($offre)) {
+            $this->offres[] = $offre;
+            $offre->setUtilisateur($this);
+        }
+        return $this;
+    }
+
+    public function removeOffre(Offre $offre): self
+    {
+        if ($this->offres->removeElement($offre)) {
+            if ($offre->getUtilisateur() === $this) {
+                $offre->setUtilisateur(null);
+            }
+        }
+        return $this;
+    }
+
+    public function getOffresCommentees(): Collection
+    {
+        return $this->offresCommentees;
+    }
+
+    public function addOffreCommentee(Offre $offreCommentee): self
+    {
+        if (!$this->offresCommentees->contains($offreCommentee)) {
+            $this->offresCommentees->add($offreCommentee);
+            $offreCommentee->addCommenteePar($this);
+        }
+        return $this;
+    }
+
+    public function removeOffreCommentee(Offre $offreCommentee): self
+    {
+        if ($this->offresCommentees->removeElement($offreCommentee)) {
+            $offreCommentee->removeCommenteePar($this);
+        }
+        return $this;
+    }
+
+    public function getReponses(): Collection
+    {
+        return $this->reponses;
+    }
+
+    public function addReponse(Reponse $reponse): self
+    {
+        if (!$this->reponses->contains($reponse)) {
+            $this->reponses[] = $reponse;
+            $reponse->setUtilisateur($this);
+        }
+        return $this;
+    }
+
+    public function removeReponse(Reponse $reponse): self
+    {
+        if ($this->reponses->removeElement($reponse)) {
+            if ($reponse->getUtilisateur() === $this) {
+                $reponse->setUtilisateur(null);
+            }
+        }
+        return $this;
+    }
+
+    public function getPreferenceNotification(): PreferenceNotification
+    {
+        return $this->preferenceNotification;
+    }
+
+    public function setPreferenceNotification(?PreferenceNotification $preferenceNotification): static
+    {
+        $this->preferenceNotification = $preferenceNotification;
 
         return $this;
     }

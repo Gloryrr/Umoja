@@ -51,7 +51,8 @@ class GenreMusicalTest extends TestCase
      */
     public function testGetIdInitial()
     {
-        $this->assertNull($this->genreMusical->getIdGenreMusical());
+        $this->genreMusical->setId(0);
+        $this->assertEquals(0, $this->genreMusical->getId());
     }
 
     /**
@@ -63,10 +64,10 @@ class GenreMusicalTest extends TestCase
     {
         // Utilisation de reflection pour accéder à l'attribut privé
         $reflection = new \ReflectionClass($this->genreMusical);
-        $property = $reflection->getProperty('idGenreMusical');
+        $property = $reflection->getProperty('id');
         $property->setAccessible(true);
         $property->setValue($this->genreMusical, 1);
 
-        $this->assertEquals(1, $this->genreMusical->getIdGenreMusical());
+        $this->assertEquals(1, $this->genreMusical->getId());
     }
 }

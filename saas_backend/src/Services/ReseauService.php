@@ -2,18 +2,13 @@
 
 namespace App\Services;
 
-use App\DTO\ReseauDTO;
-use App\Repository\AppartenirRepository;
 use App\Repository\GenreMusicalRepository;
-use App\Repository\LierRepository;
 use App\Repository\UtilisateurRepository;
 use App\Repository\ReseauRepository;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Reseau;
-use App\Entity\Appartenir;
-use App\Entity\Lier;
 
 /**
  * Class ReseauService
@@ -31,47 +26,55 @@ class ReseauService
      */
     public static function getReseaux(
         ReseauRepository $reseauRepository,
-        AppartenirRepository $appartenirRepository,
-        LierRepository $lierRepository,
         SerializerInterface $serializer
     ): JsonResponse {
         // on récupère tous les reseaux existants
         $reseaux = $reseauRepository->findAll();
-        $arrayReseauxDTO = [];
-        foreach ($reseaux as $indReseau => $reseau) {
-            // initialisation du DTO
-            $reseauxDTO = new ReseauDTO(
-                $reseau->getIdReseau(),
-                $reseau->getNomReseau()
-            );
-
-            // récupération des utilisateurs et genres musicaux du réseau
-            $membresArray = $appartenirRepository->trouveMembresParIdReseau($reseau->getIdReseau());
-            $genresMusicauxArray = $lierRepository->trouveGenresMusicauxParIdReseau($reseau->getIdReseau());
-
-            foreach ($membresArray as $indM => $membre) {
-                array_push($reseauxDTO->membreDuReseau, $membre->getIdUtilisateur());
-            }
-
-            foreach ($genresMusicauxArray as $indGM => $genreMusical) {
-                array_push($reseauxDTO->genresMusicauxDuReseau, $genreMusical->getIdGenreMusical());
-            }
-
-            array_push($arrayReseauxDTO, $reseauxDTO);
-        }
-
-        $reseauxJSON = $serializer->serialize($arrayReseauxDTO, 'json');
+        $reseauxJSON = $serializer->serialize(
+            $reseaux,
+            'json',
+            ['groups' => ['reseau:read']]
+        );
         return new JsonResponse([
             'reseaux' => $reseauxJSON,
             'message' => "Liste des réseaux",
-            'reponse' => Response::HTTP_OK,
-            'headers' => [],
             'serialized' => true
-        ]);
+        ], Response::HTTP_OK);
     }
 
     /**
-     * Crée un nouveau réseau et renvoie une réponse JSON.
+     * Récupère le réseau par rapport à son nom et renvoie une réponse JSON.
+     *
+     * @param ReseauRepository $reseauRepository Le repository des réseaux.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les réseaux listés.
+     */
+    public static function getReseauByName(
+        string $name,
+        ReseauRepository $reseauRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        try {
+            // on récupère tous les reseaux existants
+            $reseaux = $reseauRepository->findBy(['nomReseau' => $name]);
+            $reseauxJSON = $serializer->serialize(
+                $reseaux,
+                'json',
+                ['groups' => ['reseau:read']]
+            );
+            return new JsonResponse([
+                'reseau' => $reseauxJSON,
+                'message' => "Informations du réseau : {$name}",
+                'serialized' => true
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Créer un nouveau réseau et renvoie une réponse JSON.
      *
      * @param ReseauRepository $reseauRepository Le repository des réseaux.
      * @param SerializerInterface $serializer Le service de sérialisation.
@@ -102,22 +105,22 @@ class ReseauService
 
             // vérification de l'action en BDD
             if ($rep) {
-                $reseauJSON = $serializer->serialize($reseau, 'json');
+                $reseauJSON = $serializer->serialize(
+                    $reseau,
+                    'json',
+                    ['groups' => ['reseau:read']]
+                );
                 return new JsonResponse([
                     'reseau' => $reseauJSON,
                     'message' => "réseau ajouté !",
-                    'reponse' => Response::HTTP_CREATED,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_CREATED);
             }
             return new JsonResponse([
                 'reseau' => null,
                 'message' => "réseau non ajouté, merci de regarder l'erreur décrite",
-                'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
             throw new \RuntimeException("Erreur lors de la création du réseau", $e->getCode());
         }
@@ -150,10 +153,8 @@ class ReseauService
                 return new JsonResponse([
                     'reseau' => null,
                     'message' => 'réseau non trouvé, merci de donner un identifiant valide !',
-                    'reponse' => Response::HTTP_NOT_FOUND,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_NOT_FOUND);
             }
 
             // on vérifie qu'aucune donnée ne manque pour la mise à jour
@@ -167,23 +168,23 @@ class ReseauService
 
             // si l'action à réussi
             if ($rep) {
-                $reseau = $serializer->serialize($reseau, 'json');
+                $reseau = $serializer->serialize(
+                    $reseau,
+                    'json',
+                    ['groups' => ['reseau:read']]
+                );
 
                 return new JsonResponse([
                     'reseau' => $reseau,
                     'message' => "réseau modifié avec succès",
-                    'reponse' => Response::HTTP_OK,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_OK);
             } else {
                 return new JsonResponse([
                     'reseau' => null,
                     'message' => "réseau non modifié, merci de vérifier l'erreur décrite",
-                    'reponse' => Response::HTTP_BAD_REQUEST,
-                    'headers' => [],
                     'serialized' => false
-                ]);
+                ], Response::HTTP_BAD_REQUEST);
             }
         } catch (\Exception $e) {
             throw new \RuntimeException("Erreur lors de la mise à jour du réseau", $e->getCode());
@@ -212,10 +213,8 @@ class ReseauService
             return new JsonResponse([
                 'reseau' => null,
                 'message' => 'réseau non trouvé, merci de fournir un identifiant valide',
-                'reponse' => Response::HTTP_NOT_FOUND,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         // suppression du réseau en BDD
@@ -223,22 +222,22 @@ class ReseauService
 
         // si l'action à réussi
         if ($rep) {
-            $reseauJSON = $serializer->serialize($reseau, 'json');
+            $reseauJSON = $serializer->serialize(
+                $reseau,
+                'json',
+                ['groups' => ['reseau:read']]
+            );
             return new JsonResponse([
                 'reseau' => $reseauJSON,
                 'message' => 'réseau supprimé',
-                'reponse' => Response::HTTP_NO_CONTENT,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'reseau' => null,
                 'message' => 'réseau non supprimé !',
-                'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -248,7 +247,6 @@ class ReseauService
      * @param mixed $data Les données requises pour ajouter un membre au réseau.
      * @param ReseauRepository $reseauRepository Le repository des réseaux.
      * @param UtilisateurRepository $utilisateurRepository Le repository des utilisateurs.
-     * @param AppartenirRepository $appartenirRepository Le repository des appartenance.
      * @param SerializerInterface $serializer Le service de sérialisation.
      *
      * @return JsonResponse La réponse JSON après tentatives d'ajout d'un membre au réseau.
@@ -257,7 +255,6 @@ class ReseauService
         mixed $data,
         ReseauRepository $reseauRepository,
         UtilisateurRepository $utilisateurRepository,
-        AppartenirRepository $appartenirRepository,
         SerializerInterface $serializer,
     ): JsonResponse {
         // récupération du réseau ciblé
@@ -269,36 +266,32 @@ class ReseauService
             return new JsonResponse([
                 'object' => null,
                 'message' => 'réseau ou utilisateur non trouvé, merci de fournir un identifiant valide',
-                'reponse' => Response::HTTP_NOT_FOUND,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         // ajout de l'objet en BDD
-        $appartenirObject = new Appartenir();
-        $appartenirObject->setIdReseau($reseau);
-        $appartenirObject->setIdUtilisateur($utilisateur);
-        $rep = $appartenirRepository->ajouteMembreAuReseau($appartenirObject);
+        $reseau->addUtilisateur($utilisateur);
+        $rep = $reseauRepository->updateReseau($reseau);
 
         // si l'action à réussi
         if ($rep) {
-            $reseauJSON = $serializer->serialize($reseau, 'json');
+            $reseauJSON = $serializer->serialize(
+                $reseau,
+                'json',
+                ['groups' => ['reseau:read']]
+            );
             return new JsonResponse([
                 'reseau' => $reseauJSON,
                 'message' => 'membre ajouté au réseau.',
-                'reponse' => Response::HTTP_NO_CONTENT,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'reseau' => null,
                 'message' => 'membre non ajouté au réseau !',
-                'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -308,7 +301,6 @@ class ReseauService
      * @param mixed $data Les données requises pour retirer un membre du réseau.
      * @param ReseauRepository $reseauRepository Le repository des réseaux.
      * @param UtilisateurRepository $utilisateurRepository Le repository des utilisateurs.
-     * @param AppartenirRepository $appartenirRepository Le repository des appartenance.
      * @param SerializerInterface $serializer Le service de sérialisation.
      *
      * @return JsonResponse La réponse JSON après tentatives de retrait d'un membre du réseau.
@@ -317,7 +309,6 @@ class ReseauService
         mixed $data,
         ReseauRepository $reseauRepository,
         UtilisateurRepository $utilisateurRepository,
-        AppartenirRepository $appartenirRepository,
         SerializerInterface $serializer,
     ): JsonResponse {
         // récupération du réseau ciblé
@@ -329,36 +320,32 @@ class ReseauService
             return new JsonResponse([
                 'object' => null,
                 'message' => 'réseau ou utilisateur non trouvé, merci de fournir un identifiant valide',
-                'reponse' => Response::HTTP_NOT_FOUND,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         // suppression du en BDD
-        $appartenirObject = new Appartenir();
-        $appartenirObject->setIdReseau($reseau);
-        $appartenirObject->setIdUtilisateur($utilisateur);
-        $rep = $appartenirRepository->retireMembreReseau($appartenirObject);
+        $reseau->removeUtilisateur($utilisateur);
+        $rep = $reseauRepository->updateReseau($reseau);
 
         // si l'action à réussi
         if ($rep) {
-            $reseauJSON = $serializer->serialize($appartenirObject, 'json');
+            $reseauJSON = $serializer->serialize(
+                $reseau,
+                'json',
+                ['groups' => ['reseau:read']]
+            );
             return new JsonResponse([
                 'reseau' => $reseauJSON,
                 'message' => 'membre retiré du réseau.',
-                'reponse' => Response::HTTP_NO_CONTENT,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'reseau' => null,
                 'message' => 'membre non retiré du réseau !',
-                'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -368,7 +355,6 @@ class ReseauService
      * @param mixed $data Les données requises pour ajouter un genre au réseau.
      * @param ReseauRepository $reseauRepository Le repository des réseaux.
      * @param GenreMusicalRepository $genreMusicalRepository Le repository des genres musicaux.
-     * @param LierRepository $lierRepository Le repository des liaisons.
      * @param SerializerInterface $serializer Le service de sérialisation.
      *
      * @return JsonResponse La réponse JSON après tentatives d'ajout d'un genre musical au réseau.
@@ -377,7 +363,6 @@ class ReseauService
         mixed $data,
         ReseauRepository $reseauRepository,
         GenreMusicalRepository $genreMusicalRepository,
-        LierRepository $lierRepository,
         SerializerInterface $serializer,
     ): JsonResponse {
         // récupération du réseau ciblé
@@ -389,36 +374,32 @@ class ReseauService
             return new JsonResponse([
                 'object' => null,
                 'message' => 'réseau ou genre musical non trouvé, merci de fournir un identifiant valide',
-                'reponse' => Response::HTTP_NOT_FOUND,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         // ajout de l'objet en BDD
-        $lierObject = new Lier();
-        $lierObject->setIdGenreMusical($genreMusical);
-        $lierObject->setIdReseau($reseau);
-        $rep = $lierRepository->ajouteMembreAuReseau($lierObject);
+        $reseau->addGenreMusical($genreMusical);
+        $rep = $reseauRepository->updateReseau($reseau);
 
         // si l'action à réussi
         if ($rep) {
-            $reseauJSON = $serializer->serialize($reseau, 'json');
+            $reseauJSON = $serializer->serialize(
+                $reseau,
+                'json',
+                ['groups' => ['reseau:read']]
+            );
             return new JsonResponse([
                 'reseau' => $reseauJSON,
                 'message' => 'genre musical ajouté au réseau',
-                'reponse' => Response::HTTP_NO_CONTENT,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'reseau' => null,
                 'message' => 'genre musical non ajouté au réseau !',
-                'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -428,7 +409,6 @@ class ReseauService
      * @param mixed $data Les données requises pour retirer un genre du réseau.
      * @param ReseauRepository $reseauRepository Le repository des réseaux.
      * @param GenreMusicalRepository $genreMusicalRepository Le repository des genres musicaux.
-     * @param LierRepository $lierRepository Le repository des liaisons.
      * @param SerializerInterface $serializer Le service de sérialisation.
      *
      * @return JsonResponse La réponse JSON après tentatives de retrait d'un genre musical du réseau.
@@ -437,7 +417,6 @@ class ReseauService
         mixed $data,
         ReseauRepository $reseauRepository,
         GenreMusicalRepository $genreMusicalRepository,
-        LierRepository $lierRepository,
         SerializerInterface $serializer,
     ): JsonResponse {
         // récupération du réseau ciblé
@@ -449,36 +428,32 @@ class ReseauService
             return new JsonResponse([
                 'object' => null,
                 'message' => 'réseau ou genre musical non trouvé, merci de fournir un identifiant valide',
-                'reponse' => Response::HTTP_NOT_FOUND,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         // suppression de l'objet en BDD
-        $lierObject = new Lier();
-        $lierObject->setIdGenreMusical($genreMusical);
-        $lierObject->setIdReseau($reseau);
-        $rep = $lierRepository->retireGenreMusicalReseau($lierObject);
+        $reseau->removeGenreMusical($genreMusical);
+        $rep = $reseauRepository->updateReseau($reseau);
 
         // si l'action à réussi
         if ($rep) {
-            $reseauJSON = $serializer->serialize($reseau, 'json');
+            $reseauJSON = $serializer->serialize(
+                $reseau,
+                'json',
+                ['groups' => ['reseau:read']]
+            );
             return new JsonResponse([
                 'reseau' => $reseauJSON,
                 'message' => 'genre musical retiré du réseau',
-                'reponse' => Response::HTTP_NO_CONTENT,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'reseau' => null,
                 'message' => 'genre musical non retiré du réseau !',
-                'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 }

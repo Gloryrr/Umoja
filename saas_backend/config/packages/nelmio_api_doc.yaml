@@ -1,0 +1,10 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: Umodja API documentation
+            description: Documentation de l'API avec OpenAPI (Swagger).
+            version: 1.0.0
+
+    areas:
+        path_patterns:
+            - ^/api/v1/(?!/doc$)

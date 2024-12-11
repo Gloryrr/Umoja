@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react';
+import React, { Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { /* FaHeart, FaCode,*/ FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
 
@@ -45,20 +45,34 @@ const projects: Project[] = [
     // Add more projects as needed
 ];
 
-export default function ProjectDetails() {
+
+
+
+function ProjectDetailsContent({ projects }: { projects: Project[] }) {
     const searchParams = useSearchParams();
     const id = searchParams.get('id');
     const project = projects.find(p => p.id === Number(id));
-
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const handleOpenModal = () => {
+        setIsModalOpen(true);
+      };
+    
+      const handleCloseModal = () => {
+        setIsModalOpen(false);
+      };
+    
+    const handleSubmitNumber = (startDate: Date | null, endDate: Date | null, price: number | null): void => {
+      setIsModalOpen(false);
+    };
     if (!project) {
         return <div className="flex items-center justify-center h-screen bg-gray-900 text-white">Project not found</div>;
     }
 
     return (
         <div className="bg-gray-900 h-screen w-full text-white flex items-center justify-center">
-            <div className="container mx-auto px-4 py-8 max-w-4xl">
-                <h1 className="text-4xl font-bold mb-2 text-center">{project.title}</h1>
-                <p className="text-xl mb-8 text-center">{project.description}</p>
+            <div className="container mx-auto px-8 py-16 max-w-8xl">
+                <h1 className="text-6xl font-bold mb-4 text-center">{project.title}</h1>
+                <p className="text-xl mb-12 text-center">{project.description}</p>
                 
                 <div className="flex flex-col md:flex-row">
                     <div className="md:w-1/2 md:pr-4 mb-8 md:mb-0">
@@ -74,7 +88,7 @@ export default function ProjectDetails() {
                     </div>
                     <div className="md:w-1/2 md:pl-4">
                         <div className="mb-6">
-                            <h2 className="text-xl font-semibold">{project.creator}</h2>
+                            <h2 className="text-2xl font-semibold">{project.creator}</h2>
                         </div>
                         <div className="bg-gray-800 rounded-lg p-6 mb-8">
                             
@@ -103,16 +117,25 @@ export default function ProjectDetails() {
                             </p>
                         </div>
                         <div className="flex justify-center space-x-4">
-                            <button className="bg-white text-black px-6 py-3 rounded-full font-semibold hover:bg-gray-200 transition duration-300">
-                                Contribuer
-                            </button>
-                            <button className="bg-gray-800 text-white px-4 py-3 rounded-full font-semibold hover:bg-gray-700 transition duration-300">
+                            <button
+                                className="bg-white text-black px-8 py-4 rounded-full font-semibold hover:bg-gray-200 transition duration-300"
+                                onClick={handleOpenModal}
+                                >
+                                Repondre
+                                </button>
+
+                                <NumberInputModal
+                                isOpen={isModalOpen}
+                                onClose={handleCloseModal}
+                                onSubmit={handleSubmitNumber}
+                                />
+                            <button className="bg-gray-800 text-white px-6 py-4 rounded-full font-semibold hover:bg-gray-700 transition duration-300">
                                 <FaFacebookF />
                             </button>
-                            <button className="bg-gray-800 text-white px-4 py-3 rounded-full font-semibold hover:bg-gray-700 transition duration-300">
+                            <button className="bg-gray-800 text-white px-6 py-4 rounded-full font-semibold hover:bg-gray-700 transition duration-300">
                                 <FaTwitter />
                             </button>
-                            <button className="bg-gray-800 text-white px-4 py-3 rounded-full font-semibold hover:bg-gray-700 transition duration-300">
+                            <button className="bg-gray-800 text-white px-6 py-4 rounded-full font-semibold hover:bg-gray-700 transition duration-300">
                                 <FaLinkedinIn />
                             </button>
                         </div>
@@ -120,5 +143,13 @@ export default function ProjectDetails() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function ProjectDetails() {
+    return (
+        <Suspense fallback={<div className="flex items-center justify-center h-screen bg-gray-900 text-white">Chargement...</div>}>
+            <ProjectDetailsContent projects={projects} />
+        </Suspense>
     );
 }

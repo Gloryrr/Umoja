@@ -4,78 +4,75 @@ namespace App\Entity;
 
 use App\Repository\BudgetEstimatifRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: BudgetEstimatifRepository::class)]
 class BudgetEstimatif
 {
-    /**
-     * Identifiant unique du budget estimatif.
-     *
-     * @var int|null
-     */
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
-    private ?int $idBE = null;
+    #[Groups(['budget_estimatif:read', 'offre:read'])]
+    private int $id;
 
-    /**
-     * Montant du cachet de l'artiste.
-     *
-     * @var int|null
-     */
     #[ORM\Column]
-    private ?int $cachetArtiste = null;
+    #[Groups(['budget_estimatif:read', 'budget_estimatif:write'])]
+    private int $cachetArtiste;
 
-    /**
-     * Montant des frais de déplacement.
-     *
-     * @var int|null
-     */
     #[ORM\Column]
-    private ?int $fraisDeplacement = null;
+    #[Groups(['budget_estimatif:read', 'budget_estimatif:write'])]
+    private int $fraisDeplacement;
 
-    /**
-     * Montant des frais d'hébergement.
-     *
-     * @var int|null
-     */
     #[ORM\Column]
-    private ?int $fraisHebergement = null;
+    #[Groups(['budget_estimatif:read', 'budget_estimatif:write'])]
+    private int $fraisHebergement;
 
-    /**
-     * Montant des frais de restauration.
-     *
-     * @var int|null
-     */
     #[ORM\Column]
-    private ?int $fraisRestauration = null;
+    #[Groups(['budget_estimatif:read', 'budget_estimatif:write'])]
+    private int $fraisRestauration;
+
+    #[ORM\OneToMany(targetEntity: Offre::class, mappedBy: "budgetEstimatif", orphanRemoval: true, cascade: ["remove"])]
+    #[Groups(['budget_estimatif:read'])]
+    #[MaxDepth(1)]
+    private Collection $offres;
+
+
+    public function __construct()
+    {
+        $this->offres = new ArrayCollection();
+    }
 
     /**
      * Récupère l'identifiant du budget estimatif.
      *
-     * @return int|null
+     * @return int
      */
-    public function getIdBE(): ?int
+    public function getId(): int
     {
-        return $this->idBE;
+        return $this->id;
     }
 
     /**
      * insert l'identifiant du budget estimatif.
      *
-     * @return int|null
+     * @return int
      */
-    public function setIdBE(int $idBE): ?int
+    public function setId(int $id): static
     {
-        return $this->idBE = $idBE;
+        $this->id = $id;
+
+        return $this;
     }
 
     /**
      * Récupère le montant du cachet de l'artiste.
      *
-     * @return int|null
+     * @return int
      */
-    public function getCachetArtiste(): ?int
+    public function getCachetArtiste(): int
     {
         return $this->cachetArtiste;
     }
@@ -96,9 +93,9 @@ class BudgetEstimatif
     /**
      * Récupère le montant des frais de déplacement.
      *
-     * @return int|null
+     * @return int
      */
-    public function getFraisDeplacement(): ?int
+    public function getFraisDeplacement(): int
     {
         return $this->fraisDeplacement;
     }
@@ -119,9 +116,9 @@ class BudgetEstimatif
     /**
      * Récupère le montant des frais d'hébergement.
      *
-     * @return int|null
+     * @return int
      */
-    public function getFraisHebergement(): ?int
+    public function getFraisHebergement(): int
     {
         return $this->fraisHebergement;
     }
@@ -142,9 +139,9 @@ class BudgetEstimatif
     /**
      * Récupère le montant des frais de restauration.
      *
-     * @return int|null
+     * @return int
      */
-    public function getFraisRestauration(): ?int
+    public function getFraisRestauration(): int
     {
         return $this->fraisRestauration;
     }
@@ -159,6 +156,30 @@ class BudgetEstimatif
     {
         $this->fraisRestauration = $fraisRestauration;
 
+        return $this;
+    }
+
+    public function getOffres(): Collection
+    {
+        return $this->offres;
+    }
+
+    public function addOffre(Offre $offre): self
+    {
+        if (!$this->offres->contains($offre)) {
+            $this->offres[] = $offre;
+            $offre->setBudgetEstimatif($this);
+        }
+        return $this;
+    }
+
+    public function removeOffre(Offre $offre): self
+    {
+        if ($this->offres->removeElement($offre)) {
+            if ($offre->getBudgetEstimatif() === $this) {
+                $offre->setBudgetEstimatif(null);
+            }
+        }
         return $this;
     }
 }

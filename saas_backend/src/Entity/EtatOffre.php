@@ -4,6 +4,10 @@ namespace App\Entity;
 
 use App\Repository\EtatOffreRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * Classe représentant un État d'Offre.
@@ -13,37 +17,55 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: EtatOffreRepository::class)]
 class EtatOffre
 {
-    /**
-     * @var int|null L'identifiant unique de l'état d'offre.
-     */
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
-    private ?int $idEtatOffre = null;
+    #[Groups(['etat_offre:read', 'offre:read'])]
+    private int $id;
 
-    /**
-     * @var string|null Le nom de l'état de l'offre.
-     * Doit avoir une longueur maximale de 50 caractères.
-     */
     #[ORM\Column(length: 50)]
-    private ?string $nomEtat = null;
+    #[Groups(['etat_offre:read', 'etat_offre:write'])]
+    private string $nomEtat;
+
+    #[ORM\OneToMany(targetEntity: Offre::class, mappedBy: "etatOffre", orphanRemoval: true, cascade: ["remove"])]
+    #[Groups(['etat_offre:read'])]
+    #[MaxDepth(1)]
+    private Collection $offres;
+
+    public function __construct()
+    {
+        $this->offres = new ArrayCollection();
+    }
 
     /**
      * Récupère l'identifiant de l'état d'offre.
      *
-     * @return int|null
+     * @return int
      */
-    public function getId(): ?int
+    public function getId(): int
     {
-        return $this->idEtatOffre;
+        return $this->id;
+    }
+
+    /**
+     * Définit l'identifiant de l'état d'offre.
+     *
+     * @param int $id L'identifiant à assigner à l'état d'offre.
+     * @return static
+     */
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**
      * Récupère le nom de l'état de l'offre.
      *
-     * @return string|null
+     * @return string
      */
-    public function getNomEtat(): ?string
+    public function getNomEtat(): string
     {
         return $this->nomEtat;
     }
@@ -58,6 +80,30 @@ class EtatOffre
     {
         $this->nomEtat = $nomEtat;
 
+        return $this;
+    }
+
+    public function getOffres(): Collection
+    {
+        return $this->offres;
+    }
+
+    public function addOffre(Offre $offre): self
+    {
+        if (!$this->offres->contains($offre)) {
+            $this->offres[] = $offre;
+            $offre->setEtatOffre($this);
+        }
+        return $this;
+    }
+
+    public function removeOffre(Offre $offre): self
+    {
+        if ($this->offres->removeElement($offre)) {
+            if ($offre->getEtatOffre() === $this) {
+                $offre->setEtatOffre(null);
+            }
+        }
         return $this;
     }
 }

@@ -3,11 +3,11 @@
 namespace App\Services;
 
 use App\Repository\ConditionsFinancieresRepository;
+use App\Repository\OffreRepository;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\ConditionsFinancieres;
-use App\DTO\ConditionsFinancieresDTO;
 
 /**
  * Class ConditionsFinancieresService
@@ -29,26 +29,44 @@ class ConditionsFinancieresService
     ): JsonResponse {
         // on récupère tous les budgets définis
         $conditionsFinancieres = $conditionsFinancieresRepository->findAll();
-        $arrayConditionsFinancieresDTO = [];
-        foreach ($conditionsFinancieres as $indCF => $conditionFinanciere) {
-            $conditionsFinancieresDTO = new ConditionsFinancieresDTO(
-                $conditionFinanciere->getIdCF(),
-                $conditionFinanciere->getMinimunGaranti(),
-                $conditionFinanciere->getConditionsPaiement(),
-                $conditionFinanciere->getPourcentageRecette()
-            );
-
-            array_push($arrayConditionsFinancieresDTO, $conditionsFinancieresDTO);
-        }
-
-        $conditionsFinancieresJSON = $serializer->serialize($arrayConditionsFinancieresDTO, 'json');
+        $conditionsFinancieresJSON = $serializer->serialize(
+            $conditionsFinancieres,
+            'json',
+            ['groups' => ['conditions_financieres:read']]
+        );
         return new JsonResponse([
             'conditions_financieres' => $conditionsFinancieresJSON,
             'message' => "Liste des conditions financières",
-            'reponse' => Response::HTTP_OK,
-            'headers' => [],
             'serialized' => true
-        ]);
+        ], Response::HTTP_OK);
+    }
+
+    /**
+     * Récupère une condition financière en fonction de son id et renvoie une réponse JSON.
+     *
+     * @param int $id, L'id à récupérée
+     * @param ConditionsFinancieresRepository $conditionsFinancieresRepository Le repository des conditions financières.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les conditions financières.
+     */
+    public static function getConditionFinanciereById(
+        int $id,
+        ConditionsFinancieresRepository $conditionsFinancieresRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        // on récupère tous les budgets définis
+        $conditionsFinancieres = $conditionsFinancieresRepository->findBy(['id' => $id]);
+        $conditionsFinancieresJSON = $serializer->serialize(
+            $conditionsFinancieres,
+            'json',
+            ['groups' => ['conditions_financieres:read']]
+        );
+        return new JsonResponse([
+            'condition_financiere' => $conditionsFinancieresJSON,
+            'message' => "Liste des conditions financières",
+            'serialized' => true
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -86,22 +104,22 @@ class ConditionsFinancieresService
 
             // vérification de l'action en BDD
             if ($rep) {
-                $conditionsFinancieresJSON = $serializer->serialize($conditionsFinancieres, 'json');
+                $conditionsFinancieresJSON = $serializer->serialize(
+                    $conditionsFinancieres,
+                    'json',
+                    ['groups' => ['conditions_financieres:read']]
+                );
                 return new JsonResponse([
-                    'conditions_financieres' => $conditionsFinancieresJSON,
+                    'condition_financiere' => $conditionsFinancieresJSON,
                     'message' => "condition financière inscrit !",
-                    'reponse' => Response::HTTP_CREATED,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_CREATED);
             }
             return new JsonResponse([
-                'conditions_financieres' => null,
+                'condition_financiere' => null,
                 'message' => "condition financière non inscrit, merci de regarder l'erreur décrite",
-                'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
             throw new \RuntimeException("Erreur lors de la création de la condition financière", $e->getCode());
         }
@@ -132,12 +150,10 @@ class ConditionsFinancieresService
             // si il n'y pas de condition financière trouvée
             if ($conditionsFinancieres == null) {
                 return new JsonResponse([
-                    'conditions_financieres' => null,
+                    'condition_financiere' => null,
                     'message' => 'condition financière non trouvée, merci de donner un identifiant valide !',
-                    'reponse' => Response::HTTP_NOT_FOUND,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_NOT_FOUND);
             }
 
             // on vérifie qu'aucune données ne manque pour la mise à jour
@@ -157,23 +173,23 @@ class ConditionsFinancieresService
 
             // si l'action à réussi
             if ($rep) {
-                $conditionsFinancieres = $serializer->serialize($conditionsFinancieres, 'json');
+                $conditionsFinancieres = $serializer->serialize(
+                    $conditionsFinancieres,
+                    'json',
+                    ['groups' => ['conditions_financieres:read']]
+                );
 
                 return new JsonResponse([
-                    'conditions_financieres' => $conditionsFinancieres,
+                    'condition_financiere' => $conditionsFinancieres,
                     'message' => "condition financière modifiée avec succès",
-                    'reponse' => Response::HTTP_OK,
-                    'headers' => [],
                     'serialized' => true
-                ]);
+                ], Response::HTTP_OK);
             } else {
                 return new JsonResponse([
-                    'conditions_financieres' => null,
+                    'condition_financiere' => null,
                     'message' => "condition financière non modifiée, merci de vérifier l'erreur décrite",
-                    'reponse' => Response::HTTP_BAD_REQUEST,
-                    'headers' => [],
                     'serialized' => false
-                ]);
+                ], Response::HTTP_BAD_REQUEST);
             }
         } catch (\Exception $e) {
             throw new \RuntimeException("Erreur lors de la mise à jour de la condition financière", $e->getCode());
@@ -200,12 +216,10 @@ class ConditionsFinancieresService
         // si pas de condition financière trouvé
         if ($conditionsFinancieres == null) {
             return new JsonResponse([
-                'conditions_financieres' => null,
+                'condition_financiere' => null,
                 'message' => 'condition financière non trouvée, merci de fournir un identifiant valide',
-                'reponse' => Response::HTTP_NOT_FOUND,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         // suppression de la condition financière en BDD
@@ -213,22 +227,129 @@ class ConditionsFinancieresService
 
         // si l'action à réussi
         if ($rep) {
-            $conditionsFinancieresJSON = $serializer->serialize($conditionsFinancieres, 'json');
+            $conditionsFinancieresJSON = $serializer->serialize(
+                $conditionsFinancieres,
+                'json',
+                ['groups' => ['conditions_financieres:read']]
+            );
             return new JsonResponse([
-                'conditions_financieres' => $conditionsFinancieresJSON,
+                'condition_financiere' => $conditionsFinancieresJSON,
                 'message' => 'condition financière supprimée',
-                'reponse' => Response::HTTP_NO_CONTENT,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
-                'conditions_financieres' => null,
+                'condition_financiere' => null,
                 'message' => 'condition financière non supprimée !',
-                'reponse' => Response::HTTP_BAD_REQUEST,
-                'headers' => [],
                 'serialized' => false
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Ajoute une offre aux conditions financieres et renvoie une réponse JSON.
+     *
+     * @param ConditionsFinancieresRepository $conditionsFinancieresRepository Le repository des conditions financières.
+     * @param OffreRepository $offreRepository Le repository desoffres .
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après la suppression des conditions financières.
+     */
+    public static function ajouteOffreConditionsFinancieres(
+        ConditionsFinancieresRepository $conditionsFinancieresRepository,
+        OffreRepository $offreRepository,
+        SerializerInterface $serializer,
+        mixed $data
+    ): JsonResponse {
+        // récupération des conditions financières
+        $conditionsFinancieres = $conditionsFinancieresRepository->find(intval($data['idConditionsFinancieres']));
+        $offre = $offreRepository->find(intval($data['idOffre']));
+
+        // si pas trouvée
+        if ($conditionsFinancieres == null || $offre == null) {
+            return new JsonResponse([
+                'condition_financiere' => null,
+                'message' => "conditions financières ou offre non trouvée, merci de fournir un identifiant valide",
+                'serialized' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // ajout en BDD
+        $conditionsFinancieres->addOffre($offre);
+        $rep = $conditionsFinancieresRepository->updateConditionsFinancieres($conditionsFinancieres);
+
+        // réponse après suppression
+        if ($rep) {
+            $conditionsFinancieresJSON = $serializer->serialize(
+                $conditionsFinancieres,
+                'json',
+                ['groups' => ['conditions_financieres:read']]
+            );
+            return new JsonResponse([
+                'condition_financiere' => $conditionsFinancieresJSON,
+                'message' => "Type d'offre supprimé",
+                'serialized' => false
+            ], Response::HTTP_OK);
+        } else {
+            return new JsonResponse([
+                'condition_financiere' => null,
+                'message' => "Type d'offre non supprimé !",
+                'serialized' => false
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Retire une offre au conditions financières et renvoie une réponse JSON.
+     *
+     * @param int $id L'identifiant des conditions financières.
+     * @param ConditionsFinancieresRepository $conditionsFinancieresRepository Le repository des conditions financières.
+     * @param OffreRepository $offreRepository Le repository desoffres .
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON après la suppression des conditions financières.
+     */
+    public static function retireOffreConditionsFinancieres(
+        ConditionsFinancieresRepository $conditionsFinancieresRepository,
+        OffreRepository $offreRepository,
+        SerializerInterface $serializer,
+        mixed $data
+    ): JsonResponse {
+        // récupération des conditions financières à supprimer
+        $conditionsFinancieres = $conditionsFinancieresRepository->find(intval($data['idConditionsEstimatif']));
+        $offre = $offreRepository->find(intval($data['idOffre']));
+
+        // si pas trouvé
+        if ($conditionsFinancieres == null || $offre == null) {
+            return new JsonResponse([
+                'condition_financiere' => null,
+                'message' => "conditions financières ou offre non trouvée, merci de fournir un identifiant valide",
+                'serialized' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // suppression en BDD
+        $conditionsFinancieres->removeOffre($offre);
+        $rep = $conditionsFinancieresRepository->updateConditionsFinancieres($conditionsFinancieres);
+
+        // réponse après suppression
+        if ($rep) {
+            $conditionsFinancieresJSON = $serializer->serialize(
+                $conditionsFinancieres,
+                'json',
+                ['groups' => ['conditions_financieres:read']]
+            );
+            return new JsonResponse([
+                'condition_financiere' => $conditionsFinancieresJSON,
+                'message' => "Type d'offre supprimé",
+                'serialized' => false
+            ], Response::HTTP_OK);
+        } else {
+            return new JsonResponse([
+                'condition_financiere' => null,
+                'message' => "Type d'offre non supprimé !",
+                'serialized' => false
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 }
