@@ -39,7 +39,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ onAddUser, onClose }) => {
         <h2 className="text-2xl font-semibold mb-4">Ajouter un Utilisateur</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium">Nom d'utilisateur</label>
+            <label className="block text-sm font-medium">Nom d&apos;utilisateur</label>
             <input
               type="text"
               name="username"

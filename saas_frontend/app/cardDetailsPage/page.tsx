@@ -1,14 +1,13 @@
 "use client"
 
-import React, { Suspense, useState, useEffect, use } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
-import { Progress, Button, Modal, Card, Spinner, Textarea } from 'flowbite-react';
+import { Progress, Button, /*Modal,*/ Card, Spinner, Textarea } from 'flowbite-react';
 import NumberInputModal from '@/app/components/ui/modalResponse';
 import { apiGet, apiPost } from '@/app/services/internalApiClients';
 import NavigationHandler from '@/app/navigation/Router';
 import CommentaireSection from "@/app/components/Commentaires/CommentaireSection";
-import Image from 'next/image';
 
 type ConditionsFinancieres = {
     id: number;
@@ -39,7 +38,6 @@ type Project = {
     deadLine: string;
     etatOffre: EtatOffre;
     extras: Extras;
-    genresMusicaux: Array<any>;
     image: string | null;
     liensPromotionnels: string;
     nbArtistesConcernes: number;
@@ -105,7 +103,6 @@ async function fetchBudgetEstimatif(idBudgetEstimatif: number): Promise<BudgetEs
 
 function ProjectDetailsContent({ projects }: { projects: Project[] }) {
     const [commentaires, setCommentaires] = useState<Commentaire[]>([]);
-    const [reponses, setReponses] = useState<Reponse[]>([]);
     const [budgetTotal, setBudgetTotal] = useState<number>(0);
     const [budgetTotalReponsesRecu, setBudgetTotalReponsesRecu] = useState<number>(0);
     const [pourcentageBudgetRecu, setPourcentageBudgetRecu] = useState<number>(0);
@@ -120,14 +117,14 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
     const project = projects.find(p => p.id === Number(id));
     const [isModalOpen, setIsModalOpen] = useState(false);
     
-    const optionsDate: Intl.DateTimeFormatOptions = {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        timeZoneName: 'short'
-    };
+    // const optionsDate: Intl.DateTimeFormatOptions = {
+    //     year: 'numeric',
+    //     month: 'long',
+    //     day: 'numeric',
+    //     hour: '2-digit',
+    //     minute: '2-digit',
+    //     timeZoneName: 'short'
+    // };
 
     const handleOpenModal = () => {
         setIsModalOpen(true);
@@ -229,8 +226,6 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
 
         const fetchReponsesOffre = async (id: number) => {
             await apiGet(`/reponses/offre/${id}`).then((response) => {
-                console.log(JSON.parse(response.reponses));
-                setReponses(JSON.parse(response.reponses));
                 setPourcentageBudgetRecu(calculPrixTotalReponsesRecu(JSON.parse(response.reponses)));
             });
         };
@@ -253,9 +248,9 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
         return project?.utilisateur.username === username;
     }
 
-    function convertitDateLisibleHumain(date: string) {
-        return new Date(date).toLocaleDateString('fr-FR', optionsDate);
-    }
+    // function convertitDateLisibleHumain(date: string) {
+    //     return new Date(date).toLocaleDateString('fr-FR', optionsDate);
+    // }
 
     function calculateTimeLeft(deadline: string): TimeLeft | null {
         const now = new Date();

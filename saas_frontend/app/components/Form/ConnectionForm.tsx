@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { FaUser, FaLock } from "react-icons/fa";
 import { TextInput, Button, Toast } from "flowbite-react";
-import { apiPost, apiGet } from "@/app/services/internalApiClients";
+import { apiPost, /*apiGet*/ } from "@/app/services/internalApiClients";
 import { HiCheck, HiX } from "react-icons/hi";
 
 function ConnectionForm() {

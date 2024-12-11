@@ -1,12 +1,7 @@
 "use client"
 import { useState } from 'react';
-<<<<<<< HEAD:saas_frontend/app/components/inscription_form.tsx
-import { FaUser, /* FaLock */ } from "react-icons/fa";
-import NavigationHandler from './router';
-=======
 import { FaUser } from "react-icons/fa";
 import NavigationHandler from '../../navigation/Router';
->>>>>>> develop:saas_frontend/app/components/Form/InscriptionForm.tsx
 
 
 const InscriptionForm = () => {
