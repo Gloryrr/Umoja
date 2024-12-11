@@ -24,7 +24,7 @@ const InfoAdditionnelAlert: React.FC<InfoAdditionnelAlertProps> = ({
                 {/* Ligne contenant les boutons */}
                 <div className="flex justify-start gap-4">
                     {isSuccess && (
-                        <Button size="sm" color="success" href={`/umodja/mes-offres/detail/${offreId}`}>
+                        <Button size="sm" color="success" href={`/cardDetailsPage?id=${offreId}`}>
                             Voir plus
                         </Button>
                     )}

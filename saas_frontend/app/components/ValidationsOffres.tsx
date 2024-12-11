@@ -140,7 +140,7 @@ function ValidationsOffres({ idOffre }: { idOffre: number }) {
             <NavigationHandler>
                 {(handleNavigation) => (
                     <Button
-                        onClick={() => handleNavigation(`/mes-offres/detail/${idOffre}`)}
+                        onClick={() => handleNavigation(`/cardDetailsPage?id=${idOffre}`)}
                         className="mb-6"
                     >
                         Détail de l&apos;offre

@@ -152,7 +152,7 @@ const TableDesOffres = () => {
                                     {offre.etatOffre?.nomEtat}
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <a href={`mes-offres/detail/${Number(offre.id)}`} className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
+                                    <a href={`/cardDetailsPage?id=${Number(offre.id)}`} className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
                                         Détail
                                     </a>
                                 </Table.Cell>
