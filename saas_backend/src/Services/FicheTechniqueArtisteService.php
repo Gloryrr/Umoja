@@ -258,7 +258,7 @@ class FicheTechniqueArtisteService
                 'fiche_technique_artiste' => $ficheTechniqueArtisteJSON,
                 'message' => "fiche technique de l'artiste supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'fiche_technique_artiste' => null,
@@ -311,7 +311,7 @@ class FicheTechniqueArtisteService
                 'fiche_technique_artiste' => $ficheTechniqueArtisteJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'fiche_technique_artiste' => null,
@@ -365,7 +365,7 @@ class FicheTechniqueArtisteService
                 'fiche_technique_artiste' => $ficheTechniqueArtisteJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'fiche_technique_artiste' => null,

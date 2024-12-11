@@ -18,10 +18,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 class EtatReponse
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column(type: "integer")]
     #[Groups(['etat_reponse:read'])]
-    private int $id = 0;
+    private int $id;
 
     #[ORM\Column(type: "string", length: 100)]
     #[Groups(['etat_reponse:read', 'etat_reponse:write', 'reponse:read'])]
@@ -49,6 +49,18 @@ class EtatReponse
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * Définit l'identifiant de l'état de réponse
+     *
+     * @param int $id
+     * @return self
+     */
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        return $this;
     }
 
     /**

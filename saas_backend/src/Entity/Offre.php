@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 class Offre
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
     #[Groups([
         'offre:read',
@@ -39,7 +39,7 @@ class Offre
         'commentaire:read',
         'reponse:read',
     ])]
-    private int $id = 0;
+    private int $id;
 
     #[ORM\Column(length: 50)]
     #[Groups(['offre:read', 'offre:write'])]
@@ -163,6 +163,10 @@ class Offre
     #[MaxDepth(1)]
     private Collection $reponses;
 
+    #[ORM\Column(type: Types::BLOB, nullable: true)]
+    #[Groups(['offre:read', 'offre:write'])]
+    private $image = null;
+
     public function __construct()
     {
         $this->artistes = new ArrayCollection();
@@ -180,6 +184,19 @@ class Offre
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * Définit l'id de l'offre
+     *
+     * @param int $id
+     * @return self
+     */
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**
@@ -734,6 +751,38 @@ class Offre
                 $reponse->setOffre(null);
             }
         }
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        if ($this->image === null) {
+            return null;
+        }
+
+        $binaryData = is_resource($this->image) ?
+            stream_get_contents($this->image) :
+            $this->image;
+
+        if (base64_encode(base64_decode($binaryData, true)) === $binaryData) {
+            return $binaryData;
+        }
+        return base64_encode($binaryData);
+    }
+
+
+    public function setImage(mixed $image): self
+    {
+        if (is_array($image)) {
+            $this->image = implode('', $image);
+        } elseif (is_string($image)) {
+            base64_decode($image, true) !== false ?
+                $this->image = base64_decode($image) :
+                $this->image = $image;
+        } else {
+            $this->image = null;
+        }
+
         return $this;
     }
 }

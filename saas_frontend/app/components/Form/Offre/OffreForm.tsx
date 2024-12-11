@@ -1,16 +1,17 @@
 "use client";
-import React, { useState } from 'react';
-import { Accordion, Button, Alert, Timeline } from 'flowbite-react';
+import React, { useState, useEffect } from 'react';
+import { Accordion, Button, Alert, Timeline, FileInput, Label, Card } from 'flowbite-react';
 import ExtrasForm from '@/app/components/Form/Offre/ExtrasForm';
 import ConditionsFinancieresForm from '@/app/components/Form/Offre/ConditionsFinancieresForm';
 import BudgetEstimatifForm from '@/app/components/Form/Offre/BudgetEstimatifForm';
 import DetailOffreForm from '@/app/components/Form/Offre/DetailOffreForm';
-import DonneesSupplementairesForm from '@/app/components/Form/Offre/DonneesSupplementairesForm';
 import FicheTechniqueArtisteForm from '@/app/components/Form/Offre/FicheTechniqueArtiste';
 import InfoAdditionnelAlert from '@/app/components/Alerte/InfoAdditionnelAlerte';
 import { apiPost } from '@/app/services/internalApiClients';
 import { HiInformationCircle } from "react-icons/hi";
 import { FormData } from '@/app/types/FormDataType';
+import SelectCheckbox from '@/app/components/SelectCheckbox';
+import { apiGet } from '@/app/services/internalApiClients';
 
 const OffreForm: React.FC = () => {
     const dateParDefaut = new Date().toISOString().split('T')[0] as string;
@@ -26,15 +27,13 @@ const OffreForm: React.FC = () => {
             placesMin: null,
             placesMax: null,
             nbArtistesConcernes: null,
-            nbInvitesConcernes: null,
-            liensPromotionnels: []
+            nbInvitesConcernes: null
         },
         extras: {
             descrExtras: null,
             coutExtras: null,
             exclusivite: null,
             exception: null,
-            ordrePassage: null,
             clausesConfidentialites: null
         },
         etatOffre: {
@@ -59,18 +58,23 @@ const OffreForm: React.FC = () => {
             besoinEclairage: null,
             besoinEquipements: null,
             besoinScene: null,
-            besoinSonorisation: null
+            besoinSonorisation: null,
+            ordrePassage: null,
+            liensPromotionnels: [],
+            artiste: [],
+            nbArtistes: 0
         },
         donneesSupplementaires: {
             reseau: [],
-            nbReseaux: null,
+            nbReseaux: 0,
             genreMusical: [],
-            nbGenresMusicaux: null,
-            artiste: [],
-            nbArtistes: null
+            nbGenresMusicaux: 0,
         },
         utilisateur: {
-            username : typeof window !== 'undefined' ? localStorage.getItem('username') : ""
+            username : typeof window !== 'undefined' ? sessionStorage.getItem('username') : ""
+        },
+        image: {
+            file: null
         }
     });
 
@@ -79,11 +83,14 @@ const OffreForm: React.FC = () => {
     const [typeMessage, setTypeMessage] = useState<"success" | "error">("success");
     const [offreId, setOffreId] = useState("");
     const [description, setDescription] = useState("");
+    const [genresMusicaux, setGenresMusicaux] = useState<Array<{ nomGenreMusical: string }>>([]);
+    const [selectedGenres, setSelectedGenres] = useState<string[]>(formData.donneesSupplementaires.genreMusical);
+    const [reseaux, setReseaux] = useState<Array<{ nomReseau: string }>>([]);
+    const [selectedReseaux, setSelectedReseaux] = useState<string[]>(formData.donneesSupplementaires.reseau);
 
     const valideFormulaire = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            console.log(JSON.parse(JSON.stringify(formData)));
             const offrePostee = await apiPost('/offre/create', JSON.parse(JSON.stringify(formData)));
             setOffreId(JSON.parse(offrePostee.offre).id);
             setTypeMessage("success");
@@ -98,6 +105,33 @@ const OffreForm: React.FC = () => {
         }
     };
 
+    useEffect(() => {
+        const fetchGenresMusicaux = async () => {
+            try {
+                const genres = await apiGet('/genres-musicaux');
+                const genresList = JSON.parse(genres.genres_musicaux);
+                setGenresMusicaux(genresList);
+            } catch (error) {
+                console.error("Erreur lors du chargement des genres musicaux :", error);
+            }
+        };
+
+        const fetchReseauUtilisateur = async () => {
+            try {
+                const username = typeof window !== 'undefined' ? sessionStorage.getItem('username') : "";
+                const data = { username };
+                const datasUser = await apiPost('/utilisateur', JSON.parse(JSON.stringify(data)));
+                const reseauxListe: Array<{ nomReseau: string }> = JSON.parse(datasUser.utilisateur)[0].reseaux;
+                setReseaux(reseauxListe);
+            } catch (error) {
+                console.error("Erreur lors du chargement des données utilisateurs :", error);
+            }
+        };
+
+        fetchGenresMusicaux();
+        fetchReseauUtilisateur();
+    }, []);
+
     const checkInformationsDeBase = () => {
         const {
             titleOffre,
@@ -110,8 +144,7 @@ const OffreForm: React.FC = () => {
             placesMin,
             placesMax,
             nbArtistesConcernes,
-            nbInvitesConcernes,
-            liensPromotionnels
+            nbInvitesConcernes
         } = formData.detailOffre;
         return !!(titleOffre && 
             deadLine && 
@@ -123,8 +156,7 @@ const OffreForm: React.FC = () => {
             placesMin != null && placesMin > 0 && 
             placesMax != null && placesMax > 0 &&
             nbArtistesConcernes != null && nbArtistesConcernes > 0 &&
-            nbInvitesConcernes != null && nbInvitesConcernes > 0 &&
-            liensPromotionnels.length > 0);
+            nbInvitesConcernes != null && nbInvitesConcernes > 0);
     };
 
     const checkExtras = () => {
@@ -133,7 +165,6 @@ const OffreForm: React.FC = () => {
             coutExtras,
             exclusivite,
             exception,
-            ordrePassage,
             clausesConfidentialites 
         } = formData.extras;
         return !!(descrExtras && 
@@ -141,7 +172,6 @@ const OffreForm: React.FC = () => {
             coutExtras > 0 && 
             exclusivite && 
             exception && 
-            ordrePassage && 
             clausesConfidentialites);
     };
 
@@ -173,9 +203,23 @@ const OffreForm: React.FC = () => {
             besoinEclairage,
             besoinEquipements,
             besoinScene,
-            besoinSonorisation
+            besoinSonorisation,
+            ordrePassage,
+            liensPromotionnels,
+            artiste,
+            nbArtistes
         } = formData.ficheTechniqueArtiste;
-        return !!(besoinBackline && besoinEclairage && besoinEquipements && besoinScene && besoinSonorisation);
+        return !!(
+            besoinBackline && 
+            besoinEclairage && 
+            besoinEquipements && 
+            besoinScene && 
+            besoinSonorisation && 
+            ordrePassage && 
+            artiste.length > 0 && 
+            liensPromotionnels.length > 0 && 
+            nbArtistes != null && nbArtistes > 0
+        );
     };
 
     const checkDonneesSupplementaires = () => {
@@ -183,17 +227,64 @@ const OffreForm: React.FC = () => {
             reseau,
             nbReseaux,
             genreMusical,
-            nbGenresMusicaux,
-            artiste,
-            nbArtistes
+            nbGenresMusicaux
         } = formData.donneesSupplementaires;
         return reseau.length > 0 && 
             nbReseaux != null && nbReseaux > 0 && 
             genreMusical.length > 0 && 
-            nbGenresMusicaux != null && nbGenresMusicaux > 0 && 
-            artiste.length > 0 && 
-            nbArtistes != null && nbArtistes > 0;
+            nbGenresMusicaux != null && nbGenresMusicaux > 0;
     };
+
+    const onDonneesSupplementairesChange = (name: string, value: string[] | number) => {
+        setFormData((prevData) => ({
+            ...prevData,
+            donneesSupplementaires: {
+                ...prevData.donneesSupplementaires,
+                [name]: value
+            }
+        }));
+    };
+
+    const updateField = (
+        section: keyof FormData,
+        field: string,
+        value: string | null
+    ) => {
+        const valueAsList = Array.isArray(value) 
+            ? value 
+            : Object.values(value || {});
+    
+        setFormData((prevData) => ({
+            ...prevData,
+            [section]: {
+                ...prevData[section],
+                [field]: valueAsList
+            },
+        }));
+    };
+
+    const updateFieldWithBlob = async (
+        section: keyof FormData,
+        field: string,
+        file: File | null
+    ) => {
+        if (!file) {
+            updateField(section, field, null);
+            return;
+        }
+    
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const uint8Array = new Uint8Array(arrayBuffer);
+            const base64String = btoa(String.fromCharCode(...uint8Array));
+            console.log(section, field, base64String); 
+    
+            updateField(section, field, base64String);
+        } catch (error) {
+            console.error("Erreur lors de la conversion du fichier en base64:", error);
+        }
+    };
+          
 
     const getPointColor = (isValid: boolean) => {
         return isValid ? 'bg-green-500' : 'bg-red-500';
@@ -312,25 +403,53 @@ const OffreForm: React.FC = () => {
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
-
                         <Accordion.Panel>
-                            <Accordion.Title>Données Supplémentaires</Accordion.Title>
+                            <Accordion.Title>Données de publications</Accordion.Title>
                             <Accordion.Content className='p-0'>
-                                <DonneesSupplementairesForm
-                                    donneesSupplementaires={formData.donneesSupplementaires}
-                                    onDonneesSupplementairesChange={(name, value) =>
-                                        setFormData((prevData) => ({
-                                            ...prevData,
-                                            donneesSupplementaires: {
-                                                ...prevData.donneesSupplementaires,
-                                                [name]: value
-                                            }
-                                        }))
-                                    }
-                                />
-                            </Accordion.Content>
+                            <Card className="w-full shadow-none border-none">
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <SelectCheckbox
+                                            domaineSelection="Réseaux sur lesquels poster votre évènement :"
+                                            options={reseaux.map((reseau) => ({ label: reseau.nomReseau, value: reseau.nomReseau }))}
+                                            selectedValues={selectedReseaux}
+                                            onSelectionChange={(updatedReseaux) => {
+                                                setSelectedReseaux(updatedReseaux);
+                                                onDonneesSupplementairesChange("reseau", updatedReseaux);
+                                                onDonneesSupplementairesChange("nbReseaux", updatedReseaux.length);
+                                            }}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <SelectCheckbox
+                                            domaineSelection="Genres musicaux en lien avec votre évènement :"
+                                            options={genresMusicaux.map((genreMusical) => ({ label: genreMusical.nomGenreMusical, value: genreMusical.nomGenreMusical }))}
+                                            selectedValues={selectedGenres}
+                                            onSelectionChange={(updatedGenres) => {
+                                                setSelectedGenres(updatedGenres);
+                                                onDonneesSupplementairesChange("genreMusical", updatedGenres);
+                                                onDonneesSupplementairesChange("nbGenresMusicaux", updatedGenres.length);
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            </Card>
+                        </Accordion.Content>
                         </Accordion.Panel>
                     </Accordion>
+                    <div>
+                        <Label htmlFor="file-upload-helper-text" value="Ajouter une image de référence" />
+                        <FileInput
+                            id="file-upload-helper-text"
+                            helperText="JPG"
+                            accept=".jpg"
+                            onChange={(e) => {
+                                const file = e.target.files?.[0] || null;
+                                updateFieldWithBlob("image", "file", file);
+                            }}
+                        />
+                    </div>
 
                     <div className="flex justify-end mt-8">
                         <Button type="submit">

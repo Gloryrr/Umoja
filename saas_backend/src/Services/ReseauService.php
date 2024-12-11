@@ -231,7 +231,7 @@ class ReseauService
                 'reseau' => $reseauJSON,
                 'message' => 'réseau supprimé',
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'reseau' => null,
@@ -285,7 +285,7 @@ class ReseauService
                 'reseau' => $reseauJSON,
                 'message' => 'membre ajouté au réseau.',
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'reseau' => null,
@@ -339,7 +339,7 @@ class ReseauService
                 'reseau' => $reseauJSON,
                 'message' => 'membre retiré du réseau.',
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'reseau' => null,
@@ -393,7 +393,7 @@ class ReseauService
                 'reseau' => $reseauJSON,
                 'message' => 'genre musical ajouté au réseau',
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'reseau' => null,
@@ -447,7 +447,7 @@ class ReseauService
                 'reseau' => $reseauJSON,
                 'message' => 'genre musical retiré du réseau',
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'reseau' => null,

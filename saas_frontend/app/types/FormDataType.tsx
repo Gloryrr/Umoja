@@ -11,7 +11,6 @@ export type DetailOffre = {
     placesMax: number | null;
     nbArtistesConcernes: number | null;
     nbInvitesConcernes: number | null;
-    liensPromotionnels: string[];
 };
 
 // type pour les extras
@@ -20,7 +19,6 @@ export type Extras = {
     coutExtras: number | null;
     exclusivite: string | null;
     exception: string | null;
-    ordrePassage: string | null;
     clausesConfidentialites: string | null;
 };
 
@@ -56,6 +54,10 @@ export type FicheTechniqueArtiste = {
     besoinEquipements: string | null;
     besoinScene: string | null;
     besoinSonorisation: string | null;
+    ordrePassage: string | null;
+    liensPromotionnels: string[];
+    artiste: string[];
+    nbArtistes: number | null;
 };
 
 // type pour les données supplémentaires
@@ -64,8 +66,6 @@ export type DonneesSupplementaires = {
     nbReseaux: number | null;
     genreMusical: string[];
     nbGenresMusicaux: number | null;
-    artiste: string[];
-    nbArtistes: number | null;
 };
 
 // type pour l'utilisateur
@@ -84,4 +84,7 @@ export type FormData = {
     ficheTechniqueArtiste: FicheTechniqueArtiste;
     donneesSupplementaires: DonneesSupplementaires;
     utilisateur: Utilisateur;
+    image: {
+        file: ArrayBuffer | null;
+    };
 };

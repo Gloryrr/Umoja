@@ -32,7 +32,7 @@ class ArtisteService
         $artistes = $artisteRepository->findAll();
         $artistesJSON = $serializer->serialize($artistes, 'json', ['groups' => ['artiste:read']]);
         return new JsonResponse([
-            'artistes' => $artistesJSON,
+            'artiste' => $artistesJSON,
             'message' => "Liste des artistes",
             'serialized' => true
         ], Response::HTTP_OK);
@@ -56,7 +56,7 @@ class ArtisteService
         $artistes = $artisteRepository->findBy(['id' => $id]);
         $artistesJSON = $serializer->serialize($artistes, 'json', ['groups' => ['artiste:read']]);
         return new JsonResponse([
-            'artistes' => $artistesJSON,
+            'artiste' => $artistesJSON,
             'message' => "Liste des artistes",
             'serialized' => true
         ], Response::HTTP_OK);
@@ -213,7 +213,7 @@ class ArtisteService
                 'artiste' => $artisteJSON,
                 'message' => 'artiste supprimé',
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'artiste' => null,
@@ -263,7 +263,7 @@ class ArtisteService
                 'artiste' => $artisteJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'artiste' => null,
@@ -313,7 +313,7 @@ class ArtisteService
                 'artiste' => $artisteJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'artiste' => null,
@@ -363,7 +363,7 @@ class ArtisteService
                 'artiste' => $artisteJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'artiste' => null,
@@ -413,7 +413,7 @@ class ArtisteService
                 'artiste' => $artisteJSON,
                 'message' => "Type d'offre supprimé",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'artiste' => null,

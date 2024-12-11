@@ -51,9 +51,9 @@ const OffresProfil: React.FC = () => {
     }, [currentPage, offersPerPage]);
 
     const fetchUserOffers = useCallback(async () => {
-        const username = typeof window !== 'undefined' ? localStorage.getItem('username') : "";
+        const username = typeof window !== 'undefined' ? sessionStorage.getItem('username') : "";
         if (!username) {
-            setError("Nom d'utilisateur introuvable dans le localStorage.");
+            setError("Nom d'utilisateur introuvable dans le sessionStorage.");
             setIsLoading(false);
             return;
         }

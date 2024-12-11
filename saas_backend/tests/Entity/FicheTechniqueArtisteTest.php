@@ -38,6 +38,7 @@ class FicheTechniqueArtisteTest extends TestCase
      */
     public function testGetId()
     {
+        $this->ficheTechnique->setId(0);
         $this->assertEquals(0, $this->ficheTechnique->getId());
     }
 

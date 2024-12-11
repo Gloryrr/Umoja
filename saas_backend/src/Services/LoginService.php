@@ -7,6 +7,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 
 /**
  * Class LoginService
@@ -15,6 +16,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class LoginService
 {
     public static function login(
+        JWTTokenManagerInterface $JWTManager,
         UtilisateurRepository $utilisateurRepository,
         UserPasswordHasherInterface $passwordHasher,
         SerializerInterface $serializer,
@@ -33,9 +35,10 @@ class LoginService
                         'serialized' => true
                     ], Response::HTTP_NOT_FOUND);
                 }
-                //if ($passwordHasher->isPasswordValid($user[0], $data_login['mdpUtilisateur'])) {
+                if ($passwordHasher->isPasswordValid($user[0], $data_login['mdpUtilisateur'])) {
                     $authentification_valide = true;
-                //}
+                    $token = $JWTManager->create($user[0]);
+                }
             }
 
             // vérification du mode de connexion (par mail ou username)
@@ -48,6 +51,7 @@ class LoginService
                 );
                 return new JsonResponse([
                     'utilisateur' => $utilisateurJSON,
+                    'token' => $token,
                     'message' => 'Utilisateur connecté',
                     'headers' => [],
                     'serialized' => true

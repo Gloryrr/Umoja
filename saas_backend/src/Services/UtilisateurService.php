@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Utilisateur;
 use App\Entity\PreferenceNotification;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 
 /**
  * Class UtilisateurService
@@ -79,6 +80,8 @@ class UtilisateurService
     /**
      * Crée un nouvel utilisateur et renvoie une réponse JSON.
      *
+     * @param JWTTokenManagerInterface $JWTManager Le service de gestion des tokens JWT.
+     * @param UserPasswordHasherInterface $passwordHasher Le service de hashage des mots de passe.
      * @param UtilisateurRepository $utilisateurRepository Le repository des utilisateurs.
      * @param SerializerInterface $serializer Le service de sérialisation.
      * @param mixed $data Les données de l'utilisateur à créer.
@@ -89,6 +92,7 @@ class UtilisateurService
      * @throws \RuntimeException En cas d'erreur lors de la création de l'utilisateur.
      */
     public static function createUtilisateur(
+        JWTTokenManagerInterface $JWTManager,
         UtilisateurRepository $utilisateurRepository,
         UserPasswordHasherInterface $passwordHasher,
         SerializerInterface $serializer,
@@ -100,13 +104,13 @@ class UtilisateurService
                 throw new \InvalidArgumentException("Le nom d'utilisateur de l'utilisateur est requis.");
             } elseif (empty($data['mdpUtilisateur'])) {
                 throw new \InvalidArgumentException("Le mot de passe utilisateur est requis.");
+            } elseif (empty($data['emailUtilisateur'])) {
+                throw new \InvalidArgumentException("L'email de l'utilisateur est requis.");
             }
 
             // création de l'objet et instanciation des données de l'objet
             $utilisateur = new Utilisateur();
-            $utilisateur->setEmailUtilisateur(
-                !(empty($data['emailUtilisateur'])) ? $data['emailUtilisateur'] : ""
-            );
+            $utilisateur->setEmailUtilisateur($data['emailUtilisateur']);
 
             // hashage du mot de passe
             $hashedPassword = $passwordHasher->hashPassword(
@@ -115,7 +119,7 @@ class UtilisateurService
             );
             $utilisateur->setMdpUtilisateur($hashedPassword);
             $utilisateur->setRoles("ROLE_USER");
-            $utilisateur->setUsername(!(empty($data['username'])) ? $data['username'] : "");
+            $utilisateur->setUsername($data['username']);
             $utilisateur->setNumTelUtilisateur($data['numTelUtilisateur'] ?? null);
             $utilisateur->setNomUtilisateur($data['nomUtilisateur'] ?? null);
             $utilisateur->setPrenomUtilisateur($data['prenomUtilisateur'] ?? null);
@@ -128,6 +132,7 @@ class UtilisateurService
 
             // vérification de l'action en BDD
             if ($rep) {
+                $token = $JWTManager->create($utilisateur);
                 $utilisateurJSON = $serializer->serialize(
                     $utilisateur,
                     'json',
@@ -135,6 +140,7 @@ class UtilisateurService
                 );
                 return new JsonResponse([
                     'utilisateur' => $utilisateurJSON,
+                    'token' => $token,
                     'message' => "Utilisateur inscrit !",
                     'serialized' => true
                 ], Response::HTTP_CREATED);
@@ -268,7 +274,7 @@ class UtilisateurService
                 'utilisateur' => $utilisateurJSON,
                 'message' => 'Utilisateur supprimé',
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'utilisateur' => null,
@@ -321,7 +327,7 @@ class UtilisateurService
                 'object' => $utilisateurJSON,
                 'message' => "genre musical ajouté aux préférences de l'utilisateur.",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'object' => null,
@@ -374,7 +380,7 @@ class UtilisateurService
                 'object' => $utilisateurJSON,
                 'message' => "genre musical retiré aux préférences de l'utilisateur.",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'object' => null,
@@ -428,7 +434,7 @@ class UtilisateurService
                 'object' => $utilisateurJSON,
                 'message' => "Offre ajoutée aux créations de l'utilisateur.",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'object' => null,
@@ -482,7 +488,7 @@ class UtilisateurService
                 'object' => $utilisateurJSON,
                 'message' => "offre retiré aux préférences de l'utilisateur.",
                 'serialized' => false
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'object' => null,

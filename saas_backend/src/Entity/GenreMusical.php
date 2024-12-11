@@ -21,10 +21,10 @@ class GenreMusical
      * @var int L'identifiant unique du genre musical.
      */
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     #[ORM\Column]
     #[Groups(['genre_musical:read'])]
-    private int $id = 0;
+    private int $id;
 
     /**
      * @var string Le nom du genre musical.
@@ -80,6 +80,18 @@ class GenreMusical
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * Définit l'identifiant de l'instance
+     *
+     * @param int
+     */
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**
