@@ -1,31 +1,18 @@
-import React from 'react'
-import Accueil from '../components/accueil';
+import dynamic from "next/dynamic";
 
-export default function Home() {
-  const projects = [
-    {
-      id: 1,
-      title: "Tournée de Angele",
-      creator: "Alex Stevens Lab",
-      contributions: 512,
-      endDate: "25/02/22",
-      amountRaised: 15600,
-      goal: 15000,
-      imageUrl: "/angele.jpeg" // Replace with actual image URL
-    },
-    {
-      id: 2,
-      title: "Tournée de Damso",
-      creator: "Alex Stevens Lab",
-      contributions: 512,
-      endDate: "28/02/24",
-      amountRaised: 8000,
-      goal: 15000,
-      imageUrl: "/Damso.jpeg" // Replace with actual image URL
-    },
-  ]
-  
+const Swiper = dynamic(() => import("swiper/react").then((mod) => mod.Swiper), { ssr: false });
+const SwiperSlide = dynamic(() => import("swiper/react").then((mod) => mod.SwiperSlide), { ssr: false });
+
+import "swiper/css";
+
+const Home: React.FC = () => {
   return (
-    <Accueil projects={projects} />
-  )
-}
+    <Swiper spaceBetween={50} slidesPerView={3}>
+      <SwiperSlide>Slide 1</SwiperSlide>
+      <SwiperSlide>Slide 2</SwiperSlide>
+      <SwiperSlide>Slide 3</SwiperSlide>
+    </Swiper>
+  );
+};
+
+export default Home;
