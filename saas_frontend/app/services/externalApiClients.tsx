@@ -1,15 +1,10 @@
 const renvoieReponsePromise = async (response: Response) => {
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json();
+        console.error(errorData);
+        return errorData;
     }
-
-    // Vérifiez s'il y a un contenu dans la réponse
-    const contentType = response.headers.get('Content-Type');
-    if (contentType && contentType.includes('application/json')) {
-        return response.json(); // Parse uniquement si le contenu est JSON
-    }
-    
-    return null; // Pas de contenu, retourner `null`
+    return response.json();
 };
 
 // Fonction GET
