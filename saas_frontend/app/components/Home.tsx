@@ -2,6 +2,18 @@
 import React, { useRef } from 'react';
 import NavigationHandler from '../navigation/Router';
 import Image from 'next/image';
+import { apiGet } from '../services/externalApiClients'; // Assurez-vous que le chemin est correct
+
+type Project = {
+    id: number;
+    title: string;
+    creator: string;
+    contributions: number;
+    endDate: string;
+    amountRaised: number;
+    goal: number;
+    imageUrl: string;
+};
 
 const Home = () => {
     const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -151,33 +163,39 @@ const Home = () => {
                         ref={scrollContainerRef}
                         onScroll={handleScroll}
                     >
-                        {['Concert Rock', 'Festival Jazz', 'Soirée Électro', 'Concert Rock', 'Festival Jazz', 'Soirée Électro'].map((event, index) => (
-                            <div
-                                key={index}
-                                className="flex-shrink-0 bg-white shadow-lg rounded-lg overflow-visible w-80 transform transition-all duration-300 hover:shadow-xl"
-                            >
-                                <Image
-                                    width={120}
-                                    height={120}
-                                    src={`/images/event-${index + 1}.jpg`}
-                                    alt={event}
-                                    className="w-full h-48 object-cover"
-                                />
-                                <div className="p-6">
-                                    <h4 className="font-semibold text-xl mb-2">{event}</h4>
-                                    <p className="text-gray-600">Description brève de l&apos;événement.</p>
-                                    <NavigationHandler>
-                                        {(handleNavigation: (path: string) => void) => (
-                                            <button
-                                                onClick={() => handleNavigation(`/event/${index + 1}`)}
-                                                className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 font-semibold"
-                                            >
-                                                Voir l&apos;événement
-                                            </button>
-                                        )}
-                                    </NavigationHandler>
-                                </div>
-                            </div>
+                        {Array.isArray(projects) && projects.map((project) => (
+                            <Link key={project.id} href={`cardDetailsPage?id=${project.id}`}>
+                                <Card className="w-full max-w-sm cursor-pointer">
+                                    <CardHeader>
+                                        <Image width={480} height={480} src={project.imageUrl} alt={project.title} className="w-full h-full object-cover" />
+                                        <div className={`absolute top-2 left-2 text-xs font-semibold px-2 py-2 rounded ${project.amountRaised >= project.goal ? 'bg-green-500' : 'bg-orange-500'}`}>
+                                            {project.amountRaised >= project.goal ? <FaCheck /> : <GrInProgress />}
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <CardTitle>{project.title}</CardTitle>
+                                        <p className="text-sm text-gray-400 mb-4 font-fredoka">par {project.creator}</p>
+                                        <div className="flex justify-between text-sm mb-2 font-fredoka">
+                                            <span>{project.contributions} contributions</span>
+                                            <span>{project.endDate}</span>
+                                        </div>
+                                    </CardContent>
+                                    <CardFooter>
+                                        <div className="w-full">
+                                            <div className="flex justify-between text-sm mb-2 font-fredoka">
+                                                <span>{project.amountRaised.toLocaleString()} €</span>
+                                                <span>sur {project.goal.toLocaleString()} €</span>
+                                            </div>
+                                            <div className="w-full bg-gray-700 rounded-full h-2 mb-2">
+                                                <div className={`h-2 rounded-full ${project.amountRaised >= project.goal ? 'bg-green-500' : 'bg-orange-500'}`} style={{ width: `${Math.min((project.amountRaised / project.goal) * 100, 100)}%` }}></div>
+                                            </div>
+                                            <div className={`text-right text-sm font-semibold font-fredoka ${project.amountRaised >= project.goal ? 'text-green-500' : 'text-orange-500'}`}>
+                                                {Math.round((project.amountRaised / project.goal) * 100)}%
+                                            </div>
+                                        </div>
+                                    </CardFooter>
+                                </Card>
+                            </Link>
                         ))}
                         {/* Duplicating the items for the infinite scroll effect */}
                         {['Concert Rock', 'Festival Jazz', 'Soirée Électro'].map((event, index) => (

@@ -1,7 +1,12 @@
 "use client"
 
 import React, { useEffect, useState } from 'react';
-import { apiGet } from '../services/externalApiClients'; // Assurez-vous que le chemin est correct
+import { apiGet } from '../services/internalApiClients'; // Assurez-vous que le chemin est correct
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card';
+import Link from 'next/link';
+import Image from 'next/image';
+import { FaCheck } from 'react-icons/fa';
+import { GrInProgress } from 'react-icons/gr';
 
 type Project = {
     id: number;
@@ -18,9 +23,14 @@ export default function Accueil() {
     const [projects, setProjects] = useState<Project[]>([]);
 
     useEffect(() => {
-        apiGet('http://127.0.0.1:8000/api/v1/offres')
+        apiGet('/offres')
             .then(response => {
-                setProjects(response);
+                console.log('API response:', response); // Log the response
+                if (Array.isArray(response.data)) {
+                    setProjects(response.data);
+                } else {
+                    console.error('Response is not an array:', response);
+                }
             })
             .catch(error => {
                 console.error('Erreur lors de la récupération des offres:', error);
@@ -36,7 +46,7 @@ export default function Accueil() {
     }
 
     return (
-        <div className="container mx-auto p-4 bg-gray-800 min-h-screen">
+        <div className="container mx-auto p-4 bg-gray-800 w-full min-h-screen">
             <h1 className="text-3xl font-bold mb-6 text-white">Projets en cours</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {projects.map((project) => (
