@@ -2,6 +2,8 @@
 import type { Metadata } from "next";
 // import localFont from "next/font/local";
 import { Fredoka, Nunito } from "next/font/google";
+import NavbarApp from "@/app/components/Navbar";
+import Footer from "@/app/components/Footer";
 // import Head from "next/head";
 
 import "./globals.css";
