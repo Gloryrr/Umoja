@@ -51,31 +51,33 @@ const OffresProfil: React.FC = () => {
     }, [currentPage, offersPerPage]);
 
     const fetchUserOffers = useCallback(async () => {
-        const username = typeof window !== 'undefined' ? sessionStorage.getItem('username') : "";
-        if (!username) {
-            setError("Nom d'utilisateur introuvable dans le sessionStorage.");
-            setIsLoading(false);
-            return;
-        }
-    
-        try {
-            const data = { username };
-            const userResponse = await apiPost("/utilisateur", JSON.parse(JSON.stringify(data)));
-            if (!userResponse) {
-                setError("Aucune offre trouvée pour cet utilisateur.");
+        await apiGet("/me").then(async (response) => {
+            const username = response.utilisateur;
+            if (!username) {
+                setError("Nom d'utilisateur introuvable dans le sessionStorage.");
                 setIsLoading(false);
                 return;
             }
-    
-            const offerIds: string[] = JSON.parse(userResponse.utilisateur)[0].offres;
-            setTotalOffers(offerIds.length);
-            fetchPaginatedOffers(JSON.parse(userResponse.utilisateur)[0].id);
-        } catch (error) {
-            console.error("Erreur réseau :", error);
-            setError("Erreur lors de la récupération des offres.");
-        } finally {
-            setIsLoading(false);
-        }
+        
+            try {
+                const data = { username };
+                const userResponse = await apiPost("/utilisateur", JSON.parse(JSON.stringify(data)));
+                if (!userResponse) {
+                    setError("Aucune offre trouvée pour cet utilisateur.");
+                    setIsLoading(false);
+                    return;
+                }
+        
+                const offerIds: string[] = JSON.parse(userResponse.utilisateur)[0].offres;
+                setTotalOffers(offerIds.length);
+                fetchPaginatedOffers(JSON.parse(userResponse.utilisateur)[0].id);
+            } catch (error) {
+                console.error("Erreur réseau :", error);
+                setError("Erreur lors de la récupération des offres.");
+            } finally {
+                setIsLoading(false);
+            }
+        });
     }, [fetchPaginatedOffers]);
 
     useEffect(() => {

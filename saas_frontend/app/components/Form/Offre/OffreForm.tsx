@@ -71,7 +71,7 @@ const OffreForm: React.FC = () => {
             nbGenresMusicaux: 0,
         },
         utilisateur: {
-            username : typeof window !== 'undefined' ? sessionStorage.getItem('username') : ""
+            username : ""
         },
         image: {
             file: null
@@ -118,11 +118,15 @@ const OffreForm: React.FC = () => {
 
         const fetchReseauUtilisateur = async () => {
             try {
-                const username = typeof window !== 'undefined' ? sessionStorage.getItem('username') : "";
-                const data = { username };
-                const datasUser = await apiPost('/utilisateur', JSON.parse(JSON.stringify(data)));
-                const reseauxListe: Array<{ nomReseau: string }> = JSON.parse(datasUser.utilisateur)[0].reseaux;
-                setReseaux(reseauxListe);
+                await apiGet("/me").then(async (response) => {
+                    formData.utilisateur.username = response.utilisateur;
+                    const username = formData.utilisateur.username;
+                    const data = { username };
+                    const datasUser = await apiPost('/utilisateur', JSON.parse(JSON.stringify(data)));
+                    const reseauxListe: Array<{ nomReseau: string }> = JSON.parse(datasUser.utilisateur)[0].reseaux;
+                    console.log(reseauxListe);
+                    setReseaux(reseauxListe);
+                });
             } catch (error) {
                 console.error("Erreur lors du chargement des données utilisateurs :", error);
             }

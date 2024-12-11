@@ -6,7 +6,6 @@ import { apiGet, apiPost } from "@/app/services/internalApiClients";
 import { MdArrowLeft, MdArrowRight } from "react-icons/md";
 import NetworksOffres from "@/app/components/NetworksOffres";
 import { IoMdMailOpen } from "react-icons/io";
-import Image from "next/image";
 
 interface Reseau {
     nomReseau: string;
@@ -29,20 +28,22 @@ export function Networks() {
     const [nomReseauChoisi, setNomReseauChoisi] = useState<string | null>();
 
     const getNetworksAndGenresMusicaux = async () => {
-        const username = sessionStorage.getItem("username");
-        const responses = await apiPost(
-            "/utilisateur",
-            JSON.parse(JSON.stringify({ username }))
-        );
-        if (responses) {
-            const fetchedReseaux = JSON.parse(responses.utilisateur)[0].reseaux || [];
-            setFilteredReseaux(fetchedReseaux);
-        }
-        const responsesGenres = await apiGet("/genres-musicaux");
-        if (responsesGenres) {
-            const genresMusicaux = JSON.parse(responsesGenres.genres_musicaux);
-            setGenresMusicaux(genresMusicaux);
-        }
+        await apiGet("/me").then(async (response) => {
+            const username = response.utilisateur;
+            const responses = await apiPost(
+                "/utilisateur",
+                JSON.parse(JSON.stringify({ username }))
+            );
+            if (responses) {
+                const fetchedReseaux = JSON.parse(responses.utilisateur)[0].reseaux || [];
+                setFilteredReseaux(fetchedReseaux);
+            }
+            const responsesGenres = await apiGet("/genres-musicaux");
+            if (responsesGenres) {
+                const genresMusicaux = JSON.parse(responsesGenres.genres_musicaux);
+                setGenresMusicaux(genresMusicaux);
+            }
+        });
     };
 
     useEffect(() => {
@@ -98,16 +99,6 @@ export function Networks() {
         if (currentPage > 1) {
             setCurrentPage((prev) => prev - 1);
         }
-    };
-
-    const chooseImageRandom = () => {
-        const images = [
-            "/images/offre-musique.webp",
-            "/images/offre-musique-2.webp",
-            "/images/offre-musique-3.webp",
-            "/images/offre-musique-4.webp",
-        ];
-        return images[Math.floor(Math.random() * images.length)];
     };
 
     const resetNetwork = () => {

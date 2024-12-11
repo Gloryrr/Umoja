@@ -2,9 +2,15 @@
 
 import { Footer } from "flowbite-react";
 import { Mail } from "lucide-react";
+// import { useState, useEffect } from "react";
+// import { apiGet } from "../services/internalApiClients";
 
 function FooterComponent() {
-  if (typeof window !== "undefined" && sessionStorage.getItem("isConnected") === "true") {
+  function estPageDeConnexion() {
+    return (window.location.pathname == "" || window.location.pathname == "/");
+  }
+
+  if (!estPageDeConnexion()) {
     return (
       <Footer container className="py-12 rounded-none border-t border-dark dark:border-gray-500">
         <div className="w-full mx-auto">
@@ -90,11 +96,6 @@ function FooterComponent() {
         </div>
       </Footer>
     );
-  } else {
-    if (window.location.pathname !== "/") {
-      window.location.href = "/";
-    }
-    return <></>;
   }
 }
 

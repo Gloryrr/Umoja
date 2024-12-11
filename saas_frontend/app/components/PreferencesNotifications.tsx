@@ -6,7 +6,7 @@ import { apiGet, apiPatch } from '@/app/services/internalApiClients';
 import { DarkThemeToggle, Flowbite } from "flowbite-react";
 
 const PreferencesNotifications: React.FC = () => {
-  const username = typeof window !== 'undefined' ? sessionStorage.getItem('username') : "";
+  const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const [preferences, setPreferences] = useState({
     email_nouvelle_offre: false,
@@ -72,6 +72,15 @@ const PreferencesNotifications: React.FC = () => {
   useEffect(() => {
     fetchPreferences();
   }, [fetchPreferences]);
+
+  useEffect(() => {
+    const fetchUtilisateur = async () => {
+      await apiGet("/me").then((response) => {
+        setUsername(response.utilisateur);
+      });
+    }
+    fetchUtilisateur();
+  }, []);
 
   return (
     <div className="mx-auto mt-10 mb-10">
