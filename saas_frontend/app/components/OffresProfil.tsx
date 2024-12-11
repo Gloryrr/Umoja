@@ -3,6 +3,8 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Card, Badge, Button, Pagination, Select } from "flowbite-react";
 import { apiPost, apiGet } from "@/app/services/internalApiClients";
 
+// voir utilité components
+
 interface Offre {
     id: string;
     titleOffre: string;
