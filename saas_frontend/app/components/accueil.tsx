@@ -1,40 +1,32 @@
 "use client"
 
 import React, { useEffect, useState } from 'react';
-import { apiGet } from '../services/internalApiClients'; // Assurez-vous que le chemin est correct
+import { apiGet, apiPost } from '../services/internalApiClients'; // Assurez-vous que le chemin est correct
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FaCheck } from 'react-icons/fa';
 import { GrInProgress } from 'react-icons/gr';
 
-type Project = {
-    id: number;
-    title: string;
-    creator: string;
-    contributions: number;
-    endDate: string;
-    amountRaised: number;
-    goal: number;
-    imageUrl: string;
-};
-
 export default function Accueil() {
-    const [projects, setProjects] = useState<Project[]>([]);
+    const [projects, setProjects] = useState<any[]>([]);
+
+    const fetchProjects = async () => {
+        try {
+            const response = await apiGet('/offres');
+            console.log('API response:', response); // Log the response
+            if (response && response.offres && Array.isArray(response.offres)) {
+                setProjects(response.offres);
+            } else {
+                console.error('Response does not contain offres array:', response);
+            }
+        } catch (error) {
+            console.error('Erreur lors de la récupération des offres:', error);
+        }
+    };
 
     useEffect(() => {
-        apiGet('/offres')
-            .then(response => {
-                console.log('API response:', response); // Log the response
-                if (Array.isArray(response.data)) {
-                    setProjects(response.data);
-                } else {
-                    console.error('Response is not an array:', response);
-                }
-            })
-            .catch(error => {
-                console.error('Erreur lors de la récupération des offres:', error);
-            });
+        fetchProjects();
     }, []);
 
     if (projects.length === 0) {
@@ -53,24 +45,24 @@ export default function Accueil() {
                     <Link key={project.id} href={`cardDetailsPage?id=${project.id}`}>
                         <Card className="w-full max-w-sm cursor-pointer">
                             <CardHeader>
-                                <Image width={480} height={480} src={project.imageUrl} alt={project.title} className="w-full h-full object-cover" />
+                                <Image width={480} height={480} src={`data:image/jpeg;base64,${project.image}`} alt={project.titleOffre} className="w-full h-full object-cover" />
                                 <div className={`absolute top-2 left-2 text-xs font-semibold px-2 py-2 rounded ${project.amountRaised >= project.goal ? 'bg-green-500' : 'bg-orange-500'}`}>
                                     {project.amountRaised >= project.goal ? <FaCheck /> : <GrInProgress />}
                                 </div>
                             </CardHeader>
                             <CardContent>
-                                <CardTitle>{project.title}</CardTitle>
-                                <p className="text-sm text-gray-400 mb-4 font-fredoka">par {project.creator}</p>
+                                <CardTitle>{project.titleOffre}</CardTitle>
                                 <div className="flex justify-between text-sm mb-2 font-fredoka">
-                                    <span>{project.contributions} contributions</span>
-                                    <span>{project.endDate}</span>
+                                    <span>{project.nb_contributeur} contributions</span>
+                                    <span>{new Date(project.deadLine).toLocaleDateString()}</span>
                                 </div>
+                                <p className="text-sm text-gray-400 mb-4 font-fredoka">{project.descrTournee}</p>
                             </CardContent>
                             <CardFooter>
                                 <div className="w-full">
                                     <div className="flex justify-between text-sm mb-2 font-fredoka">
-                                        <span>{project.amountRaised.toLocaleString()} €</span>
-                                        <span>sur {project.goal.toLocaleString()} €</span>
+                                        <span>{project.amountRaised?.toLocaleString()} €</span>
+                                        <span>sur {project.goal?.toLocaleString()} €</span>
                                     </div>
                                     <div className="w-full bg-gray-700 rounded-full h-2 mb-2">
                                         <div className={`h-2 rounded-full ${project.amountRaised >= project.goal ? 'bg-green-500' : 'bg-orange-500'}`} style={{ width: `${Math.min((project.amountRaised / project.goal) * 100, 100)}%` }}></div>
