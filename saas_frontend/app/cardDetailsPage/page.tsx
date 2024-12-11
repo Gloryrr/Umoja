@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useSearchParams } from 'next/navigation';
-import { FaHeart, FaCode, FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
+import { /* FaHeart, FaCode,*/ FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
 
 type Project = {
     id: number
