@@ -1,11 +1,12 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import { PlusCircle, Pencil, Trash2 } from 'lucide-react'
-import { apiGet, apiPost, apiPut, apiDelete } from '../services/externalApiClients'
+import { apiGet, apiPost, apiPatch, apiDelete, apiDeleteWithParams } from '../services/internalApiClients'
 import Table from '../components/ui/tableAdmin';
 import AddReseauModal from '../components/ui/addReseauModal';
 import EditReseauModal from '../components/ui/EditReseauModal';
 import LookUsersReseauModal from '../components/ui/LookUsersReseauModal';
+import AddUserReseauModal from '../components/ui/AddUserReseauModal';
 
 type Reseaux = {
   id: number;
@@ -38,9 +39,13 @@ export default function ReseauManagement() {
 
   const [isAddReseauOpen, setIsAddReseauOpen] = useState(false)
   const [isEditReseauOpen, setIsEditReseauOpen] = useState(false)
+
+  
   const [currentReseau, setCurrentReseau] = useState<Reseaux | null>(null)
 
   const [lookUsersReseauOpen, setLookUsersReseauOpen] = useState(false)
+  const [AddUsersReseauOpen, setAddUsersReseauOpen] = useState(false)
+
 
   const handleSearch = (searchTerm: string) => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
@@ -53,7 +58,7 @@ export default function ReseauManagement() {
   async function loadReseaux(){
     try {
       
-    const fetchData = await apiGet('http://127.0.0.1:8000/api/v1/reseaux');
+    const fetchData = await apiGet('/reseaux');
 
     const utilisateursArray = JSON.parse(fetchData.reseaux);
 
@@ -75,16 +80,20 @@ export default function ReseauManagement() {
     // Filtrer les utilisateurs pour exclure celui dont l'ID correspond
     const updatedUsers = reseau.utilisateurs.filter((user) => user.id !== userId);
   
-    // Mettre à jour les utilisateurs du réseau
-    reseau.utilisateurs = updatedUsers;
-    const user = { id: userId };
 
-    const ReseauData: JSON = JSON.parse(JSON.stringify(user));
   
-
-    await apiDelete(`http://127.0.0.1:8000/api/v1/reseau/delete-member/${userId}`);
+    const reseauDataString = {
+      idReseau: reseau.id,
+      idUtilisateur: userId,
+    };    
+    const reseauData: JSON = JSON.parse(JSON.stringify(reseauDataString));
+    
+    await apiDeleteWithParams(`/reseau/delete-membre`, reseauData);
     console.log(`Utilisateur avec l'ID ${userId} supprimé du réseau ${reseau.id}`);
     console.log("Utilisateurs mis à jour :", updatedUsers);
+
+    setLookUsersReseauOpen(false);
+    loadReseaux();
   
     // Vous pouvez inclure une mise à jour de l'état ou une logique d'API ici
   };
@@ -93,12 +102,15 @@ export default function ReseauManagement() {
   const handleAddReseau = async (newReseau: Omit<Reseaux, 'id_utilisateur'>) => {
     try {
 
-      const reseauData = {
+      const reseauDataString = {
         nomReseau: newReseau.nomReseau,
       };
+
+      const ReseauData: JSON = JSON.parse(JSON.stringify(reseauDataString));
+
       
       console.log(newReseau);
-      await apiPost('http://127.0.0.1:8000/api/v1/reseau/create', JSON.stringify(reseauData));
+      await apiPost('/reseau/create', ReseauData);
       setIsAddReseauOpen(false);
 
       loadReseaux();
@@ -113,8 +125,7 @@ export default function ReseauManagement() {
     try {
       const ReseauData: JSON = JSON.parse(JSON.stringify(updatedReseau));
       console.log(updatedReseau);
-      await apiPut(`http://127.0.0.1:8000/api/v1/reseau/update/${updatedReseau.id}`, ReseauData);
-
+      await apiPatch(`/reseau/update/${updatedReseau.id}`, ReseauData);
       loadReseaux();
 
       setIsEditReseauOpen(false);
@@ -123,10 +134,27 @@ export default function ReseauManagement() {
     }
   };
 
+  const onAddUserInReseau = async (idReseau: number, userId: number) => {
+    try {
+      const reseauDataString = {
+        idReseau: idReseau,
+        idUtilisateur: userId,
+      };    
+      const reseauData: JSON = JSON.parse(JSON.stringify(reseauDataString));
+      
+      await apiPost('/reseau/add-membre', reseauData);
+      console.log(`Utilisateur avec l'ID ${userId} ajouté au réseau ${idReseau}`);
+      setAddUsersReseauOpen(false);
+      loadReseaux();
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout de l\'utilisateur:', error);
+    }
+  }
+
   const handleDeleteUser = async (id: number) => {
     try {
         console.log(id);
-        await apiDelete(`http://127.0.0.1:8000/api/v1/reseau/delete/${id}`);
+        await apiDelete(`/reseau/delete/${id}`);
         loadReseaux();
         console.log(`Reseau ${id} supprimé avec succès.`);
     } catch (error) {
@@ -171,6 +199,15 @@ export default function ReseauManagement() {
         >
           Voir
         </button>
+        <button
+          onClick={() => {
+            setCurrentReseau(reseau);
+            setAddUsersReseauOpen(true);
+          }}
+          className="p-1 bg-green-100 text-green-600 rounded hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          Ajouter
+        </button>
       </div>
     ),
   }));
@@ -205,8 +242,10 @@ export default function ReseauManagement() {
       {isEditReseauOpen && currentReseau && (
         <EditReseauModal reseau={currentReseau} onEditReseau={handleEditReseau} onClose={() => setIsEditReseauOpen(false)} />
       )}
+      {AddUsersReseauOpen && currentReseau && (
+        <AddUserReseauModal reseau={currentReseau} onAddUserInReseau={onAddUserInReseau} onClose={() => setAddUsersReseauOpen(false)} />
+      )}
 
-      
       {lookUsersReseauOpen && currentReseau && (
         <LookUsersReseauModal reseau={currentReseau} onDeleteUser={handleDeleteUserInReseau} onClose={() => setLookUsersReseauOpen(false)} />
       )}

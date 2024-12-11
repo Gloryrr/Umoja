@@ -23,6 +23,7 @@ const LookUsersReseauModal: React.FC<LookUsersReseauModalProps> = ({
       user.emailUtilisateur.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  console.log(filteredUsers);
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-md shadow-lg max-w-lg w-full">

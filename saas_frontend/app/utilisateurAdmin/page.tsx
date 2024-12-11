@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import { PlusCircle, Pencil, Trash2 } from 'lucide-react'
-import { apiGet, apiPost, apiPut, apiDelete } from '../services/externalApiClients'
+import { apiGet, apiPost, apiPatch, apiDelete } from '../services/internalApiClients'
 import AddUserModal from '../components/ui/addUserModal';
 import EditUserModal from '../components/ui/EditUserModal';
 import Table from '../components/ui/tableAdmin';
@@ -42,7 +42,7 @@ export default function UserManagement() {
   async function loadUtilisateur(){
     try {
       
-    const fetchData = await apiGet('http://127.0.0.1:8000/api/v1/utilisateurs');
+    const fetchData = await apiGet('/utilisateurs');
     const utilisateursArray = JSON.parse(fetchData.utilisateurs);
 
     if (Array.isArray(utilisateursArray)) {
@@ -65,9 +65,12 @@ export default function UserManagement() {
         nomUtilisateur: newUser.nomUtilisateur ?? "",
         prenomUtilisateur: newUser.prenomUtilisateur ?? ""
       };
+
+      const userData: JSON = JSON.parse(JSON.stringify(userdata1));
+
       
 
-      await apiPost('http://127.0.0.1:8000/api/v1/utilisateurs/create', JSON.stringify(userdata1));
+      await apiPost('/utilisateurs/create', userData);
       setIsAddUserOpen(false);
 
       loadUtilisateur();
@@ -81,7 +84,7 @@ export default function UserManagement() {
   const handleEditUser = async (updatedUser: User) => {
     try {
       const userData: JSON = JSON.parse(JSON.stringify(updatedUser));
-      await apiPut(`http://127.0.0.1:8000/api/v1/utilisateurs/update/${updatedUser.id}`, userData);
+      await apiPatch(`/utilisateurs/update/${updatedUser.id}`, userData);
 
       loadUtilisateur();
 
@@ -94,7 +97,7 @@ export default function UserManagement() {
   const handleDeleteUser = async (id: number) => {
     try {
         console.log(id);
-        await apiDelete(`http://127.0.0.1:8000/api/v1/utilisateurs/delete/${id}`);
+        await apiDelete(`/utilisateurs/delete/${id}`);
         loadUtilisateur();
         console.log(`Utilisateur ${id} supprimé avec succès.`);
     } catch (error) {
