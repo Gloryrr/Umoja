@@ -2,14 +2,11 @@
 import type { Metadata } from "next";
 // import localFont from "next/font/local";
 import { Fredoka, Nunito } from "next/font/google";
+import NavbarApp from "@/app/components/Navbar";
+import Footer from "@/app/components/Footer";
 // import Head from "next/head";
 
 import "./globals.css";
-
-import NavbarApp from "./components/Navbar";
-import Footer from "./components/Footer";
-
-// import { ThemeModeScript } from "flowbite-react";
 
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",

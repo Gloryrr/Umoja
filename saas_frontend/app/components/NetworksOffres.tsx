@@ -100,7 +100,7 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
     const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
         setSortOption(event.target.value);
 
-    const handleFilterChange = (setter: (value: any) => void) =>
+    const handleFilterChange = (setter: (value: string) => void) =>
         (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
             setter(event.target.value);
 
@@ -236,7 +236,7 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
                             <p className="text-sm">Date limite: {offre.deadLine}</p>
                             <p className="text-sm">Localisation: {offre.villeVisee}, {offre.regionVisee}</p>
                             <p className="text-sm">Créateur: {offre.utilisateur.username}</p>
-                            <Button href={`/mes-offres/detail/${offre.id}`}>
+                            <Button href={`/cardDetailsPage?id=${offre.id}`}>
                                 Voir détail
                             </Button>
                         </Card>

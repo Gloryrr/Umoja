@@ -13,6 +13,7 @@ use App\Entity\Utilisateur;
 use App\Entity\PreferenceNotification;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * Class UtilisateurService
@@ -44,6 +45,42 @@ class UtilisateurService
         } catch (\Exception $e) {
             throw new \RuntimeException("ERREUR " . $e->getMessage());
         }
+    }
+
+    /**
+     * Récupère l'utilisateur par rapport à son token JWT et renvoie une réponse JSON.
+     *
+     * @param Security $security Le service de sécurité pour récupérer l'utilisateur connecté.
+     * @param SerializerInterface $serializer, pour convertir les données en JSON.
+     *
+     * @return JsonResponse La réponse JSON contenant les informations de l'utilisateur.
+     */
+    public static function getMe(
+        Security $security,
+        SerializerInterface $serializer
+    ) {
+        $user = $security->getUser();
+
+        // Vérifie si aucun utilisateur n'est connecté
+        if (!$user) {
+            return new JsonResponse(
+                ['error' => 'Utilisateur non authentifié'],
+                401
+            );
+        }
+
+        // Sérialise l'utilisateur pour retourner ses informations
+        $dataUser = $serializer->serialize(
+            $user->getUserIdentifier(),
+            'json',
+            ['groups' => ['utilisateur:read']]
+        );
+
+        return new JsonResponse([
+            'utilisateur' => json_decode($dataUser, true),
+            'message' => "Utilisateur trouvé",
+            'serialized' => true
+        ], Response::HTTP_OK);
     }
 
     /**

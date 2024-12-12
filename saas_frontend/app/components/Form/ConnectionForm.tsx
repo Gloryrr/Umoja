@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { FaUser, FaLock } from "react-icons/fa";
 import { TextInput, Button, Toast } from "flowbite-react";
-import { apiPost } from "@/app/services/internalApiClients";
+import { apiPost, /*apiGet*/ } from "@/app/services/internalApiClients";
 import { HiCheck, HiX } from "react-icons/hi";
 
 function ConnectionForm() {
@@ -25,15 +25,12 @@ function ConnectionForm() {
       const response = await apiPost("/login", JSON.parse(JSON.stringify(data)));
 
       if (response.token) {
-        sessionStorage.setItem("isConnected", "true");
-        sessionStorage.setItem("username", data.username);
         sessionStorage.setItem("token", response.token);
         setToastMessage("Connexion réussie ! Redirection en cours...");
         setToastType("success");
         setShowToast(true);
-        setTimeout(() => (window.location.href = "/accueil"), 1000);
+        (window.location.href = "/accueil");
       } else {
-        sessionStorage.setItem("isConnected", "false");
         setToastMessage("Compte introuvable, veuillez vérifier vos identifiants.");
         setToastType("failure");
         setShowToast(true);

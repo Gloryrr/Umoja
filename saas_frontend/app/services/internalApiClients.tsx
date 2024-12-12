@@ -73,3 +73,16 @@ export const apiDelete = async (endpoint: string) => {
     });
     return renvoieReponsePromise(response);
 };
+
+export const apiDeleteWithParams = async (endpoint: string, data : JSON) => {
+    const token = sessionStorage.getItem('token');
+    const response = await fetch(`${BASE_URL}${endpoint}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    });
+    return renvoieReponsePromise(response);
+};

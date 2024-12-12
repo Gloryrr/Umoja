@@ -142,6 +142,14 @@ interface OffreDetailProps {
   offreId: number;
 }
 
+interface Commentaire {
+  id: number;
+  utilisateur : {
+    username: string;
+  },
+  commentaire: string;
+}
+
 export default function OffreDetail({ offreId }: OffreDetailProps) {
   const [commentaire, setCommentaire] = useState("");
   const [offre, setOffre] = useState<Offre | null>(null);
@@ -262,14 +270,6 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
     window.location.href = "/accueil";
   };
 
-  interface Commentaire {
-    id: number;
-    utilisateur : {
-      username: string;
-    },
-    commentaire: string;
-  }
-
   const handleCommentSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -279,28 +279,30 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
     }
     setError("");
 
-    const data = JSON.stringify({
-      commentaire: {
-        idOffre: offre?.id,
-        username: typeof window !== 'undefined' ? sessionStorage.getItem('username') : null,
-        contenu: commentaire,
-      },
-    });
-
-    try {
-      await apiPost("/commentaire/create", JSON.parse(data)).then((response) => {
-        e.preventDefault();
-
-        if (response.error) {
-          throw new Error(response.error);
-        }
-        setCommentaires([JSON.parse(response.commentaire), ...commentaires]);
+    await apiGet("/me").then(async (response) => {
+      const data = JSON.stringify({
+        commentaire: {
+          idOffre: offre?.id,
+          username: response.utilisateur,
+          contenu: commentaire,
+        },
       });
-      setCommentaire("");
-    } catch (err) {
-      setError("Une erreur est survenue lors de l'ajout du commentaire.");
-      throw err;
-    }
+
+      try {
+        await apiPost("/commentaire/create", JSON.parse(data)).then((response) => {
+          e.preventDefault();
+
+          if (response.error) {
+            throw new Error(response.error);
+          }
+          setCommentaires([JSON.parse(response.commentaire), ...commentaires]);
+        });
+        setCommentaire("");
+      } catch (err) {
+        setError("Une erreur est survenue lors de l'ajout du commentaire.");
+        throw err;
+      }
+    });
   };
 
   if (loading) {
