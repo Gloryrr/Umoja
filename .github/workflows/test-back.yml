@@ -21,6 +21,6 @@ jobs:
       run: composer install --prefer-dist --no-progress --no-interaction
       working-directory: ./saas_backend
 
-    - name: exécute les tests unittaires (dossier tests/)
+    - name: exécute les tests unittaires (dossier tests/Entity)
       run: vendor/bin/phpunit --testdox --colors tests/Entity
       working-directory: ./saas_backend
