@@ -93,7 +93,7 @@ class ConditionsFinancieresService
                 !(empty($data['minimumGaranti'])) ? $data['minimumGaranti'] : null
             );
             $conditionsFinancieres->setConditionsPaiement(
-                !(empty($data['conditionsPaiement'])) ? $data['conditionsPaiment'] : null
+                !(empty($data['conditionsPaiement'])) ? $data['conditionsPaiement'] : null
             );
             $conditionsFinancieres->setPourcentageRecette(
                 !(empty($data['pourcentageRecette'])) ? $data['pourcentageRecette'] : null
