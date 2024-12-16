@@ -269,10 +269,18 @@ class OffreService
             if ($data['etatOffre']['nomEtatOffre'] == "") {
                 $etatOffre = $etatOffreRepository->findBy(['nomEtat' => 'En Cours'])[0];
                 $offre->setEtatOffre($etatOffre);
+            } else {
+                $etatOffre = new EtatOffre();
+                $etatOffre->setNomEtat($data['etatOffre']['nomEtatOffre']);
+                $offre->setEtatOffre($etatOffre);
             }
 
             if ($data['typeOffre']['nomTypeOffre'] == "") {
                 $typeOffre = $typeOffreRepository->findBy(['nomTypeOffre' => 'Tournée'])[0];
+                $offre->setTypeOffre($typeOffre);
+            } else {
+                $typeOffre = new TypeOffre();
+                $typeOffre->setNomTypeOffre($data['typeOffre']['nomTypeOffre']);
                 $offre->setTypeOffre($typeOffre);
             }
 
