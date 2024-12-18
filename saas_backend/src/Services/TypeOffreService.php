@@ -97,14 +97,14 @@ class TypeOffreService
             $typeOffre->setNomTypeOffre($data['nomTypeOffre']);
 
             // ajout du nouveau type en base de données
-            $rep = $typeOffreRepository->inscritOffre($typeOffre);
+            $rep = $typeOffreRepository->inscritTypeOffre($typeOffre);
 
             // vérification de l'action en BDD
             if ($rep) {
                 $typeOffreJSON = $serializer->serialize(
                     $typeOffre,
                     'json',
-                    ['groups' => ['typeOffre:read']]
+                    ['groups' => ['type_offre:read']]
                 );
                 return new JsonResponse([
                     'type_offre' => $typeOffreJSON,
@@ -118,7 +118,7 @@ class TypeOffreService
                 'serialized' => false
             ], Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
-            throw new \RuntimeException("Erreur lors de la création du type d'offre", $e->getCode());
+            throw new \RuntimeException("Erreur lors de la création du type d'offre", $e->getCode() . $e->getMessage());
         }
     }
 
@@ -159,14 +159,14 @@ class TypeOffreService
             }
 
             // sauvegarde des modifications dans la BDD
-            $rep = $typeOffreRepository->updateOffre($typeOffre);
+            $rep = $typeOffreRepository->updateTypeOffre($typeOffre);
 
             // réponse après la mise à jour
             if ($rep) {
                 $typeOffre = $serializer->serialize(
                     $typeOffre,
                     'json',
-                    ['groups' => ['typeOffre:read']]
+                    ['groups' => ['type_offre:read']]
                 );
                 return new JsonResponse([
                     'type_offre' => $typeOffre,
@@ -212,14 +212,14 @@ class TypeOffreService
         }
 
         // suppression en BDD
-        $rep = $typeOffreRepository->removeOffre($typeOffre);
+        $rep = $typeOffreRepository->removeTypeOffre($typeOffre);
 
         // réponse après suppression
         if ($rep) {
             $typeOffreJSON = $serializer->serialize(
                 $typeOffre,
                 'json',
-                ['groups' => ['typeOffre:read']]
+                ['groups' => ['type_offre:read']]
             );
             return new JsonResponse([
                 'type_offre' => $typeOffreJSON,
@@ -272,7 +272,7 @@ class TypeOffreService
             $typeOffreJSON = $serializer->serialize(
                 $typeOffre,
                 'json',
-                ['groups' => ['typeOffre:read']]
+                ['groups' => ['type_offre:read']]
             );
             return new JsonResponse([
                 'type_offre' => $typeOffreJSON,
@@ -325,7 +325,7 @@ class TypeOffreService
             $typeOffreJSON = $serializer->serialize(
                 $typeOffre,
                 'json',
-                ['groups' => ['typeOffre:read']]
+                ['groups' => ['type_offre:read']]
             );
             return new JsonResponse([
                 'type_offre' => $typeOffreJSON,
