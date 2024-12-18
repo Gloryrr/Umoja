@@ -7,11 +7,10 @@ import BudgetEstimatifForm from '@/app/components/Form/Offre/BudgetEstimatifForm
 import DetailOffreForm from '@/app/components/Form/Offre/DetailOffreForm';
 import FicheTechniqueArtisteForm from '@/app/components/Form/Offre/FicheTechniqueArtiste';
 import InfoAdditionnelAlert from '@/app/components/Alerte/InfoAdditionnelAlerte';
-import { apiPost } from '@/app/services/internalApiClients';
+import { apiPost,apiGet } from '@/app/services/internalApiClients';
 import { HiInformationCircle } from "react-icons/hi";
 import { FormData } from '@/app/types/FormDataType';
 import SelectCheckbox from '@/app/components/SelectCheckbox';
-import { apiGet } from '@/app/services/internalApiClients';
 
 const OffreForm: React.FC = () => {
     const dateParDefaut = new Date().toISOString().split('T')[0] as string;
@@ -134,7 +133,7 @@ const OffreForm: React.FC = () => {
 
         fetchGenresMusicaux();
         fetchReseauUtilisateur();
-    }, []);
+    }, [setGenresMusicaux, setReseaux]);
 
     const checkInformationsDeBase = () => {
         const {
@@ -256,7 +255,7 @@ const OffreForm: React.FC = () => {
     ) => {
         const valueAsList = Array.isArray(value) 
             ? value 
-            : Object.values(value || {});
+            : Object.values(value ?? {});
     
         setFormData((prevData) => ({
             ...prevData,
