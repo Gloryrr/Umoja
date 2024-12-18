@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { apiGet, apiPatch } from "@/app//services/internalApiClients";
 import { Alert, Button, Card, Pagination, Checkbox } from "flowbite-react";
 import NavigationHandler from "@/app/navigation/Router";
@@ -101,22 +101,25 @@ function ValidationsOffres({ idOffre }: { idOffre: number }) {
     }
 
     // Appliquer les filtres de l'état
-    function applyFilters(selectedStates: { enAttente: boolean; validee: boolean; refusee: boolean }) {
-        const filtered = propositionsDeContributions.filter((prop) => {
+    const applyFilters = useCallback(
+        (selectedStates: { enAttente: boolean; validee: boolean; refusee: boolean }) => {
+          const filtered = propositionsDeContributions.filter((prop) => {
             return (
-                (selectedStates.enAttente && prop.etatReponse.nomEtatReponse === "En Attente") ||
-                (selectedStates.validee && prop.etatReponse.nomEtatReponse === "Validée") ||
-                (selectedStates.refusee && prop.etatReponse.nomEtatReponse === "Refusée")
+              (selectedStates.enAttente && prop.etatReponse.nomEtatReponse === "En Attente") ||
+              (selectedStates.validee && prop.etatReponse.nomEtatReponse === "Validée") ||
+              (selectedStates.refusee && prop.etatReponse.nomEtatReponse === "Refusée")
             );
-        });
-        setFilteredPropositions(filtered);
-
-        // Vérifier si la page actuelle est au-delà du nombre de pages disponibles après filtrage
-        const totalPages = Math.ceil(filtered.length / propositionsPerPage);
-        if (currentPage > totalPages && totalPages > 0) {
+          });
+          setFilteredPropositions(filtered);
+    
+          // Vérifier si la page actuelle est au-delà du nombre de pages disponibles après filtrage
+          const totalPages = Math.ceil(filtered.length / propositionsPerPage);
+          if (currentPage > totalPages && totalPages > 0) {
             setCurrentPage(totalPages); // Remettre à la dernière page
-        }
-    }
+          }
+        },
+        [propositionsDeContributions, currentPage, propositionsPerPage] // Memoize dependencies
+      );
 
     useEffect(() => {
         getPropositionDeContributions(idOffre);
