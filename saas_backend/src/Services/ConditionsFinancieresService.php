@@ -158,13 +158,13 @@ class ConditionsFinancieresService
 
             // on vérifie qu'aucune données ne manque pour la mise à jour
             // et on instancie les données dans l'objet
-            if (!(empty($data['minimumGaranti']) || !(is_null($data['minimumGaranti'])))) {
+            if (isset($data['minimumGaranti'])) {
                 $conditionsFinancieres->setMinimunGaranti($data['minimumGaranti']);
             }
-            if (!(empty($data['conditionsPaiement']) || !(is_null($data['conditionsPaiement'])))) {
+            if (isset($data['conditionsPaiement'])) {
                 $conditionsFinancieres->setConditionsPaiement($data['conditionsPaiement']);
             }
-            if (!(empty($data['pourcentageRecette']) || !(is_null($data['pourcentageRecette'])))) {
+            if (isset($data['pourcentageRecette'])) {
                 $conditionsFinancieres->setPourcentageRecette($data['pourcentageRecette']);
             }
 

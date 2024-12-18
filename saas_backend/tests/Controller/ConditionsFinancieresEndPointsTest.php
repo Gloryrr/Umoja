@@ -58,18 +58,15 @@ class ConditionsFinancieresEndPointsTest extends ApiTestCase
     {
         $client = static::createClient();
 
-        // ID à tester, supposons qu'une condition existe avec l'ID 1
-        $payload = [
-            'minimumGaranti' => 4000,
-            'conditionsPaiement' => 'EUR',
-            'pourcentageRecette' => 1.5,
-        ];
-
         $client->request('POST', '/api/v1/condition-financiere/create', [
             'headers' => [
                 'Authorization' => "Bearer {$this->token}"
             ],
-            'json' => $payload
+            'json' => [
+                'minimumGaranti' => 4000,
+                'conditionsPaiement' => 'EUR',
+                'pourcentageRecette' => 1.5,
+            ]
         ]);
 
         $responseData = json_decode($client->getResponse()->getContent(), true);
@@ -97,17 +94,15 @@ class ConditionsFinancieresEndPointsTest extends ApiTestCase
     {
         $client = static::createClient();
 
-        $payload = [
-            'minimumGaranti' => 4000,
-            'conditionsPaiement' => 'EUR',
-            'pourcentageRecette' => 1.5,
-        ];
-
         $client->request('POST', '/api/v1/condition-financiere/create', [
             'headers' => [
                 'Authorization' => "Bearer {$this->token}"
             ],
-            'json' => $payload
+            'json' => [
+                'minimumGaranti' => 4000,
+                'conditionsPaiement' => 'EUR',
+                'pourcentageRecette' => 1.5,
+            ]
         ]);
 
         $this->assertResponseIsSuccessful();
@@ -127,17 +122,16 @@ class ConditionsFinancieresEndPointsTest extends ApiTestCase
         $client = static::createClient();
 
         // ID à tester, supposons qu'une condition existe avec l'ID 1
-        $payload = [
-            'minimumGaranti' => 4000,
-            'conditionsPaiement' => 'EUR',
-            'pourcentageRecette' => 1.5,
-        ];
 
         $client->request('POST', '/api/v1/condition-financiere/create', [
             'headers' => [
                 'Authorization' => "Bearer {$this->token}"
             ],
-            'json' => $payload
+            'json' => [
+                'minimumGaranti' => 4000,
+                'conditionsPaiement' => 'EUR',
+                'pourcentageRecette' => 1.5,
+            ]
         ]);
 
         $this->assertResponseIsSuccessful();
@@ -145,29 +139,30 @@ class ConditionsFinancieresEndPointsTest extends ApiTestCase
         $id = json_decode($id['condition_financiere'], true);
         $id = $id['id'];
 
-        $payload = [
-            'minimumGaranti' => 5000,
-            'conditionsPaiement' => 'USD',
-            'pourcentageRecette' => 1.5,
-        ];
-
-        $data = $client->request('PATCH', "/api/v1/condition-financiere/update/{$id}", [
+        $client->request('PATCH', "/api/v1/condition-financiere/update/{$id}", [
             'headers' => [
                 'Authorization' => "Bearer {$this->token}"
             ],
-            'json' => $payload
+            'json' => [
+                'minimumGaranti' => 5000,
+                'conditionsPaiement' => 'USD',
+                'pourcentageRecette' => 1.5,
+            ]
         ]);
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/json');
 
-        $data = json_decode($data->getContent(), true);
-        $data = json_decode($data['condition_financiere'], true);
+        $dataResponse = json_decode($client->getResponse()->getContent(), true);
+        $data = json_decode($dataResponse['condition_financiere'], true);
 
         print_r($data);
 
-        $this->assertEquals(5000, $data['minimumGaranti']);
+        $this->assertEquals(5000, $data['minimunGaranti']);
         $this->assertEquals('USD', $data['conditionsPaiement']);
+        $this->assertEquals(1.5, $data['pourcentageRecette']);
+
+        $this->assertEquals('condition financière modifiée avec succès', $dataResponse['message']);
     }
 
     public function testDeleteConditionsFinancieres(): void
