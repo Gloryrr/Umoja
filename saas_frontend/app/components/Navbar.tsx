@@ -77,7 +77,7 @@ const NavbarApp = () => {
     } finally {
       setIsLoading(false);
     }
-  });
+  }, []);
 
   useEffect(() => {
     const fetchUtilisateur = async () => {
