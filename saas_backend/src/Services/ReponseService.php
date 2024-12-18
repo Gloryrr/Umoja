@@ -188,7 +188,7 @@ class ReponseService
             }
             $reponse->setOffre($offre);
 
-            $etatReponse = $etatReponseRepository->findBy([ 'nomEtatReponse' => $data['etatReponse']['nomEtatReponse'] ]);
+            $etatReponse = $etatReponseRepository->findBy(['nomEtatReponse' => $data['etatReponse']['nomEtatReponse']]);
             if ($etatReponse === null) {
                 return new JsonResponse([
                     'reponse_offre' => null,
@@ -259,7 +259,9 @@ class ReponseService
 
             // Mise à jour des données de la réponse
             if (isset($data['etatReponse'])) {
-                $etatReponse = $etatReponseRepository->findBy([ 'nomEtatReponse' => $data['etatReponse']['nomEtatReponse'] ]);
+                $etatReponse = $etatReponseRepository->findBy([
+                    'nomEtatReponse' => $data['etatReponse']['nomEtatReponse']
+                ]);
                 if ($etatReponse === null) {
                     return new JsonResponse([
                         'reponse_offre' => null,

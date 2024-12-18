@@ -103,13 +103,13 @@ class Reponse
 
     /**
      * Définit l'id de l'instance
-     * 
+     *
      * @param int
      */
     public function setId(int $id): static
     {
         $this->id = $id;
-        
+
         return $this;
     }
 

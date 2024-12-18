@@ -66,7 +66,7 @@ class FicheTechniqueArtiste
 
     /**
      * Définit l'identifiant de la fiche technique.
-     * 
+     *
      * @param int $id
      */
     public function setId(int $id): static
