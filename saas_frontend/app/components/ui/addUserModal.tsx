@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
+import { User } from './modal';
 
 type AddUserModalProps = {
-  onAddUser: (newUser: Omit<User, 'id_utilisateur'>) => void;
+  onAddUser: (newUser: Omit<User, 'id'>) => void;
   onClose: () => void;
 };
 
 const AddUserModal: React.FC<AddUserModalProps> = ({ onAddUser, onClose }) => {
-  const [newUser, setNewUser] = useState<Omit<User, 'id_utilisateur'>>({
+  const [newUser, setNewUser] = useState<Omit<User, 'id'>>({
     emailUtilisateur: '',
     username: '',
     numTelUtilisateur: '',

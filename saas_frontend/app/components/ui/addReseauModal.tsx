@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
+import { Reseaux2 } from './modal';
 
 type AddReseauModalProps = {
-  onAddReseau: (newReseau: Omit<Reseaux, 'id'>) => void;
+  onAddReseau: (newReseau: Omit<Reseaux2, 'id'>) => void; // Update this type
   onClose: () => void;
 };
 
 const AddReseauModal: React.FC<AddReseauModalProps> = ({ onAddReseau, onClose }) => {
-  const [newReseau, setNewReseau] = useState<Omit<Reseaux, 'id'>>({
+  const [newReseau, setNewReseau] = useState<Omit<Reseaux2, 'id'>>({
     nomReseau: '',
   });
 

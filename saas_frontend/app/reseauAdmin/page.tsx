@@ -7,19 +7,15 @@ import AddReseauModal from '../components/ui/addReseauModal';
 import EditReseauModal from '../components/ui/EditReseauModal';
 import LookUsersReseauModal from '../components/ui/LookUsersReseauModal';
 import AddUserReseauModal from '../components/ui/AddUserReseauModal';
+import { Reseaux2, Reseaux } from '../components/ui/modal';
 
-type Reseaux = {
-  id: number;
-  nomReseau : string;
-  id_utilisateur: number;
-  id_genre_musique: number;
-  offre: number;
+type Row = {
+  nomReseau: string;
+  actions: JSX.Element;
+  utilisateurs: JSX.Element;
 };
 
-// type ReseauAll = {
-//   id: number;
-//   nomReseau : string;
-// };
+
 
 const columns = [
   { header: 'Nom', accessor: 'nomReseau' },
@@ -70,7 +66,7 @@ export default function ReseauManagement() {
 
 
   const handleDeleteUserInReseau = async (
-      reseau: {id: number; nom: string; utilisateurs: User[] },
+      reseau: Reseaux,
       userId: number
     ) => {
     // Filtrer les utilisateurs pour exclure celui dont l'ID correspond
@@ -95,23 +91,25 @@ export default function ReseauManagement() {
   };
   
 
-  const handleAddReseau = async (newReseau: Omit<Reseaux, 'id_utilisateur'>) => {
+  const handleAddReseau = (newReseau: Omit<Reseaux2, 'id'>) => {
     try {
-
       const reseauDataString = {
         nomReseau: newReseau.nomReseau,
       };
-
+  
       const ReseauData: JSON = JSON.parse(JSON.stringify(reseauDataString));
-
-      
+  
       console.log(newReseau);
-      await apiPost('/reseau/create', ReseauData);
-      setIsAddReseauOpen(false);
-
-      loadReseaux();
-
-      
+  
+      // Remplacer 'await' par '.then()' pour gérer la promesse
+      apiPost('/reseau/create', ReseauData)
+        .then(() => {
+          setIsAddReseauOpen(false);
+          loadReseaux();
+        })
+        .catch((error) => {
+          console.error('Erreur lors de l\'ajout de l\'utilisateur:', error);
+        });
     } catch (error) {
       console.error('Erreur lors de l\'ajout de l\'utilisateur:', error);
     }
@@ -130,7 +128,7 @@ export default function ReseauManagement() {
     }
   };
 
-  const onAddUserInReseau = async (idReseau: number, userId: number) => {
+  const onAddUserInReseau = async (idReseau: string, userId: string) => {
     try {
       const reseauDataString = {
         idReseau: idReseau,
@@ -228,7 +226,7 @@ export default function ReseauManagement() {
       </div>
 
       <div className="overflow-x-auto">
-        <Table columns={columns} data={data} />;
+        <Table columns={columns} data={data as Row[]} />;
       </div>
 
       {/* Modale pour l'ajout et l'édition d'utilisateur */}

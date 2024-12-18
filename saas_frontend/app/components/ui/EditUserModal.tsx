@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { User } from './modal';
 
 type EditUserModalProps = {
   user: User;

@@ -4,9 +4,8 @@ interface Column {
   header: string;
   accessor: string;
 }
-
 type Row = {
-  [key: string]: string | number | boolean | null; // You can specify more precise types based on your needs
+  [key: string]: string | number | boolean | null | React.JSX.Element;
 };
 
 interface TableProps<T extends Row> {

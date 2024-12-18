@@ -1,5 +1,6 @@
 import { apiGet } from '@/app/services/internalApiClients';
 import React, { useState } from 'react';
+import { User, Reseaux } from './modal';
 
 type AddReseauModalProps = {
   reseau: Reseaux;
@@ -12,7 +13,7 @@ const AddReseauModal: React.FC<AddReseauModalProps> = ({reseau, onAddUserInResea
   const [allUtilisateurs, setAllUtilisateurs] = useState<User[]>([]);
 
   const [userInReseau, setUserInReseau] = useState< { idReseau: string; idUtilisateur: string }>({
-      idReseau: reseau.id,
+      idReseau: reseau.id.toString(),
       idUtilisateur: '',
     });
 

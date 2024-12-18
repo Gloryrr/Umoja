@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
+import { Reseaux } from './modal';
 
 type LookUsersReseauModalProps = {
-  reseau: {
-    id : number;
-    nom: string;
-    utilisateurs: User[]; // Liste des utilisateurs du réseau
-  };
+  reseau: Reseaux;
   onClose: () => void;
-  onDeleteUser: (reseau: { id: number; nom: string; utilisateurs: User[] }, userId: number) => void; // Fonction pour supprimer un utilisateur
+  onDeleteUser: (reseau: Reseaux,  userId: number) => void; // Fonction pour supprimer un utilisateur
 };
 
 const LookUsersReseauModal: React.FC<LookUsersReseauModalProps> = ({
@@ -17,6 +14,13 @@ const LookUsersReseauModal: React.FC<LookUsersReseauModalProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState(''); // État pour le champ de recherche
   // Filtrer les utilisateurs en fonction du nom ou de l'email
+
+  console.log(reseau);
+  console.log(reseau);
+  console.log(reseau);
+  console.log(reseau);
+  console.log(reseau);
+  console.log(reseau);
   const filteredUsers = reseau.utilisateurs.filter(
     (user) =>
       user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -27,7 +31,7 @@ const LookUsersReseauModal: React.FC<LookUsersReseauModalProps> = ({
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-md shadow-lg max-w-lg w-full">
-        <h2 className="text-2xl font-semibold mb-4">Utilisateurs du Réseau: {reseau.nom}</h2>
+        <h2 className="text-2xl font-semibold mb-4">Utilisateurs du Réseau: {reseau.nomReseau}</h2>
         
         {/* Champ de recherche */}
         <input
