@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback,useState, useEffect } from "react";
 import { MegaMenu, Navbar, Dropdown, Avatar } from "flowbite-react";
 import NavigationHandler from "../navigation/Router";
 import Image from "next/image";
@@ -29,7 +29,7 @@ const NavbarApp = () => {
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchSearchResults = async (query: string) => {
+  const fetchSearchResults = useCallback(async (query: string) => {
     if (query.length < 2) {
       setSearchResults([]);
       return;
@@ -77,7 +77,7 @@ const NavbarApp = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  });
 
   useEffect(() => {
     const fetchUtilisateur = async () => {
