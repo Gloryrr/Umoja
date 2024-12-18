@@ -95,7 +95,7 @@ const NavbarApp = () => {
     }, 300);
   
     return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery]); 
+  }, [searchQuery, fetchSearchResults]);
 
   const deconnexion = () => {
     sessionStorage.setItem('token', '');
