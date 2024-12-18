@@ -401,6 +401,9 @@ class OffreService
      *
      * @param int $id L'identifiant de l'offre à mettre à jour.
      * @param OffreRepository $offreRepository Le repository des offres.
+     * @param ReseauRepository $reseauRepository Le repository des réseaux.
+     * @param GenreMusicalRepository $genreMusicalRepository Le repository des genres musicaux.
+     * @param ArtisteRepository $artisteRepository Le repository des artistes.
      * @param SerializerInterface $serializer Le service de sérialisation.
      * @param MailerService $mailerService Le service d'envoi de mail.
      * @param mixed $data Les nouvelles données de l'offre.
@@ -412,6 +415,9 @@ class OffreService
     public static function updateOffre(
         int $id,
         OffreRepository $offreRepository,
+        ReseauRepository $reseauRepository,
+        GenreMusicalRepository $genreMusicalRepository,
+        ArtisteRepository $artisteRepository,
         SerializerInterface $serializer,
         MailerService $mailerService,
         mixed $data
@@ -435,16 +441,16 @@ class OffreService
                 $offre->setTitleOffre($data['detailOffre']['titleOffre']);
             }
             if (isset($data['detailOffre']['deadline'])) {
-                $offre->setDeadline($data['detailOffre']['deadline']);
+                $offre->setDeadline(date_create($data['detailOffre']['deadline']));
             }
             if (isset($data['detailOffre']['descrTournee'])) {
                 $offre->setDescrTournee($data['detailOffre']['descrTournee']);
             }
             if (isset($data['detailOffre']['dateMinProposee'])) {
-                $offre->setDateMinProposee($data['detailOffre']['dateMinProposee']);
+                $offre->setDateMinProposee(date_create($data['detailOffre']['dateMinProposee']));
             }
             if (isset($data['detailOffre']['dateMaxProposee'])) {
-                $offre->setDateMaxProposee($data['detailOffre']['dateMaxProposee']);
+                $offre->setDateMaxProposee(date_create($data['detailOffre']['dateMaxProposee']));
             }
             if (isset($data['detailOffre']['villeVisee'])) {
                 $offre->setVilleVisee($data['detailOffre']['villeVisee']);
@@ -465,21 +471,49 @@ class OffreService
                 $offre->setNbInvitesConcernes($data['detailOffre']['nbInvitesConcernes']);
             }
             if (isset($data['ficheTechniqueArtiste']['liensPromotionnels'])) {
-                $offre->setLiensPromotionnels($data['ficheTechniqueArtiste']['liensPromotionnels']);
+                foreach ($data['ficheTechniqueArtiste']['liensPromotionnels'] as $lien) {
+                    $liensPromotionnels .= "{$lien};";
+                }
+                $offre->setLiensPromotionnels($liensPromotionnels);
+            }
+            if (isset($data['image']['file'])) {
+                $offre->setImage($data['image']['file']);
+            }
+            if (isset($data['extras'])) {
+                $extras = new Extras();
+                if (isset($data['extras']['descrExtras'])) {
+                    $extras->setDescrExtras($data['extras']['descrExtras']);
+                }
+                if (isset($data['extras']['coutExtras'])) {
+                    $extras->setCoutExtras($data['extras']['coutExtras']);
+                }
+                if (isset($data['extras']['exclusivite'])) {
+                    $extras->setExclusivite($data['extras']['exclusivite']);
+                }
+                if (isset($data['extras']['exception'])) {
+                    $extras->setException($data['extras']['exception']);
+                }
+                if (isset($data['ficheTechniqueArtiste']['ordrePassage'])) {
+                    $extras->setOrdrePassage($data['ficheTechniqueArtiste']['ordrePassage']);
+                }
+                if (isset($data['extras']['clausesConfidentialites'])) {
+                    $extras->setClausesConfidentialites($data['extras']['clausesConfidentialites']);
+                }
+                $offre->setExtras($extras);
             }
             if (isset($data['etatOffre'])) {
                 $etatOffre = new EtatOffre();
                 if (isset($data['etatOffre']['nomEtatOffre'])) {
                     $etatOffre->setNomEtat($data['etatOffre']['nomEtatOffre']);
                 }
-                $offre->setExtras($etatOffre);
+                $offre->setEtatOffre($etatOffre);
             }
             if (isset($data['typeOffre'])) {
                 $typeOffre = new TypeOffre();
                 if (isset($data['typeOffre']['nomTypeOffre'])) {
                     $typeOffre->setNomTypeOffre($data['typeOffre']['nomTypeOffre']);
                 }
-                $offre->setExtras($typeOffre);
+                $offre->setTypeOffre($typeOffre);
             }
             if (isset($data['conditionFinancieres'])) {
                 $conditionsFinancieres = new ConditionsFinancieres();
@@ -538,6 +572,31 @@ class OffreService
                     );
                 }
                 $offre->setFicheTechniqueArtiste($ficheTechniqueArtiste);
+            }
+            if (isset($data['donneesSupplementaires']['reseau'])) {
+                $nb_reseaux = intval($data['donneesSupplementaires']['nbReseaux']);
+                $reseaux_list = [];
+                for ($i = 0; $i < $nb_reseaux; $i++) {
+                    $reseau = $reseauRepository->trouveReseauByName($data['donneesSupplementaires']['reseau'][$i]);
+                    $offre->addReseau($reseau[0]);
+                    $reseaux_list[] = $reseau[0];
+                }
+            }
+            if (isset($data['donneesSupplementaires']['genreMusical'])) {
+                $nb_genres_musicaux = intval($data['donneesSupplementaires']['nbGenresMusicaux']);
+                for ($i = 0; $i < $nb_genres_musicaux; $i++) {
+                    $genreMusical = $genreMusicalRepository->trouveGenreMusicalByName(
+                        $data['donneesSupplementaires']['genreMusical'][$i]
+                    );
+                    $offre->addGenreMusical($genreMusical[0]);
+                }
+            }
+            if (isset($data['donneesSupplementaires']['artiste'])) {
+                $nb_artistes = intval($data['ficheTechniqueArtiste']['nbArtistes']);
+                for ($i = 0; $i < $nb_artistes; $i++) {
+                    $artiste = $artisteRepository->trouveArtisteByName($data['ficheTechniqueArtiste']['artiste'][$i]);
+                    $offre->addArtiste($artiste[0]);
+                }
             }
 
             $reseaux_list = $offre->getReseaux();
