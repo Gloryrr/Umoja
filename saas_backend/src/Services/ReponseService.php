@@ -151,8 +151,6 @@ class ReponseService
             // Vérifie que les données nécessaires sont présentes
             if (
                 (
-                    empty($data['idEtatReponse']) ||
-                    empty($data['idOffre']) ||
                     empty($data['dateDebut']) ||
                     empty($data['dateFin']) ||
                     empty($data['prixParticipation']) ||
@@ -166,11 +164,11 @@ class ReponseService
 
             // Création de l'objet Reponse
             $reponse = new Reponse();
-            $reponse->setDateDebut($data['dateDebut']);
-            $reponse->setDateFin($data['dateFin']);
+            $reponse->setDateDebut(date_create($data['dateDebut']));
+            $reponse->setDateFin(date_create($data['dateFin']));
             $reponse->setPrixParticipation($data['prixParticipation']);
 
-            $utilisateur = $utilisateurRepository->find(intval($data['utilisateur']['idUtilisateur']));
+            $utilisateur = $utilisateurRepository->findBy([ 'username' => $data['utilisateur']['username'] ]);
             if ($utilisateur === null) {
                 return new JsonResponse([
                     'reponse_offre' => null,
@@ -178,7 +176,7 @@ class ReponseService
                     'serialized' => false
                 ], Response::HTTP_BAD_REQUEST);
             }
-            $reponse->setUtilisateur($utilisateur);
+            $reponse->setUtilisateur($utilisateur[0]);
 
             $offre = $offreRepository->find(intval($data['offre']['idOffre']));
             if ($offre === null) {
@@ -190,7 +188,7 @@ class ReponseService
             }
             $reponse->setOffre($offre);
 
-            $etatReponse = $etatReponseRepository->find(intval($data['etatReponse']['nomEtatReponse']));
+            $etatReponse = $etatReponseRepository->findBy([ 'nomEtatReponse' => $data['etatReponse']['nomEtatReponse'] ]);
             if ($etatReponse === null) {
                 return new JsonResponse([
                     'reponse_offre' => null,
@@ -198,7 +196,7 @@ class ReponseService
                     'serialized' => false
                 ], Response::HTTP_BAD_REQUEST);
             }
-            $reponse->setetatReponse($etatReponse);
+            $reponse->setEtatReponse($etatReponse[0]);
 
 
             // Ajout de la réponse en base de données
@@ -261,7 +259,7 @@ class ReponseService
 
             // Mise à jour des données de la réponse
             if (isset($data['etatReponse'])) {
-                $etatReponse = $etatReponseRepository->find(intval($data['etatReponse']['nomEtatReponse']));
+                $etatReponse = $etatReponseRepository->findBy([ 'nomEtatReponse' => $data['etatReponse']['nomEtatReponse'] ]);
                 if ($etatReponse === null) {
                     return new JsonResponse([
                         'reponse_offre' => null,
@@ -269,13 +267,13 @@ class ReponseService
                         'serialized' => false
                     ], Response::HTTP_BAD_REQUEST);
                 }
-                $reponse->setetatReponse($etatReponse);
+                $reponse->setEtatReponse($etatReponse[0]);
             }
             if (isset($data['dateDebut'])) {
-                $reponse->setDateDebut($data['dateDebut']);
+                $reponse->setDateDebut(date_create($data['dateDebut']));
             }
             if (isset($data['dateFin'])) {
-                $reponse->setDateFin($data['dateFin']);
+                $reponse->setDateFin(date_create($data['dateFin']));
             }
             if (isset($data['prixParticipation'])) {
                 $reponse->setPrixParticipation($data['prixParticipation']);
