@@ -127,8 +127,8 @@ function ValidationsOffres({ idOffre }: { idOffre: number }) {
 
     useEffect(() => {
         applyFilters(selectedStates);
-    }, [propositionsDeContributions, selectedStates]);
-
+      }, [propositionsDeContributions, selectedStates, applyFilters]); // Add applyFilters to dependencies
+    
     // Pagination des propositions
     const indexOfLastProposition = currentPage * propositionsPerPage;
     const indexOfFirstProposition = indexOfLastProposition - propositionsPerPage;
