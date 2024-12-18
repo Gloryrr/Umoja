@@ -114,7 +114,7 @@ const OffreForm: React.FC = () => {
                 console.error("Erreur lors du chargement des genres musicaux :", error);
             }
         };
-
+    
         const fetchReseauUtilisateur = async () => {
             try {
                 await apiGet("/me").then(async (response) => {
@@ -130,11 +130,11 @@ const OffreForm: React.FC = () => {
                 console.error("Erreur lors du chargement des données utilisateurs :", error);
             }
         };
-
+    
         fetchGenresMusicaux();
         fetchReseauUtilisateur();
-    }, [setGenresMusicaux, setReseaux]);
-
+    }, [setGenresMusicaux, setReseaux, formData.utilisateur]);
+    
     const checkInformationsDeBase = () => {
         const {
             titleOffre,
