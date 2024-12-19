@@ -60,7 +60,10 @@ class ReseauRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getResult();
         } catch (\Exception $e) {
-            throw new \Exception("Erreur lors de la récupération des réseaux de l'utilisateur : " . $e->getMessage(), $e->getCode());
+            throw new \Exception(
+                "Erreur lors de la récupération des réseaux de l'utilisateur : " . $e->getMessage(),
+                $e->getCode()
+            );
         }
     }
 

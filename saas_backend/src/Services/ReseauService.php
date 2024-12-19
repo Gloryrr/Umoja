@@ -94,6 +94,7 @@ class ReseauService
             // on récupère tous les reseaux existants
             $reseaux = $reseauRepository->trouveReseauxUtilisateur($username);
             $paginationReseaux = $paginator->paginate($reseaux, $page, $limit);
+            $totalPages = ceil($paginationReseaux->getTotalItemCount() / $paginationReseaux->getItemNumberPerPage());
             $reseauxJSON = $serializer->serialize(
                 $paginationReseaux,
                 'json',
@@ -101,7 +102,7 @@ class ReseauService
             );
             return new JsonResponse([
                 'reseaux' => $reseauxJSON,
-                'nb_pages' => ceil($paginationReseaux->getTotalItemCount() / $paginationReseaux->getItemNumberPerPage()),
+                'nb_pages' => $totalPages,
                 'message' => "Réseaux de l'utilisateur {$username}",
                 'serialized' => true
             ], Response::HTTP_OK);
