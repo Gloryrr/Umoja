@@ -5,6 +5,7 @@ import { apiGet, apiPost, apiPatch, apiDelete } from '../services/internalApiCli
 import AddUserModal from '../components/ui/addUserModal';
 import EditUserModal from '../components/ui/EditUserModal';
 import Table from '../components/ui/tableAdmin';
+import { User } from '../components/ui/modal';
 
 
 const columns = [
@@ -54,7 +55,7 @@ export default function UserManagement() {
     }
   }
 
-  const handleAddUser = async (newUser: Omit<User, 'id_utilisateur'>) => {
+  const handleAddUser = async (newUser: Omit<User, 'id'>) => {
     try {
 
       const userdata1 = {

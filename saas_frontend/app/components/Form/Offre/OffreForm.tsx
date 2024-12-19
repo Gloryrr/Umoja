@@ -7,11 +7,10 @@ import BudgetEstimatifForm from '@/app/components/Form/Offre/BudgetEstimatifForm
 import DetailOffreForm from '@/app/components/Form/Offre/DetailOffreForm';
 import FicheTechniqueArtisteForm from '@/app/components/Form/Offre/FicheTechniqueArtiste';
 import InfoAdditionnelAlert from '@/app/components/Alerte/InfoAdditionnelAlerte';
-import { apiPost } from '@/app/services/internalApiClients';
+import { apiPost,apiGet } from '@/app/services/internalApiClients';
 import { HiInformationCircle } from "react-icons/hi";
 import { FormData } from '@/app/types/FormDataType';
 import SelectCheckbox from '@/app/components/SelectCheckbox';
-import { apiGet } from '@/app/services/internalApiClients';
 
 const OffreForm: React.FC = () => {
     const dateParDefaut = new Date().toISOString().split('T')[0] as string;
@@ -115,7 +114,7 @@ const OffreForm: React.FC = () => {
                 console.error("Erreur lors du chargement des genres musicaux :", error);
             }
         };
-
+    
         const fetchReseauUtilisateur = async () => {
             try {
                 await apiGet("/me").then(async (response) => {
@@ -131,11 +130,11 @@ const OffreForm: React.FC = () => {
                 console.error("Erreur lors du chargement des données utilisateurs :", error);
             }
         };
-
+    
         fetchGenresMusicaux();
         fetchReseauUtilisateur();
-    }, []);
-
+    }, [setGenresMusicaux, setReseaux, formData.utilisateur]);
+    
     const checkInformationsDeBase = () => {
         const {
             titleOffre,
@@ -256,7 +255,7 @@ const OffreForm: React.FC = () => {
     ) => {
         const valueAsList = Array.isArray(value) 
             ? value 
-            : Object.values(value || {});
+            : Object.values(value ?? {});
     
         setFormData((prevData) => ({
             ...prevData,

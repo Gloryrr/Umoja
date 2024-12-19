@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Reseaux } from './modal';
 
 type EditReseauModalProps = {
   reseau: Reseaux;
