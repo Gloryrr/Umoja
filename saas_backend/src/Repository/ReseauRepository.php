@@ -44,6 +44,27 @@ class ReseauRepository extends ServiceEntityRepository
     }
 
     /**
+     * Trouve les réseaux d'un utilisateur par son username.
+     *
+     * @param string $username Le nom de l'utilisateur à rechercher.
+     * @return Reseau[] Une liste de réseaux correspondant aux critères.
+     */
+    public function trouveReseauxUtilisateur(string $username): array
+    {
+        try {
+            return $this->createQueryBuilder('r')
+                ->innerJoin('r.utilisateurs', 'a')
+                ->innerJoin('a.reseaux', 'u')
+                ->andWhere('a.username = :username')
+                ->setParameter('username', $username)
+                ->getQuery()
+                ->getResult();
+        } catch (\Exception $e) {
+            throw new \Exception("Erreur lors de la récupération des réseaux de l'utilisateur : " . $e->getMessage(), $e->getCode());
+        }
+    }
+
+    /**
      * Inscrit un nouveau réseau dans la base de données.
      *
      * @param mixed $data Les données du réseau.

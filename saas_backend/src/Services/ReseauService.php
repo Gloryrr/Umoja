@@ -9,6 +9,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Reseau;
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * Class ReseauService
@@ -66,6 +67,42 @@ class ReseauService
             return new JsonResponse([
                 'reseau' => $reseauxJSON,
                 'message' => "Informations du réseau : {$name}",
+                'serialized' => true
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Récupère les ràseaux d'un utilisateur par rapport = son nom et renvoie une réponse JSON.
+     *
+     * @param ReseauRepository $reseauRepository Le repository des réseaux.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les réseaux listés.
+     */
+    public static function getReseauxUtilisateur(
+        ReseauRepository $reseauRepository,
+        SerializerInterface $serializer,
+        PaginatorInterface $paginator,
+        string $username,
+        string $page,
+        string $limit
+    ): JsonResponse {
+        try {
+            // on récupère tous les reseaux existants
+            $reseaux = $reseauRepository->trouveReseauxUtilisateur($username);
+            $paginationReseaux = $paginator->paginate($reseaux, $page, $limit);
+            $reseauxJSON = $serializer->serialize(
+                $paginationReseaux,
+                'json',
+                ['groups' => ['reseau:read']]
+            );
+            return new JsonResponse([
+                'reseaux' => $reseauxJSON,
+                'nb_pages' => ceil($paginationReseaux->getTotalItemCount() / $paginationReseaux->getItemNumberPerPage()),
+                'message' => "Réseaux de l'utilisateur {$username}",
                 'serialized' => true
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
