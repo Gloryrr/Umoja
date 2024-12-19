@@ -7,11 +7,10 @@ import BudgetEstimatifForm from '@/app/components/Form/Offre/BudgetEstimatifForm
 import DetailOffreForm from '@/app/components/Form/Offre/DetailOffreForm';
 import FicheTechniqueArtisteForm from '@/app/components/Form/Offre/FicheTechniqueArtiste';
 import InfoAdditionnelAlert from '@/app/components/Alerte/InfoAdditionnelAlerte';
-import { apiPost } from '@/app/services/internalApiClients';
+import { apiPost,apiGet } from '@/app/services/internalApiClients';
 import { HiInformationCircle } from "react-icons/hi";
 import { FormData } from '@/app/types/FormDataType';
 import SelectCheckbox from '@/app/components/SelectCheckbox';
-import { apiGet } from '@/app/services/internalApiClients';
 
 const OffreForm: React.FC = () => {
     const dateParDefaut = new Date().toISOString().split('T')[0] as string;
@@ -71,7 +70,7 @@ const OffreForm: React.FC = () => {
             nbGenresMusicaux: 0,
         },
         utilisateur: {
-            username : typeof window !== 'undefined' ? sessionStorage.getItem('username') : ""
+            username : ""
         },
         image: {
             file: null
@@ -115,23 +114,27 @@ const OffreForm: React.FC = () => {
                 console.error("Erreur lors du chargement des genres musicaux :", error);
             }
         };
-
+    
         const fetchReseauUtilisateur = async () => {
             try {
-                const username = typeof window !== 'undefined' ? sessionStorage.getItem('username') : "";
-                const data = { username };
-                const datasUser = await apiPost('/utilisateur', JSON.parse(JSON.stringify(data)));
-                const reseauxListe: Array<{ nomReseau: string }> = JSON.parse(datasUser.utilisateur)[0].reseaux;
-                setReseaux(reseauxListe);
+                await apiGet("/me").then(async (response) => {
+                    formData.utilisateur.username = response.utilisateur;
+                    const username = formData.utilisateur.username;
+                    const data = { username };
+                    const datasUser = await apiPost('/utilisateur', JSON.parse(JSON.stringify(data)));
+                    const reseauxListe: Array<{ nomReseau: string }> = JSON.parse(datasUser.utilisateur)[0].reseaux;
+                    console.log(reseauxListe);
+                    setReseaux(reseauxListe);
+                });
             } catch (error) {
                 console.error("Erreur lors du chargement des données utilisateurs :", error);
             }
         };
-
+    
         fetchGenresMusicaux();
         fetchReseauUtilisateur();
-    }, []);
-
+    }, [setGenresMusicaux, setReseaux, formData.utilisateur]);
+    
     const checkInformationsDeBase = () => {
         const {
             titleOffre,
@@ -235,7 +238,7 @@ const OffreForm: React.FC = () => {
             nbGenresMusicaux != null && nbGenresMusicaux > 0;
     };
 
-    const onDonneesSupplementairesChange = (name: string, value: any) => {
+    const onDonneesSupplementairesChange = (name: string, value: string[] | number) => {
         setFormData((prevData) => ({
             ...prevData,
             donneesSupplementaires: {
@@ -248,11 +251,11 @@ const OffreForm: React.FC = () => {
     const updateField = (
         section: keyof FormData,
         field: string,
-        value: any
+        value: string | null
     ) => {
         const valueAsList = Array.isArray(value) 
             ? value 
-            : Object.values(value || {});
+            : Object.values(value ?? {});
     
         setFormData((prevData) => ({
             ...prevData,

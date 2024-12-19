@@ -317,7 +317,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return "{$this->emailUtilisateur}" . ";" . "{$this->username}";
+        return $this->username;
     }
 
     public function getGenresMusicaux(): Collection

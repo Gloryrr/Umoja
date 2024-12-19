@@ -21,6 +21,6 @@ jobs:
       run: composer install --prefer-dist --no-progress --no-interaction
       working-directory: ./saas_backend
 
-    - name: exécution du coverage (dossier tests/)
-      run: vendor/bin/phpunit --coverage-text tests/Entity
+    - name: exécution du coverage (dossier tests/Entity)
+      run: vendor/bin/phpunit --testdox --colors tests/Entity
       working-directory: ./saas_backend

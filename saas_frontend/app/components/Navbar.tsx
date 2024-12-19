@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback,useState, useEffect } from "react";
 import { MegaMenu, Navbar, Dropdown, Avatar } from "flowbite-react";
 import NavigationHandler from "../navigation/Router";
 import Image from "next/image";
@@ -24,11 +24,12 @@ const NavbarApp = () => {
     { id: 3, text: "Créer un projet", href: "/offre" },
   ]);
 
+  const [username, setUsername] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchSearchResults = async (query: string) => {
+  const fetchSearchResults = useCallback(async (query: string) => {
     if (query.length < 2) {
       setSearchResults([]);
       return;
@@ -37,7 +38,6 @@ const NavbarApp = () => {
     setIsLoading(true);
   
     try {
-      const username = typeof window !== 'undefined' ? sessionStorage.getItem('username') : null;
       const data = {
         "username": username,
         "title": query,
@@ -50,7 +50,6 @@ const NavbarApp = () => {
         const offresAvecEtat = await Promise.all(
           offres.map(async (offre: { id: number; etatOffre: { id: number } }) => {
             try {
-              (offre);
               const etatResponse = await apiGet(`/etat-offre/${offre.etatOffre.id}`);
               return {
                 ...offre,
@@ -78,7 +77,17 @@ const NavbarApp = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [username]);
+
+  useEffect(() => {
+    const fetchUtilisateur = async () => {
+      await apiGet("/me").then((response) => {
+          setUsername(response.utilisateur || "");
+      })
+    }
+
+    fetchUtilisateur();
+  }, []);
   
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -86,16 +95,29 @@ const NavbarApp = () => {
     }, 300);
   
     return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery]); 
+  }, [searchQuery, fetchSearchResults]);
 
   const deconnexion = () => {
-    sessionStorage.setItem('isConnected', 'false');
-    sessionStorage.setItem('username', '');
     sessionStorage.setItem('token', '');
     window.location.href = '/';
   };
-  
-  if (typeof window !== 'undefined' && sessionStorage.getItem('isConnected') === 'true') {
+
+  if (username == "") {
+    if (typeof window !== "undefined" && window.location.pathname != "/") {
+      window.location.href = "/";
+    }
+  } 
+
+  function estPageDeConnexion() {
+    if (typeof window === "undefined") {
+      return false; // Retourne `false` par défaut si on est côté serveur
+    }
+    console.log(window.location.pathname);
+    return window.location.pathname === "" || window.location.pathname === "/";
+  }
+
+
+  if (!estPageDeConnexion()) {
     return (
       <MegaMenu className="w-full">
         <div className="flex items-center justify-between w-full py-4 border-b border-gray-300 dark:border-gray-500 px-4">
@@ -247,7 +269,7 @@ const NavbarApp = () => {
             >
               <Dropdown.Header>
                 <span className="block text-sm font-medium text-black">
-                  {typeof window !== 'undefined' ? sessionStorage.getItem('username') : "Bonnie Green"}
+                  {username}
                 </span>
                 <span className="block truncate text-sm text-gray">
                   name@flowbite.com
@@ -289,11 +311,6 @@ const NavbarApp = () => {
         </div>
       </MegaMenu>
     );
-  } else {
-    if (typeof window !== 'undefined' && window.location.pathname !== "/") {
-      window.location.href = "/";
-    }
-    return <></>;
   }
 };
 

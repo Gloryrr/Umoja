@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
 import { Button, Card, TextInput, Label, Badge } from "flowbite-react";
-import { apiPatch, apiPost } from "@/app/services/internalApiClients";
+import { apiGet, apiPatch, apiPost } from "@/app/services/internalApiClients";
 
 const Profil: React.FC = () => {
     const [userInfo, setUserInfo] = useState({
@@ -16,15 +16,12 @@ const Profil: React.FC = () => {
     const [isEditing, setIsEditing] = useState(false);
 
     const fetchUserProfile = useCallback(async () => {
-        const isConnected = typeof window !== 'undefined' ? sessionStorage.getItem('isConnected') : null;
-        if (isConnected === "true") {
-            const username = typeof window !== 'undefined' ? sessionStorage.getItem('username') : "";
-            const data = {
-                username,
-            };
+        await apiGet("/me").then( async (response) => {
+            const data = {"username" : response.utilisateur };
             try {
                 const response = await apiPost("/utilisateur", JSON.parse(JSON.stringify(data)));
                 if (response) {
+                    console.log(response);
                     setUserInfo(JSON.parse(response.utilisateur)[0]);
                 } else {
                     console.error("Erreur lors de la récupération des données utilisateur.");
@@ -32,7 +29,7 @@ const Profil: React.FC = () => {
             } catch (error) {
                 console.error("Erreur réseau :", error);
             }
-        }
+        });
     }, []);
 
     useEffect(() => {
@@ -52,7 +49,6 @@ const Profil: React.FC = () => {
             const data = JSON.parse(JSON.stringify(editedUserInfo));
             await apiPatch(`/utilisateurs/update/${userInfo.id}`, data);
             setUserInfo(editedUserInfo);
-            if (typeof window !== 'undefined') sessionStorage.setItem("username", editedUserInfo.username);
         } catch (error) {
             console.error("Erreur lors de la sauvegarde des données utilisateur :", error);
         }
@@ -63,6 +59,10 @@ const Profil: React.FC = () => {
         setEditedUserInfo(userInfo);
         setIsEditing(true);
     };
+
+    if (userInfo.id == "") {
+        return <div>Chargement...</div>;
+    }
 
     return (
         <Card className="mx-auto mt-10 mb-10">

@@ -13,6 +13,7 @@ use App\Repository\UtilisateurRepository;
 use App\Services\UtilisateurService;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use Symfony\Component\Security\Core\Security;
 
 class UtilisateurController extends AbstractController
 {
@@ -30,6 +31,24 @@ class UtilisateurController extends AbstractController
     ): JsonResponse {
         return UtilisateurService::getUtilisateurs(
             $utilisateurRepository,
+            $serializer
+        );
+    }
+
+    /**
+     * Récupère les informations de l'utilisateur actuellement connecté.
+     *
+     * @param Security $security Le service de sécurité pour récupérer l'utilisateur connecté.
+     * @param SerializerInterface $serializer, pour convertir les données en JSON.
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/me', name: 'get_me', methods: ['GET'])]
+    public function me(
+        Security $security,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        return UtilisateurService::getMe(
+            $security,
             $serializer
         );
     }

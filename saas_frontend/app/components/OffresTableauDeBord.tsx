@@ -38,8 +38,6 @@ const TableDesOffres = () => {
             try {
                 const response = await apiGet(`/offre/utilisateur/${idUtilisateur}`);
                 const allOffers: Offre[] = JSON.parse(response.offres);
-                (response.offres);
-
 
                 const offersWithStates = await Promise.all(
                     allOffers.map(async (offre) => {
@@ -71,29 +69,25 @@ const TableDesOffres = () => {
     );
 
     const fetchUserOffers = useCallback(async () => {
-        const username = typeof window !== 'undefined' ? sessionStorage.getItem('username') : null;
-        if (!username) {
-            setError("Nom d'utilisateur introuvable dans le sessionStorage.");
-            setIsLoading(false);
-            return;
-        }
-
-        try {
-            const data = { username };
-            const userResponse = await apiPost("/utilisateur", JSON.parse(JSON.stringify(data)));
-            if (!userResponse) {
-                setError("Aucune offre trouvée pour cet utilisateur.");
+        await apiGet("/me").then(async (response) => {
+            try {
+                const data = { "username" : response.utilisateur };
+                const userResponse = await apiPost("/utilisateur", JSON.parse(JSON.stringify(data)));
+                if (!userResponse) {
+                    setError("Aucune offre trouvée pour cet utilisateur.");
+                    setIsLoading(false);
+                    return;
+                }
+                console.log(userResponse);
+    
+                const userId = JSON.parse(userResponse.utilisateur)[0].id;
+                fetchPaginatedOffers(userId);
+            } catch (error) {
+                console.error("Erreur réseau :", error);
+                setError("Erreur lors de la récupération des offres.");
                 setIsLoading(false);
-                return;
             }
-
-            const userId = JSON.parse(userResponse.utilisateur)[0].id;
-            fetchPaginatedOffers(userId);
-        } catch (error) {
-            console.error("Erreur réseau :", error);
-            setError("Erreur lors de la récupération des offres.");
-            setIsLoading(false);
-        }
+        });
     }, [fetchPaginatedOffers]);
 
     useEffect(() => {
@@ -158,7 +152,7 @@ const TableDesOffres = () => {
                                     {offre.etatOffre?.nomEtat}
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <a href={`mes-offres/detail/${Number(offre.id)}`} className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
+                                    <a href={`/cardDetailsPage?id=${Number(offre.id)}`} className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
                                         Détail
                                     </a>
                                 </Table.Cell>

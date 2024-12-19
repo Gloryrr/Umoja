@@ -15,8 +15,7 @@ interface CommentSectionProps {
 }
 
 const CommentSection = ({ commentaires }: CommentSectionProps) => {
-    (commentaires);
-    const [isVisible, setIsVisible] = useState(true);
+    const [isVisible, setIsVisible] = useState(false);
 
     const toggleCommentsVisibility = () => {
         setIsVisible(!isVisible);

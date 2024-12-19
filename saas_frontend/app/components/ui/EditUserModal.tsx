@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { User } from './modal';
 
 type EditUserModalProps = {
   user: User;
@@ -26,10 +27,10 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ user, onEditUser, onClose
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-md shadow-lg max-w-sm w-full">
-        <h2 className="text-2xl font-semibold mb-4">Modifier l'Utilisateur</h2>
+        <h2 className="text-2xl font-semibold mb-4">Modifier l&apos;Utilisateur</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="username" className="block text-sm font-medium">Nom d'utilisateur</label>
+            <label htmlFor="username" className="block text-sm font-medium">Nom d&apos;utilisateur</label>
             <input
               type="text"
               name="username"

@@ -133,7 +133,6 @@ class OffreService
         $offres = [];
         for ($i = 0; $i < sizeof($reseaux); $i++) {
             $offresObject = $offreRepository->getOffresByTitleAndReseau($reseaux[$i]->getId(), $data['title']);
-            $offresObject[$i]->setImage($offresObject[$i]->getImage());
             $offres = array_merge($offres, $offresObject);
         }
         $offreJSON = $serializer->serialize(

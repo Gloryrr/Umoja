@@ -5,9 +5,7 @@ import { useEffect, useState } from "react";
 import { apiGet, apiPost } from "@/app/services/internalApiClients";
 import { MdArrowLeft, MdArrowRight } from "react-icons/md";
 import NetworksOffres from "@/app/components/NetworksOffres";
-import { IoMdMailOpen, IoMdPeople } from "react-icons/io";
-import { MdQueueMusic } from "react-icons/md";
-import { FaGear } from "react-icons/fa6";
+import { IoMdMailOpen } from "react-icons/io";
 
 interface Reseau {
     nomReseau: string;
@@ -30,22 +28,22 @@ export function Networks() {
     const [nomReseauChoisi, setNomReseauChoisi] = useState<string | null>();
 
     const getNetworksAndGenresMusicaux = async () => {
-        const username = sessionStorage.getItem("username");
-        const responses = await apiPost(
-            "/utilisateur",
-            JSON.parse(JSON.stringify({ username }))
-        );
-        if (responses) {
-            const fetchedReseaux = JSON.parse(responses.utilisateur)[0].reseaux || [];
-            (fetchedReseaux);
-            setFilteredReseaux(fetchedReseaux);
-        }
-        const responsesGenres = await apiGet("/genres-musicaux");
-        if (responsesGenres) {
-            const genresMusicaux = JSON.parse(responsesGenres.genres_musicaux);
-            ("Genres musicaux :", genresMusicaux);
-            setGenresMusicaux(genresMusicaux);
-        }
+        await apiGet("/me").then(async (response) => {
+            const username = response.utilisateur;
+            const responses = await apiPost(
+                "/utilisateur",
+                JSON.parse(JSON.stringify({ username }))
+            );
+            if (responses) {
+                const fetchedReseaux = JSON.parse(responses.utilisateur)[0].reseaux || [];
+                setFilteredReseaux(fetchedReseaux);
+            }
+            const responsesGenres = await apiGet("/genres-musicaux");
+            if (responsesGenres) {
+                const genresMusicaux = JSON.parse(responsesGenres.genres_musicaux);
+                setGenresMusicaux(genresMusicaux);
+            }
+        });
     };
 
     useEffect(() => {
@@ -76,7 +74,6 @@ export function Networks() {
     };
 
     const handleNetworkClick = (nomReseau: string) => {
-        (`Naviguer vers le réseau : ${nomReseau}`);
         setNomReseauChoisi(nomReseau);
     };
 
@@ -102,16 +99,6 @@ export function Networks() {
         if (currentPage > 1) {
             setCurrentPage((prev) => prev - 1);
         }
-    };
-
-    const chooseImageRandom = () => {
-        const images = [
-            "/images/offre-musique.webp",
-            "/images/offre-musique-2.webp",
-            "/images/offre-musique-3.webp",
-            "/images/offre-musique-4.webp",
-        ];
-        return images[Math.floor(Math.random() * images.length)];
     };
 
     const resetNetwork = () => {
@@ -227,8 +214,6 @@ export function Networks() {
                                 <Card
                                     key={index}
                                     className="max-w-sm"
-                                    imgAlt="Image"
-                                    imgSrc={chooseImageRandom()}
                                 >
                                     <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                                         {reseau.nomReseau}
@@ -238,7 +223,6 @@ export function Networks() {
                                     </p>
                                     <Button
                                         size="sm"
-                                        color="dark"
                                         className="mt-4"
                                         onClick={() => handleNetworkClick(reseau.nomReseau)}
                                     >
