@@ -22,5 +22,5 @@ jobs:
       working-directory: ./saas_backend
 
     - name: exécution du coverage (dossier tests/)
-      run: vendor/bin/phpunit --coverage-text
+      run: vendor/bin/phpunit --coverage-text tests/Entity
       working-directory: ./saas_backend

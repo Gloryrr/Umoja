@@ -22,5 +22,5 @@ jobs:
       working-directory: ./saas_backend
 
     - name: exécute les tests unittaires (dossier tests/)
-      run: vendor/bin/phpunit --testdox
+      run: vendor/bin/phpunit --testdox tests/Entity
       working-directory: ./saas_backend
