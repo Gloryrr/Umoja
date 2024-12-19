@@ -205,7 +205,7 @@ class ReseauController extends AbstractController
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
-    #[Route('/api/v1/reseau/delete-genre-musical', name: 'delete_genre_musical', methods: ['DELETE'])]
+    #[Route('/api/v1/reseau/delete-genre-musical', name: 'delete_genre_musical_reseau', methods: ['DELETE'])]
     public function retireGenreMusicalReseau(
         Request $request,
         ReseauRepository $reseauRepository,

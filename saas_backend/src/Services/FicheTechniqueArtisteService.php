@@ -186,8 +186,8 @@ class FicheTechniqueArtisteService
             if (isset($data['ficheTechniqueArtiste']['besoinBackline'])) {
                 $ficheTechniqueArtiste->setBesoinBackline($data['ficheTechniqueArtiste']['besoinBackline']);
             }
-            if (isset($data['ficheTechniqueArtiste']['setBesoinEquipements'])) {
-                $ficheTechniqueArtiste->setBesoinEquipements($data['ficheTechniqueArtiste']['setBesoinEquipements']);
+            if (isset($data['ficheTechniqueArtiste']['besoinEquipements'])) {
+                $ficheTechniqueArtiste->setBesoinEquipements($data['ficheTechniqueArtiste']['besoinEquipements']);
             }
 
             // sauvegarde des modifications dans la BDD

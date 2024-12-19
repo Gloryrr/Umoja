@@ -197,7 +197,6 @@ class ReponseService
             }
             $reponse->setEtatReponse($etatReponse);
 
-
             // Ajout de la réponse en base de données
             $rep = $reponseRepository->ajouterReponse($reponse);
 

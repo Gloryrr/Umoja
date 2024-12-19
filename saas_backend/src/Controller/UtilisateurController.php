@@ -181,7 +181,7 @@ class UtilisateurController extends AbstractController
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
-    #[Route('/api/v1/utilisateur/delete-genre-musical', name: 'delete_genre_musical', methods: ['DELETE'])]
+    #[Route('/api/v1/utilisateur/delete-genre-musical', name: 'delete_genre_musical_utilisateur', methods: ['DELETE'])]
     public function retireGenreMusicalUtilisateur(
         Request $request,
         UtilisateurRepository $utilisateurRepository,

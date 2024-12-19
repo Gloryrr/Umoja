@@ -168,6 +168,9 @@ class OffreController extends AbstractController
      * @param int $id
      * @param Request $request
      * @param OffreRepository $offreRepository, la classe CRUD des Offres
+     * @param ReseauRepository $reseauRepository, la classe CRUD des réseaux
+     * @param GenreMusicalRepository $genreMusicalRepository, la classe CRUD des genres musicaux
+     * @param ArtisteRepository $artisteRepository, la classe CRUD des artistes
      * @param MailerService $mailerService, le service d'envoi de mail
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
@@ -177,6 +180,9 @@ class OffreController extends AbstractController
         int $id,
         Request $request,
         OffreRepository $offreRepository,
+        ReseauRepository $reseauRepository,
+        GenreMusicalRepository $genreMusicalRepository,
+        ArtisteRepository $artisteRepository,
         MailerService $mailerService,
         SerializerInterface $serializer
     ): JsonResponse {
@@ -184,6 +190,9 @@ class OffreController extends AbstractController
         return OffreService::updateOffre(
             $id,
             $offreRepository,
+            $reseauRepository,
+            $genreMusicalRepository,
+            $artisteRepository,
             $serializer,
             $mailerService,
             $data
