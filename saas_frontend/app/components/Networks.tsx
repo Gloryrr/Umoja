@@ -275,7 +275,7 @@ export function Networks() {
         );
     } else {
         return (
-            <div className="">
+            <div>
                 <NetworksOffres 
                     networksName={nomReseauChoisi}
                     resetNetwork={resetNetwork}

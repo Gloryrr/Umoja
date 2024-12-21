@@ -16,6 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\OffreRepository;
+use Knp\Component\Pager\PaginatorInterface;
 
 class OffreController extends AbstractController
 {
@@ -77,6 +78,35 @@ class OffreController extends AbstractController
             $offreRepository,
             $serializer,
             $data
+        );
+    }
+
+    /**
+     * Récupère une liste d'offres en fonction d'une liste d'identifiant.
+     *
+     * @param Request $request, la requête avec les données de recherche
+     * @param OffreRepository $offreRepository, la classe CRUD des Offres
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/offres/reseau', name: 'get_offres_reseau', methods: ['POST'])]
+    public function getOffresReseau(
+        Request $request,
+        OffreRepository $offreRepository,
+        SerializerInterface $serializer,
+        PaginatorInterface $paginator,
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        $page = intval($data['page']);
+        $limit = intval($data['limit']);
+        $nomReseau = $data['nomReseau'];
+        return OffreService::getOffresByReseau(
+            $nomReseau,
+            $offreRepository,
+            $serializer,
+            $paginator,
+            $page,
+            $limit
         );
     }
 

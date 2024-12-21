@@ -30,11 +30,11 @@ const TableDesOffres = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const offersPerPage = 10;
+    const limit = 10;
 
     const fetchPaginatedOffers = useCallback(
         async (idUtilisateur: number) => {
-            const startIndex = (currentPage - 1) * offersPerPage;
+            const startIndex = (currentPage - 1) * limit;
             try {
                 const response = await apiGet(`/offre/utilisateur/${idUtilisateur}`);
                 const allOffers: Offre[] = JSON.parse(response.offres);
@@ -57,7 +57,7 @@ const TableDesOffres = () => {
                 );
 
                 setOffresTaille(allOffers.length);
-                setOffres(offersWithStates.slice(startIndex, startIndex + offersPerPage));
+                setOffres(offersWithStates.slice(startIndex, startIndex + limit));
             } catch (error) {
                 console.error("Erreur lors de la récupération des offres paginées :", error);
                 setError("Erreur lors de la récupération des offres paginées.");
@@ -65,7 +65,7 @@ const TableDesOffres = () => {
                 setIsLoading(false);
             }
         },
-        [currentPage, offersPerPage]
+        [currentPage, limit]
     );
 
     const fetchUserOffers = useCallback(async () => {
@@ -117,7 +117,7 @@ const TableDesOffres = () => {
                 <Pagination
                     className="mb-4"
                     currentPage={currentPage}
-                    totalPages={Math.ceil(offresTaille / offersPerPage)}
+                    totalPages={Math.ceil(offresTaille / limit)}
                     onPageChange={(page) => setCurrentPage(page)}
                 />
             </div>
@@ -165,7 +165,7 @@ const TableDesOffres = () => {
                 <Pagination
                     className="mt-4"
                     currentPage={currentPage}
-                    totalPages={Math.ceil(offresTaille / offersPerPage)}
+                    totalPages={Math.ceil(offresTaille / limit)}
                     onPageChange={(page) => setCurrentPage(page)}
                 />
             </div>
