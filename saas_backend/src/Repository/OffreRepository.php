@@ -90,6 +90,29 @@ class OffreRepository extends ServiceEntityRepository
     }
 
     /**
+     * Trouve les offres d'un utilisateur par rapport à son id.
+     *
+     * @param int $idUtilisateur L'identifiant de l'utilisateur.
+     * @return Offre[] Une liste de réseaux correspondant aux critères.
+     */
+    public function trouveOffresUtilisateur(string $username): array
+    {
+        try {
+            return $this->createQueryBuilder('o')
+                ->innerJoin('o.utilisateur', 'u')
+                ->andWhere('u.username = :username')
+                ->setParameter('username', $username)
+                ->getQuery()
+                ->getResult();
+        } catch (\Exception $e) {
+            throw new \Exception(
+                "Erreur lors de la récupération des réseaux de l'utilisateur : " . $e->getMessage(),
+                $e->getCode()
+            );
+        }
+    }
+
+    /**
      * Récupère les offres en fonction 'une liste d'identifiant dans la base de données.
      *
      * @param array $listeIdOffres Les identifiants des offres.

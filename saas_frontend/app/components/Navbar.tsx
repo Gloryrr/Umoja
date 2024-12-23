@@ -112,7 +112,6 @@ const NavbarApp = () => {
     if (typeof window === "undefined") {
       return false; // Retourne `false` par défaut si on est côté serveur
     }
-    console.log(window.location.pathname);
     return window.location.pathname === "" || window.location.pathname === "/";
   }
 
@@ -311,6 +310,8 @@ const NavbarApp = () => {
         </div>
       </MegaMenu>
     );
+  } else {
+    return null;
   }
 };
 

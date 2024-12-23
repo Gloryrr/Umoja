@@ -196,19 +196,25 @@ class OffreService
     public static function getOffreByUtilisateur(
         OffreRepository $offreRepository,
         SerializerInterface $serializer,
-        int $id
+        PaginatorInterface $paginator,
+        string $username,
+        int $page,
+        int $limit
     ): JsonResponse {
-        $offres = $offreRepository->findBy(['utilisateur' => $id]);
+        $offres = $offreRepository->trouveOffresUtilisateur($username);
+        $paginationOffres = $paginator->paginate($offres, $page, $limit);
+        $totalPages = ceil($paginationOffres->getTotalItemCount() / $paginationOffres->getItemNumberPerPage());
         for ($i = 0; $i < sizeof($offres); $i++) {
             $offres[$i]->setImage($offres[$i]->getImage());
         }
         $offreJSON = $serializer->serialize(
-            $offres,
+            $paginationOffres,
             'json',
             ['groups' => ['offre:read']]
         );
         return new JsonResponse([
             'offres' => $offreJSON,
+            'nb_pages' => $totalPages,
             'serialized' => true
         ], Response::HTTP_OK, ['Access-Control-Allow-Origin' => '*']);
     }

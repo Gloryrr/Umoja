@@ -138,20 +138,30 @@ class OffreController extends AbstractController
     /**
      * Récupère toutes les offres qui sont liés à un utilisateur en particulier.
      *
+     * @param Request $request, la requête avec les données de recherche
+     * @param string $username, le nom d'utilisateur de l'utilisateur
      * @param OffreRepository $offreRepository, la classe CRUD des Offres
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
-    #[Route('/api/v1/offre/utilisateur/{id}', name: 'get_offre_by_utilisateur', methods: ['GET'])]
+    #[Route('/api/v1/offre/utilisateur/{username}', name: 'get_offre_by_utilisateur', methods: ['POST'])]
     public function getOffreByUtilisateur(
-        int $id,
+        Request $request,
+        string $username,
         OffreRepository $offreRepository,
         SerializerInterface $serializer,
+        PaginatorInterface $paginator,
     ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        $page = intval($data['page']);
+        $limit = intval($data['limit']);
         return OffreService::getOffreByUtilisateur(
             $offreRepository,
             $serializer,
-            $id
+            $paginator,
+            $username,
+            $page,
+            $limit
         );
     }
 
