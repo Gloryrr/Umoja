@@ -39,41 +39,35 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [villeViseeFilter, setVilleViseeFilter] = useState<string>("");
     const [regionViseeFilter, setRegionViseeFilter] = useState<string>("");
-    const itemsPerPage = 9;
+    const limit = 9;
     const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+    const [totalPages, setTotalPages] = useState<number>(0);
 
     const getOffresNetworks = useCallback(async (name: string) => {
         try {
-            const data = { nomReseau: name };
-            const responses = await apiPost(`/reseau`, JSON.parse(JSON.stringify(data)));
-            const reseau = JSON.parse(responses.reseau)?.[0];
-            if (reseau) {
-                const listeIds = reseau.offres.map((offre: { id: number }) => offre.id);
-                await getOffresByListId(listeIds);
-            } else {
-                console.warn("Aucune offre trouvée pour ce réseau.");
-            }
+            const data = {
+                nomReseau: name,
+                page: currentPage,
+                limit: limit,
+            };
+            await apiPost(`/offres/reseau`, JSON.parse(JSON.stringify(data))).then(
+                (reponse) => {
+                    const offres = JSON.parse(reponse.offres);
+                    if (offres) {
+                        setOffres(offres);
+                        console.log(offres);
+                        setTotalPages(reponse.nb_pages);
+                    } else {
+                        console.warn("Aucune offre trouvée pour ce réseau.");
+                    }
+                }
+            );
         } catch (error) {
             console.error("Erreur lors de la récupération des offres :", error);
         }
-    }, []);
-
-    const getOffresByListId = async (listeId: number[]) => {
-        try {
-            const data = { listeIdOffre: listeId };
-            const responses = await apiPost(`/offres`, JSON.parse(JSON.stringify(data)));
-            const offresDetails: Offre[] = JSON.parse(responses.offres);
-            if (offresDetails) {
-                setOffres(offresDetails);
-            } else {
-                console.warn("Aucun détail trouvé pour les offres.");
-            }
-        } catch (error) {
-            console.error("Erreur lors de la récupération des détails des offres :", error);
-        }
-    };
-
-    const getGenresMusicaux = async() => {
+    }, [currentPage, limit]);
+    
+    const getGenresMusicaux = async () => {
         try {
             const genresMusicaux = await apiGet(`/genres-musicaux`);
             if (genresMusicaux) {
@@ -83,16 +77,24 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
         } catch (error) {
             console.error("Erreur lors de la récupération des genres musicaux :", error);
         }
-    }
-
+    };
+    
     useEffect(() => {
         if (networksName) {
             getOffresNetworks(networksName);
             getGenresMusicaux();
         }
     }, [networksName, getOffresNetworks]);
+    
+    useEffect(() => {
+        if (networksName) {
+            getOffresNetworks(networksName);
+        }
+    }, [networksName, getOffresNetworks]);    
 
-    const handlePageChange = (page: number) => setCurrentPage(page);
+    const handlePageChange = async (page: number) => {
+        setCurrentPage(page);
+    }
 
     const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) =>
         setSearchQuery(event.target.value);
@@ -120,8 +122,7 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
             regionViseeFilter ? offre.regionVisee.toLowerCase().startsWith(regionViseeFilter.toLowerCase()) : true
         );
 
-
-    const sortedOffres = filteredOffres.sort((a, b) => {
+    const sortedAndFilteredOffres = filteredOffres.sort((a, b) => {
         switch (sortOption) {
             case "dateCroissant":
                 return new Date(a.deadLine).getTime() - new Date(b.deadLine).getTime();
@@ -135,11 +136,6 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
                 return 0;
         }
     });
-
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const currentOffres = sortedOffres.slice(startIndex, endIndex);
-    const totalPages = Math.ceil(sortedOffres.length / itemsPerPage);
 
     return (
         <div className="p-6">
@@ -219,26 +215,40 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
                 </div>
             )}
 
-            {currentOffres.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {currentOffres.map((offre) => (
-                        <Card key={offre.id}>
+            {sortedAndFilteredOffres.length > 0 ? (
+                <div className="grid grid-cols-3 gap-4 justify-items-stretch">
+                    {sortedAndFilteredOffres.map((offre) => (
+                        <Card
+                            key={offre.id}
+                            className="flex flex-col justify-between border border-gray-200 shadow-sm"
+                        >
                             <div className="w-full h-40 relative">
                                 <Image
                                     src={`data:image/jpg;base64,${offre.image}`}
                                     alt={offre.titleOffre}
                                     layout="fill"
                                     objectFit="cover"
+                                    className="rounded-t-lg"
                                 />
                             </div>
-                            <h5 className="text-xl font-bold">{offre.titleOffre}</h5>
-                            <p>{offre.descrTournee}</p>
-                            <p className="text-sm">Date limite: {offre.deadLine}</p>
-                            <p className="text-sm">Localisation: {offre.villeVisee}, {offre.regionVisee}</p>
-                            <p className="text-sm">Créateur: {offre.utilisateur.username}</p>
-                            <Button href={`/cardDetailsPage?id=${offre.id}`}>
-                                Voir détail
-                            </Button>
+                            <div className="flex-1 p-4">
+                                <h5 className="text-xl font-bold">{offre.titleOffre}</h5>
+                                <p className="text-sm text-gray-600">{offre.descrTournee}</p>
+                                <p className="text-sm text-gray-500">
+                                    Date limite: {offre.deadLine}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                    Localisation: {offre.villeVisee}, {offre.regionVisee}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                    Créateur: {offre.utilisateur.username}
+                                </p>
+                            </div>
+                            <div className="p-4">
+                                <Button href={`/cardDetailsPage?id=${offre.id}`} fullSized>
+                                    Voir détail
+                                </Button>
+                            </div>
                         </Card>
                     ))}
                 </div>

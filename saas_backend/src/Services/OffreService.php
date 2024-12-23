@@ -25,6 +25,7 @@ use App\Repository\ArtisteRepository;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * Class OffreService
@@ -113,6 +114,43 @@ class OffreService
     }
 
     /**
+     * Récupère les offres d'un réseau par rapport à son nom et renvoie une réponse JSON.
+     *
+     * @param OffreRepository $offreRepository Le repository des réseaux.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les réseaux listés.
+     */
+    public static function getOffresByReseau(
+        string $reseauName,
+        OffreRepository $offreRepository,
+        SerializerInterface $serializer,
+        PaginatorInterface $paginator,
+        string $page,
+        string $limit
+    ): JsonResponse {
+        try {
+            // on récupère tous les reseaux existants
+            $offres = $offreRepository->trouveOffresReseaux($reseauName);
+            $paginationOffres = $paginator->paginate($offres, $page, $limit);
+            $totalPages = ceil($paginationOffres->getTotalItemCount() / $paginationOffres->getItemNumberPerPage());
+            $reseauxJSON = $serializer->serialize(
+                $paginationOffres,
+                'json',
+                ['groups' => ['offre:read']]
+            );
+            return new JsonResponse([
+                'offres' => $reseauxJSON,
+                'nb_pages' => $totalPages,
+                'message' => "Offres du réseau {$reseauName}",
+                'serialized' => true
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
      * Récupère les offres qui appartiennent à un réseau et par leur titre et renvoie une réponse JSON.
      *
      * @param mixed $data Les données de l'offre à récupérer.
@@ -158,19 +196,25 @@ class OffreService
     public static function getOffreByUtilisateur(
         OffreRepository $offreRepository,
         SerializerInterface $serializer,
-        int $id
+        PaginatorInterface $paginator,
+        string $username,
+        int $page,
+        int $limit
     ): JsonResponse {
-        $offres = $offreRepository->findBy(['utilisateur' => $id]);
+        $offres = $offreRepository->trouveOffresUtilisateur($username);
+        $paginationOffres = $paginator->paginate($offres, $page, $limit);
+        $totalPages = ceil($paginationOffres->getTotalItemCount() / $paginationOffres->getItemNumberPerPage());
         for ($i = 0; $i < sizeof($offres); $i++) {
             $offres[$i]->setImage($offres[$i]->getImage());
         }
         $offreJSON = $serializer->serialize(
-            $offres,
+            $paginationOffres,
             'json',
             ['groups' => ['offre:read']]
         );
         return new JsonResponse([
             'offres' => $offreJSON,
+            'nb_pages' => $totalPages,
             'serialized' => true
         ], Response::HTTP_OK, ['Access-Control-Allow-Origin' => '*']);
     }
