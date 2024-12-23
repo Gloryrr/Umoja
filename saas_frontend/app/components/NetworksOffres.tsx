@@ -46,9 +46,9 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
     const getOffresNetworks = useCallback(async (name: string) => {
         try {
             const data = {
-                "nomReseau": name,
-                "page": currentPage,
-                "limit": limit
+                nomReseau: name,
+                page: currentPage,
+                limit: limit,
             };
             await apiPost(`/offres/reseau`, JSON.parse(JSON.stringify(data))).then(
                 (reponse) => {
@@ -65,9 +65,9 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
         } catch (error) {
             console.error("Erreur lors de la récupération des offres :", error);
         }
-    }, [currentPage]);
-
-    const getGenresMusicaux = async() => {
+    }, [currentPage, limit]);
+    
+    const getGenresMusicaux = async () => {
         try {
             const genresMusicaux = await apiGet(`/genres-musicaux`);
             if (genresMusicaux) {
@@ -77,20 +77,20 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
         } catch (error) {
             console.error("Erreur lors de la récupération des genres musicaux :", error);
         }
-    }
-
+    };
+    
     useEffect(() => {
         if (networksName) {
             getOffresNetworks(networksName);
             getGenresMusicaux();
         }
-    }, [networksName, getOffresNetworks, currentPage]);
-
+    }, [networksName, getOffresNetworks]);
+    
     useEffect(() => {
         if (networksName) {
             getOffresNetworks(networksName);
         }
-    }, []);
+    }, [networksName, getOffresNetworks]);    
 
     const handlePageChange = async (page: number) => {
         setCurrentPage(page);
@@ -122,8 +122,7 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
             regionViseeFilter ? offre.regionVisee.toLowerCase().startsWith(regionViseeFilter.toLowerCase()) : true
         );
 
-
-    const sortedOffres = offres.sort((a, b) => {
+    const sortedAndFilteredOffres = filteredOffres.sort((a, b) => {
         switch (sortOption) {
             case "dateCroissant":
                 return new Date(a.deadLine).getTime() - new Date(b.deadLine).getTime();
@@ -216,9 +215,9 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
                 </div>
             )}
 
-            {offres.length > 0 ? (
-                <div className="grid grid-cols-3 gap-4 justify-items-stretch">             
-                    {offres.map((offre) => (
+            {sortedAndFilteredOffres.length > 0 ? (
+                <div className="grid grid-cols-3 gap-4 justify-items-stretch">
+                    {sortedAndFilteredOffres.map((offre) => (
                         <Card
                             key={offre.id}
                             className="flex flex-col justify-between border border-gray-200 shadow-sm"

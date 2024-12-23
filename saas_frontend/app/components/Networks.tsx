@@ -29,34 +29,31 @@ export function Networks() {
 
     const [nomReseauChoisi, setNomReseauChoisi] = useState<string | null>();
 
-    const getNetworksAndGenresMusicaux = async () => {
-        await apiGet("/me").then(async (response) => {
-            const username = response.utilisateur;
-            const data = {
-                "username" : username,
-                "page" : currentPage,
-                "limit" : limit
-            }
-            await apiPost(
-                "/reseaux/utilisateur",
-                JSON.parse(JSON.stringify(data))
-            ).then( async (rep) => {
-                const fetchedReseaux = JSON.parse(rep.reseaux) || [];
-                setFilteredReseaux(fetchedReseaux);
-                setTotalPages(Number(rep.nb_pages));
-            });
-
-            const responsesGenres = await apiGet("/genres-musicaux");
-            if (responsesGenres) {
-                const genresMusicaux = JSON.parse(responsesGenres.genres_musicaux);
-                setGenresMusicaux(genresMusicaux);
-            }
-        });
-    };
-
     useEffect(() => {
-        getNetworksAndGenresMusicaux();
-    }, [currentPage]);
+        const fetchData = async () => {
+            await apiGet("/me").then(async (response) => {
+                const username = response.utilisateur;
+                const data = {
+                    username: username,
+                    page: currentPage,
+                    limit: limit,
+                };
+                await apiPost("/reseaux/utilisateur", JSON.parse(JSON.stringify(data))).then(async (rep) => {
+                    const fetchedReseaux = JSON.parse(rep.reseaux) || [];
+                    setFilteredReseaux(fetchedReseaux);
+                    setTotalPages(Number(rep.nb_pages));
+                });
+    
+                const responsesGenres = await apiGet("/genres-musicaux");
+                if (responsesGenres) {
+                    const genresMusicaux = JSON.parse(responsesGenres.genres_musicaux);
+                    setGenresMusicaux(genresMusicaux);
+                }
+            });
+        };
+    
+        fetchData();
+    }, [currentPage, limit]);
 
     const handleSort = (option: string) => {
         setSortOption(option);
