@@ -3,11 +3,12 @@
 import React, { Suspense, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
-import { Progress, Button, /*Modal,*/ Card, Spinner, Textarea } from 'flowbite-react';
+import { Progress, Button, /*Modal, */Card, Spinner, Textarea, Avatar, Tabs } from 'flowbite-react';
 import NumberInputModal from '@/app/components/ui/modalResponse';
 import { apiGet, apiPost } from '@/app/services/internalApiClients';
 import NavigationHandler from '@/app/navigation/Router';
 import CommentaireSection from "@/app/components/Commentaires/CommentaireSection";
+import Image from 'next/image';
 
 type ConditionsFinancieres = {
     id: number;
@@ -73,6 +74,9 @@ interface Reponse {
     etatReponse : {nomEtatReponse : string};
     offreId: number;
     utilisateurId: number;
+    utilisateur: {
+        username: string;
+    };
     dateDebut: string;
     dateFin: string;
     prixParticipation: number;
@@ -104,6 +108,7 @@ async function fetchBudgetEstimatif(idBudgetEstimatif: number): Promise<BudgetEs
 function ProjectDetailsContent({ projects }: { projects: Project[] }) {
     const [commentaires, setCommentaires] = useState<Commentaire[]>([]);
     const [budgetTotal, setBudgetTotal] = useState<number>(0);
+    const [reponsesValidees, setReponsesValidees] = useState<Reponse[]>([]);
     const [budgetTotalReponsesRecu, setBudgetTotalReponsesRecu] = useState<number>(0);
     const [pourcentageBudgetRecu, setPourcentageBudgetRecu] = useState<number>(0);
     const [nbContributions, setNbContributions] = useState<number>(0);
@@ -116,6 +121,7 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
     const id = Number(searchParams.get('id'));
     const project = projects.find(p => p.id === Number(id));
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState<number>(1);
     
     // const optionsDate: Intl.DateTimeFormatOptions = {
     //     year: 'numeric',
@@ -187,12 +193,15 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
     function calculPrixTotalReponsesRecu(reponses: Reponse[]) {
         let total = 0;
         let nbContributions = 0;
+        let reponsesValidees: Reponse[] = [];
         reponses.forEach((reponse) => {
             if (reponse.etatReponse.nomEtatReponse === "Validée") {
+                reponsesValidees.push(reponse);
                 total += reponse.prixParticipation;
                 nbContributions++;
             }
         });
+        setReponsesValidees(reponsesValidees);
         setNbContributions(nbContributions);
         setBudgetTotalReponsesRecu(total);
         return total;
@@ -226,6 +235,7 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
 
         const fetchReponsesOffre = async (id: number) => {
             await apiGet(`/reponses/offre/${id}`).then((response) => {
+                console.log(JSON.parse(response.reponses));
                 setPourcentageBudgetRecu(calculPrixTotalReponsesRecu(JSON.parse(response.reponses)));
             });
         };
@@ -290,25 +300,28 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
 
     return (
         <div className="w-full flex items-center justify-center">
-            <div className="container mx-auto px-8 mb-10">
-                <h1 className="text-6xl font-bold mb-4 text-center">{project.titleOffre}</h1>
+            <div className="container mx-auto mb-10">
+                <h1 className="text-4xl font-bold mb-4 mt-6 text-center">{project.titleOffre}</h1>
                 <p className="text-xl mb-12 text-center">{project.descrTournee}</p>
 
-                <div className="flex flex-col md:flex-row">
+                <div className="flex flex-col md:flex-row ml-[10%] mr-[10%] px-8">
                     <div className="md:w-1/2 md:pr-4 mb-8 md:mb-0">
-                        <Card imgSrc={checkImageExist(project.image)} imgAlt={project.titleOffre}>
-                            {/* <div className="aspect-video">
-                                <iframe
-                                    className="w-full h-full"
-                                    title={project.titleOffre}
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowFullScreen
-                                ></iframe>
-                            </div> */}
-                        </Card>
+                        <Image 
+                            src={checkImageExist(project.image)}
+                            width={200}
+                            height={200} 
+                            alt={project.titleOffre} 
+                            className="w-full h-full" 
+                        />
                     </div>
                     <div className="md:w-1/2 md:pl-4">
-                        <div className="mb-6">
+                        <div className="mb-6 flex items-center mt-5">
+                            <Avatar
+                                alt="User settings"
+                                img="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+                                rounded
+                                className="h-10 w-10 mr-5"
+                            />
                             <h2 className="text-2xl font-semibold">{project.utilisateur.username}</h2>
                         </div>
                         <div className="rounded-lg p-6 mb-8">
@@ -371,25 +384,79 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
                     </div>
                 </div>
 
-                <div className="mt-10 ml-[20%] mr-[20%] mx-auto">
-                    <h2 className="font-semibold mb-2">Commentaires</h2>
-                    <form onSubmit={handleCommentSubmit}>
-                    <Textarea
-                        value={commentaire}
-                        onChange={(e) => setCommentaire(e.target.value)}
-                        placeholder="Écrivez un commentaire..."
-                        rows={4}
-                        required
-                        className="mb-2"
-                    />
-                    {error && <p className="error">{error}</p>}
-                        <Button type="submit" disabled={loading}>
-                            {loading ? "Envoi..." : "Poster le commentaire"}
-                        </Button>
-                    </form>
-                </div>
+                <div>
+                    <Tabs
+                        aria-label="Tabs for event details"
+                        onActiveTabChange={(tab) => setActiveTab(tab)}
+                        className='mx-auto mt-5'
+                    >
+                        <Tabs.Item title="Détails" active={activeTab === 1}>
+                            <div className='ml-[20%] mr-[20%]'>
+                                <h2 className="font-semibold text-lg mb-4">Détails de l'événement</h2>
+                                <p>Description détaillée de l'événement, y compris les informations principales.</p>
+                            </div>
+                        </Tabs.Item>
 
-                <CommentaireSection commentaires={commentaires} />
+                        <Tabs.Item title="Commentaires" active={activeTab === 2}>
+                            <div className='ml-[20%] mr-[20%]'>
+                                <h2 className="font-semibold text-lg mb-4">Commentaires</h2>
+                                <form onSubmit={handleCommentSubmit}>
+                                    <Textarea
+                                        value={commentaire}
+                                        onChange={(e) => setCommentaire(e.target.value)}
+                                        placeholder="Écrivez un commentaire..."
+                                        rows={4}
+                                        required
+                                        className="mb-2"
+                                    />
+                                    {error && <p className="text-red-500">{error}</p>}
+                                    <Button type="submit" disabled={loading}>
+                                        {loading ? "Envoi..." : "Poster le commentaire"}
+                                    </Button>
+                                </form>
+                                <div className="mt-6">
+                                    <h3 className="font-semibold mb-2">Liste des commentaires :</h3>
+                                    {commentaires.length > 0 ? (
+                                        <CommentaireSection commentaires={commentaires} />
+                                    ) : (
+                                        <p>Aucun commentaire pour le moment.</p>
+                                    )}
+                                </div>
+                            </div>
+                        </Tabs.Item>
+
+                        <Tabs.Item title="Contributions" active={activeTab === 3}>
+                            <div className="ml-[20%] mr-[20%]">
+                                <h2 className="font-semibold text-lg mb-4">Contributions</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {reponsesValidees && reponsesValidees.length > 0 ? (
+                                        reponsesValidees.map((reponse, index) => (
+                                            <div key={index}>
+                                                <Card className="hover:shadow-lg transition-shadow">
+                                                    <div className="flex items-center space-x-4">
+                                                        <Avatar
+                                                            img={`https://flowbite.com/docs/images/people/profile-picture-${index + 1}.jpg`}
+                                                            rounded={true}
+                                                            alt={`Avatar de ${reponse.utilisateur.username}`}
+                                                        />
+                                                        <div>
+                                                            <h5 className="text-lg font-medium">{reponse.utilisateur.username}</h5>
+                                                            <p className="text-sm text-gray-600">
+                                                                A contribué : {reponse.prixParticipation} €
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </Card>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p className="text-gray-500 col-span-full">Aucune contribution trouvée.</p>
+                                    )}
+                                </div>
+                            </div>
+                        </Tabs.Item>
+                    </Tabs>
+                </div>
             </div>
         </div>
     );
