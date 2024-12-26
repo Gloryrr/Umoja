@@ -23,7 +23,6 @@ const CommentSection = ({ commentaires }: CommentSectionProps) => {
 
     return (
         <div className="mt-6 mx-auto">
-            <h2 className="font-semibold mt-5 mb-3">Les commentaires laissés par les membres du réseau</h2>
 
             {/* Bouton "Voir les commentaires" */}
             <Button

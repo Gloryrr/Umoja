@@ -2,13 +2,14 @@
 
 import React, { Suspense, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
+// import { FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
 import { Progress, Button, /*Modal, */Card, Spinner, Textarea, Avatar, Tabs } from 'flowbite-react';
 import NumberInputModal from '@/app/components/ui/modalResponse';
 import { apiGet, apiPost } from '@/app/services/internalApiClients';
 import NavigationHandler from '@/app/navigation/Router';
 import CommentaireSection from "@/app/components/Commentaires/CommentaireSection";
 import Image from 'next/image';
+import DetailOffer from '@/app/components/OffreDetail';
 
 type ConditionsFinancieres = {
     id: number;
@@ -324,14 +325,14 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
                             />
                             <h2 className="text-2xl font-semibold">{project.utilisateur.username}</h2>
                         </div>
-                        <div className="rounded-lg p-6 mb-8">
+                        <div className="rounded-lg mb-8">
                             <div className="flex justify-between mb-4">
                                 <div>
-                                    <p className="text-2xl font-bold">{budgetTotalReponsesRecu} €</p>
+                                    <p className="text-xl font-bold">{budgetTotalReponsesRecu} €</p>
                                     <p>sur {budgetTotal} €</p>
                                 </div>
                                 <div className="text-right">
-                                    <p className="text-2xl font-bold">{nbContributions}</p>
+                                    <p className="text-xl font-bold">{nbContributions}</p>
                                     <p>Contributions</p>
                                 </div>
                                 <div className="text-right">
@@ -371,33 +372,129 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
                                 onClose={handleCloseModal}
                                 onSubmit={handleSubmitNumber}
                             />
-                            <Button color="light">
-                                <FaFacebookF />
-                            </Button>
-                            <Button color="light">
-                                <FaTwitter />
-                            </Button>
-                            <Button color="light">
-                                <FaLinkedinIn />
-                            </Button>
                         </div>
                     </div>
                 </div>
 
                 <div>
                     <Tabs
-                        aria-label="Tabs for event details"
+                        aria-label="Tabs pour les onglets de détails, commentaires et contributions"
                         onActiveTabChange={(tab) => setActiveTab(tab)}
                         className='mx-auto mt-5'
                     >
-                        <Tabs.Item title="Détails" active={activeTab === 1}>
-                            <div className='ml-[20%] mr-[20%]'>
-                                <h2 className="font-semibold text-lg mb-4">Détails de l'événement</h2>
-                                <p>Description détaillée de l'événement, y compris les informations principales.</p>
+                        <Tabs.Item title="Détails du projet" active={activeTab === 1}>
+                            <div className='ml-[10%] mr-[10%] px-8'>
+                                <div className="flex flex-col space-y-4">
+                                    <Card>
+                                        <div>
+                                            <div className="flex justify-between items-center">
+                                                <h3 className="font-medium">
+                                                    Détails du Projet
+                                                </h3>
+                                                <Button color='light' className="font-medium">
+                                                    Modifier
+                                                </Button>
+                                            </div>
+                                            <p>
+                                                Les informations principales sur le projet sont listées ci-dessous.
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium ">
+                                                        Titre
+                                                    </dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">
+                                                        { project.titleOffre }
+                                                    </dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium ">
+                                                        Description
+                                                    </dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">
+                                                        { project.descrTournee }
+                                                    </dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card>
+
+                                    <Card>
+                                        <div>
+                                            <h3 className="font-medium">
+                                                Budget Estimatif
+                                            </h3>
+                                            <p>
+                                                Aperçu des coûts estimés pour ce projet.
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                <dt className="font-medium ">
+                                                    Cachet Artiste
+                                                </dt>
+                                                <dd className="mt-1 sm:mt-0 sm:col-span-2">
+                                                    { project.budgetEstimatif.cachetArtiste } €
+                                                </dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                <dt className="font-medium ">
+                                                    Frais de Déplacement
+                                                </dt>
+                                                <dd className="mt-1 sm:mt-0 sm:col-span-2">
+                                                    { project.budgetEstimatif.fraisDeplacement } €
+                                                </dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                <dt className="font-medium ">
+                                                    Frais d'Hébergement
+                                                </dt>
+                                                <dd className="mt-1 sm:mt-0 sm:col-span-2">
+                                                    { project.budgetEstimatif.fraisHebergement } €
+                                                </dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card>
+
+                                    <Card>
+                                        <div>
+                                            <h3 className="font-medium">
+                                                Détails Complémentaires
+                                            </h3>
+                                            <p>
+                                                Autres informations sur le projet.
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                <dt className="font-medium ">
+                                                    Région Visée
+                                                </dt>
+                                                <dd className="mt-1 sm:mt-0 sm:col-span-2">
+                                                    { project.regionVisee }
+                                                </dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                <dt className="font-medium ">
+                                                    Ville Visée
+                                                </dt>
+                                                <dd className="mt-1 sm:mt-0 sm:col-span-2">
+                                                    { project.villeVisee }
+                                                </dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card>
+                                </div>
                             </div>
                         </Tabs.Item>
 
-                        <Tabs.Item title="Commentaires" active={activeTab === 2}>
+                        <Tabs.Item title={`Espace commentaires : ${commentaires.length}`} active={activeTab === 2}>
                             <div className='ml-[20%] mr-[20%]'>
                                 <h2 className="font-semibold text-lg mb-4">Commentaires</h2>
                                 <form onSubmit={handleCommentSubmit}>
@@ -415,7 +512,6 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
                                     </Button>
                                 </form>
                                 <div className="mt-6">
-                                    <h3 className="font-semibold mb-2">Liste des commentaires :</h3>
                                     {commentaires.length > 0 ? (
                                         <CommentaireSection commentaires={commentaires} />
                                     ) : (
@@ -425,7 +521,7 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
                             </div>
                         </Tabs.Item>
 
-                        <Tabs.Item title="Contributions" active={activeTab === 3}>
+                        <Tabs.Item title={`Les différentes contributions : ${nbContributions}`} active={activeTab === 3}>
                             <div className="ml-[20%] mr-[20%]">
                                 <h2 className="font-semibold text-lg mb-4">Contributions</h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -441,7 +537,7 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
                                                         />
                                                         <div>
                                                             <h5 className="text-lg font-medium">{reponse.utilisateur.username}</h5>
-                                                            <p className="text-sm text-gray-600">
+                                                            <p className="text-gray-600">
                                                                 A contribué : {reponse.prixParticipation} €
                                                             </p>
                                                         </div>
@@ -450,7 +546,7 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
                                             </div>
                                         ))
                                     ) : (
-                                        <p className="text-gray-500 col-span-full">Aucune contribution trouvée.</p>
+                                        <p className=" col-span-full">Aucune contribution trouvée.</p>
                                     )}
                                 </div>
                             </div>
