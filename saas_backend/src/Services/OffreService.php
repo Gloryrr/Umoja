@@ -77,9 +77,9 @@ class OffreService
             $offre,
             'json',
             ['groups' => [
-                'offre:read', 
-                'extras:read', 
-                'budget_estimatif:read', 
+                'offre:read',
+                'extras:read',
+                'budget_estimatif:read',
                 'fiche_technique_artiste:read',
                 'conditions_financieres:read',
                 'artistes:read'
