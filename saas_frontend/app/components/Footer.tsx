@@ -7,7 +7,11 @@ import { Mail } from "lucide-react";
 
 function FooterComponent() {
   function estPageDeConnexion() {
-    return window.location.pathname === "" || window.location.pathname === "/";
+    if (typeof window !== "undefined") {
+      return window.location.pathname === "" || window.location.pathname === "/";
+    } else {
+      return false;
+    }
   }
 
   if (!estPageDeConnexion()) {

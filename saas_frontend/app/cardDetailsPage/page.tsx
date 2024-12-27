@@ -1,6 +1,6 @@
 "use client"
 
-import React, { /*Suspense,*/ useState, useEffect } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 // import { FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
 import { Progress, Button, Modal, Card, Spinner, Textarea, Avatar, Tabs } from 'flowbite-react';
@@ -9,7 +9,7 @@ import { apiGet, apiPost, apiDelete } from '@/app/services/internalApiClients';
 import NavigationHandler from '@/app/navigation/Router';
 import CommentaireSection from "@/app/components/Commentaires/CommentaireSection";
 import Image from 'next/image';
-import { FicheTechniqueArtiste } from '../types/FormDataType';
+import { FicheTechniqueArtiste } from '@/app/types/FormDataType';
 // import DetailOffer from '@/app/components/OffreDetail';
 
 type Extras = {
@@ -214,7 +214,7 @@ function ProjectDetailsContent() {
     function calculPrixTotalReponsesRecu(reponses: Reponse[]) {
         let total = 0;
         let nbContributions = 0;
-        let reponsesValidees: Reponse[] = [];
+        const reponsesValidees: Reponse[] = [];
         reponses.forEach((reponse) => {
             if (reponse.etatReponse.nomEtatReponse === "Validée") {
                 reponsesValidees.push(reponse);
@@ -467,7 +467,7 @@ function ProjectDetailsContent() {
                                                     <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.villeVisee}</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                                    <dt className="font-medium">Type d'Offre</dt>
+                                                    <dt className="font-medium">Type d&apos;Offre</dt>
                                                     <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.typeOffre.nomTypeOffre}</dd>
                                                 </div>
                                             </dl>
@@ -519,7 +519,7 @@ function ProjectDetailsContent() {
                                                     <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.budgetEstimatif.fraisDeplacement} €</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                                    <dt className="font-medium">Frais d'Hébergement</dt>
+                                                    <dt className="font-medium">Frais d&apos;Hébergement</dt>
                                                     <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.budgetEstimatif.fraisHebergement} €</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -530,7 +530,7 @@ function ProjectDetailsContent() {
                                         </div>
                                     </Card>
 
-                                    {/* Extras de l'évènement */}
+                                    {/* Extras de l&apos;évènement */}
                                     <Card>
                                         <div>
                                             <h3 className="font-medium">Extras</h3>
@@ -539,7 +539,7 @@ function ProjectDetailsContent() {
                                         <div>
                                             <dl className="sm:divide-y">
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                                    <dt className="font-medium">Description de l'extras</dt>
+                                                    <dt className="font-medium">Description de l&apos;extras</dt>
                                                     <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.extras.descrExtras}</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -547,7 +547,7 @@ function ProjectDetailsContent() {
                                                     <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.extras.exclusivite}</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                                    <dt className="font-medium">Coût de l'extras</dt>
+                                                    <dt className="font-medium">Coût de l&apos;extras</dt>
                                                     <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.extras.coutExtras} €</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -562,7 +562,7 @@ function ProjectDetailsContent() {
                                         </div>
                                     </Card>
 
-                                    {/* Conditions financière de l'évènement */}
+                                    {/* Conditions financière de l&apos;évènement */}
                                     <Card>
                                         <div>
                                             <h3 className="font-medium">Conditions financières</h3>
@@ -586,11 +586,11 @@ function ProjectDetailsContent() {
                                         </div>
                                     </Card>
 
-                                    {/* La fiche technique de l'artiste */}
+                                    {/* La fiche technique de l&apos;artiste */}
                                     <Card>
                                         <div>
-                                            <h3 className="font-medium">Fiche technique de l'artiste</h3>
-                                            <p>Aperçu des besoins et des informations liés à l'artiste.</p>
+                                            <h3 className="font-medium">Fiche technique de l&apos;artiste</h3>
+                                            <p>Aperçu des besoins et des informations liés à l&apos;artiste.</p>
                                         </div>
                                         <div>
                                             <dl className="sm:divide-y">
@@ -619,7 +619,7 @@ function ProjectDetailsContent() {
                                                     <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.liensPromotionnels}</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                                    <dt className="font-medium">L'ordre de passage</dt>
+                                                    <dt className="font-medium">L&apos;ordre de passage</dt>
                                                     <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.extras.ordrePassage}</dd>
                                                 </div>
                                             </dl>
@@ -727,25 +727,13 @@ function ProjectDetailsContent() {
     );
 }
 
-// export default function ProjectDetails() {
-//     const [projects, setProjects] = useState<Project[]>([]);
-
-//     useEffect(() => {
-//         const fetchProjects = async () => {
-//             await apiGet('/offres').then((response) => {
-//                 setProjects(response.offres);
-//                 console.log(response.offres);
-//             });
-//         };
-//         fetchProjects();
-//     }, []);
-
-//     return (
-//         <Suspense fallback={<div className="flex items-center justify-center">Chargement...</div>}>
-//             <ProjectDetailsContent projects={projects} />
-//         </Suspense>
-//     );
-// }
+export default function ProjectDetails() {
+    return (
+        <Suspense fallback={<div className="flex items-center justify-center">Chargement...</div>}>
+            <ProjectDetailsContent/>
+        </Suspense>
+    );
+}
 
 
-export default ProjectDetailsContent;
+// export default ProjectDetailsContent;

@@ -111,7 +111,11 @@ const NavbarApp = () => {
   } 
 
   function estPageDeConnexion() {
-    return window.location.pathname === "" || window.location.pathname === "/";
+    if (typeof window !== "undefined") {
+      return window.location.pathname === "" || window.location.pathname === "/";
+    } else {
+      return false;
+    }
   }
 
 
