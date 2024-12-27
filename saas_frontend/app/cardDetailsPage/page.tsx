@@ -1,27 +1,50 @@
 "use client"
 
-import React, { Suspense, useState, useEffect } from 'react';
+import React, { /*Suspense,*/ useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 // import { FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
-import { Progress, Button, /*Modal, */Card, Spinner, Textarea, Avatar, Tabs } from 'flowbite-react';
+import { Progress, Button, Modal, Card, Spinner, Textarea, Avatar, Tabs } from 'flowbite-react';
 import NumberInputModal from '@/app/components/ui/modalResponse';
-import { apiGet, apiPost } from '@/app/services/internalApiClients';
+import { apiGet, apiPost, apiDelete } from '@/app/services/internalApiClients';
 import NavigationHandler from '@/app/navigation/Router';
 import CommentaireSection from "@/app/components/Commentaires/CommentaireSection";
 import Image from 'next/image';
-import DetailOffer from '@/app/components/OffreDetail';
-
-type ConditionsFinancieres = {
-    id: number;
-};
-
-type EtatOffre = {
-    id: number;
-};
+import { FicheTechniqueArtiste } from '../types/FormDataType';
+// import DetailOffer from '@/app/components/OffreDetail';
 
 type Extras = {
     id: number;
-};
+    descrExtras: string;
+    coutExtras: number;
+    exclusivite: string;
+    exception: string;
+    ordrePassage: string;
+    clausesConfidentialites: string;
+}
+
+type Reseau = {
+    nomReseau: string;
+}
+  
+interface EtatOffre {
+    id: number;
+    nomEtatOffre: string;
+}
+
+interface ConditionsFinancieres {
+    id: number;
+    minimunGaranti: number;
+    conditionsPaiement: string;
+    pourcentageRecette: number;
+}
+
+interface BudgetEstimatif {
+    id: number;
+    cachetArtiste: number;
+    fraisDeplacement: number;
+    fraisHebergement: number;
+    fraisRestauration: number;
+}
 
 type TypeOffre = {
     nomTypeOffre: string;
@@ -52,6 +75,9 @@ type Project = {
     typeOffre: TypeOffre;
     budgetEstimatif: BudgetEstimatif;
     conditionsFinancieres: ConditionsFinancieres;
+    ficheTechniqueArtiste: FicheTechniqueArtiste;
+    reseaux: Reseau[];
+    artistes: { nomArtiste: string }[];
 };
 
 interface BudgetEstimatif {
@@ -98,15 +124,7 @@ async function fetchCommentaire(idCommenaire: number): Promise<Commentaire[]> {
     return JSON.parse(response.commentaires);
 }
 
-async function fetchBudgetEstimatif(idBudgetEstimatif: number): Promise<BudgetEstimatif[]> {
-    const response = await apiGet(`/budget-estimatif/${idBudgetEstimatif}`);
-    if (!response) {
-      throw new Error("Erreur lors de la récupération des détails de l'offre");
-    }
-    return JSON.parse(response.budget_estimatif);
-}
-
-function ProjectDetailsContent({ projects }: { projects: Project[] }) {
+function ProjectDetailsContent() {
     const [commentaires, setCommentaires] = useState<Commentaire[]>([]);
     const [budgetTotal, setBudgetTotal] = useState<number>(0);
     const [reponsesValidees, setReponsesValidees] = useState<Reponse[]>([]);
@@ -120,9 +138,11 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
     const [username, setUsername] = useState<string>("");
     const searchParams = useSearchParams();
     const id = Number(searchParams.get('id'));
-    const project = projects.find(p => p.id === Number(id));
+    const [project, setProject] = useState<Project>();
+    // const project = projects.find(p => p.id === Number(id));
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState<number>(1);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     
     // const optionsDate: Intl.DateTimeFormatOptions = {
     //     year: 'numeric',
@@ -228,9 +248,8 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
                         }
                     });
                 });
-                fetchBudgetEstimatif(response.offre.budgetEstimatif.id).then((budgetEstimatif) => {
-                    setBudgetTotal(calculBudgetTotal(budgetEstimatif[0]));
-                });
+                setBudgetTotal(calculBudgetTotal(response.offre.budgetEstimatif));
+                setProject(response.offre);
             });
         };
 
@@ -298,6 +317,12 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
     function checkImageExist(image: string | null) {
         return image ? `data:image/jpg;base64,${image}` : '/image-default-offre.jpg';
     }
+
+    const handleDelete = async () => {
+        await apiDelete(`/offre/delete/${project.id}`);
+        alert("Offre supprimée avec succès.");
+        window.location.href = "/networks";
+    };
 
     return (
         <div className="w-full flex items-center justify-center">
@@ -385,112 +410,256 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
                         <Tabs.Item title="Détails du projet" active={activeTab === 1}>
                             <div className='ml-[10%] mr-[10%] px-8'>
                                 <div className="flex flex-col space-y-4">
+                                    {/* Informations principales */}
                                     <Card>
                                         <div>
-                                            <div className="flex justify-between items-center">
-                                                <h3 className="font-medium">
-                                                    Détails du Projet
-                                                </h3>
-                                                <Button color='light' className="font-medium">
-                                                    Modifier
-                                                </Button>
-                                            </div>
-                                            <p>
-                                                Les informations principales sur le projet sont listées ci-dessous.
-                                            </p>
+                                            <h3 className="font-medium">Détails du Projet</h3>
+                                            <p>Les informations principales sur le projet sont listées ci-dessous.</p>
                                         </div>
                                         <div>
                                             <dl className="sm:divide-y">
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                                    <dt className="font-medium ">
-                                                        Titre
-                                                    </dt>
+                                                    <dt className="font-medium">Titre</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.titleOffre}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Description</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.descrTournee}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Date maximale de contribution</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.deadLine}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Date Minimum Proposée</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.dateMinProposee}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Date Maximum Proposée</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.dateMaxProposee}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Places Minimales</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.placesMin}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Places Maximales</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.placesMax}</dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card>
+
+                                    {/* Informations Supplémentaires */}
+                                    <Card>
+                                        <div>
+                                            <h3 className="font-medium">Détails Complémentaires</h3>
+                                            <p>Autres informations sur le projet.</p>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Région Visée</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.regionVisee}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Ville Visée</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.villeVisee}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Type d'Offre</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.typeOffre.nomTypeOffre}</dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card>
+
+                                    {/* Artistes et Réseaux */}
+                                    <Card>
+                                        <div>
+                                            <h3 className="font-medium">Artistes et Réseaux</h3>
+                                            <p>Liste des artistes et réseaux impliqués dans ce projet.</p>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Artistes</dt>
                                                     <dd className="mt-1 sm:mt-0 sm:col-span-2">
-                                                        { project.titleOffre }
+                                                        {project.artistes.map((artiste, index) => (
+                                                            <span key={index}>{artiste.nomArtiste}, </span>
+                                                        ))}
                                                     </dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                                    <dt className="font-medium ">
-                                                        Description
-                                                    </dt>
+                                                    <dt className="font-medium">Réseaux</dt>
                                                     <dd className="mt-1 sm:mt-0 sm:col-span-2">
-                                                        { project.descrTournee }
+                                                        {project.reseaux.map((reseau, index) => (
+                                                            <span key={index}>{reseau.nomReseau}, </span>
+                                                        ))}
                                                     </dd>
                                                 </div>
                                             </dl>
                                         </div>
                                     </Card>
 
+                                    {/* Budget Estimatif */}
                                     <Card>
                                         <div>
-                                            <h3 className="font-medium">
-                                                Budget Estimatif
-                                            </h3>
-                                            <p>
-                                                Aperçu des coûts estimés pour ce projet.
-                                            </p>
+                                            <h3 className="font-medium">Budget Estimatif</h3>
+                                            <p>Aperçu des coûts estimés pour ce projet.</p>
                                         </div>
                                         <div>
                                             <dl className="sm:divide-y">
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                                <dt className="font-medium ">
-                                                    Cachet Artiste
-                                                </dt>
-                                                <dd className="mt-1 sm:mt-0 sm:col-span-2">
-                                                    { project.budgetEstimatif.cachetArtiste } €
-                                                </dd>
+                                                    <dt className="font-medium">Cachet Artiste</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.budgetEstimatif.cachetArtiste} €</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                                <dt className="font-medium ">
-                                                    Frais de Déplacement
-                                                </dt>
-                                                <dd className="mt-1 sm:mt-0 sm:col-span-2">
-                                                    { project.budgetEstimatif.fraisDeplacement } €
-                                                </dd>
+                                                    <dt className="font-medium">Frais de Déplacement</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.budgetEstimatif.fraisDeplacement} €</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                                <dt className="font-medium ">
-                                                    Frais d'Hébergement
-                                                </dt>
-                                                <dd className="mt-1 sm:mt-0 sm:col-span-2">
-                                                    { project.budgetEstimatif.fraisHebergement } €
-                                                </dd>
+                                                    <dt className="font-medium">Frais d'Hébergement</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.budgetEstimatif.fraisHebergement} €</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Frais de Restauration</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.budgetEstimatif.fraisRestauration} €</dd>
                                                 </div>
                                             </dl>
                                         </div>
                                     </Card>
 
+                                    {/* Extras de l'évènement */}
                                     <Card>
                                         <div>
-                                            <h3 className="font-medium">
-                                                Détails Complémentaires
-                                            </h3>
-                                            <p>
-                                                Autres informations sur le projet.
-                                            </p>
+                                            <h3 className="font-medium">Extras</h3>
+                                            <p>Aperçu des extras pour le projet.</p>
                                         </div>
                                         <div>
                                             <dl className="sm:divide-y">
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                                <dt className="font-medium ">
-                                                    Région Visée
-                                                </dt>
-                                                <dd className="mt-1 sm:mt-0 sm:col-span-2">
-                                                    { project.regionVisee }
-                                                </dd>
+                                                    <dt className="font-medium">Description de l'extras</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.extras.descrExtras}</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                                <dt className="font-medium ">
-                                                    Ville Visée
-                                                </dt>
-                                                <dd className="mt-1 sm:mt-0 sm:col-span-2">
-                                                    { project.villeVisee }
-                                                </dd>
+                                                    <dt className="font-medium">Exclusivité</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.extras.exclusivite}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Coût de l'extras</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.extras.coutExtras} €</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Exception</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.extras.exception}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Clauses de confidentialité</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.extras.clausesConfidentialites}</dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card>
+
+                                    {/* Conditions financière de l'évènement */}
+                                    <Card>
+                                        <div>
+                                            <h3 className="font-medium">Conditions financières</h3>
+                                            <p>Aperçu des conditions financières du projet.</p>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Le minimum garanti (en €)</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.conditionsFinancieres.minimunGaranti} €</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Les conditions de paiement</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.conditionsFinancieres.conditionsPaiement}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Le pourcentage de la recette</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.conditionsFinancieres.pourcentageRecette} %</dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card>
+
+                                    {/* La fiche technique de l'artiste */}
+                                    <Card>
+                                        <div>
+                                            <h3 className="font-medium">Fiche technique de l'artiste</h3>
+                                            <p>Aperçu des besoins et des informations liés à l'artiste.</p>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Le besoin en backline</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.ficheTechniqueArtiste.besoinBackline}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Le besoin en éclairage</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.ficheTechniqueArtiste.besoinEclairage}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Le besoin en équipements</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.ficheTechniqueArtiste.besoinEquipements}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Le besoin en scène</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.ficheTechniqueArtiste.besoinScene}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Le besoin en sonorisation</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.ficheTechniqueArtiste.besoinSonorisation}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Ses liens promotionnels</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.liensPromotionnels}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">L'ordre de passage</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.extras.ordrePassage}</dd>
                                                 </div>
                                             </dl>
                                         </div>
                                     </Card>
                                 </div>
+
+                                <div>
+                                    {estCreateurOffre() ? (
+                                        <div className="flex justify-between items-center mt-4 mb-4">
+                                            <h3 className="font-medium">Actions possible sur le projet</h3>
+                                            <div className='flex space-x-4'>
+                                                <Button onClick={() => /*setShowUpdateModal(true)*/console.log('on modifie')} color='warning' className="font-medium">Modifier</Button>
+                                                <Button onClick={() => setShowDeleteModal(true)} color='failure' className="font-medium">Supprimer</Button>
+                                            </div>
+                                        </div>
+                                    ) : null}
+                                </div>
+
+                                {/* Modal de confirmation */}
+                                <Modal
+                                    show={showDeleteModal}
+                                    onClose={() => setShowDeleteModal(false)}
+                                    >
+                                    <Modal.Header>Confirmation</Modal.Header>
+                                    <Modal.Body>
+                                        <p>Êtes-vous sûr de vouloir supprimer cette offre ? Cette action est irréversible.</p>
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                        {/* Boutons dans le modal */}
+                                        <Button color="gray" onClick={() => setShowDeleteModal(false)}>
+                                        Annuler
+                                        </Button>
+                                        <Button color="failure" onClick={handleDelete}>
+                                        Confirmer
+                                        </Button>
+                                    </Modal.Footer>
+                                </Modal>
+                                    
+
                             </div>
                         </Tabs.Item>
 
@@ -531,7 +700,7 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
                                                 <Card className="hover:shadow-lg transition-shadow">
                                                     <div className="flex items-center space-x-4">
                                                         <Avatar
-                                                            img={`https://flowbite.com/docs/images/people/profile-picture-${index + 1}.jpg`}
+                                                            img={`https://flowbite.com/docs/images/people/profile-picture-${index % 6}.jpg`}
                                                             rounded={true}
                                                             alt={`Avatar de ${reponse.utilisateur.username}`}
                                                         />
@@ -558,22 +727,25 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
     );
 }
 
-export default function ProjectDetails() {
-    const [projects, setProjects] = useState<Project[]>([]);
+// export default function ProjectDetails() {
+//     const [projects, setProjects] = useState<Project[]>([]);
 
-    useEffect(() => {
-        const fetchProjects = async () => {
-            await apiGet('/offres').then((response) => {
-                setProjects(response.offres);
-                console.log(response.offres);
-            });
-        };
-        fetchProjects();
-    }, []);
+//     useEffect(() => {
+//         const fetchProjects = async () => {
+//             await apiGet('/offres').then((response) => {
+//                 setProjects(response.offres);
+//                 console.log(response.offres);
+//             });
+//         };
+//         fetchProjects();
+//     }, []);
 
-    return (
-        <Suspense fallback={<div className="flex items-center justify-center">Chargement...</div>}>
-            <ProjectDetailsContent projects={projects} />
-        </Suspense>
-    );
-}
+//     return (
+//         <Suspense fallback={<div className="flex items-center justify-center">Chargement...</div>}>
+//             <ProjectDetailsContent projects={projects} />
+//         </Suspense>
+//     );
+// }
+
+
+export default ProjectDetailsContent;
