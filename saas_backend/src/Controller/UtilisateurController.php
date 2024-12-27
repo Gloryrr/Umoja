@@ -45,11 +45,13 @@ class UtilisateurController extends AbstractController
     #[Route('/api/v1/me', name: 'get_me', methods: ['GET'])]
     public function me(
         Security $security,
-        SerializerInterface $serializer
+        SerializerInterface $serializer,
+        UtilisateurRepository $utilisateurRepository
     ): JsonResponse {
         return UtilisateurService::getMe(
             $security,
-            $serializer
+            $serializer,
+            $utilisateurRepository
         );
     }
 

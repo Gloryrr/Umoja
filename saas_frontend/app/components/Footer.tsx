@@ -7,10 +7,6 @@ import { Mail } from "lucide-react";
 
 function FooterComponent() {
   function estPageDeConnexion() {
-    if (typeof window === "undefined") {
-      return false; // Retourne `false` par défaut si on est côté serveur
-    }
-    console.log(window.location.pathname);
     return window.location.pathname === "" || window.location.pathname === "/";
   }
 
