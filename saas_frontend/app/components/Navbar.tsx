@@ -31,7 +31,7 @@ const NavbarApp = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchSearchResults = useCallback(async (query: string) => {
-    if (query.length < 2) {
+    if (query.length < 1) {
       setSearchResults([]);
       return;
     }
@@ -108,18 +108,8 @@ const NavbarApp = () => {
     if (typeof window !== "undefined" && window.location.pathname != "/") {
       window.location.href = "/";
     }
-  } 
-
-  function estPageDeConnexion() {
-    if (typeof window !== "undefined") {
-      return window.location.pathname === "" || window.location.pathname === "/";
-    } else {
-      return false;
-    }
   }
 
-
-  if (!estPageDeConnexion()) {
     return (
       <MegaMenu className="w-full">
         <div className="flex items-center justify-between w-full py-4 border-b border-gray-300 dark:border-gray-500 px-4">
@@ -314,9 +304,6 @@ const NavbarApp = () => {
         </div>
       </MegaMenu>
     );
-  } else {
-    return null;
-  }
 };
 
 export default NavbarApp;
