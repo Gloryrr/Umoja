@@ -1,5 +1,6 @@
 // type pour les détails de l'offre
 export type DetailOffre = {
+    id: number | null;
     titleOffre: string | null;
     deadLine: string | Date | null;
     descrTournee: string | null;
@@ -34,7 +35,7 @@ export type TypeOffre = {
 
 // type pour les conditions financières
 export type ConditionsFinancieres = {
-    minimumGaranti: number | null;
+    minimunGaranti: number | null;
     conditionsPaiement: string | null;
     pourcentageRecette: number | null;
 };
@@ -56,17 +57,29 @@ export type FicheTechniqueArtiste = {
     besoinSonorisation: string | null;
     ordrePassage: string | null;
     liensPromotionnels: string[];
-    artiste: string[];
+    artiste: Artiste[];
     nbArtistes: number | null;
 };
 
 // type pour les données supplémentaires
 export type DonneesSupplementaires = {
-    reseau: string[];
+    reseau: Reseau[];
     nbReseaux: number | null;
-    genreMusical: string[];
+    genreMusical: GenreMusical[];
     nbGenresMusicaux: number | null;
 };
+
+export type Reseau = {
+    nomReseau: string;
+}
+
+export type GenreMusical = {
+    nomGenreMusical: string;
+}
+
+export type Artiste = {
+    nomArtiste: string;
+}
 
 // type pour l'utilisateur
 export type Utilisateur = {

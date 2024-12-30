@@ -1,6 +1,6 @@
 "use client"
 
-import React, { Suspense, useState, useEffect } from 'react';
+import React, { Suspense, useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 // import { FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
 import { Progress, Button, Modal, Card, Spinner, Textarea, Avatar, Tabs } from 'flowbite-react';
@@ -9,7 +9,7 @@ import { apiGet, apiPost, apiDelete, apiPatch } from '@/app/services/internalApi
 import NavigationHandler from '@/app/navigation/Router';
 import CommentaireSection from "@/app/components/Commentaires/CommentaireSection";
 import Image from 'next/image';
-import { FicheTechniqueArtiste } from '@/app/types/FormDataType';
+import { FicheTechniqueArtiste, FormData } from '@/app/types/FormDataType';
 import ModifierOffreForm from '../components/ui/modifierOffre';
 // import DetailOffer from '@/app/components/OffreDetail';
 
@@ -30,10 +30,14 @@ interface Reseau {
 interface GenreMusical {
     nomGenreMusical: string;
 }
+
+interface Artiste {
+    nomArtiste: string;
+}
   
 interface EtatOffre {
     id: number;
-    nomEtatOffre: string;
+    nomEtat: string;
 }
 
 interface ConditionsFinancieres {
@@ -81,9 +85,9 @@ interface Project {
     budgetEstimatif: BudgetEstimatif;
     conditionsFinancieres: ConditionsFinancieres;
     ficheTechniqueArtiste: FicheTechniqueArtiste;
-    reseaux: string[];
-    genresMusicaux: string[];
-    artistes: { nomArtiste: string }[];
+    reseaux: Reseau[];
+    genresMusicaux: GenreMusical[];
+    artistes: Artiste[];
 };
 
 interface BudgetEstimatif {
@@ -150,6 +154,7 @@ function ProjectDetailsContent() {
     const [activeTab, setActiveTab] = useState<number>(1);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showModifyOffre, setShowModifyOffre] = useState(false);
+    const [formData, setFormData] = useState<FormData>({} as FormData);
     
     // const optionsDate: Intl.DateTimeFormatOptions = {
     //     year: 'numeric',
@@ -170,6 +175,7 @@ function ProjectDetailsContent() {
 
     const handleSubmitNumber = (startDate: Date | null, endDate: Date | null, price: number | null): void => {
         setIsModalOpen(false);
+        console.log(startDate, endDate, price);
     };
 
     const handleCommentSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -238,6 +244,87 @@ function ProjectDetailsContent() {
         return (pourcentageBudgetRecu / budgetTotal) * 100;
     }
 
+    function base64ToArrayBuffer(base64: string): ArrayBuffer {
+        const binaryString = atob(base64);
+        const len = binaryString.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        return bytes.buffer;
+    }
+
+    const setProjectProps = useCallback((project: Project) => {
+        console.log(project);
+        const liensPromotionnelsList = project.liensPromotionnels.split(';');
+        liensPromotionnelsList.pop();
+        // const dateParDefaut = new Date().toISOString().split('T')[0] as string;
+        const data: FormData = {
+            detailOffre: {
+                id: project.id,
+                titleOffre: project.titleOffre,
+                deadLine: project.deadLine,
+                descrTournee: project.descrTournee,
+                dateMinProposee: project.dateMinProposee,
+                dateMaxProposee: project.dateMaxProposee,
+                villeVisee: project.villeVisee,
+                regionVisee: project.regionVisee,
+                placesMin: project.placesMin,
+                placesMax: project.placesMax,
+                nbArtistesConcernes: project.nbArtistesConcernes,
+                nbInvitesConcernes: project.nbInvitesConcernes
+            },
+            extras: {
+                descrExtras: project.extras.descrExtras,
+                coutExtras: project.extras.coutExtras,
+                exclusivite: project.extras.exclusivite,
+                exception: project.extras.exception,
+                clausesConfidentialites: project.extras.clausesConfidentialites
+            },
+            etatOffre: {
+                nomEtatOffre: project.etatOffre.nomEtat
+            },
+            typeOffre: {
+                nomTypeOffre: project.typeOffre.nomTypeOffre
+            },
+            conditionsFinancieres: {
+                minimunGaranti: project.conditionsFinancieres.minimunGaranti,
+                conditionsPaiement: project.conditionsFinancieres.conditionsPaiement,
+                pourcentageRecette: project.conditionsFinancieres.pourcentageRecette
+            },
+            budgetEstimatif: {
+                cachetArtiste: project.budgetEstimatif.cachetArtiste,
+                fraisDeplacement: project.budgetEstimatif.fraisDeplacement,
+                fraisHebergement: project.budgetEstimatif.fraisHebergement,
+                fraisRestauration: project.budgetEstimatif.fraisRestauration
+            },
+            ficheTechniqueArtiste: {
+                besoinBackline: project.ficheTechniqueArtiste.besoinBackline,
+                besoinEclairage: project.ficheTechniqueArtiste.besoinEclairage,
+                besoinEquipements: project.ficheTechniqueArtiste.besoinEquipements,
+                besoinScene: project.ficheTechniqueArtiste.besoinScene,
+                besoinSonorisation: project.ficheTechniqueArtiste.besoinSonorisation,
+                ordrePassage: project.extras.ordrePassage,
+                liensPromotionnels: liensPromotionnelsList,
+                artiste: project.artistes,
+                nbArtistes: project.artistes.length
+            },
+            donneesSupplementaires: {
+                reseau: project.reseaux,
+                nbReseaux: project.reseaux.length,
+                genreMusical: project.genresMusicaux,
+                nbGenresMusicaux: project.genresMusicaux.length,
+            },
+            utilisateur: {
+                username : project.utilisateur.username
+            },
+            image: {
+                file: project.image ? base64ToArrayBuffer(project.image) : null,
+            }
+        };
+        setFormData(data);
+    }, []);
+
     useEffect(() => {
         const fetchDetailOffre = async (id: number) => {
             await apiGet(`/offre/${id}`).then((response) => {
@@ -256,19 +343,19 @@ function ProjectDetailsContent() {
                 });
                 setBudgetTotal(calculBudgetTotal(response.offre.budgetEstimatif));
                 setProject(response.offre);
+                setProjectProps(response.offre);
             });
         };
 
         const fetchReponsesOffre = async (id: number) => {
             await apiGet(`/reponses/offre/${id}`).then((response) => {
-                console.log(JSON.parse(response.reponses));
                 setPourcentageBudgetRecu(calculPrixTotalReponsesRecu(JSON.parse(response.reponses)));
             });
         };
 
         fetchDetailOffre(id);
         fetchReponsesOffre(id);
-    }, [id]);
+    }, [id, setProjectProps]);
 
     useEffect(() => {
         const getUsername = async () => {
@@ -331,9 +418,13 @@ function ProjectDetailsContent() {
     };
 
     const handleModify = async () => {
-        await apiPatch(`/offre/update/${project.id}`, JSON.parse(JSON.stringify(project)));
+        console.log(JSON.parse(JSON.stringify(formData)));
+        await apiPatch(`/offre/update/${project.id}`, JSON.parse(JSON.stringify(formData))).then((rep) => {
+            console.log(rep);
+            setShowModifyOffre(false);
+        });
         alert("Offre modifiée avec succès.");
-        window.location.href = "/networks";
+        // window.location.href = "/networks";
     };
 
     return (
@@ -644,7 +735,7 @@ function ProjectDetailsContent() {
                                         <div className="flex justify-between items-center mt-4 mb-4">
                                             <h3 className="font-medium">Actions possible sur le projet</h3>
                                             <div className='flex space-x-4'>
-                                                <Button onClick={() => {console.log(project); setShowModifyOffre(true)}} color='warning' className="font-medium">Modifier</Button>
+                                                <Button onClick={() => setShowModifyOffre(true)} color='warning' className="font-medium">Modifier</Button>
                                                 <Button onClick={() => setShowDeleteModal(true)} color='failure' className="font-medium">Supprimer</Button>
                                             </div>
                                         </div>
@@ -679,7 +770,14 @@ function ProjectDetailsContent() {
                                 >
                                     <Modal.Header>Modification du projet</Modal.Header>
                                     <Modal.Body>
-                                        <ModifierOffreForm project={project}></ModifierOffreForm>
+                                        <ModifierOffreForm 
+                                            project={formData}
+                                            onProjectDetailChange={(updatedDetailProject: FormData) => setFormData(updatedDetailProject)}
+                                            onProjectExtrasChange={(updatedExtrasProject: FormData) => setFormData(updatedExtrasProject)}
+                                            onProjectBudgetEstimatifChange={(updatedBudgetEstimatifProject: FormData) => setFormData(updatedBudgetEstimatifProject)}
+                                            onProjectFicheTechniqueArtisteChange={(updatedFicheTechniqueArtisteProject: FormData) => setFormData(updatedFicheTechniqueArtisteProject)}
+                                            onProjectConditionsFinancieresChange={(updatedConditionsFinancieresProject: FormData) => setFormData(updatedConditionsFinancieresProject)}
+                                        />
                                     </Modal.Body>
                                     <Modal.Footer>
                                         {/* Boutons dans le modal */}

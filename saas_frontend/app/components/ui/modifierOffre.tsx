@@ -1,170 +1,48 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { Accordion, Button, Alert, Timeline, FileInput, Label, Card } from 'flowbite-react';
+import { Accordion, Alert, Timeline, FileInput, Label, Card } from 'flowbite-react';
 import ExtrasForm from '@/app/components/Form/Offre/ExtrasForm';
 import ConditionsFinancieresForm from '@/app/components/Form/Offre/ConditionsFinancieresForm';
 import BudgetEstimatifForm from '@/app/components/Form/Offre/BudgetEstimatifForm';
 import DetailOffreForm from '@/app/components/Form/Offre/DetailOffreForm';
 import FicheTechniqueArtisteForm from '@/app/components/Form/Offre/FicheTechniqueArtiste';
-import { FicheTechniqueArtiste } from '@/app/types/FormDataType';
 import InfoAdditionnelAlert from '@/app/components/Alerte/InfoAdditionnelAlerte';
 import { apiPost,apiGet, apiPatch } from '@/app/services/internalApiClients';
 import { HiInformationCircle } from "react-icons/hi";
-import { FormData } from '@/app/types/FormDataType';
+import { FormData, GenreMusical, Reseau } from '@/app/types/FormDataType';
 import SelectCheckbox from '@/app/components/SelectCheckbox';
 
-interface Extras {
-    id: number;
-    descrExtras: string;
-    coutExtras: number;
-    exclusivite: string;
-    exception: string;
-    ordrePassage: string;
-    clausesConfidentialites: string;
-}
-  
-interface EtatOffre {
-    id: number;
-    nomEtatOffre: string;
-}
-
-interface ConditionsFinancieres {
-    id: number;
-    minimunGaranti: number;
-    conditionsPaiement: string;
-    pourcentageRecette: number;
-}
-
-interface BudgetEstimatif {
-    id: number;
-    cachetArtiste: number;
-    fraisDeplacement: number;
-    fraisHebergement: number;
-    fraisRestauration: number;
-}
-
-interface TypeOffre {
-    nomTypeOffre: string;
-};
-
-interface Utilisateur {
-    username: string;
-};
-interface Project {
-    id: number;
-    titleOffre: string;
-    descrTournee: string;
-    commenteesPar: { id: number }[];
-    dateMaxProposee: string;
-    dateMinProposee: string;
-    deadLine: string;
-    etatOffre: EtatOffre;
-    extras: Extras;
-    image: string | null;
-    liensPromotionnels: string;
-    nbArtistesConcernes: number;
-    nbInvitesConcernes: number;
-    placesMax: number;
-    placesMin: number;
-    regionVisee: string;
-    villeVisee: string;
-    utilisateur: Utilisateur;
-    typeOffre: TypeOffre;
-    budgetEstimatif: BudgetEstimatif;
-    conditionsFinancieres: ConditionsFinancieres;
-    ficheTechniqueArtiste: FicheTechniqueArtiste;
-    reseaux: string[];
-    genresMusicaux: string[];
-    artistes: { nomArtiste: string }[];
-};
-
-interface BudgetEstimatif {
-    id: number;
-    cachetArtiste: number;
-    fraisDeplacement: number;
-    fraisHebergement: number;
-    fraisRestauration: number;
-}
-
-const ModifierOffreForm: React.FC<{ project: Project }> = ({ project }) => {
-    // const dateParDefaut = new Date().toISOString().split('T')[0] as string;
-    const [formData, setFormData] = useState<FormData>({
-        detailOffre: {
-            titleOffre: project.titleOffre,
-            deadLine: project.deadLine,
-            descrTournee: project.descrTournee,
-            dateMinProposee: project.dateMinProposee,
-            dateMaxProposee: project.dateMaxProposee,
-            villeVisee: project.villeVisee,
-            regionVisee: project.regionVisee,
-            placesMin: project.placesMin,
-            placesMax: project.placesMax,
-            nbArtistesConcernes: project.nbArtistesConcernes,
-            nbInvitesConcernes: project.nbInvitesConcernes
-        },
-        extras: {
-            descrExtras: project.extras.descrExtras,
-            coutExtras: project.extras.coutExtras,
-            exclusivite: project.extras.exclusivite,
-            exception: project.extras.exception,
-            clausesConfidentialites: project.extras.clausesConfidentialites
-        },
-        etatOffre: {
-            nomEtatOffre: project.etatOffre.nomEtatOffre
-        },
-        typeOffre: {
-            nomTypeOffre: project.typeOffre.nomTypeOffre
-        },
-        conditionsFinancieres: {
-            minimumGaranti: project.conditionsFinancieres.minimunGaranti,
-            conditionsPaiement: project.conditionsFinancieres.conditionsPaiement,
-            pourcentageRecette: project.conditionsFinancieres.pourcentageRecette
-        },
-        budgetEstimatif: {
-            cachetArtiste: project.budgetEstimatif.cachetArtiste,
-            fraisDeplacement: project.budgetEstimatif.fraisDeplacement,
-            fraisHebergement: project.budgetEstimatif.fraisHebergement,
-            fraisRestauration: project.budgetEstimatif.fraisRestauration
-        },
-        ficheTechniqueArtiste: {
-            besoinBackline: project.ficheTechniqueArtiste.besoinBackline,
-            besoinEclairage: project.ficheTechniqueArtiste.besoinEclairage,
-            besoinEquipements: project.ficheTechniqueArtiste.besoinEquipements,
-            besoinScene: project.ficheTechniqueArtiste.besoinScene,
-            besoinSonorisation: project.ficheTechniqueArtiste.besoinSonorisation,
-            ordrePassage: project.ficheTechniqueArtiste.ordrePassage,
-            liensPromotionnels: project.ficheTechniqueArtiste.liensPromotionnels,
-            artiste: project.ficheTechniqueArtiste.artiste,
-            nbArtistes: project.ficheTechniqueArtiste.nbArtistes
-        },
-        donneesSupplementaires: {
-            reseau: project.reseaux,
-            nbReseaux: project.reseaux.length,
-            genreMusical: project.genresMusicaux,
-            nbGenresMusicaux: project.genresMusicaux.length,
-        },
-        utilisateur: {
-            username : project.utilisateur.username
-        },
-        image: {
-            file: project.image
-        }
-    });
-
+const ModifierOffreForm: React.FC<{ 
+    project: FormData, 
+    onProjectDetailChange : (formData : FormData) => void,
+    onProjectExtrasChange : (formData : FormData) => void,
+    onProjectBudgetEstimatifChange : (formData : FormData) => void,
+    onProjectFicheTechniqueArtisteChange : (formData : FormData) => void,
+    onProjectConditionsFinancieresChange : (formData : FormData) => void,
+}> = ({ project, 
+        onProjectDetailChange, 
+        onProjectExtrasChange, 
+        onProjectBudgetEstimatifChange, 
+        onProjectFicheTechniqueArtisteChange,
+        onProjectConditionsFinancieresChange 
+    }) => {
+    // console.log(project)
+    const [formData, setFormData] = useState<FormData>(project);
     const [offreModifiee, setOffreModifiee] = useState(false);
     const [messageOffreModifiee, setMessageOffreModifiee] = useState("");
     const [typeMessage, setTypeMessage] = useState<"success" | "error">("success");
     const [offreId, setOffreId] = useState("");
     const [description, setDescription] = useState("");
     const [genresMusicaux, setGenresMusicaux] = useState<Array<{ nomGenreMusical: string }>>([]);
-    const [selectedGenres, setSelectedGenres] = useState<string[]>(formData.donneesSupplementaires.genreMusical);
+    const [selectedGenres, setSelectedGenres] = useState<GenreMusical[]>(project.donneesSupplementaires.genreMusical);
     const [reseaux, setReseaux] = useState<Array<{ nomReseau: string }>>([]);
-    const [selectedReseaux, setSelectedReseaux] = useState<string[]>(formData.donneesSupplementaires.reseau);
+    const [selectedReseaux, setSelectedReseaux] = useState<Reseau[]>(formData.donneesSupplementaires.reseau);
 
     const valideFormulaire = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const offreModifiee = await apiPatch(`/offre/update/${project.id}`, JSON.parse(JSON.stringify(formData)));
+            console.log(formData);
+            const offreModifiee = await apiPatch(`/offre/update/${formData.detailOffre.id}`, JSON.parse(JSON.stringify(formData)));
             setOffreId(JSON.parse(offreModifiee.offre).id);
             setTypeMessage("success");
             setDescription("Cliquez sur 'Voir plus' pour accéder aux détails de l'offre.");
@@ -197,7 +75,7 @@ const ModifierOffreForm: React.FC<{ project: Project }> = ({ project }) => {
                     const data = { username };
                     const datasUser = await apiPost('/utilisateur', JSON.parse(JSON.stringify(data)));
                     const reseauxListe: Array<{ nomReseau: string }> = JSON.parse(datasUser.utilisateur)[0].reseaux;
-                    console.log(reseauxListe);
+                    // console.log(reseauxListe);
                     setReseaux(reseauxListe);
                 });
             } catch (error) {
@@ -254,11 +132,11 @@ const ModifierOffreForm: React.FC<{ project: Project }> = ({ project }) => {
 
     const checkConditionsFinancieres = () => {
         const {
-            minimumGaranti,
+            minimunGaranti,
             conditionsPaiement,
             pourcentageRecette
         } = formData.conditionsFinancieres;
-        return !!(minimumGaranti != null && minimumGaranti > 0 && conditionsPaiement && pourcentageRecette != null && pourcentageRecette > 0);
+        return !!(minimunGaranti != null && minimunGaranti > 0 && conditionsPaiement && pourcentageRecette != null && pourcentageRecette > 0);
     };
 
     const checkBudgetEstimatif = () => {
@@ -312,7 +190,7 @@ const ModifierOffreForm: React.FC<{ project: Project }> = ({ project }) => {
             nbGenresMusicaux != null && nbGenresMusicaux > 0;
     };
 
-    const onDonneesSupplementairesChange = (name: string, value: string[] | number) => {
+    const onDonneesSupplementairesChange = (name: string, value: string[] | Reseau[] | GenreMusical[] | number) => {
         setFormData((prevData) => ({
             ...prevData,
             donneesSupplementaires: {
@@ -395,7 +273,7 @@ const ModifierOffreForm: React.FC<{ project: Project }> = ({ project }) => {
                             <Accordion.Content className='p-0'>
                                 <DetailOffreForm
                                     detailOffre={formData.detailOffre}
-                                    onDetailOffreChange={(name, value) =>
+                                    onDetailOffreChange={(name, value) => {
                                         setFormData((prevData) => ({
                                             ...prevData,
                                             detailOffre: {
@@ -403,7 +281,8 @@ const ModifierOffreForm: React.FC<{ project: Project }> = ({ project }) => {
                                                 [name]: value
                                             }
                                         }))
-                                    }
+                                        onProjectDetailChange(formData);
+                                    }}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -413,15 +292,16 @@ const ModifierOffreForm: React.FC<{ project: Project }> = ({ project }) => {
                             <Accordion.Content className='p-0'>
                                 <ExtrasForm
                                     extras={formData.extras}
-                                    onExtrasChange={(name, value) =>
+                                    onExtrasChange={(name, value) => {
                                         setFormData((prevData) => ({
                                             ...prevData,
                                             extras: {
                                                 ...prevData.extras,
                                                 [name]: value
                                             }
-                                        }))
-                                    }
+                                        }));
+                                        onProjectExtrasChange(formData);
+                                    }}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -431,15 +311,16 @@ const ModifierOffreForm: React.FC<{ project: Project }> = ({ project }) => {
                             <Accordion.Content className='p-0'>
                                 <ConditionsFinancieresForm
                                     conditionsFinancieres={formData.conditionsFinancieres}
-                                    onConditionsFinancieresChange={(name, value) =>
+                                    onConditionsFinancieresChange={(name, value) => {
                                         setFormData((prevData) => ({
                                             ...prevData,
                                             conditionsFinancieres: {
                                                 ...prevData.conditionsFinancieres,
                                                 [name]: value
                                             }
-                                        }))
-                                    }
+                                        }));
+                                        onProjectConditionsFinancieresChange(formData);
+                                    }}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -449,15 +330,16 @@ const ModifierOffreForm: React.FC<{ project: Project }> = ({ project }) => {
                             <Accordion.Content className='p-0'>
                                 <BudgetEstimatifForm
                                     budgetEstimatif={formData.budgetEstimatif}
-                                    onBudgetEstimatifChange={(name, value) =>
+                                    onBudgetEstimatifChange={(name, value) => {
                                         setFormData((prevData) => ({
                                             ...prevData,
                                             budgetEstimatif: {
                                                 ...prevData.budgetEstimatif,
                                                 [name]: value
                                             }
-                                        }))
-                                    }
+                                        }));
+                                        onProjectBudgetEstimatifChange(formData);
+                                    }}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -467,15 +349,16 @@ const ModifierOffreForm: React.FC<{ project: Project }> = ({ project }) => {
                             <Accordion.Content className='p-0'>
                                 <FicheTechniqueArtisteForm
                                     ficheTechniqueArtiste={formData.ficheTechniqueArtiste}
-                                    onFicheTechniqueChange={(name, value) =>
+                                    onFicheTechniqueChange={(name, value) => {
                                         setFormData((prevData) => ({
                                             ...prevData,
                                             ficheTechniqueArtiste: {
                                                 ...prevData.ficheTechniqueArtiste,
                                                 [name]: value
                                             }
-                                        }))
-                                    }
+                                        }));
+                                        onProjectFicheTechniqueArtisteChange(formData);
+                                    }}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -488,9 +371,16 @@ const ModifierOffreForm: React.FC<{ project: Project }> = ({ project }) => {
                                         <SelectCheckbox
                                             domaineSelection="Réseaux sur lesquels poster votre évènement :"
                                             options={reseaux.map((reseau) => ({ label: reseau.nomReseau, value: reseau.nomReseau }))}
-                                            selectedValues={selectedReseaux}
+                                            selectedValues={selectedReseaux.map((reseau) => reseau.nomReseau)}
                                             onSelectionChange={(updatedReseaux) => {
-                                                setSelectedReseaux(updatedReseaux);
+                                                const newSelectedReseaux = [];
+                                                for (let index = 0; index < updatedReseaux.length; index++) {
+                                                    const element = updatedReseaux[index];
+                                                    newSelectedReseaux.push({
+                                                        nomReseau: element
+                                                    })
+                                                }
+                                                setSelectedReseaux(newSelectedReseaux);
                                                 onDonneesSupplementairesChange("reseau", updatedReseaux);
                                                 onDonneesSupplementairesChange("nbReseaux", updatedReseaux.length);
                                             }}
@@ -501,9 +391,16 @@ const ModifierOffreForm: React.FC<{ project: Project }> = ({ project }) => {
                                         <SelectCheckbox
                                             domaineSelection="Genres musicaux en lien avec votre évènement :"
                                             options={genresMusicaux.map((genreMusical) => ({ label: genreMusical.nomGenreMusical, value: genreMusical.nomGenreMusical }))}
-                                            selectedValues={selectedGenres}
+                                            selectedValues={selectedGenres.map((genre) => genre.nomGenreMusical)}
                                             onSelectionChange={(updatedGenres) => {
-                                                setSelectedGenres(updatedGenres);
+                                                const newSelectedGenres = [];
+                                                for (let index = 0; index < updatedGenres.length; index++) {
+                                                    const element = updatedGenres[index];
+                                                    newSelectedGenres.push({
+                                                        nomGenreMusical: element
+                                                    })
+                                                }
+                                                setSelectedGenres(newSelectedGenres);
                                                 onDonneesSupplementairesChange("genreMusical", updatedGenres);
                                                 onDonneesSupplementairesChange("nbGenresMusicaux", updatedGenres.length);
                                             }}

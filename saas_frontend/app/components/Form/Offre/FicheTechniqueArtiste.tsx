@@ -3,6 +3,7 @@ import React from 'react';
 import { TextInput, Label, Card, Button } from 'flowbite-react';
 import { FiRefreshCw } from "react-icons/fi";
 import { useState } from 'react';
+import { Artiste } from '@/app/types/FormDataType';
 
 interface FicheTechniqueArtisteFormProps {
     ficheTechniqueArtiste: {
@@ -13,18 +14,19 @@ interface FicheTechniqueArtisteFormProps {
         besoinSonorisation: string | null;
         ordrePassage: string | null;
         liensPromotionnels: string[];
-        artiste: string[];
+        artiste: Artiste[];
         nbArtistes: number | null;
     };
-    onFicheTechniqueChange: (name: string, value: string | string[] | number) => void;
+    onFicheTechniqueChange: (name: string, value: string | string[] | number | Artiste[]) => void;
 }
 
 const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
     ficheTechniqueArtiste,
     onFicheTechniqueChange,
 }) => {
+    console.log(ficheTechniqueArtiste)
     const [liensPromotionnels, setLiensPromotionnels] = useState<string[]>(ficheTechniqueArtiste.liensPromotionnels || ['']);
-    const [artistes, setArtistes] = useState<string[]>(ficheTechniqueArtiste.artiste);
+    const [artistes, setArtistes] = useState<Artiste[]>(ficheTechniqueArtiste.artiste);
     const handleFicheTechniqueArtisteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         onFicheTechniqueChange(name, value);
@@ -64,14 +66,14 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
 
     const handleArtisteChange = (index: number, value: string) => {
         const updatedArtistes = [...artistes];
-        updatedArtistes[index] = value;
+        updatedArtistes[index].nomArtiste = value;
         setArtistes(updatedArtistes);
         onFicheTechniqueChange('artiste', updatedArtistes);
         onFicheTechniqueChange('nbArtistes', updatedArtistes.length);
     };
 
     const addArtisteField = () => {
-        setArtistes([...artistes, ""]);
+        setArtistes([...artistes, {nomArtiste: ""}]);
     };
 
     const removeArtisteField = (index: number) => {
@@ -169,7 +171,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                     <div key={index} className="flex items-center mb-2">
                         <TextInput
                             type="text"
-                            value={artiste}
+                            value={artiste.nomArtiste}
                             onChange={(e) => handleArtisteChange(index, e.target.value)}
                             placeholder="Nom de l'artiste..."
                             className="w-full"

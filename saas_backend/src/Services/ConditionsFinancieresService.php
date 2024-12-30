@@ -90,7 +90,7 @@ class ConditionsFinancieresService
             // création de l'objet et instanciation des données de l'objet
             $conditionsFinancieres = new ConditionsFinancieres();
             $conditionsFinancieres->setMinimunGaranti(
-                !(empty($data['minimumGaranti'])) ? $data['minimumGaranti'] : null
+                !(empty($data['minimunGaranti'])) ? $data['minimunGaranti'] : null
             );
             $conditionsFinancieres->setConditionsPaiement(
                 !(empty($data['conditionsPaiement'])) ? $data['conditionsPaiement'] : null
@@ -158,8 +158,8 @@ class ConditionsFinancieresService
 
             // on vérifie qu'aucune données ne manque pour la mise à jour
             // et on instancie les données dans l'objet
-            if (isset($data['minimumGaranti'])) {
-                $conditionsFinancieres->setMinimunGaranti($data['minimumGaranti']);
+            if (isset($data['minimunGaranti'])) {
+                $conditionsFinancieres->setMinimunGaranti($data['minimunGaranti']);
             }
             if (isset($data['conditionsPaiement'])) {
                 $conditionsFinancieres->setConditionsPaiement($data['conditionsPaiement']);

@@ -24,7 +24,7 @@ class EtatOffre
     private int $id;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['etat_offre:read', 'etat_offre:write'])]
+    #[Groups(['etat_offre:read', 'etat_offre:write', 'offre:read'])]
     private string $nomEtat;
 
     #[ORM\OneToMany(targetEntity: Offre::class, mappedBy: "etatOffre", orphanRemoval: true, cascade: ["remove"])]

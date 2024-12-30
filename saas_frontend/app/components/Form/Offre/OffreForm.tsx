@@ -9,13 +9,14 @@ import FicheTechniqueArtisteForm from '@/app/components/Form/Offre/FicheTechniqu
 import InfoAdditionnelAlert from '@/app/components/Alerte/InfoAdditionnelAlerte';
 import { apiPost,apiGet } from '@/app/services/internalApiClients';
 import { HiInformationCircle } from "react-icons/hi";
-import { FormData } from '@/app/types/FormDataType';
+import { FormData, GenreMusical, Reseau } from '@/app/types/FormDataType';
 import SelectCheckbox from '@/app/components/SelectCheckbox';
 
 const OffreForm: React.FC = () => {
     const dateParDefaut = new Date().toISOString().split('T')[0] as string;
     const [formData, setFormData] = useState<FormData>({
         detailOffre: {
+            id: null,
             titleOffre: null,
             deadLine: dateParDefaut,
             descrTournee: null,
@@ -42,7 +43,7 @@ const OffreForm: React.FC = () => {
             nomTypeOffre: ""
         },
         conditionsFinancieres: {
-            minimumGaranti: null,
+            minimunGaranti: null,
             conditionsPaiement: null,
             pourcentageRecette: null
         },
@@ -83,9 +84,9 @@ const OffreForm: React.FC = () => {
     const [offreId, setOffreId] = useState("");
     const [description, setDescription] = useState("");
     const [genresMusicaux, setGenresMusicaux] = useState<Array<{ nomGenreMusical: string }>>([]);
-    const [selectedGenres, setSelectedGenres] = useState<string[]>(formData.donneesSupplementaires.genreMusical);
+    const [selectedGenres, setSelectedGenres] = useState<GenreMusical[]>(formData.donneesSupplementaires.genreMusical);
     const [reseaux, setReseaux] = useState<Array<{ nomReseau: string }>>([]);
-    const [selectedReseaux, setSelectedReseaux] = useState<string[]>(formData.donneesSupplementaires.reseau);
+    const [selectedReseaux, setSelectedReseaux] = useState<Reseau[]>(formData.donneesSupplementaires.reseau);
 
     const valideFormulaire = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -180,11 +181,11 @@ const OffreForm: React.FC = () => {
 
     const checkConditionsFinancieres = () => {
         const {
-            minimumGaranti,
+            minimunGaranti,
             conditionsPaiement,
             pourcentageRecette
         } = formData.conditionsFinancieres;
-        return !!(minimumGaranti != null && minimumGaranti > 0 && conditionsPaiement && pourcentageRecette != null && pourcentageRecette > 0);
+        return !!(minimunGaranti != null && minimunGaranti > 0 && conditionsPaiement && pourcentageRecette != null && pourcentageRecette > 0);
     };
 
     const checkBudgetEstimatif = () => {
@@ -238,7 +239,7 @@ const OffreForm: React.FC = () => {
             nbGenresMusicaux != null && nbGenresMusicaux > 0;
     };
 
-    const onDonneesSupplementairesChange = (name: string, value: string[] | number) => {
+    const onDonneesSupplementairesChange = (name: string, value: string[] | Reseau[] | GenreMusical[] | number) => {
         setFormData((prevData) => ({
             ...prevData,
             donneesSupplementaires: {
@@ -415,9 +416,16 @@ const OffreForm: React.FC = () => {
                                         <SelectCheckbox
                                             domaineSelection="Réseaux sur lesquels poster votre évènement :"
                                             options={reseaux.map((reseau) => ({ label: reseau.nomReseau, value: reseau.nomReseau }))}
-                                            selectedValues={selectedReseaux}
+                                            selectedValues={selectedReseaux.map((reseau) => reseau.nomReseau)}
                                             onSelectionChange={(updatedReseaux) => {
-                                                setSelectedReseaux(updatedReseaux);
+                                                const newSelectedReseaux = [];
+                                                for (let index = 0; index < updatedReseaux.length; index++) {
+                                                    const element = updatedReseaux[index];
+                                                    newSelectedReseaux.push({
+                                                        nomReseau: element
+                                                    })
+                                                }
+                                                setSelectedReseaux(newSelectedReseaux);
                                                 onDonneesSupplementairesChange("reseau", updatedReseaux);
                                                 onDonneesSupplementairesChange("nbReseaux", updatedReseaux.length);
                                             }}
@@ -428,9 +436,16 @@ const OffreForm: React.FC = () => {
                                         <SelectCheckbox
                                             domaineSelection="Genres musicaux en lien avec votre évènement :"
                                             options={genresMusicaux.map((genreMusical) => ({ label: genreMusical.nomGenreMusical, value: genreMusical.nomGenreMusical }))}
-                                            selectedValues={selectedGenres}
+                                            selectedValues={selectedGenres.map((genre) => genre.nomGenreMusical)}
                                             onSelectionChange={(updatedGenres) => {
-                                                setSelectedGenres(updatedGenres);
+                                                const newSelectedGenres = [];
+                                                for (let index = 0; index < updatedGenres.length; index++) {
+                                                    const element = updatedGenres[index];
+                                                    newSelectedGenres.push({
+                                                        nomGenreMusical: element
+                                                    })
+                                                }
+                                                setSelectedGenres(newSelectedGenres);
                                                 onDonneesSupplementairesChange("genreMusical", updatedGenres);
                                                 onDonneesSupplementairesChange("nbGenresMusicaux", updatedGenres.length);
                                             }}

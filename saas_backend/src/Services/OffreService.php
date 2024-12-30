@@ -335,7 +335,7 @@ class OffreService
             }
 
             $conditionsFinancieres = new ConditionsFinancieres();
-            $conditionsFinancieres->setMinimunGaranti(intval($data['conditionsFinancieres']['minimumGaranti']));
+            $conditionsFinancieres->setMinimunGaranti(intval($data['conditionsFinancieres']['minimunGaranti']));
             $conditionsFinancieres->setConditionsPaiement($data['conditionsFinancieres']['conditionsPaiement']);
             $conditionsFinancieres->setPourcentageRecette(
                 floatval($data['conditionsFinancieres']['pourcentageRecette'])
@@ -395,7 +395,7 @@ class OffreService
                 // switch (sizeof($artiste)) {
                     // case 0:
                 $artisteObject = new Artiste();
-                $artisteObject->setNomArtiste($data['ficheTechniqueArtiste']['artiste'][$i]);
+                $artisteObject->setNomArtiste($data['ficheTechniqueArtiste']['artiste'][$i]['nomArtiste']);
                 $artisteObject->setDescrArtiste("Artiste quelconque");
                 $artisteRepository->inscritArtiste($artisteObject);
                         // break;
@@ -521,6 +521,7 @@ class OffreService
                 $offre->setNbInvitesConcernes($data['detailOffre']['nbInvitesConcernes']);
             }
             if (isset($data['ficheTechniqueArtiste']['liensPromotionnels'])) {
+                $liensPromotionnels = "";
                 foreach ($data['ficheTechniqueArtiste']['liensPromotionnels'] as $lien) {
                     $liensPromotionnels .= "{$lien};";
                 }
@@ -565,10 +566,10 @@ class OffreService
                 }
                 $offre->setTypeOffre($typeOffre);
             }
-            if (isset($data['conditionFinancieres'])) {
+            if (isset($data['conditionsFinancieres'])) {
                 $conditionsFinancieres = new ConditionsFinancieres();
-                if (isset($data['conditionsFinancieres']['minimumGaranti'])) {
-                    $conditionsFinancieres->setMinimunGaranti($data['conditionsFinancieres']['minimumGaranti']);
+                if (isset($data['conditionsFinancieres']['minimunGaranti'])) {
+                    $conditionsFinancieres->setMinimunGaranti($data['conditionsFinancieres']['minimunGaranti']);
                 }
                 if (isset($data['conditionsFinancieres']['conditionsPaiement'])) {
                     $conditionsFinancieres->setConditionsPaiement($data['conditionsFinancieres']['conditionsPaiement']);
@@ -627,24 +628,32 @@ class OffreService
                 $nb_reseaux = intval($data['donneesSupplementaires']['nbReseaux']);
                 $reseaux_list = [];
                 for ($i = 0; $i < $nb_reseaux; $i++) {
-                    $reseau = $reseauRepository->trouveReseauByName($data['donneesSupplementaires']['reseau'][$i]);
-                    $offre->addReseau($reseau[0]);
-                    $reseaux_list[] = $reseau[0];
+                    if (isset($data['donneesSupplementaires']['reseau'][$i]['nomReseau'])) {
+                        $reseau = $reseauRepository->trouveReseauByName(
+                            $data['donneesSupplementaires']['reseau'][$i]['nomReseau']
+                        );
+                        $offre->addReseau($reseau[0]);
+                        $reseaux_list[] = $reseau[0];
+                    }
                 }
             }
             if (isset($data['donneesSupplementaires']['genreMusical'])) {
                 $nb_genres_musicaux = intval($data['donneesSupplementaires']['nbGenresMusicaux']);
                 for ($i = 0; $i < $nb_genres_musicaux; $i++) {
-                    $genreMusical = $genreMusicalRepository->trouveGenreMusicalByName(
-                        $data['donneesSupplementaires']['genreMusical'][$i]
-                    );
-                    $offre->addGenreMusical($genreMusical[0]);
+                    if (isset($data['donneesSupplementaires']['genreMusical'][$i]['nomGenreMusical'])) {    
+                        $genreMusical = $genreMusicalRepository->trouveGenreMusicalByName(
+                            $data['donneesSupplementaires']['genreMusical'][$i]['nomGenreMusical']
+                        );
+                        $offre->addGenreMusical($genreMusical[0]);
+                    }
                 }
             }
-            if (isset($data['donneesSupplementaires']['artiste'])) {
+            if (isset($data['ficheTechniqueArtiste']['artiste'])) {
                 $nb_artistes = intval($data['ficheTechniqueArtiste']['nbArtistes']);
                 for ($i = 0; $i < $nb_artistes; $i++) {
-                    $artiste = $artisteRepository->trouveArtisteByName($data['ficheTechniqueArtiste']['artiste'][$i]);
+                    $artiste = $artisteRepository->trouveArtisteByName(
+                        $data['ficheTechniqueArtiste']['artiste'][$i]['nomArtiste']
+                    );
                     $offre->addArtiste($artiste[0]);
                 }
             }
@@ -657,14 +666,14 @@ class OffreService
             // si l'action à réussi
             if ($rep) {
                 foreach ($reseaux_list as $reseau) {
-                    $utilisateurs = $reseau->getNomReseau()->getUtilisateurs();
+                    $utilisateurs = $reseau->getUtilisateurs();
                     foreach ($utilisateurs as $utilisateur) {
                         if ($utilisateur->getEmailUtilisateur() != null) {
                             $mailerService->sendEmail(
                                 $utilisateur->getEmailUtilisateur(),
                                 "Mise à jour d'offre",
-                                "<h1>Changement sur l'offre</h1>" +
-                                "<p>Une offre de votre réseau a récemment été modifié," +
+                                "<h1>Changement sur l'offre</h1>" . 
+                                "<p>Une offre de votre réseau a récemment été modifié," . 
                                 "Réseau : {$reseau->getNomReseau()}</p>"
                             );
                         }
