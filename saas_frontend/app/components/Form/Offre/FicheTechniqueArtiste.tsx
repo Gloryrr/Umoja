@@ -165,7 +165,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                     <h3 className="text-2xl font-semibold mb-4">Artistes Concernés</h3>
                 </div>
 
-                {artistes.map((artiste, index) => (
+                {artistes ? artistes.map((artiste, index) => (
                     <div key={index} className="flex items-center mb-2">
                         <TextInput
                             type="text"
@@ -178,7 +178,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                             Supprimer
                         </Button>
                     </div>
-                ))}
+                )) : "Aucun artiste lié au projet"}
                 <Button onClick={addArtisteField} className="mt-2 w-full">
                     Ajouter un artiste
                 </Button>

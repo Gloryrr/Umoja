@@ -5,14 +5,15 @@ import { useSearchParams } from 'next/navigation';
 // import { FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
 import { Progress, Button, Modal, Card, Spinner, Textarea, Avatar, Tabs } from 'flowbite-react';
 import NumberInputModal from '@/app/components/ui/modalResponse';
-import { apiGet, apiPost, apiDelete } from '@/app/services/internalApiClients';
+import { apiGet, apiPost, apiDelete, apiPatch } from '@/app/services/internalApiClients';
 import NavigationHandler from '@/app/navigation/Router';
 import CommentaireSection from "@/app/components/Commentaires/CommentaireSection";
 import Image from 'next/image';
 import { FicheTechniqueArtiste } from '@/app/types/FormDataType';
+import ModifierOffreForm from '../components/ui/modifierOffre';
 // import DetailOffer from '@/app/components/OffreDetail';
 
-type Extras = {
+interface Extras {
     id: number;
     descrExtras: string;
     coutExtras: number;
@@ -22,8 +23,12 @@ type Extras = {
     clausesConfidentialites: string;
 }
 
-type Reseau = {
+interface Reseau {
     nomReseau: string;
+}
+
+interface GenreMusical {
+    nomGenreMusical: string;
 }
   
 interface EtatOffre {
@@ -46,14 +51,14 @@ interface BudgetEstimatif {
     fraisRestauration: number;
 }
 
-type TypeOffre = {
+interface TypeOffre {
     nomTypeOffre: string;
 };
 
-type Utilisateur = {
+interface Utilisateur {
     username: string;
 };
-type Project = {
+interface Project {
     id: number;
     titleOffre: string;
     descrTournee: string;
@@ -76,7 +81,8 @@ type Project = {
     budgetEstimatif: BudgetEstimatif;
     conditionsFinancieres: ConditionsFinancieres;
     ficheTechniqueArtiste: FicheTechniqueArtiste;
-    reseaux: Reseau[];
+    reseaux: string[];
+    genresMusicaux: string[];
     artistes: { nomArtiste: string }[];
 };
 
@@ -143,6 +149,7 @@ function ProjectDetailsContent() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState<number>(1);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showModifyOffre, setShowModifyOffre] = useState(false);
     
     // const optionsDate: Intl.DateTimeFormatOptions = {
     //     year: 'numeric',
@@ -162,7 +169,6 @@ function ProjectDetailsContent() {
     };
 
     const handleSubmitNumber = (startDate: Date | null, endDate: Date | null, price: number | null): void => {
-        console.log(startDate, endDate, price);
         setIsModalOpen(false);
     };
 
@@ -321,6 +327,12 @@ function ProjectDetailsContent() {
     const handleDelete = async () => {
         await apiDelete(`/offre/delete/${project.id}`);
         alert("Offre supprimée avec succès.");
+        window.location.href = "/networks";
+    };
+
+    const handleModify = async () => {
+        await apiPatch(`/offre/update/${project.id}`, JSON.parse(JSON.stringify(project)));
+        alert("Offre modifiée avec succès.");
         window.location.href = "/networks";
     };
 
@@ -485,9 +497,9 @@ function ProjectDetailsContent() {
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Artistes</dt>
                                                     <dd className="mt-1 sm:mt-0 sm:col-span-2">
-                                                        {project.artistes.map((artiste, index) => (
+                                                        {project.artistes.length > 0 ? project.artistes.map((artiste, index) => (
                                                             <span key={index}>{artiste.nomArtiste}, </span>
-                                                        ))}
+                                                        )) : "Aucun artiste lié au projet"}
                                                     </dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -632,7 +644,7 @@ function ProjectDetailsContent() {
                                         <div className="flex justify-between items-center mt-4 mb-4">
                                             <h3 className="font-medium">Actions possible sur le projet</h3>
                                             <div className='flex space-x-4'>
-                                                <Button onClick={() => /*setShowUpdateModal(true)*/console.log('on modifie')} color='warning' className="font-medium">Modifier</Button>
+                                                <Button onClick={() => {console.log(project); setShowModifyOffre(true)}} color='warning' className="font-medium">Modifier</Button>
                                                 <Button onClick={() => setShowDeleteModal(true)} color='failure' className="font-medium">Supprimer</Button>
                                             </div>
                                         </div>
@@ -658,7 +670,27 @@ function ProjectDetailsContent() {
                                         </Button>
                                     </Modal.Footer>
                                 </Modal>
-                                    
+
+                                 {/* Modal de confirmation */}
+                                 <Modal
+                                    show={showModifyOffre}
+                                    onClose={() => setShowModifyOffre(false)}
+                                    size="7xl"
+                                >
+                                    <Modal.Header>Modification du projet</Modal.Header>
+                                    <Modal.Body>
+                                        <ModifierOffreForm project={project}></ModifierOffreForm>
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                        {/* Boutons dans le modal */}
+                                        <Button color="gray" onClick={() => setShowModifyOffre(false)}>
+                                            Annuler
+                                        </Button>
+                                        <Button color="success" onClick={handleModify}>
+                                            Modifier
+                                        </Button>
+                                    </Modal.Footer>
+                                </Modal>
 
                             </div>
                         </Tabs.Item>

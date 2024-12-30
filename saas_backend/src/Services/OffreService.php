@@ -490,8 +490,8 @@ class OffreService
             if (isset($data['detailOffre']['titleOffre'])) {
                 $offre->setTitleOffre($data['detailOffre']['titleOffre']);
             }
-            if (isset($data['detailOffre']['deadline'])) {
-                $offre->setDeadline(date_create($data['detailOffre']['deadline']));
+            if (isset($data['detailOffre']['deadLine'])) {
+                $offre->setDeadline(date_create($data['detailOffre']['deadLine']));
             }
             if (isset($data['detailOffre']['descrTournee'])) {
                 $offre->setDescrTournee($data['detailOffre']['descrTournee']);
