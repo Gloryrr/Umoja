@@ -1,6 +1,7 @@
 "use client"
 
 import React, { Suspense, useState, useEffect, useCallback } from 'react';
+import { FaLink } from "react-icons/fa";
 import { useSearchParams } from 'next/navigation';
 // import { FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
 import { Progress, Button, Modal, Card, Spinner, Textarea, Avatar, Tabs } from 'flowbite-react';
@@ -155,6 +156,7 @@ function ProjectDetailsContent() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showModifyOffre, setShowModifyOffre] = useState(false);
     const [formData, setFormData] = useState<FormData>({} as FormData);
+    const [liensPromotionnelsList, setLiensPromotionnelsList] = useState<string[]>([]);
     
     // const optionsDate: Intl.DateTimeFormatOptions = {
     //     year: 'numeric',
@@ -255,10 +257,11 @@ function ProjectDetailsContent() {
     }
 
     const setProjectProps = useCallback((project: Project) => {
-        console.log(project);
-        const liensPromotionnelsList = project.liensPromotionnels.split(';');
-        liensPromotionnelsList.pop();
         // const dateParDefaut = new Date().toISOString().split('T')[0] as string;
+        let listeLiensPromo = project.liensPromotionnels.split(';')
+        listeLiensPromo.pop();
+        setLiensPromotionnelsList(listeLiensPromo);
+
         const data: FormData = {
             detailOffre: {
                 id: project.id,
@@ -719,7 +722,14 @@ function ProjectDetailsContent() {
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Ses liens promotionnels</dt>
-                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.liensPromotionnels}</dd>
+                                                    {liensPromotionnelsList ? liensPromotionnelsList.map((lien: string) => {
+                                                        return <div className='flex items-center'>
+                                                            <FaLink className='mr-2'/>
+                                                            <a href={lien}>
+                                                                <dd className="mt-1 sm:mt-0 sm:col-span-2">{lien}</dd>
+                                                            </a>
+                                                        </div>
+                                                    }) : <dd className="mt-1 sm:mt-0 sm:col-span-2">Aucun liens promotionnels</dd>}
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">L&apos;ordre de passage</dt>
@@ -777,6 +787,7 @@ function ProjectDetailsContent() {
                                             onProjectBudgetEstimatifChange={(updatedBudgetEstimatifProject: FormData) => setFormData(updatedBudgetEstimatifProject)}
                                             onProjectFicheTechniqueArtisteChange={(updatedFicheTechniqueArtisteProject: FormData) => setFormData(updatedFicheTechniqueArtisteProject)}
                                             onProjectConditionsFinancieresChange={(updatedConditionsFinancieresProject: FormData) => setFormData(updatedConditionsFinancieresProject)}
+                                            onProjectDonneesSupplementaireChange={(updatedDonneesSupplementairesProject: FormData) => setFormData(updatedDonneesSupplementairesProject)}
                                         />
                                     </Modal.Body>
                                     <Modal.Footer>

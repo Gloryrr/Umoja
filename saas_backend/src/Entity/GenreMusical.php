@@ -37,7 +37,7 @@ class GenreMusical
         'utilisateur:read',
         'artiste:read',
         'reseau:read',
-        'offres:read',
+        'offre:read',
     ])]
     private string $nomGenreMusical;
 

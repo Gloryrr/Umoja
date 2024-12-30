@@ -24,7 +24,6 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
     ficheTechniqueArtiste,
     onFicheTechniqueChange,
 }) => {
-    console.log(ficheTechniqueArtiste)
     const [liensPromotionnels, setLiensPromotionnels] = useState<string[]>(ficheTechniqueArtiste.liensPromotionnels || ['']);
     const [artistes, setArtistes] = useState<Artiste[]>(ficheTechniqueArtiste.artiste);
     const handleFicheTechniqueArtisteChange = (e: React.ChangeEvent<HTMLInputElement>) => {

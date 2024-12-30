@@ -19,12 +19,14 @@ const ModifierOffreForm: React.FC<{
     onProjectBudgetEstimatifChange : (formData : FormData) => void,
     onProjectFicheTechniqueArtisteChange : (formData : FormData) => void,
     onProjectConditionsFinancieresChange : (formData : FormData) => void,
+    onProjectDonneesSupplementaireChange : (formData : FormData) => void,
 }> = ({ project, 
         onProjectDetailChange, 
         onProjectExtrasChange, 
         onProjectBudgetEstimatifChange, 
         onProjectFicheTechniqueArtisteChange,
-        onProjectConditionsFinancieresChange 
+        onProjectConditionsFinancieresChange,
+        onProjectDonneesSupplementaireChange
     }) => {
     // console.log(project)
     const [formData, setFormData] = useState<FormData>(project);
@@ -198,6 +200,7 @@ const ModifierOffreForm: React.FC<{
                 [name]: value
             }
         }));
+        console.log(name, value);
     };
 
     const updateField = (
@@ -381,8 +384,9 @@ const ModifierOffreForm: React.FC<{
                                                     })
                                                 }
                                                 setSelectedReseaux(newSelectedReseaux);
-                                                onDonneesSupplementairesChange("reseau", updatedReseaux);
-                                                onDonneesSupplementairesChange("nbReseaux", updatedReseaux.length);
+                                                onDonneesSupplementairesChange("reseau", newSelectedReseaux);
+                                                onDonneesSupplementairesChange("nbReseaux", newSelectedReseaux.length);
+                                                onProjectDonneesSupplementaireChange(formData);
                                             }}
                                         />
                                     </div>
@@ -401,8 +405,9 @@ const ModifierOffreForm: React.FC<{
                                                     })
                                                 }
                                                 setSelectedGenres(newSelectedGenres);
-                                                onDonneesSupplementairesChange("genreMusical", updatedGenres);
-                                                onDonneesSupplementairesChange("nbGenresMusicaux", updatedGenres.length);
+                                                onDonneesSupplementairesChange("genreMusical", newSelectedGenres);
+                                                onDonneesSupplementairesChange("nbGenresMusicaux", newSelectedGenres.length);
+                                                onProjectDonneesSupplementaireChange(formData);
                                             }}
                                         />
                                     </div>

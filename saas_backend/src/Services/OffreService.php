@@ -636,25 +636,44 @@ class OffreService
                         $reseaux_list[] = $reseau[0];
                     }
                 }
+                foreach ($offre->getReseaux() as $reseauOffre) {
+                    if (!in_array($reseauOffre, $reseaux_list)) {
+                        $offre->removeReseau($reseauOffre);
+                    }
+                }
             }
             if (isset($data['donneesSupplementaires']['genreMusical'])) {
                 $nb_genres_musicaux = intval($data['donneesSupplementaires']['nbGenresMusicaux']);
+                $genres_list = [];
                 for ($i = 0; $i < $nb_genres_musicaux; $i++) {
                     if (isset($data['donneesSupplementaires']['genreMusical'][$i]['nomGenreMusical'])) {    
                         $genreMusical = $genreMusicalRepository->trouveGenreMusicalByName(
                             $data['donneesSupplementaires']['genreMusical'][$i]['nomGenreMusical']
                         );
                         $offre->addGenreMusical($genreMusical[0]);
+                        $genres_list[] = $genreMusical[0];
+                    }
+                }
+                foreach ($offre->getGenresMusicaux() as $genreOffre) {
+                    if (!in_array($genreOffre, $genres_list)) {
+                        $offre->removeGenreMusical($genreOffre);
                     }
                 }
             }
             if (isset($data['ficheTechniqueArtiste']['artiste'])) {
                 $nb_artistes = intval($data['ficheTechniqueArtiste']['nbArtistes']);
+                $artistes_list = [];
                 for ($i = 0; $i < $nb_artistes; $i++) {
                     $artiste = $artisteRepository->trouveArtisteByName(
                         $data['ficheTechniqueArtiste']['artiste'][$i]['nomArtiste']
                     );
                     $offre->addArtiste($artiste[0]);
+                    $artistes_list[] = $artiste[0];
+                }
+                foreach ($offre->getArtistes() as $artisteOffre) {
+                    if (!in_array($artisteOffre, $artistes_list)) {
+                        $offre->removeArtiste($artisteOffre);
+                    }
                 }
             }
 
