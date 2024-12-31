@@ -258,7 +258,7 @@ function ProjectDetailsContent() {
 
     const setProjectProps = useCallback((project: Project) => {
         // const dateParDefaut = new Date().toISOString().split('T')[0] as string;
-        let listeLiensPromo = project.liensPromotionnels.split(';')
+        const listeLiensPromo = project.liensPromotionnels.split(';')
         listeLiensPromo.pop();
         setLiensPromotionnelsList(listeLiensPromo);
 
@@ -421,7 +421,7 @@ function ProjectDetailsContent() {
     };
 
     const handleModify = async () => {
-        await apiPatch(`/offre/update/${project.id}`, JSON.parse(JSON.stringify(formData))).then((rep) => {
+        await apiPatch(`/offre/update/${project.id}`, JSON.parse(JSON.stringify(formData))).then(() => {
             setShowModifyOffre(false);
         });
         alert("Offre modifiée avec succès.");
@@ -720,8 +720,8 @@ function ProjectDetailsContent() {
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Ses liens promotionnels</dt>
-                                                    {liensPromotionnelsList ? liensPromotionnelsList.map((lien: string) => {
-                                                        return <div className='flex items-center'>
+                                                    {liensPromotionnelsList ? liensPromotionnelsList.map((lien: string, index: number) => {
+                                                        return <div className='flex items-center' key={`${index}`}>
                                                             <FaLink className='mr-2'/>
                                                             <a href={lien}>
                                                                 <dd className="mt-1 sm:mt-0 sm:col-span-2">{lien}</dd>
