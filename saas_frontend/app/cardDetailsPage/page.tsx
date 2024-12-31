@@ -308,7 +308,7 @@ function ProjectDetailsContent() {
                 besoinScene: project.ficheTechniqueArtiste.besoinScene,
                 besoinSonorisation: project.ficheTechniqueArtiste.besoinSonorisation,
                 ordrePassage: project.extras.ordrePassage,
-                liensPromotionnels: liensPromotionnelsList,
+                liensPromotionnels: listeLiensPromo,
                 artiste: project.artistes,
                 nbArtistes: project.artistes.length
             },
@@ -421,9 +421,7 @@ function ProjectDetailsContent() {
     };
 
     const handleModify = async () => {
-        console.log(JSON.parse(JSON.stringify(formData)));
         await apiPatch(`/offre/update/${project.id}`, JSON.parse(JSON.stringify(formData))).then((rep) => {
-            console.log(rep);
             setShowModifyOffre(false);
         });
         alert("Offre modifiée avec succès.");

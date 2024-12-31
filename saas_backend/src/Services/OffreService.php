@@ -667,8 +667,17 @@ class OffreService
                     $artiste = $artisteRepository->trouveArtisteByName(
                         $data['ficheTechniqueArtiste']['artiste'][$i]['nomArtiste']
                     );
-                    $offre->addArtiste($artiste[0]);
-                    $artistes_list[] = $artiste[0];
+                    if (count($artiste) == 0) {        
+                        $artisteObject = new Artiste();
+                        $artisteObject->setNomArtiste($data['ficheTechniqueArtiste']['artiste'][$i]['nomArtiste']);
+                        $artisteObject->setDescrArtiste("Artiste quelconque");
+                        $artisteRepository->inscritArtiste($artisteObject);
+                        $offre->addArtiste($artisteObject);
+                        $artistes_list[] = $artisteObject;
+                    } else {
+                        $offre->addArtiste($artiste[0]);
+                        $artistes_list[] = $artiste[0];
+                    }
                 }
                 foreach ($offre->getArtistes() as $artisteOffre) {
                     if (!in_array($artisteOffre, $artistes_list)) {
@@ -717,7 +726,7 @@ class OffreService
                 ], Response::HTTP_BAD_REQUEST);
             }
         } catch (\Exception $e) {
-            throw new \RuntimeException("Erreur lors de la mise à jour de l'offre", $e->getMessage());
+            throw new \RuntimeException("Erreur lors de la mise à jour de l'offre", $e->getMessage() . $e->getLine());
         }
     }
 

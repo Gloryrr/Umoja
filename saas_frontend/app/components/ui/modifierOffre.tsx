@@ -28,7 +28,6 @@ const ModifierOffreForm: React.FC<{
         onProjectConditionsFinancieresChange,
         onProjectDonneesSupplementaireChange
     }) => {
-    // console.log(project)
     const [formData, setFormData] = useState<FormData>(project);
     const [offreModifiee, setOffreModifiee] = useState(false);
     const [messageOffreModifiee, setMessageOffreModifiee] = useState("");
@@ -43,7 +42,6 @@ const ModifierOffreForm: React.FC<{
     const valideFormulaire = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            console.log(formData);
             const offreModifiee = await apiPatch(`/offre/update/${formData.detailOffre.id}`, JSON.parse(JSON.stringify(formData)));
             setOffreId(JSON.parse(offreModifiee.offre).id);
             setTypeMessage("success");
@@ -77,7 +75,6 @@ const ModifierOffreForm: React.FC<{
                     const data = { username };
                     const datasUser = await apiPost('/utilisateur', JSON.parse(JSON.stringify(data)));
                     const reseauxListe: Array<{ nomReseau: string }> = JSON.parse(datasUser.utilisateur)[0].reseaux;
-                    // console.log(reseauxListe);
                     setReseaux(reseauxListe);
                 });
             } catch (error) {
@@ -200,7 +197,6 @@ const ModifierOffreForm: React.FC<{
                 [name]: value
             }
         }));
-        console.log(name, value);
     };
 
     const updateField = (
