@@ -646,7 +646,7 @@ class OffreService
                 $nb_genres_musicaux = intval($data['donneesSupplementaires']['nbGenresMusicaux']);
                 $genres_list = [];
                 for ($i = 0; $i < $nb_genres_musicaux; $i++) {
-                    if (isset($data['donneesSupplementaires']['genreMusical'][$i]['nomGenreMusical'])) {    
+                    if (isset($data['donneesSupplementaires']['genreMusical'][$i]['nomGenreMusical'])) {
                         $genreMusical = $genreMusicalRepository->trouveGenreMusicalByName(
                             $data['donneesSupplementaires']['genreMusical'][$i]['nomGenreMusical']
                         );
@@ -667,7 +667,7 @@ class OffreService
                     $artiste = $artisteRepository->trouveArtisteByName(
                         $data['ficheTechniqueArtiste']['artiste'][$i]['nomArtiste']
                     );
-                    if (count($artiste) == 0) {        
+                    if (count($artiste) == 0) {
                         $artisteObject = new Artiste();
                         $artisteObject->setNomArtiste($data['ficheTechniqueArtiste']['artiste'][$i]['nomArtiste']);
                         $artisteObject->setDescrArtiste("Artiste quelconque");
@@ -700,8 +700,8 @@ class OffreService
                             $mailerService->sendEmail(
                                 $utilisateur->getEmailUtilisateur(),
                                 "Mise à jour d'offre",
-                                "<h1>Changement sur l'offre</h1>" . 
-                                "<p>Une offre de votre réseau a récemment été modifié," . 
+                                "<h1>Changement sur l'offre</h1>" .
+                                "<p>Une offre de votre réseau a récemment été modifié," .
                                 "Réseau : {$reseau->getNomReseau()}</p>"
                             );
                         }
