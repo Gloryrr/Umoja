@@ -63,7 +63,7 @@ class ConditionsFinancieresEndPointsTest extends ApiTestCase
                 'Authorization' => "Bearer {$this->token}"
             ],
             'json' => [
-                'minimumGaranti' => 4000,
+                'minimunGaranti' => 4000,
                 'conditionsPaiement' => 'EUR',
                 'pourcentageRecette' => 1.5,
             ]
@@ -99,7 +99,7 @@ class ConditionsFinancieresEndPointsTest extends ApiTestCase
                 'Authorization' => "Bearer {$this->token}"
             ],
             'json' => [
-                'minimumGaranti' => 4000,
+                'minimunGaranti' => 4000,
                 'conditionsPaiement' => 'EUR',
                 'pourcentageRecette' => 1.5,
             ]
@@ -128,7 +128,7 @@ class ConditionsFinancieresEndPointsTest extends ApiTestCase
                 'Authorization' => "Bearer {$this->token}"
             ],
             'json' => [
-                'minimumGaranti' => 4000,
+                'minimunGaranti' => 4000,
                 'conditionsPaiement' => 'EUR',
                 'pourcentageRecette' => 1.5,
             ]
@@ -144,7 +144,7 @@ class ConditionsFinancieresEndPointsTest extends ApiTestCase
                 'Authorization' => "Bearer {$this->token}"
             ],
             'json' => [
-                'minimumGaranti' => 5000,
+                'minimunGaranti' => 5000,
                 'conditionsPaiement' => 'USD',
                 'pourcentageRecette' => 1.5,
             ]
@@ -171,7 +171,7 @@ class ConditionsFinancieresEndPointsTest extends ApiTestCase
 
         // ID à tester, supposons qu'une condition existe avec l'ID 1
         $payload = [
-            'minimumGaranti' => 4000,
+            'minimunGaranti' => 4000,
             'conditionsPaiement' => 'EUR',
             'pourcentageRecette' => 1.5,
         ];

@@ -91,7 +91,7 @@ class CommentaireEndPointsTest extends ApiTestCase
                     "nomTypeOffre" => "Tournée"
                 ],
                 "conditionsFinancieres" => [
-                    "minimumGaranti" => 5000,
+                    "minimunGaranti" => 5000,
                     "conditionsPaiement" => "EUR",
                     "pourcentageRecette" => 15.0
                 ],
@@ -198,7 +198,7 @@ class CommentaireEndPointsTest extends ApiTestCase
                     "nomTypeOffre" => "Tournée"
                 ],
                 "conditionsFinancieres" => [
-                    "minimumGaranti" => 5000,
+                    "minimunGaranti" => 5000,
                     "conditionsPaiement" => "EUR",
                     "pourcentageRecette" => 15.0
                 ],
@@ -318,7 +318,7 @@ class CommentaireEndPointsTest extends ApiTestCase
                     "nomTypeOffre" => "Tournée"
                 ],
                 "conditionsFinancieres" => [
-                    "minimumGaranti" => 5000,
+                    "minimunGaranti" => 5000,
                     "conditionsPaiement" => "EUR",
                     "pourcentageRecette" => 15.0
                 ],
@@ -446,7 +446,7 @@ class CommentaireEndPointsTest extends ApiTestCase
                     "nomTypeOffre" => "Tournée"
                 ],
                 "conditionsFinancieres" => [
-                    "minimumGaranti" => 5000,
+                    "minimunGaranti" => 5000,
                     "conditionsPaiement" => "EUR",
                     "pourcentageRecette" => 15.0
                 ],

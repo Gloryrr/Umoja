@@ -1,107 +1,58 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { Accordion, Button, Alert, Timeline, FileInput, Label, Card } from 'flowbite-react';
+import { Accordion, Alert, Timeline, FileInput, Label, Card } from 'flowbite-react';
 import ExtrasForm from '@/app/components/Form/Offre/ExtrasForm';
 import ConditionsFinancieresForm from '@/app/components/Form/Offre/ConditionsFinancieresForm';
 import BudgetEstimatifForm from '@/app/components/Form/Offre/BudgetEstimatifForm';
 import DetailOffreForm from '@/app/components/Form/Offre/DetailOffreForm';
 import FicheTechniqueArtisteForm from '@/app/components/Form/Offre/FicheTechniqueArtiste';
 import InfoAdditionnelAlert from '@/app/components/Alerte/InfoAdditionnelAlerte';
-import { apiPost,apiGet } from '@/app/services/internalApiClients';
+import { apiPost,apiGet, apiPatch } from '@/app/services/internalApiClients';
 import { HiInformationCircle } from "react-icons/hi";
 import { FormData, GenreMusical, Reseau } from '@/app/types/FormDataType';
 import SelectCheckbox from '@/app/components/SelectCheckbox';
 
-const OffreForm: React.FC = () => {
-    const dateParDefaut = new Date().toISOString().split('T')[0] as string;
-    const [formData, setFormData] = useState<FormData>({
-        detailOffre: {
-            id: null,
-            titleOffre: null,
-            deadLine: dateParDefaut,
-            descrTournee: null,
-            dateMinProposee: dateParDefaut,
-            dateMaxProposee: dateParDefaut,
-            villeVisee: null,
-            regionVisee: null,
-            placesMin: null,
-            placesMax: null,
-            nbArtistesConcernes: null,
-            nbInvitesConcernes: null
-        },
-        extras: {
-            descrExtras: null,
-            coutExtras: null,
-            exclusivite: null,
-            exception: null,
-            clausesConfidentialites: null
-        },
-        etatOffre: {
-            nomEtatOffre: ""
-        },
-        typeOffre: {
-            nomTypeOffre: ""
-        },
-        conditionsFinancieres: {
-            minimunGaranti: null,
-            conditionsPaiement: null,
-            pourcentageRecette: null
-        },
-        budgetEstimatif: {
-            cachetArtiste: null,
-            fraisDeplacement: null,
-            fraisHebergement: null,
-            fraisRestauration: null
-        },
-        ficheTechniqueArtiste: {
-            besoinBackline: null,
-            besoinEclairage: null,
-            besoinEquipements: null,
-            besoinScene: null,
-            besoinSonorisation: null,
-            ordrePassage: null,
-            liensPromotionnels: [],
-            artiste: [],
-            nbArtistes: 0
-        },
-        donneesSupplementaires: {
-            reseau: [],
-            nbReseaux: 0,
-            genreMusical: [],
-            nbGenresMusicaux: 0,
-        },
-        utilisateur: {
-            username : ""
-        },
-        image: {
-            file: null
-        }
-    });
-
-    const [offrePostee, setOffrePostee] = useState(false);
-    const [messageOffrePostee, setMessageOffrePostee] = useState("");
+const ModifierOffreForm: React.FC<{ 
+    project: FormData, 
+    onProjectDetailChange : (formData : FormData) => void,
+    onProjectExtrasChange : (formData : FormData) => void,
+    onProjectBudgetEstimatifChange : (formData : FormData) => void,
+    onProjectFicheTechniqueArtisteChange : (formData : FormData) => void,
+    onProjectConditionsFinancieresChange : (formData : FormData) => void,
+    onProjectDonneesSupplementaireChange : (formData : FormData) => void,
+}> = ({ project, 
+        onProjectDetailChange, 
+        onProjectExtrasChange, 
+        onProjectBudgetEstimatifChange, 
+        onProjectFicheTechniqueArtisteChange,
+        onProjectConditionsFinancieresChange,
+        onProjectDonneesSupplementaireChange
+    }) => {
+    const [formData, setFormData] = useState<FormData>(project);
+    const [offreModifiee, setOffreModifiee] = useState(false);
+    const [messageOffreModifiee, setMessageOffreModifiee] = useState("");
     const [typeMessage, setTypeMessage] = useState<"success" | "error">("success");
     const [offreId, setOffreId] = useState("");
     const [description, setDescription] = useState("");
     const [genresMusicaux, setGenresMusicaux] = useState<Array<{ nomGenreMusical: string }>>([]);
-    const [selectedGenres, setSelectedGenres] = useState<GenreMusical[]>(formData.donneesSupplementaires.genreMusical);
+    const [selectedGenres, setSelectedGenres] = useState<GenreMusical[]>(project.donneesSupplementaires.genreMusical);
     const [reseaux, setReseaux] = useState<Array<{ nomReseau: string }>>([]);
     const [selectedReseaux, setSelectedReseaux] = useState<Reseau[]>(formData.donneesSupplementaires.reseau);
 
     const valideFormulaire = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const offrePostee = await apiPost('/offre/create', JSON.parse(JSON.stringify(formData)));
-            setOffreId(JSON.parse(offrePostee.offre).id);
+            const offreModifiee = await apiPatch(`/offre/update/${formData.detailOffre.id}`, JSON.parse(JSON.stringify(formData)));
+            setOffreId(JSON.parse(offreModifiee.offre).id);
             setTypeMessage("success");
             setDescription("Cliquez sur 'Voir plus' pour accéder aux détails de l'offre.");
-            setMessageOffrePostee("Votre offre a bien été postée !");
-            setOffrePostee(true);   
+            setMessageOffreModifiee("Votre offre a bien été modifiée !");
+            setOffreModifiee(true);
         } catch (error) {
             setTypeMessage("error");
-            setMessageOffrePostee("Une erreur s'est produite durant le post de votre offre.");
-            setOffrePostee(true);
-            throw new Error("Erreur lors du post de l'offre :", error as Error);
+            setMessageOffreModifiee("Une erreur s'est produite durant la modification de votre offre.");
+            setOffreModifiee(true);
+            throw new Error("Erreur lors de la modification de l'offre :", error as Error);
         }
     };
 
@@ -124,7 +75,6 @@ const OffreForm: React.FC = () => {
                     const data = { username };
                     const datasUser = await apiPost('/utilisateur', JSON.parse(JSON.stringify(data)));
                     const reseauxListe: Array<{ nomReseau: string }> = JSON.parse(datasUser.utilisateur)[0].reseaux;
-                    console.log(reseauxListe);
                     setReseaux(reseauxListe);
                 });
             } catch (error) {
@@ -281,7 +231,6 @@ const OffreForm: React.FC = () => {
             const arrayBuffer = await file.arrayBuffer();
             const uint8Array = new Uint8Array(arrayBuffer);
             const base64String = btoa(String.fromCharCode(...uint8Array));
-            console.log(section, field, base64String); 
     
             updateField(section, field, base64String);
         } catch (error) {
@@ -296,11 +245,11 @@ const OffreForm: React.FC = () => {
 
     return (
         <div className="w-full flex items-start justify-center">
-            <div className="m-20 w-[55%]">
-                {offrePostee && (
+            <div className="w-full">
+                {offreModifiee && (
                     <Alert
                         color={typeMessage === "success" ? "green" : "failure"}
-                        onDismiss={() => setOffrePostee(false)}
+                        onDismiss={() => setOffreModifiee(false)}
                         icon={HiInformationCircle}
                         className="mb-5"
                         additionalContent={
@@ -308,22 +257,22 @@ const OffreForm: React.FC = () => {
                                 isSuccess={typeMessage === "success"}
                                 description={description}
                                 offreId={offreId}
-                                onDismiss={() => setOffrePostee(false)}
+                                onDismiss={() => setOffreModifiee(false)}
                             />
                         }
                     >
-                        <span className='font-medium'>Info alerte ! </span>{messageOffrePostee}
+                        <span className='font-medium'>Info alerte ! </span>{messageOffreModifiee}
                     </Alert>
                 )}
                 <form onSubmit={valideFormulaire} className="w-full mx-auto rounded-lg space-y-4 font-nunito">
-                    <h2 className="text-3xl font-semibold text-center mb-10">Formulaire d&apos;Offre</h2>
+                    <h2 className="text-2xl font-semibold text-center mb-10">Modifier votre offre</h2>
                     <Accordion collapseAll>
                         <Accordion.Panel>
                             <Accordion.Title>Informations de base</Accordion.Title>
                             <Accordion.Content className='p-0'>
                                 <DetailOffreForm
                                     detailOffre={formData.detailOffre}
-                                    onDetailOffreChange={(name, value) =>
+                                    onDetailOffreChange={(name, value) => {
                                         setFormData((prevData) => ({
                                             ...prevData,
                                             detailOffre: {
@@ -331,7 +280,8 @@ const OffreForm: React.FC = () => {
                                                 [name]: value
                                             }
                                         }))
-                                    }
+                                        onProjectDetailChange(formData);
+                                    }}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -341,15 +291,16 @@ const OffreForm: React.FC = () => {
                             <Accordion.Content className='p-0'>
                                 <ExtrasForm
                                     extras={formData.extras}
-                                    onExtrasChange={(name, value) =>
+                                    onExtrasChange={(name, value) => {
                                         setFormData((prevData) => ({
                                             ...prevData,
                                             extras: {
                                                 ...prevData.extras,
                                                 [name]: value
                                             }
-                                        }))
-                                    }
+                                        }));
+                                        onProjectExtrasChange(formData);
+                                    }}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -359,15 +310,16 @@ const OffreForm: React.FC = () => {
                             <Accordion.Content className='p-0'>
                                 <ConditionsFinancieresForm
                                     conditionsFinancieres={formData.conditionsFinancieres}
-                                    onConditionsFinancieresChange={(name, value) =>
+                                    onConditionsFinancieresChange={(name, value) => {
                                         setFormData((prevData) => ({
                                             ...prevData,
                                             conditionsFinancieres: {
                                                 ...prevData.conditionsFinancieres,
                                                 [name]: value
                                             }
-                                        }))
-                                    }
+                                        }));
+                                        onProjectConditionsFinancieresChange(formData);
+                                    }}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -377,15 +329,16 @@ const OffreForm: React.FC = () => {
                             <Accordion.Content className='p-0'>
                                 <BudgetEstimatifForm
                                     budgetEstimatif={formData.budgetEstimatif}
-                                    onBudgetEstimatifChange={(name, value) =>
+                                    onBudgetEstimatifChange={(name, value) => {
                                         setFormData((prevData) => ({
                                             ...prevData,
                                             budgetEstimatif: {
                                                 ...prevData.budgetEstimatif,
                                                 [name]: value
                                             }
-                                        }))
-                                    }
+                                        }));
+                                        onProjectBudgetEstimatifChange(formData);
+                                    }}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -395,15 +348,16 @@ const OffreForm: React.FC = () => {
                             <Accordion.Content className='p-0'>
                                 <FicheTechniqueArtisteForm
                                     ficheTechniqueArtiste={formData.ficheTechniqueArtiste}
-                                    onFicheTechniqueChange={(name, value) =>
+                                    onFicheTechniqueChange={(name, value) => {
                                         setFormData((prevData) => ({
                                             ...prevData,
                                             ficheTechniqueArtiste: {
                                                 ...prevData.ficheTechniqueArtiste,
                                                 [name]: value
                                             }
-                                        }))
-                                    }
+                                        }));
+                                        onProjectFicheTechniqueArtisteChange(formData);
+                                    }}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -426,8 +380,9 @@ const OffreForm: React.FC = () => {
                                                     })
                                                 }
                                                 setSelectedReseaux(newSelectedReseaux);
-                                                onDonneesSupplementairesChange("reseau", updatedReseaux);
-                                                onDonneesSupplementairesChange("nbReseaux", updatedReseaux.length);
+                                                onDonneesSupplementairesChange("reseau", newSelectedReseaux);
+                                                onDonneesSupplementairesChange("nbReseaux", newSelectedReseaux.length);
+                                                onProjectDonneesSupplementaireChange(formData);
                                             }}
                                         />
                                     </div>
@@ -446,8 +401,9 @@ const OffreForm: React.FC = () => {
                                                     })
                                                 }
                                                 setSelectedGenres(newSelectedGenres);
-                                                onDonneesSupplementairesChange("genreMusical", updatedGenres);
-                                                onDonneesSupplementairesChange("nbGenresMusicaux", updatedGenres.length);
+                                                onDonneesSupplementairesChange("genreMusical", newSelectedGenres);
+                                                onDonneesSupplementairesChange("nbGenresMusicaux", newSelectedGenres.length);
+                                                onProjectDonneesSupplementaireChange(formData);
                                             }}
                                         />
                                     </div>
@@ -467,12 +423,6 @@ const OffreForm: React.FC = () => {
                                 updateFieldWithBlob("image", "file", file);
                             }}
                         />
-                    </div>
-
-                    <div className="flex justify-end mt-8">
-                        <Button type="submit">
-                            Poster l&apos;offre
-                        </Button>
                     </div>
                 </form>
             </div>
@@ -552,4 +502,4 @@ const OffreForm: React.FC = () => {
     );
 };
 
-export default OffreForm;
+export default ModifierOffreForm;

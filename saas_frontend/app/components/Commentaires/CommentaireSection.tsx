@@ -22,8 +22,7 @@ const CommentSection = ({ commentaires }: CommentSectionProps) => {
     };
 
     return (
-        <div className="mt-6 ml-[20%] mr-[20%] mx-auto">
-            <h2 className="font-semibold mt-5 mb-3">Les commentaires laissés par les membres du réseau</h2>
+        <div className="mt-6 mx-auto">
 
             {/* Bouton "Voir les commentaires" */}
             <Button
@@ -51,20 +50,22 @@ const CommentSection = ({ commentaires }: CommentSectionProps) => {
                         <p>Aucun commentaire pour le moment.</p>
                     ) : (
                         commentaires.map((commentaire, index) => (
-                            <div key={index} className="mb-6 p-4 border rounded-lg shadow-md">
-                                <div className="flex items-center space-x-4">
+                            <div key={index} className="p-4">
+                                <div className="flex space-x-4">
                                 <Image
                                     src="/favicon.ico"
                                     alt={commentaire.utilisateur?.username || 'Utilisateur inconnu'}
-                                    className="w-7 h-7 rounded-full"
+                                    className="w-8 h-8 rounded-full mt-1"
                                     width={28}
                                     height={28}
                                 />
-                                    <div>
-                                        <p className="font-semibold text-lg">{commentaire.utilisateur?.username || "Utilisateur inconnu"}</p>
+                                    <div className='bg-gray-100 p-4 rounded-lg'>
+                                        <div>
+                                            <p className="font-semibold text-lg">{commentaire.utilisateur?.username || "Utilisateur inconnu"}</p>
+                                        </div>
+                                        <p className="mt-2">{commentaire.commentaire || "pas de commentaire"}</p>
                                     </div>
                                 </div>
-                                <p className="mt-2">{commentaire.commentaire || "pas de commentaire"}</p>
                             </div>
                         ))
                     )}

@@ -138,7 +138,7 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
     });
 
     return (
-        <div className="p-6">
+        <div className="p-6 ml-[15%] mr-[15%]">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Réseau : {networksName}</h1>
                 <Button onClick={resetNetwork} color="light">

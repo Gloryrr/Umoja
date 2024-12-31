@@ -50,7 +50,7 @@ interface EtatOffre {
 
 interface ConditionsFinancieres {
   id: number;
-  minimumGaranti: number;
+  minimunGaranti: number;
   conditionsPaiement: string;
   pourcentageRecette: number;
 }
@@ -418,7 +418,7 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
               {conditionsFinancieres && (
                 <div className="mb-6">
                   <h2 className="text-2xl font-bold mt-8">Conditions financières</h2>
-                  <p>Minimum garanti : {conditionsFinancieres.minimumGaranti} €</p>
+                  <p>Minimum garanti : {conditionsFinancieres.minimunGaranti} €</p>
                   <p>Conditions de paiement : {conditionsFinancieres.conditionsPaiement}</p>
                   <p>Pourcentage sur recettes : {conditionsFinancieres.pourcentageRecette} %</p>
                 </div>

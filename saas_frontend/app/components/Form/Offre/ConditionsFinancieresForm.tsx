@@ -6,7 +6,7 @@ import { FiRefreshCw } from "react-icons/fi";
 
 interface ConditionsFinancieresFormProps {
     conditionsFinancieres: {
-        minimumGaranti: number | null;
+        minimunGaranti: number | null;
         conditionsPaiement: string | null;
         pourcentageRecette: number | null;
     };
@@ -23,7 +23,7 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
     };
 
     const handleReset = () => {
-        onConditionsFinancieresChange("minimumGaranti", "");
+        onConditionsFinancieresChange("minimunGaranti", "");
         onConditionsFinancieresChange("conditionsPaiement", "");
         onConditionsFinancieresChange("pourcentageRecette", "");
     };
@@ -63,12 +63,12 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
 
             <div className="grid grid-cols-2 gap-4 mb-5">
                 <div>
-                    <Label htmlFor="minimumGaranti" value="Minimum garanti récolté à la fin de l'évènement:" />
+                    <Label htmlFor="minimunGaranti" value="Minimum garanti récolté à la fin de l'évènement:" />
                     <TextInput
                         type="number"
-                        id="minimumGaranti"
-                        name="minimumGaranti"
-                        value={conditionsFinancieres.minimumGaranti ?? ""}
+                        id="minimunGaranti"
+                        name="minimunGaranti"
+                        value={conditionsFinancieres.minimunGaranti ?? ""}
                         onChange={handleConditionsFinancieresChange}
                         required
                         placeholder="1500... (en €)"

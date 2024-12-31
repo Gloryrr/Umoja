@@ -149,10 +149,10 @@ const Profil: React.FC = () => {
                     </div>
 
                     <div className="flex justify-end gap-2 mt-6">
-                        <Button color="gray" size="lg" onClick={() => setIsEditing(false)} className="rounded-lg mt-2">
+                        <Button color="gray" onClick={() => setIsEditing(false)} className="rounded-lg mt-2">
                             Annuler
                         </Button>
-                        <Button size="lg" onClick={handleSave} className="rounded-lg mt-2">
+                        <Button onClick={handleSave} className="rounded-lg mt-2">
                             Enregistrer
                         </Button>
                     </div>

@@ -57,7 +57,8 @@ class UtilisateurService
      */
     public static function getMe(
         Security $security,
-        SerializerInterface $serializer
+        SerializerInterface $serializer,
+        UtilisateurRepository $utilisateurRepository
     ) {
         $user = $security->getUser();
 
@@ -69,6 +70,8 @@ class UtilisateurService
             );
         }
 
+        $userArray = $utilisateurRepository->trouveUtilisateurByUsername($user->getUserIdentifier());
+
         // Sérialise l'utilisateur pour retourner ses informations
         $dataUser = $serializer->serialize(
             $user->getUserIdentifier(),
@@ -78,6 +81,7 @@ class UtilisateurService
 
         return new JsonResponse([
             'utilisateur' => json_decode($dataUser, true),
+            'email' => $userArray[0]->getEmailUtilisateur(),
             'message' => "Utilisateur trouvé",
             'serialized' => true
         ], Response::HTTP_OK);
