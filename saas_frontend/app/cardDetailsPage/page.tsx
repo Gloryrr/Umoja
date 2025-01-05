@@ -12,6 +12,7 @@ import CommentaireSection from "@/app/components/Commentaires/CommentaireSection
 import Image from 'next/image';
 import { FicheTechniqueArtiste, FormData } from '@/app/types/FormDataType';
 import ModifierOffreForm from '../components/ui/modifierOffre';
+import PDFViewer from '@/app/components/PDFViewer';
 // import DetailOffer from '@/app/components/OffreDetail';
 
 interface Extras {
@@ -165,6 +166,11 @@ function ProjectDetailsContent() {
     let budgetEstimatifParPDF : boolean | null = null;
     let conditionsFinancieresParPDF : boolean | null = null;
     let ficheTechniqueArtisteParPDF : boolean | null = null;
+
+    let contenuExtrasParPDF : string | null = null;
+    let contenuBudgetEstimatifParPDF : string | null = null;
+    let contenuConditionsFinancieresParPDF : string | null = null;
+    let contenuFicheTechniqueArtisteParPDF : string | null = null;
     
     // const optionsDate: Intl.DateTimeFormatOptions = {
     //     year: 'numeric',
@@ -393,8 +399,6 @@ function ProjectDetailsContent() {
         fetchReponsesOffre(id);
     }, [id, setProjectProps]);
 
-
-
     useEffect(() => {
         const getUsername = async () => {
             await apiGet(`/me`).then((response) => {
@@ -428,20 +432,49 @@ function ProjectDetailsContent() {
         return { days, hours, minutes, seconds };
     }
 
-    useEffect(() => {
+    const fetchFichiersProjet = async () => {
+        const data = {
+            idProjet: project?.id,
+        };
+        await apiPost('/get-sftp-fichiers', JSON.parse(JSON.stringify(data))).then((response) => {
+            if (response.files.budget_estimatif != null) {
+                contenuBudgetEstimatifParPDF = response.files.budget_estimatif.content;
+            } else {
+                contenuBudgetEstimatifParPDF = null;
+            }
+            if (response.files.extras != null) {
+                contenuExtrasParPDF = response.files.extras.content;
+            } else {
+                contenuExtrasParPDF = null;
+            }
+            if (response.files.conditions_financieres != null) {
+                contenuConditionsFinancieresParPDF = response.files.conditions_financieres.content;
+            } else {
+                contenuConditionsFinancieresParPDF = null;
+            }
+            if (response.files.fiche_technique_artiste != null) {
+                contenuFicheTechniqueArtisteParPDF = response.files.fiche_technique_artiste.content;
+            } else {
+                contenuFicheTechniqueArtisteParPDF = null;
+            }
+        })};
+
+    useEffect( () => {
         if (project) {
             const timer = setInterval(() => {
                 setTimeLeft(calculateTimeLeft(project.deadLine));
             }, 1000);
+
+            fetchFichiersProjet();
 
             return () => clearInterval(timer); // Nettoyage pour éviter les fuites de mémoire
         }
     }, [project]);
 
     if (!project) {
-        return <div className="flex items-center justify-center text-2xl">
-            <p>Chargement des détails de du projet ...</p>
-            <Spinner className="ml-4"size='l' />
+        return <div className="flex items-center justify-center text-2xl min-h-[50vh]">
+            <span>Chargement des détails du projet en cours...</span>
+            <Spinner className="ml-4" />
         </div>;
     }
 
@@ -667,7 +700,11 @@ function ProjectDetailsContent() {
                                                 </div>
                                             </dl>
                                         </div>
-                                    </Card> : null}
+                                    </Card> : <Card>
+                                        <PDFViewer base64EncodedDocument={
+                                            contenuBudgetEstimatifParPDF != null ? conditionsFinancieresParPDF : ""
+                                        } />
+                                    </Card>}
 
                                     {/* Extras de l&apos;évènement */}
                                     {extrasParPDF && extrasParPDF ? <Card>

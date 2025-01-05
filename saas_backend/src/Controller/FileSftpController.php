@@ -22,4 +22,17 @@ class FileSftpController extends AbstractController
             $security
         );
     }
+
+    #[Route('api/v1/get-sftp-fichiers', name: 'get_fichiers_sftp', methods: ['POST'])]
+    public function getFichierSFTP(
+        Request $request,
+        SftpService $sftpService,
+        Security $security
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        return $sftpService->getFichiersProjet(
+            $security,
+            $data
+        );
+    }
 }
