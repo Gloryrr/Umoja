@@ -30,6 +30,7 @@ const OffreForm: React.FC = () => {
             nbInvitesConcernes: null
         },
         extras: {
+            extrasParPDF: false,
             descrExtras: null,
             coutExtras: null,
             exclusivite: null,
@@ -43,17 +44,20 @@ const OffreForm: React.FC = () => {
             nomTypeOffre: ""
         },
         conditionsFinancieres: {
+            conditionsFinancieresParPDF: false,
             minimunGaranti: null,
             conditionsPaiement: null,
             pourcentageRecette: null
         },
         budgetEstimatif: {
+            budgetEstimatifParPDF: false,
             cachetArtiste: null,
             fraisDeplacement: null,
             fraisHebergement: null,
             fraisRestauration: null
         },
         ficheTechniqueArtiste: {
+            ficheTechniqueArtisteParPDF: false,
             besoinBackline: null,
             besoinEclairage: null,
             besoinEquipements: null,
@@ -165,44 +169,57 @@ const OffreForm: React.FC = () => {
 
     const checkExtras = () => {
         const {
+            extrasParPDF,
             descrExtras,
             coutExtras,
             exclusivite,
             exception,
             clausesConfidentialites 
         } = formData.extras;
-        return !!(descrExtras && 
+        return !!((descrExtras && 
             coutExtras != null && 
             coutExtras > 0 && 
             exclusivite && 
             exception && 
-            clausesConfidentialites);
+            clausesConfidentialites) || extrasParPDF);
     };
 
     const checkConditionsFinancieres = () => {
         const {
+            conditionsFinancieresParPDF,
             minimunGaranti,
             conditionsPaiement,
             pourcentageRecette
         } = formData.conditionsFinancieres;
-        return !!(minimunGaranti != null && minimunGaranti > 0 && conditionsPaiement && pourcentageRecette != null && pourcentageRecette > 0);
+        //console.log(conditionsFinancieresParPDF);
+        if (conditionsFinancieresParPDF) {
+            return true;
+        } else {
+        return !!(minimunGaranti != null && 
+                    minimunGaranti > 0 && 
+                    conditionsPaiement && 
+                    pourcentageRecette != null && 
+                    pourcentageRecette > 0);
+        }
     };
 
     const checkBudgetEstimatif = () => {
         const {
+            budgetEstimatifParPDF,
             cachetArtiste,
             fraisDeplacement,
             fraisHebergement,
             fraisRestauration
         } = formData.budgetEstimatif;
-        return !!(cachetArtiste != null && cachetArtiste > 0 && 
+        return !!((cachetArtiste != null && cachetArtiste > 0 && 
             fraisDeplacement != null && fraisDeplacement > 0 && 
             fraisHebergement != null && fraisHebergement > 0 && 
-            fraisRestauration != null && fraisRestauration > 0);
+            fraisRestauration != null && fraisRestauration > 0) || budgetEstimatifParPDF);
     };
 
     const checkFicheTechniqueArtiste = () => {
         const {
+            ficheTechniqueArtisteParPDF,
             besoinBackline,
             besoinEclairage,
             besoinEquipements,
@@ -214,7 +231,7 @@ const OffreForm: React.FC = () => {
             nbArtistes
         } = formData.ficheTechniqueArtiste;
         return !!(
-            besoinBackline && 
+            (besoinBackline && 
             besoinEclairage && 
             besoinEquipements && 
             besoinScene && 
@@ -222,7 +239,7 @@ const OffreForm: React.FC = () => {
             ordrePassage && 
             artiste.length > 0 && 
             liensPromotionnels.length > 0 && 
-            nbArtistes != null && nbArtistes > 0
+            nbArtistes != null && nbArtistes > 0) || ficheTechniqueArtisteParPDF
         );
     };
 

@@ -22,3 +22,11 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Services\SftpService:
+        arguments:
+            $host: '%env(SFTP_HOST)%'
+            $port: '%env(int:SFTP_PORT)%'
+            $username: '%env(SFTP_USERNAME)%'
+            $password: '%env(SFTP_PASSWORD)%'
+            $remoteDir: '%env(SFTP_REMOTE_DIR)%'

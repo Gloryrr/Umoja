@@ -16,6 +16,7 @@ export type DetailOffre = {
 
 // type pour les extras
 export type Extras = {
+    extrasParPDF: boolean | null;
     descrExtras: string | null;
     coutExtras: number | null;
     exclusivite: string | null;
@@ -35,6 +36,7 @@ export type TypeOffre = {
 
 // type pour les conditions financières
 export type ConditionsFinancieres = {
+    conditionsFinancieresParPDF: boolean | null;
     minimunGaranti: number | null;
     conditionsPaiement: string | null;
     pourcentageRecette: number | null;
@@ -42,6 +44,7 @@ export type ConditionsFinancieres = {
 
 // type pour le budget estimatif
 export type BudgetEstimatif = {
+    budgetEstimatifParPDF: boolean | null;
     cachetArtiste: number | null;
     fraisDeplacement: number | null;
     fraisHebergement: number | null;
@@ -50,6 +53,7 @@ export type BudgetEstimatif = {
 
 // type pour la fiche technique de l'artiste
 export type FicheTechniqueArtiste = {
+    ficheTechniqueArtisteParPDF: boolean | null;
     besoinBackline: string | null;
     besoinEclairage: string | null;
     besoinEquipements: string | null;

@@ -1,25 +1,38 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { apiGet } from "@/app/services/externalApiClients";
-import { Card, Label, TextInput, Select, Button } from "flowbite-react";
+import { Card, Label, TextInput, Select, Button, Checkbox, FileInput, Spinner } from "flowbite-react";
 import { FiRefreshCw } from "react-icons/fi";
+import { apiPostSFTP } from "@/app/services/internalApiClients";
 
 interface ConditionsFinancieresFormProps {
     conditionsFinancieres: {
+        conditionsFinancieresParPDF: boolean | null;
         minimunGaranti: number | null;
         conditionsPaiement: string | null;
         pourcentageRecette: number | null;
     };
-    onConditionsFinancieresChange: (name: string, value: string) => void;
+    onConditionsFinancieresChange: (name: string, value: string | boolean) => void;
 }
 
 const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
     conditionsFinancieres,
     onConditionsFinancieresChange,
 }) => {
+    const [file, setFile] = useState<File | null>(null);
+    const [message, setMessage] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [colorMessage, setColorMessage] = useState('success');
+    const [isTextInputActive, setIsTextInputActive] = useState(true);
+
     const handleConditionsFinancieresChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        onConditionsFinancieresChange(name, value);
+        const { name, value, type } = e.target as HTMLInputElement;
+        const newValue = type === "checkbox" ? !conditionsFinancieres.conditionsFinancieresParPDF : value;
+        
+        onConditionsFinancieresChange(name, newValue);
+        if (name === 'conditionsFinancieresParPDF') {
+            setIsTextInputActive(!isTextInputActive);
+        }
     };
 
     const handleReset = () => {
@@ -46,6 +59,38 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
         fetchMonnaieExistantes();
     }, []);
 
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFile(e.target.files?.[0] || null);
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        setLoading(true);
+        e.preventDefault();
+
+        if (!file) {
+            setMessage('Veuillez sélectionner un fichier PDF');
+            setLoading(false);
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('idProjet', "120");
+        formData.append('typeFichier', "conditions-financieres");
+
+        await apiPostSFTP('/upload-sftp-fichier', formData).then(
+            () => {
+                setColorMessage('text-green-500');
+                setMessage('Le fichier a été transféré avec succès');
+                setLoading(false);
+            }
+        ).catch(() => {
+            setColorMessage('text-red-500');
+            setMessage('Erreur lors du transfert du fichier, veuillez réessayer');
+            setLoading(false);
+        });
+    };
+
     return (
         <Card className="shadow-none border-none mx-auto w-full">
             <div className="flex justify-between items-center mb-4">
@@ -61,10 +106,23 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
                 </Button>
             </div>
 
+            <div className="mb-4">
+                <Checkbox
+                    id="toggleInputType"
+                    checked={isTextInputActive}
+                    onChange={handleConditionsFinancieresChange}
+                    name="conditionsFinancieresParPDF"
+                />
+                <Label htmlFor="toggleInputType" className="ml-2">
+                    Ne pas importer de PDF
+                </Label>
+            </div>
+
             <div className="grid grid-cols-2 gap-4 mb-5">
                 <div>
                     <Label htmlFor="minimunGaranti" value="Minimum garanti récolté à la fin de l'évènement:" />
                     <TextInput
+                        disabled={!isTextInputActive}
                         type="number"
                         id="minimunGaranti"
                         name="minimunGaranti"
@@ -79,6 +137,7 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
                 <div>
                     <Label htmlFor="conditionsPaiement" value="Conditions de paiement des participants:" />
                     <Select
+                        disabled={!isTextInputActive}
                         id="conditionsPaiement"
                         name="conditionsPaiement"
                         value={conditionsFinancieres.conditionsPaiement ?? ""}
@@ -99,6 +158,7 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
             <div className="mb-5">
                 <Label htmlFor="pourcentageRecette" value="Pourcentage sur les recette de billetterie:" />
                 <TextInput
+                    disabled={!isTextInputActive}
                     type="number"
                     step={0.01}
                     id="pourcentageRecette"
@@ -110,6 +170,26 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
                     className="mt-1"
                 />
             </div>
+
+            <div className="flex">
+                <FileInput
+                    disabled={isTextInputActive}
+                    className="w-full mr-5"
+                    accept="application/pdf"
+                    onChange={handleFileChange}
+                />
+                <Button
+                    className="ml-auto"
+                    color="light"
+                    type="submit"
+                    onClick={handleSubmit}
+                    disabled={isTextInputActive}
+                >
+                    {loading ? <Spinner size="sm" /> : "Transférer"}
+                </Button>
+            </div>
+
+            {message && <p className={colorMessage}>{message}</p>}
         </Card>
     );
 };
