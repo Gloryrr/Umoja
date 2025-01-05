@@ -18,7 +18,7 @@ class FileSftpController extends AbstractController
         Security $security
     ): JsonResponse {
         return $sftpService->uploadFichier(
-            $request, 
+            $request,
             $security
         );
     }

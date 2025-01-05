@@ -28,8 +28,8 @@ class SftpService
     }
 
     public function uploadFichierSFTP(
-        string $localFilePath, 
-        string $remoteFileName, 
+        string $localFilePath,
+        string $remoteFileName,
         UserInterface $userInterface,
         int $idProjet,
         string $typeFichier
@@ -59,7 +59,7 @@ class SftpService
 
             $remoteFilePath = "{$this->remoteDir}/{$username}/{$idProjet}/{$typeFichier}/{$remoteFileName}";
             return $sftp->put(
-                $remoteFilePath, 
+                $remoteFilePath,
                 file_get_contents($localFilePath)
             );
         } catch (\Throwable $th) {
@@ -68,19 +68,19 @@ class SftpService
     }
 
     public function uploadFichier(
-        Request $request, 
+        Request $request,
         Security $security
     ): JsonResponse {
         $file = $request->files->get('file');
         $idProjet = intval($request->request->get('idProjet'));
         $typeFicher = $request->request->get('typeFichier');
-        
+
         $user = $security->getUser();
 
         if (!$file || $file->getClientMimeType() !== 'application/pdf') {
             return new JsonResponse(
-            ['error' => 'Type de fichier invalide, nous n\'acceptons que des PDF'], 
-            Response::HTTP_BAD_REQUEST
+                ['error' => 'Type de fichier invalide, nous n\'acceptons que des PDF'],
+                Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -88,7 +88,7 @@ class SftpService
             $filename = $file->getClientOriginalName();
             $filePath = $file->getPathname();
             $fichierSauvegarde = $this->uploadFichierSFTP(
-                $filePath, 
+                $filePath,
                 $filename,
                 $user,
                 $idProjet,
