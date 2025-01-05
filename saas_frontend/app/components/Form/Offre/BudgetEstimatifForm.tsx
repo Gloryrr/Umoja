@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Label, TextInput, Button, Checkbox, Spinner, FileInput } from 'flowbite-react';
 import { FiRefreshCw } from "react-icons/fi";
 import { apiPostSFTP } from '@/app/services/internalApiClients';
@@ -12,13 +12,16 @@ interface BudgetEstimatifFormProps {
         fraisHebergement: number | null;
         fraisRestauration: number | null;
     };
+    idProjet: string;
     onBudgetEstimatifChange: (name: string, value: number | boolean) => void;
 }
 
 const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
     budgetEstimatif,
     onBudgetEstimatifChange,
+    idProjet,
 }) => {
+    const [offreId, setOffreId] = useState<string>(idProjet);
     const [file, setFile] = useState<File | null>(null);
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
@@ -48,33 +51,35 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
         setFile(e.target.files?.[0] || null);
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        setLoading(true);
-        e.preventDefault();
-
-        if (!file) {
-            setMessage('Veuillez sélectionner un fichier PDF');
-            setLoading(false);
-            return;
+    useEffect(() => {
+            setOffreId(idProjet);
+        }, [idProjet]);
+    
+    useEffect(() => {
+        if (offreId && file) {
+            const handleSubmit = async () => {
+                setLoading(true);
+    
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('idProjet', offreId.toString());
+                formData.append('typeFichier', "budget_estimatif");
+    
+                try {
+                    await apiPostSFTP('/upload-sftp-fichier', formData);
+                    setColorMessage('text-green-500');
+                    setMessage('Le fichier a été transféré avec succès');
+                } catch (error) {
+                    setColorMessage('text-red-500');
+                    setMessage('Erreur lors du transfert du fichier, veuillez réessayer');
+                } finally {
+                    setLoading(false);
+                }
+            };
+    
+            handleSubmit();
         }
-
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('idProjet', "120");
-        formData.append('typeFichier', "budget-estimatif");
-
-        await apiPostSFTP('/upload-sftp-fichier', formData).then(
-            () => {
-                setColorMessage('text-green-500');
-                setMessage('Le fichier a été transféré avec succès');
-                setLoading(false);
-            }
-        ).catch(() => {
-            setColorMessage('text-red-500');
-            setMessage('Erreur lors du transfert du fichier, veuillez réessayer');
-            setLoading(false);
-        });
-    };
+    }, [offreId, file]);
 
     return (
         <Card className="shadow-none border-none mx-auto w-full">
@@ -172,7 +177,7 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
                     accept="application/pdf"
                     onChange={handleFileChange}
                 />
-                <Button
+                {/* <Button
                     className="ml-auto"
                     color="light"
                     type="submit"
@@ -180,7 +185,7 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
                     disabled={isTextInputActive}
                 >
                     {loading ? <Spinner size="sm" /> : "Transférer"}
-                </Button>
+                </Button> */}
             </div>
 
             {message && <p className={colorMessage}>{message}</p>}

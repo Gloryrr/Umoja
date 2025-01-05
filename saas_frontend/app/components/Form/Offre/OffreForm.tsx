@@ -100,7 +100,7 @@ const OffreForm: React.FC = () => {
             setTypeMessage("success");
             setDescription("Cliquez sur 'Voir plus' pour accéder aux détails de l'offre.");
             setMessageOffrePostee("Votre offre a bien été postée !");
-            setOffrePostee(true);   
+            setOffrePostee(true);
         } catch (error) {
             setTypeMessage("error");
             setMessageOffrePostee("Une erreur s'est produite durant le post de votre offre.");
@@ -191,7 +191,6 @@ const OffreForm: React.FC = () => {
             conditionsPaiement,
             pourcentageRecette
         } = formData.conditionsFinancieres;
-        //console.log(conditionsFinancieresParPDF);
         if (conditionsFinancieresParPDF) {
             return true;
         } else {
@@ -298,7 +297,6 @@ const OffreForm: React.FC = () => {
             const arrayBuffer = await file.arrayBuffer();
             const uint8Array = new Uint8Array(arrayBuffer);
             const base64String = btoa(String.fromCharCode(...uint8Array));
-            console.log(section, field, base64String); 
     
             updateField(section, field, base64String);
         } catch (error) {
@@ -367,6 +365,7 @@ const OffreForm: React.FC = () => {
                                             }
                                         }))
                                     }
+                                    idProjet={offreId}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -385,6 +384,7 @@ const OffreForm: React.FC = () => {
                                             }
                                         }))
                                     }
+                                    idProjet={offreId}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -403,6 +403,7 @@ const OffreForm: React.FC = () => {
                                             }
                                         }))
                                     }
+                                    idProjet={offreId}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -421,6 +422,7 @@ const OffreForm: React.FC = () => {
                                             }
                                         }))
                                     }
+                                    idProjet={offreId}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>

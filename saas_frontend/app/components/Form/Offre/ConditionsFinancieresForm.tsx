@@ -12,13 +12,16 @@ interface ConditionsFinancieresFormProps {
         conditionsPaiement: string | null;
         pourcentageRecette: number | null;
     };
+    idProjet: string;
     onConditionsFinancieresChange: (name: string, value: string | boolean) => void;
 }
 
 const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
     conditionsFinancieres,
     onConditionsFinancieresChange,
+    idProjet,
 }) => {
+    const [offreId, setOffreId] = useState<string>(idProjet);
     const [file, setFile] = useState<File | null>(null);
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
@@ -63,33 +66,35 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
         setFile(e.target.files?.[0] || null);
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        setLoading(true);
-        e.preventDefault();
-
-        if (!file) {
-            setMessage('Veuillez sélectionner un fichier PDF');
-            setLoading(false);
-            return;
+    useEffect(() => {
+            setOffreId(idProjet);
+        }, [idProjet]);
+    
+    useEffect(() => {
+        if (offreId && file) {
+            const handleSubmit = async () => {
+                setLoading(true);
+    
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('idProjet', offreId.toString());
+                formData.append('typeFichier', "conditions_financieres");
+    
+                try {
+                    await apiPostSFTP('/upload-sftp-fichier', formData);
+                    setColorMessage('text-green-500');
+                    setMessage('Le fichier a été transféré avec succès');
+                } catch (error) {
+                    setColorMessage('text-red-500');
+                    setMessage('Erreur lors du transfert du fichier, veuillez réessayer');
+                } finally {
+                    setLoading(false);
+                }
+            };
+    
+            handleSubmit();
         }
-
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('idProjet', "120");
-        formData.append('typeFichier', "conditions-financieres");
-
-        await apiPostSFTP('/upload-sftp-fichier', formData).then(
-            () => {
-                setColorMessage('text-green-500');
-                setMessage('Le fichier a été transféré avec succès');
-                setLoading(false);
-            }
-        ).catch(() => {
-            setColorMessage('text-red-500');
-            setMessage('Erreur lors du transfert du fichier, veuillez réessayer');
-            setLoading(false);
-        });
-    };
+    }, [offreId, file]);
 
     return (
         <Card className="shadow-none border-none mx-auto w-full">
@@ -178,7 +183,7 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
                     accept="application/pdf"
                     onChange={handleFileChange}
                 />
-                <Button
+                {/* <Button
                     className="ml-auto"
                     color="light"
                     type="submit"
@@ -186,7 +191,7 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
                     disabled={isTextInputActive}
                 >
                     {loading ? <Spinner size="sm" /> : "Transférer"}
-                </Button>
+                </Button> */}
             </div>
 
             {message && <p className={colorMessage}>{message}</p>}

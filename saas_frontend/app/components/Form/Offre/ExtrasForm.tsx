@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import {
     Label,
     TextInput,
@@ -22,13 +22,16 @@ interface ExtrasFormProps {
         exception: string | null;
         clausesConfidentialites: string | null;
     };
+    idProjet: string;
     onExtrasChange: (name: string, value: string | boolean) => void;
 }
 
 const ExtrasForm: React.FC<ExtrasFormProps> = ({
     extras,
     onExtrasChange,
+    idProjet,
 }) => {
+    const [offreId, setOffreId] = useState<string>(idProjet);
     const [file, setFile] = useState<File | null>(null);
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
@@ -49,33 +52,35 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
         setFile(e.target.files?.[0] || null);
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        setLoading(true);
-        e.preventDefault();
+    useEffect(() => {
+        setOffreId(idProjet);
+    }, [idProjet]);
 
-        if (!file) {
-            setMessage('Veuillez sélectionner un fichier PDF');
-            setLoading(false);
-            return;
+    useEffect(() => {
+        if (offreId && file) {
+            const handleSubmit = async () => {
+                setLoading(true);
+    
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('idProjet', offreId.toString());
+                formData.append('typeFichier', "extras");
+    
+                try {
+                    await apiPostSFTP('/upload-sftp-fichier', formData);
+                    setColorMessage('text-green-500');
+                    setMessage('Le fichier a été transféré avec succès');
+                } catch (error) {
+                    setColorMessage('text-red-500');
+                    setMessage('Erreur lors du transfert du fichier, veuillez réessayer');
+                } finally {
+                    setLoading(false);
+                }
+            };
+    
+            handleSubmit();
         }
-
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('idProjet', "120");
-        formData.append('typeFichier', "extras");
-
-        await apiPostSFTP('/upload-sftp-fichier', formData).then(
-            () => {
-                setColorMessage('text-green-500');
-                setMessage('Le fichier a été transféré avec succès');
-                setLoading(false);
-            }
-        ).catch(() => {
-            setColorMessage('text-red-500');
-            setMessage('Erreur lors du transfert du fichier, veuillez réessayer');
-            setLoading(false);
-        });
-    };
+    }, [offreId, file]);
 
     const handleReset = () => {
         onExtrasChange("descrExtras", "");
@@ -188,7 +193,7 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
                     accept="application/pdf"
                     onChange={handleFileChange}
                 />
-                <Button
+                {/* <Button
                     className="ml-auto"
                     color="light"
                     type="submit"
@@ -196,7 +201,7 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
                     disabled={isTextInputActive}
                 >
                     {loading ? <Spinner size="sm" /> : "Transférer"}
-                </Button>
+                </Button> */}
             </div>
 
             {message && <p className={colorMessage}>{message}</p>}

@@ -1,8 +1,7 @@
 "use client";
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { TextInput, Label, Card, Button, Checkbox, Spinner, FileInput } from 'flowbite-react';
 import { FiRefreshCw } from "react-icons/fi";
-import { useState } from 'react';
 import { Artiste } from '@/app/types/FormDataType';
 import { apiPostSFTP } from '@/app/services/internalApiClients';
 
@@ -19,13 +18,16 @@ interface FicheTechniqueArtisteFormProps {
         artiste: Artiste[];
         nbArtistes: number | null;
     };
+    idProjet: string;
     onFicheTechniqueChange: (name: string, value: string | string[] | number | Artiste[] | boolean) => void;
 }
 
 const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
     ficheTechniqueArtiste,
     onFicheTechniqueChange,
+    idProjet,
 }) => {
+    const [offreId, setOffreId] = useState<string>(idProjet);
     const [file, setFile] = useState<File | null>(null);
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
@@ -99,33 +101,35 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
         setFile(e.target.files?.[0] || null);
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        setLoading(true);
-        e.preventDefault();
+    useEffect(() => {
+        setOffreId(idProjet);
+    }, [idProjet]);
 
-        if (!file) {
-            setMessage('Veuillez sélectionner un fichier PDF');
-            setLoading(false);
-            return;
+    useEffect(() => {
+        if (offreId && file) {
+            const handleSubmit = async () => {
+                setLoading(true);
+    
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('idProjet', offreId.toString());
+                formData.append('typeFichier', "ficte_technique_artiste");
+    
+                try {
+                    await apiPostSFTP('/upload-sftp-fichier', formData);
+                    setColorMessage('text-green-500');
+                    setMessage('Le fichier a été transféré avec succès');
+                } catch (error) {
+                    setColorMessage('text-red-500');
+                    setMessage('Erreur lors du transfert du fichier, veuillez réessayer');
+                } finally {
+                    setLoading(false);
+                }
+            };
+    
+            handleSubmit();
         }
-
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('idProjet', "120");
-        formData.append('typeFichier', "fiche-technique-artiste");
-
-        await apiPostSFTP('/upload-sftp-fichier', formData).then(
-            () => {
-                setColorMessage('text-green-500');
-                setMessage('Le fichier a été transféré avec succès');
-                setLoading(false);
-            }
-        ).catch(() => {
-            setColorMessage('text-red-500');
-            setMessage('Erreur lors du transfert du fichier, veuillez réessayer');
-            setLoading(false);
-        });
-    };
+    }, [offreId, file]);
 
     return (
         <Card className="w-full shadow-none border-none">
@@ -302,7 +306,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                     accept="application/pdf"
                     onChange={handleFileChange}
                 />
-                <Button
+                {/* <Button
                     className="ml-auto"
                     color="light"
                     type="submit"
@@ -310,7 +314,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                     disabled={isTextInputActive}
                 >
                     {loading ? <Spinner size="sm" /> : "Transférer"}
-                </Button>
+                </Button> */}
             </div>
 
             {message && <p className={colorMessage}>{message}</p>}
