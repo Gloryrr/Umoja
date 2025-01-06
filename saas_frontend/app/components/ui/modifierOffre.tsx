@@ -301,6 +301,7 @@ const ModifierOffreForm: React.FC<{
                                         }));
                                         onProjectExtrasChange(formData);
                                     }}
+                                    idProjet={offreId}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -320,6 +321,7 @@ const ModifierOffreForm: React.FC<{
                                         }));
                                         onProjectConditionsFinancieresChange(formData);
                                     }}
+                                    idProjet={offreId}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -339,6 +341,7 @@ const ModifierOffreForm: React.FC<{
                                         }));
                                         onProjectBudgetEstimatifChange(formData);
                                     }}
+                                    idProjet={offreId}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -358,6 +361,7 @@ const ModifierOffreForm: React.FC<{
                                         }));
                                         onProjectFicheTechniqueArtisteChange(formData);
                                     }}
+                                    idProjet={offreId}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
