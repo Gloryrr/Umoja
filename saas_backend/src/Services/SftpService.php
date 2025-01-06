@@ -151,8 +151,8 @@ class SftpService
     
             if (!$sftp->chdir($projectPath)) {
                 return new JsonResponse(
-                    ['error' => 'Aucun fichier trouvé pour ce projet'],
-                    Response::HTTP_NOT_FOUND
+                    ['message_none_files' => 'Aucun fichier trouvé pour ce projet'],
+                    Response::HTTP_OK
                 );
             }
     

@@ -1,7 +1,7 @@
 "use client"
 
 import React, { Suspense, useState, useEffect, useCallback } from 'react';
-import { FaLink } from "react-icons/fa";
+import { FaLink, FaDownload } from "react-icons/fa";
 import { useSearchParams } from 'next/navigation';
 // import { FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
 import { Progress, Button, Modal, Card, Spinner, Textarea, Avatar, Tabs } from 'flowbite-react';
@@ -11,9 +11,8 @@ import NavigationHandler from '@/app/navigation/Router';
 import CommentaireSection from "@/app/components/Commentaires/CommentaireSection";
 import Image from 'next/image';
 import { FicheTechniqueArtiste, FormData } from '@/app/types/FormDataType';
-import ModifierOffreForm from '../components/ui/modifierOffre';
-import PDFViewer from '@/app/components/PDFViewer';
-// import DetailOffer from '@/app/components/OffreDetail';
+import ModifierOffreForm from '@/app/components/ui/modifierOffre';
+import DownloadButton from '@/app/components/DowloadFilePDF';
 
 interface Extras {
     extrasParPDF: boolean;
@@ -167,10 +166,12 @@ function ProjectDetailsContent() {
     let conditionsFinancieresParPDF : boolean | null = null;
     let ficheTechniqueArtisteParPDF : boolean | null = null;
 
-    let contenuExtrasParPDF : string | null = null;
-    let contenuBudgetEstimatifParPDF : string | null = null;
-    let contenuConditionsFinancieresParPDF : string | null = null;
-    let contenuFicheTechniqueArtisteParPDF : string | null = null;
+    const [contenuExtrasParPDF, setContenuExtrasParPDF] = useState<string | null>(null);
+    const [contenuBudgetEstimatifParPDF, setContenuBudgetEstimatifParPDF] = useState<string | null>(null);
+    const [contenuConditionsFinancieresParPDF, setContenuConditionsFinancieresParPDF] = useState<string | null>(null);
+    const [contenuFicheTechniqueArtisteParPDF, setContenuFicheTechniqueArtisteParPDF] = useState<string | null>(null);
+
+    const [messageAucunFichier, setMessageAucunFichier] = useState<string | null>(null);
     
     // const optionsDate: Intl.DateTimeFormatOptions = {
     //     year: 'numeric',
@@ -436,28 +437,35 @@ function ProjectDetailsContent() {
         const data = {
             idProjet: project?.id,
         };
-        await apiPost('/get-sftp-fichiers', JSON.parse(JSON.stringify(data))).then((response) => {
-            if (response.files.budget_estimatif != null) {
-                contenuBudgetEstimatifParPDF = response.files.budget_estimatif.content;
-            } else {
-                contenuBudgetEstimatifParPDF = null;
+        await apiPost('/get-sftp-fichiers', JSON.parse(JSON.stringify(data))).then(
+            (response) => {
+                if (response.message_none_files) {
+                    setMessageAucunFichier(response.message_none_files);
+                } else {
+                    if (response.files.budget_estimatif != null) {
+                        setContenuBudgetEstimatifParPDF(response.files.budget_estimatif.content);
+                    } else {
+                        setContenuBudgetEstimatifParPDF(null);
+                    }
+                    if (response.files.extras != null) {
+                        setContenuExtrasParPDF(response.files.extras.content);
+                    } else {
+                        setContenuExtrasParPDF(null);
+                    }
+                    if (response.files.conditions_financieres != null) {
+                        setContenuConditionsFinancieresParPDF(response.files.conditions_financieres.content);
+                    } else {
+                        setContenuConditionsFinancieresParPDF(null);
+                    }
+                    if (response.files.fiche_technique_artiste != null) {
+                        setContenuFicheTechniqueArtisteParPDF(response.files.fiche_technique_artiste.content);
+                    } else {
+                        setContenuFicheTechniqueArtisteParPDF(null);
+                    }
+                }
             }
-            if (response.files.extras != null) {
-                contenuExtrasParPDF = response.files.extras.content;
-            } else {
-                contenuExtrasParPDF = null;
-            }
-            if (response.files.conditions_financieres != null) {
-                contenuConditionsFinancieresParPDF = response.files.conditions_financieres.content;
-            } else {
-                contenuConditionsFinancieresParPDF = null;
-            }
-            if (response.files.fiche_technique_artiste != null) {
-                contenuFicheTechniqueArtisteParPDF = response.files.fiche_technique_artiste.content;
-            } else {
-                contenuFicheTechniqueArtisteParPDF = null;
-            }
-        })};
+        );
+};
 
     useEffect( () => {
         if (project) {
@@ -700,10 +708,23 @@ function ProjectDetailsContent() {
                                                 </div>
                                             </dl>
                                         </div>
-                                    </Card> : <Card>
-                                        <PDFViewer base64EncodedDocument={
-                                            contenuBudgetEstimatifParPDF != null ? conditionsFinancieresParPDF : ""
-                                        } />
+                                    </Card> : 
+                                    contenuBudgetEstimatifParPDF && <Card>
+                                        <div>
+                                            <h3 className="font-medium">Budget estimatif</h3>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Document de liaison</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">
+                                                        <div className='flex'>
+                                                            <DownloadButton donneePDFbase64={contenuBudgetEstimatifParPDF} />
+                                                        </div>
+                                                    </dd>
+                                                </div>
+                                            </dl>
+                                        </div>
                                     </Card>}
 
                                     {/* Extras de l&apos;évènement */}
@@ -736,7 +757,24 @@ function ProjectDetailsContent() {
                                                 </div>
                                             </dl>
                                         </div>
-                                    </Card> : null}
+                                    </Card> : 
+                                    contenuExtrasParPDF && <Card>
+                                        <div>
+                                            <h3 className="font-medium">Extras</h3>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Document de liaison</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">
+                                                        <div className='flex'>
+                                                            <DownloadButton donneePDFbase64={contenuExtrasParPDF} />
+                                                        </div>
+                                                    </dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card>}
 
                                     {/* Conditions financière de l&apos;évènement */}
                                     {conditionsFinancieresParPDF && conditionsFinancieresParPDF ? <Card>
@@ -760,7 +798,24 @@ function ProjectDetailsContent() {
                                                 </div>
                                             </dl>
                                         </div>
-                                    </Card> : null}
+                                    </Card> : 
+                                    contenuConditionsFinancieresParPDF && <Card>
+                                        <div>
+                                            <h3 className="font-medium">Conditions financières</h3>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Document de liaison</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">
+                                                        <div className='flex'>
+                                                            <DownloadButton donneePDFbase64={contenuConditionsFinancieresParPDF} />
+                                                        </div>
+                                                    </dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card>}
 
                                     {/* La fiche technique de l&apos;artiste */}
                                     {ficheTechniqueArtisteParPDF && ficheTechniqueArtisteParPDF ? <Card>
@@ -807,7 +862,30 @@ function ProjectDetailsContent() {
                                                 </div>
                                             </dl>
                                         </div>
-                                    </Card> : null}
+                                    </Card> : 
+                                    contenuFicheTechniqueArtisteParPDF && <Card>
+                                        <div>
+                                            <h3 className="font-medium">Fiche technique de l&apos;artiste</h3>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Document de liaison</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">
+                                                        <div className='flex'>
+                                                            <DownloadButton donneePDFbase64={contenuFicheTechniqueArtisteParPDF} />
+                                                        </div>
+                                                    </dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card>}
+
+                                    {messageAucunFichier && <Card>
+                                        <div>
+                                            <h3 className="font-medium">{messageAucunFichier}</h3>
+                                        </div>
+                                    </Card>}
                                 </div>
 
                                 <div>
