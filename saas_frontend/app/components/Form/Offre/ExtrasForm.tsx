@@ -1,5 +1,5 @@
 "use client";
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Label,
     TextInput,
@@ -7,7 +7,6 @@ import {
     Card,
     Button,
     FileInput,
-    Spinner,
     Checkbox,
 } from 'flowbite-react';
 import { apiPostSFTP } from '@/app/services/internalApiClients';
@@ -34,7 +33,6 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
     const [offreId, setOffreId] = useState<string>(idProjet);
     const [file, setFile] = useState<File | null>(null);
     const [message, setMessage] = useState('');
-    const [loading, setLoading] = useState(false);
     const [colorMessage, setColorMessage] = useState('success');
     const [isTextInputActive, setIsTextInputActive] = useState(true);
 
@@ -59,7 +57,6 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
     useEffect(() => {
         if (offreId && file) {
             const handleSubmit = async () => {
-                setLoading(true);
     
                 const formData = new FormData();
                 formData.append('file', file);
@@ -71,10 +68,9 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
                     setColorMessage('text-green-500');
                     setMessage('Le fichier a été transféré avec succès');
                 } catch (error) {
+                    console.error('Erreur lors du transfert du fichier :', error);
                     setColorMessage('text-red-500');
                     setMessage('Erreur lors du transfert du fichier, veuillez réessayer');
-                } finally {
-                    setLoading(false);
                 }
             };
     
@@ -193,15 +189,6 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
                     accept="application/pdf"
                     onChange={handleFileChange}
                 />
-                {/* <Button
-                    className="ml-auto"
-                    color="light"
-                    type="submit"
-                    onClick={handleSubmit}
-                    disabled={isTextInputActive}
-                >
-                    {loading ? <Spinner size="sm" /> : "Transférer"}
-                </Button> */}
             </div>
 
             {message && <p className={colorMessage}>{message}</p>}

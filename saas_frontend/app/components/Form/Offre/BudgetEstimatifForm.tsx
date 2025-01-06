@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { Card, Label, TextInput, Button, Checkbox, Spinner, FileInput } from 'flowbite-react';
+import { Card, Label, TextInput, Button, Checkbox, FileInput } from 'flowbite-react';
 import { FiRefreshCw } from "react-icons/fi";
 import { apiPostSFTP } from '@/app/services/internalApiClients';
 
@@ -24,15 +24,12 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
     const [offreId, setOffreId] = useState<string>(idProjet);
     const [file, setFile] = useState<File | null>(null);
     const [message, setMessage] = useState('');
-    const [loading, setLoading] = useState(false);
     const [colorMessage, setColorMessage] = useState('success');
     const [isTextInputActive, setIsTextInputActive] = useState(true);
 
     const handleBudgetEstimatifChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type } = e.target as HTMLInputElement;
         const newValue = type === "checkbox" ? !budgetEstimatif.budgetEstimatifParPDF : parseFloat(value);
-
-        console.log(name, newValue);
         
         onBudgetEstimatifChange(name, newValue);
         if (name === 'budgetEstimatifParPDF') {
@@ -58,7 +55,6 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
     useEffect(() => {
         if (offreId && file) {
             const handleSubmit = async () => {
-                setLoading(true);
     
                 const formData = new FormData();
                 formData.append('file', file);
@@ -70,10 +66,9 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
                     setColorMessage('text-green-500');
                     setMessage('Le fichier a été transféré avec succès');
                 } catch (error) {
+                    console.error('Erreur lors du transfert du fichier :', error);
                     setColorMessage('text-red-500');
                     setMessage('Erreur lors du transfert du fichier, veuillez réessayer');
-                } finally {
-                    setLoading(false);
                 }
             };
     
@@ -177,15 +172,6 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
                     accept="application/pdf"
                     onChange={handleFileChange}
                 />
-                {/* <Button
-                    className="ml-auto"
-                    color="light"
-                    type="submit"
-                    onClick={handleSubmit}
-                    disabled={isTextInputActive}
-                >
-                    {loading ? <Spinner size="sm" /> : "Transférer"}
-                </Button> */}
             </div>
 
             {message && <p className={colorMessage}>{message}</p>}
