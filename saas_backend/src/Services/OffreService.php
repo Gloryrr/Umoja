@@ -337,7 +337,7 @@ class OffreService
             }
 
             if (
-                isset($data['conditionsFinancieres']['conditionsFinancieresParPDF']) && 
+                isset($data['conditionsFinancieres']['conditionsFinancieresParPDF']) &&
                 $data['conditionsFinancieres']['conditionsFinancieresParPDF'] == false
             ) {
                 $conditionsFinancieres = new ConditionsFinancieres();
@@ -350,7 +350,7 @@ class OffreService
             }
 
             if (
-                isset($data['budgetEstimatif']['budgetEstimatifParPDF']) && 
+                isset($data['budgetEstimatif']['budgetEstimatifParPDF']) &&
                 $data['budgetEstimatif']['budgetEstimatifParPDF'] == false
             ) {
                 $budgetEstimatif = new BudgetEstimatif();
@@ -362,7 +362,7 @@ class OffreService
             }
 
             if (
-                isset($data['ficheTechniqueArtiste']['ficheTechniqueArtisteParPDF']) && 
+                isset($data['ficheTechniqueArtiste']['ficheTechniqueArtisteParPDF']) &&
                 $data['ficheTechniqueArtiste']['ficheTechniqueArtisteParPDF'] == false
             ) {
                 $ficheTechniqueArtiste = new FicheTechniqueArtiste();
@@ -406,12 +406,14 @@ class OffreService
             }
 
             if (
-                isset($data['ficheTechniqueArtiste']['ficheTechniqueArtisteParPDF']) && 
+                isset($data['ficheTechniqueArtiste']['ficheTechniqueArtisteParPDF']) &&
                 $data['ficheTechniqueArtiste']['ficheTechniqueArtisteParPDF'] == false
             ) {
                 $nb_artistes = intval($data['ficheTechniqueArtiste']['nbArtistes']);
                 for ($i = 0; $i < $nb_artistes; $i++) {
-                    // $artiste = $artisteRepository->trouveArtisteByName($data['ficheTechniqueArtiste']['artiste'][$i]);
+                    // $artiste = $artisteRepository->trouveArtisteByName(
+                    //      $data['ficheTechniqueArtiste']['artiste'][$i]
+                    //);
                     // print_r($artiste);
                     // switch (sizeof($artiste)) {
                         // case 0:
@@ -464,7 +466,10 @@ class OffreService
                 'serialized' => false
             ], Response::HTTP_BAD_REQUEST, ['Access-Control-Allow-Origin' => '*']);
         } catch (\Exception $e) {
-            throw new \RuntimeException("Erreur lors de la création de l'offre", $e->getMessage() . ' ' . $e->getLine());
+            throw new \RuntimeException(
+                "Erreur lors de la création de l'offre",
+                $e->getMessage() . ' ' . $e->getLine()
+            );
         }
     }
 

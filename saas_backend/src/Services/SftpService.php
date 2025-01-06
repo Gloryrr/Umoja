@@ -122,40 +122,40 @@ class SftpService
         mixed $data
     ): JsonResponse {
         $idProjet = intval($data['idProjet']);
-    
+
         if (!$idProjet) {
             return new JsonResponse(
                 ['error' => 'ID projet invalide ou manquant'],
                 Response::HTTP_BAD_REQUEST
             );
         }
-    
+
         $user = $security->getUser();
-    
+
         if (!$user instanceof UserInterface) {
             return new JsonResponse(
                 ['error' => 'Utilisateur non authentifié'],
                 Response::HTTP_UNAUTHORIZED
             );
         }
-    
+
         try {
             $username = $user->getUserIdentifier();
             $sftp = new SFTP($this->host, $this->port);
-    
+
             if (!$sftp->login($this->username, $this->password)) {
                 throw new \RuntimeException('Accès au serveur SFTP impossible');
             }
-    
+
             $projectPath = "{$this->remoteDir}/{$username}/{$idProjet}";
-    
+
             if (!$sftp->chdir($projectPath)) {
                 return new JsonResponse(
                     ['message_none_files' => 'Aucun fichier trouvé pour ce projet'],
                     Response::HTTP_OK
                 );
             }
-    
+
             // Sous-dossiers possibles dans l'arborescence du projet pour un utilisateur
             $subdirectories = [
                 'extras',
@@ -163,28 +163,28 @@ class SftpService
                 'budget_estimatif',
                 'fiche_technique_artiste'
             ];
-    
+
             $structuredFiles = [];
-    
+
             foreach ($subdirectories as $subdir) {
                 $subdirPath = "{$projectPath}/{$subdir}";
-    
+
                 // Vérifier si le sous-dossier existe
                 if ($sftp->chdir($subdirPath)) {
                     $files = $sftp->nlist($subdirPath);
-    
+
                     foreach ($files as $file) {
                         if ($file === '.' || $file === '..') {
                             continue;
                         }
-    
+
                         $filePath = "{$subdirPath}/{$file}";
                         $fileContent = $sftp->get($filePath);
-    
+
                         if ($fileContent === false) {
                             $fileContent = null;
                         }
-    
+
                         $structuredFiles[$subdir] = [
                             'name' => $file,
                             'path' => $filePath,
@@ -196,7 +196,7 @@ class SftpService
                     $structuredFiles[$subdir] = null;
                 }
             }
-    
+
             return new JsonResponse(
                 [
                     'message' => 'Fichiers récupérés avec succès',
@@ -210,5 +210,5 @@ class SftpService
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
-    }    
+    }
 }
