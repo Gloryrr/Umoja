@@ -307,14 +307,16 @@ class OffreService
             $offre->setLiensPromotionnels($liensPromotionnels);
             $offre->setNbContributeur(0);
 
-            $extras = new Extras();
-            $extras->setDescrExtras($data['extras']['descrExtras']);
-            $extras->setCoutExtras(intval($data['extras']['coutExtras']));
-            $extras->setExclusivite($data['extras']['exclusivite']);
-            $extras->setException($data['extras']['exception']);
-            $extras->setOrdrePassage($data['ficheTechniqueArtiste']['ordrePassage']);
-            $extras->setClausesConfidentialites($data['extras']['clausesConfidentialites']);
-            $offre->setExtras($extras);
+            if (isset($data['extras']['extrasParPDF']) && $data['extras']['extrasParPDF'] == false) {
+                $extras = new Extras();
+                $extras->setDescrExtras($data['extras']['descrExtras']);
+                $extras->setCoutExtras(intval($data['extras']['coutExtras']));
+                $extras->setExclusivite($data['extras']['exclusivite']);
+                $extras->setException($data['extras']['exception']);
+                $extras->setOrdrePassage($data['ficheTechniqueArtiste']['ordrePassage']);
+                $extras->setClausesConfidentialites($data['extras']['clausesConfidentialites']);
+                $offre->setExtras($extras);
+            }
 
             if ($data['etatOffre']['nomEtatOffre'] == "") {
                 $etatOffre = $etatOffreRepository->findBy(['nomEtat' => 'En Cours'])[0];
@@ -334,38 +336,53 @@ class OffreService
                 $offre->setTypeOffre($typeOffre);
             }
 
-            $conditionsFinancieres = new ConditionsFinancieres();
-            $conditionsFinancieres->setMinimunGaranti(intval($data['conditionsFinancieres']['minimunGaranti']));
-            $conditionsFinancieres->setConditionsPaiement($data['conditionsFinancieres']['conditionsPaiement']);
-            $conditionsFinancieres->setPourcentageRecette(
-                floatval($data['conditionsFinancieres']['pourcentageRecette'])
-            );
-            $offre->setConditionsFinancieres($conditionsFinancieres);
+            if (
+                isset($data['conditionsFinancieres']['conditionsFinancieresParPDF']) &&
+                $data['conditionsFinancieres']['conditionsFinancieresParPDF'] == false
+            ) {
+                $conditionsFinancieres = new ConditionsFinancieres();
+                $conditionsFinancieres->setMinimunGaranti(intval($data['conditionsFinancieres']['minimunGaranti']));
+                $conditionsFinancieres->setConditionsPaiement($data['conditionsFinancieres']['conditionsPaiement']);
+                $conditionsFinancieres->setPourcentageRecette(
+                    floatval($data['conditionsFinancieres']['pourcentageRecette'])
+                );
+                $offre->setConditionsFinancieres($conditionsFinancieres);
+            }
 
-            $budgetEstimatif = new BudgetEstimatif();
-            $budgetEstimatif->setCachetArtiste(intval($data['budgetEstimatif']['cachetArtiste']));
-            $budgetEstimatif->setFraisDeplacement(intval($data['budgetEstimatif']['fraisDeplacement']));
-            $budgetEstimatif->setFraisHebergement(intval($data['budgetEstimatif']['fraisHebergement']));
-            $budgetEstimatif->setFraisRestauration(intval($data['budgetEstimatif']['fraisRestauration']));
-            $offre->setBudgetEstimatif($budgetEstimatif);
+            if (
+                isset($data['budgetEstimatif']['budgetEstimatifParPDF']) &&
+                $data['budgetEstimatif']['budgetEstimatifParPDF'] == false
+            ) {
+                $budgetEstimatif = new BudgetEstimatif();
+                $budgetEstimatif->setCachetArtiste(intval($data['budgetEstimatif']['cachetArtiste']));
+                $budgetEstimatif->setFraisDeplacement(intval($data['budgetEstimatif']['fraisDeplacement']));
+                $budgetEstimatif->setFraisHebergement(intval($data['budgetEstimatif']['fraisHebergement']));
+                $budgetEstimatif->setFraisRestauration(intval($data['budgetEstimatif']['fraisRestauration']));
+                $offre->setBudgetEstimatif($budgetEstimatif);
+            }
 
-            $ficheTechniqueArtiste = new FicheTechniqueArtiste();
-            $ficheTechniqueArtiste->setBesoinBackline(
-                $data['ficheTechniqueArtiste']['besoinBackline']
-            );
-            $ficheTechniqueArtiste->setBesoinEclairage(
-                $data['ficheTechniqueArtiste']['besoinEclairage']
-            );
-            $ficheTechniqueArtiste->setBesoinEquipements(
-                $data['ficheTechniqueArtiste']['besoinEquipements']
-            );
-            $ficheTechniqueArtiste->setBesoinScene(
-                $data['ficheTechniqueArtiste']['besoinScene']
-            );
-            $ficheTechniqueArtiste->setBesoinSonorisation(
-                $data['ficheTechniqueArtiste']['besoinSonorisation']
-            );
-            $offre->setFicheTechniqueArtiste($ficheTechniqueArtiste);
+            if (
+                isset($data['ficheTechniqueArtiste']['ficheTechniqueArtisteParPDF']) &&
+                $data['ficheTechniqueArtiste']['ficheTechniqueArtisteParPDF'] == false
+            ) {
+                $ficheTechniqueArtiste = new FicheTechniqueArtiste();
+                $ficheTechniqueArtiste->setBesoinBackline(
+                    $data['ficheTechniqueArtiste']['besoinBackline']
+                );
+                $ficheTechniqueArtiste->setBesoinEclairage(
+                    $data['ficheTechniqueArtiste']['besoinEclairage']
+                );
+                $ficheTechniqueArtiste->setBesoinEquipements(
+                    $data['ficheTechniqueArtiste']['besoinEquipements']
+                );
+                $ficheTechniqueArtiste->setBesoinScene(
+                    $data['ficheTechniqueArtiste']['besoinScene']
+                );
+                $ficheTechniqueArtiste->setBesoinSonorisation(
+                    $data['ficheTechniqueArtiste']['besoinSonorisation']
+                );
+                $offre->setFicheTechniqueArtiste($ficheTechniqueArtiste);
+            }
 
             // création de l'objet de l'utilisateur qui a mit en ligne l'offre
             $utilisateur = $utilisateurRepository->trouveUtilisateurByUsername($data['utilisateur']['username']);
@@ -388,22 +405,29 @@ class OffreService
                 $offre->addGenreMusical($genreMusical[0]);
             }
 
-            $nb_artistes = intval($data['ficheTechniqueArtiste']['nbArtistes']);
-            for ($i = 0; $i < $nb_artistes; $i++) {
-                // $artiste = $artisteRepository->trouveArtisteByName($data['ficheTechniqueArtiste']['artiste'][$i]);
-                // print_r($artiste);
-                // switch (sizeof($artiste)) {
-                    // case 0:
-                $artisteObject = new Artiste();
-                $artisteObject->setNomArtiste($data['ficheTechniqueArtiste']['artiste'][$i]['nomArtiste']);
-                $artisteObject->setDescrArtiste("Artiste quelconque");
-                $artisteRepository->inscritArtiste($artisteObject);
-                        // break;
+            if (
+                isset($data['ficheTechniqueArtiste']['ficheTechniqueArtisteParPDF']) &&
+                $data['ficheTechniqueArtiste']['ficheTechniqueArtisteParPDF'] == false
+            ) {
+                $nb_artistes = intval($data['ficheTechniqueArtiste']['nbArtistes']);
+                for ($i = 0; $i < $nb_artistes; $i++) {
+                    // $artiste = $artisteRepository->trouveArtisteByName(
+                    //      $data['ficheTechniqueArtiste']['artiste'][$i]
+                    //);
+                    // print_r($artiste);
+                    // switch (sizeof($artiste)) {
+                        // case 0:
+                    $artisteObject = new Artiste();
+                    $artisteObject->setNomArtiste($data['ficheTechniqueArtiste']['artiste'][$i]['nomArtiste']);
+                    $artisteObject->setDescrArtiste("Artiste quelconque");
+                    $artisteRepository->inscritArtiste($artisteObject);
+                            // break;
 
-                    // default:
-                        // $offre->addArtiste($artiste[0]);
-                        // break;
-                // }
+                        // default:
+                            // $offre->addArtiste($artiste[0]);
+                            // break;
+                    // }
+                }
             }
 
             // ajout de l'offre en base de données
@@ -442,7 +466,10 @@ class OffreService
                 'serialized' => false
             ], Response::HTTP_BAD_REQUEST, ['Access-Control-Allow-Origin' => '*']);
         } catch (\Exception $e) {
-            throw new \RuntimeException("Erreur lors de la création de l'offre", $e->getMessage());
+            throw new \RuntimeException(
+                "Erreur lors de la création de l'offre",
+                $e->getMessage() . ' ' . $e->getLine()
+            );
         }
     }
 

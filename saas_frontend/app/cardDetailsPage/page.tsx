@@ -11,10 +11,11 @@ import NavigationHandler from '@/app/navigation/Router';
 import CommentaireSection from "@/app/components/Commentaires/CommentaireSection";
 import Image from 'next/image';
 import { FicheTechniqueArtiste, FormData } from '@/app/types/FormDataType';
-import ModifierOffreForm from '../components/ui/modifierOffre';
-// import DetailOffer from '@/app/components/OffreDetail';
+import ModifierOffreForm from '@/app/components/ui/modifierOffre';
+import DownloadButton from '@/app/components/DowloadFilePDF';
 
 interface Extras {
+    extrasParPDF: boolean;
     id: number;
     descrExtras: string;
     coutExtras: number;
@@ -42,6 +43,7 @@ interface EtatOffre {
 }
 
 interface ConditionsFinancieres {
+    conditionsFinancieresParPDF: boolean;
     id: number;
     minimunGaranti: number;
     conditionsPaiement: string;
@@ -49,6 +51,7 @@ interface ConditionsFinancieres {
 }
 
 interface BudgetEstimatif {
+    budgetEstimatifParPDF: boolean;
     id: number;
     cachetArtiste: number;
     fraisDeplacement: number;
@@ -157,6 +160,18 @@ function ProjectDetailsContent() {
     const [showModifyOffre, setShowModifyOffre] = useState(false);
     const [formData, setFormData] = useState<FormData>({} as FormData);
     const [liensPromotionnelsList, setLiensPromotionnelsList] = useState<string[]>([]);
+
+    const [extrasParPDF, setExtrasParPDF] = useState<boolean | null>(null);
+    const [budgetEstimatifParPDF, setBudgetEstimatifParPDF] = useState<boolean | null>(null);
+    const [conditionsFinancieresParPDF, setConditionsFinancieresParPDF] = useState<boolean | null>(null);
+    const [ficheTechniqueArtisteParPDF, setFicheTechniqueArtisteParPDF] = useState<boolean | null>(null);
+
+    const [contenuExtrasParPDF, setContenuExtrasParPDF] = useState<string | null>(null);
+    const [contenuBudgetEstimatifParPDF, setContenuBudgetEstimatifParPDF] = useState<string | null>(null);
+    const [contenuConditionsFinancieresParPDF, setContenuConditionsFinancieresParPDF] = useState<string | null>(null);
+    const [contenuFicheTechniqueArtisteParPDF, setContenuFicheTechniqueArtisteParPDF] = useState<string | null>(null);
+
+    const [messageAucunFichier, setMessageAucunFichier] = useState<string | null>(null);
     
     // const optionsDate: Intl.DateTimeFormatOptions = {
     //     year: 'numeric',
@@ -257,7 +272,6 @@ function ProjectDetailsContent() {
     }
 
     const setProjectProps = useCallback((project: Project) => {
-        // const dateParDefaut = new Date().toISOString().split('T')[0] as string;
         const listeLiensPromo = project.liensPromotionnels.split(';')
         listeLiensPromo.pop();
         setLiensPromotionnelsList(listeLiensPromo);
@@ -278,11 +292,12 @@ function ProjectDetailsContent() {
                 nbInvitesConcernes: project.nbInvitesConcernes
             },
             extras: {
-                descrExtras: project.extras.descrExtras,
-                coutExtras: project.extras.coutExtras,
-                exclusivite: project.extras.exclusivite,
-                exception: project.extras.exception,
-                clausesConfidentialites: project.extras.clausesConfidentialites
+                extrasParPDF: extrasParPDF,
+                descrExtras: project.extras?.descrExtras,
+                coutExtras: project.extras?.coutExtras,
+                exclusivite: project.extras?.exclusivite,
+                exception: project.extras?.exception,
+                clausesConfidentialites: project.extras?.clausesConfidentialites
             },
             etatOffre: {
                 nomEtatOffre: project.etatOffre.nomEtat
@@ -291,25 +306,28 @@ function ProjectDetailsContent() {
                 nomTypeOffre: project.typeOffre.nomTypeOffre
             },
             conditionsFinancieres: {
-                minimunGaranti: project.conditionsFinancieres.minimunGaranti,
-                conditionsPaiement: project.conditionsFinancieres.conditionsPaiement,
-                pourcentageRecette: project.conditionsFinancieres.pourcentageRecette
+                conditionsFinancieresParPDF: conditionsFinancieresParPDF,
+                minimunGaranti: project.conditionsFinancieres?.minimunGaranti,
+                conditionsPaiement: project.conditionsFinancieres?.conditionsPaiement,
+                pourcentageRecette: project.conditionsFinancieres?.pourcentageRecette
             },
             budgetEstimatif: {
-                cachetArtiste: project.budgetEstimatif.cachetArtiste,
-                fraisDeplacement: project.budgetEstimatif.fraisDeplacement,
-                fraisHebergement: project.budgetEstimatif.fraisHebergement,
-                fraisRestauration: project.budgetEstimatif.fraisRestauration
+                budgetEstimatifParPDF: budgetEstimatifParPDF,
+                cachetArtiste: project.budgetEstimatif?.cachetArtiste,
+                fraisDeplacement: project.budgetEstimatif?.fraisDeplacement,
+                fraisHebergement: project.budgetEstimatif?.fraisHebergement,
+                fraisRestauration: project.budgetEstimatif?.fraisRestauration
             },
             ficheTechniqueArtiste: {
-                besoinBackline: project.ficheTechniqueArtiste.besoinBackline,
-                besoinEclairage: project.ficheTechniqueArtiste.besoinEclairage,
-                besoinEquipements: project.ficheTechniqueArtiste.besoinEquipements,
-                besoinScene: project.ficheTechniqueArtiste.besoinScene,
-                besoinSonorisation: project.ficheTechniqueArtiste.besoinSonorisation,
-                ordrePassage: project.extras.ordrePassage,
-                liensPromotionnels: listeLiensPromo,
-                artiste: project.artistes,
+                ficheTechniqueArtisteParPDF: ficheTechniqueArtisteParPDF,
+                besoinBackline: project.ficheTechniqueArtiste?.besoinBackline,
+                besoinEclairage: project.ficheTechniqueArtiste?.besoinEclairage,
+                besoinEquipements: project.ficheTechniqueArtiste?.besoinEquipements,
+                besoinScene: project.ficheTechniqueArtiste?.besoinScene,
+                besoinSonorisation: project.ficheTechniqueArtiste?.besoinSonorisation,
+                ordrePassage: project.extras?.ordrePassage,
+                liensPromotionnels: listeLiensPromo || [],
+                artiste: project.artistes || [],
                 nbArtistes: project.artistes.length
             },
             donneesSupplementaires: {
@@ -326,7 +344,7 @@ function ProjectDetailsContent() {
             }
         };
         setFormData(data);
-    }, []);
+    }, [budgetEstimatifParPDF, conditionsFinancieresParPDF, extrasParPDF, ficheTechniqueArtisteParPDF]);
 
     useEffect(() => {
         const fetchDetailOffre = async (id: number) => {
@@ -344,7 +362,27 @@ function ProjectDetailsContent() {
                         }
                     });
                 });
-                setBudgetTotal(calculBudgetTotal(response.offre.budgetEstimatif));
+                if (response.offre.budgetEstimatif) {
+                    setBudgetEstimatifParPDF(false);
+                    setBudgetTotal(calculBudgetTotal(response.offre.budgetEstimatif));
+                } else {
+                    setBudgetEstimatifParPDF(true);
+                }
+                if (response.offre.extras) {
+                    setExtrasParPDF(false);
+                } else {
+                    setExtrasParPDF(true);
+                }
+                if (response.offre.conditionsFinancieres) {
+                    setConditionsFinancieresParPDF(false);
+                } else {
+                    setConditionsFinancieresParPDF(true);
+                }
+                if (response.offre.ficheTechniqueArtiste) {
+                    setFicheTechniqueArtisteParPDF(false);
+                } else {
+                    setFicheTechniqueArtisteParPDF(true);
+                }
                 setProject(response.offre);
                 setProjectProps(response.offre);
             });
@@ -393,20 +431,56 @@ function ProjectDetailsContent() {
         return { days, hours, minutes, seconds };
     }
 
-    useEffect(() => {
+    useEffect( () => {
+        const fetchFichiersProjet = async () => {
+            const data = {
+                idProjet: project?.id,
+            };
+            await apiPost('/get-sftp-fichiers', JSON.parse(JSON.stringify(data))).then(
+                (response) => {
+                    if (response.message_none_files) {
+                        setMessageAucunFichier(response.message_none_files);
+                    } else {
+                        if (response.files.budget_estimatif != null) {
+                            setContenuBudgetEstimatifParPDF(response.files.budget_estimatif.content);
+                        } else {
+                            setContenuBudgetEstimatifParPDF(null);
+                        }
+                        if (response.files.extras != null) {
+                            setContenuExtrasParPDF(response.files.extras.content);
+                        } else {
+                            setContenuExtrasParPDF(null);
+                        }
+                        if (response.files.conditions_financieres != null) {
+                            setContenuConditionsFinancieresParPDF(response.files.conditions_financieres.content);
+                        } else {
+                            setContenuConditionsFinancieresParPDF(null);
+                        }
+                        if (response.files.fiche_technique_artiste != null) {
+                            setContenuFicheTechniqueArtisteParPDF(response.files.fiche_technique_artiste.content);
+                        } else {
+                            setContenuFicheTechniqueArtisteParPDF(null);
+                        }
+                    }
+                }
+            );
+        };
+
         if (project) {
             const timer = setInterval(() => {
                 setTimeLeft(calculateTimeLeft(project.deadLine));
             }, 1000);
 
-            return () => clearInterval(timer); // Nettoyage pour éviter les fuites de mémoire
+            fetchFichiersProjet();
+
+            return () => clearInterval(timer);
         }
     }, [project]);
 
     if (!project) {
-        return <div className="flex items-center justify-center text-2xl">
-            <p>Chargement des détails de du projet ...</p>
-            <Spinner className="ml-4"size='l' />
+        return <div className="flex items-center justify-center text-2xl min-h-[50vh]">
+            <span>Chargement des détails du projet en cours...</span>
+            <Spinner className="ml-4" />
         </div>;
     }
 
@@ -607,7 +681,7 @@ function ProjectDetailsContent() {
                                     </Card>
 
                                     {/* Budget Estimatif */}
-                                    <Card>
+                                    {formData.budgetEstimatif.budgetEstimatifParPDF != true ? <Card>
                                         <div>
                                             <h3 className="font-medium">Budget Estimatif</h3>
                                             <p>Aperçu des coûts estimés pour ce projet.</p>
@@ -616,26 +690,43 @@ function ProjectDetailsContent() {
                                             <dl className="sm:divide-y">
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Cachet Artiste</dt>
-                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.budgetEstimatif.cachetArtiste} €</dd>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.budgetEstimatif.cachetArtiste} €</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Frais de Déplacement</dt>
-                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.budgetEstimatif.fraisDeplacement} €</dd>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.budgetEstimatif.fraisDeplacement} €</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Frais d&apos;Hébergement</dt>
-                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.budgetEstimatif.fraisHebergement} €</dd>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.budgetEstimatif.fraisHebergement} €</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Frais de Restauration</dt>
-                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.budgetEstimatif.fraisRestauration} €</dd>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.budgetEstimatif.fraisRestauration} €</dd>
                                                 </div>
                                             </dl>
                                         </div>
-                                    </Card>
+                                    </Card> : 
+                                    contenuBudgetEstimatifParPDF && <Card>
+                                        <div>
+                                            <h3 className="font-medium">Budget estimatif</h3>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Document de liaison</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">
+                                                        <div className='flex'>
+                                                            <DownloadButton donneePDFbase64={contenuBudgetEstimatifParPDF} />
+                                                        </div>
+                                                    </dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card>}
 
                                     {/* Extras de l&apos;évènement */}
-                                    <Card>
+                                    {formData.extras.extrasParPDF != true ? <Card>
                                         <div>
                                             <h3 className="font-medium">Extras</h3>
                                             <p>Aperçu des extras pour le projet.</p>
@@ -644,30 +735,47 @@ function ProjectDetailsContent() {
                                             <dl className="sm:divide-y">
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Description de l&apos;extras</dt>
-                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.extras.descrExtras}</dd>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.extras.descrExtras}</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Exclusivité</dt>
-                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.extras.exclusivite}</dd>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.extras.exclusivite}</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Coût de l&apos;extras</dt>
-                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.extras.coutExtras} €</dd>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.extras.coutExtras} €</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Exception</dt>
-                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.extras.exception}</dd>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.extras.exception}</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Clauses de confidentialité</dt>
-                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.extras.clausesConfidentialites}</dd>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.extras.clausesConfidentialites}</dd>
                                                 </div>
                                             </dl>
                                         </div>
-                                    </Card>
+                                    </Card> : 
+                                    contenuExtrasParPDF && <Card>
+                                        <div>
+                                            <h3 className="font-medium">Extras</h3>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Document de liaison</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">
+                                                        <div className='flex'>
+                                                            <DownloadButton donneePDFbase64={contenuExtrasParPDF} />
+                                                        </div>
+                                                    </dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card>}
 
                                     {/* Conditions financière de l&apos;évènement */}
-                                    <Card>
+                                    {formData.conditionsFinancieres.conditionsFinancieresParPDF != true ? <Card>
                                         <div>
                                             <h3 className="font-medium">Conditions financières</h3>
                                             <p>Aperçu des conditions financières du projet.</p>
@@ -676,22 +784,39 @@ function ProjectDetailsContent() {
                                             <dl className="sm:divide-y">
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Le minimum garanti (en €)</dt>
-                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.conditionsFinancieres.minimunGaranti} €</dd>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.conditionsFinancieres.minimunGaranti} €</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Les conditions de paiement</dt>
-                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.conditionsFinancieres.conditionsPaiement}</dd>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.conditionsFinancieres.conditionsPaiement}</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Le pourcentage de la recette</dt>
-                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.conditionsFinancieres.pourcentageRecette} %</dd>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.conditionsFinancieres.pourcentageRecette} %</dd>
                                                 </div>
                                             </dl>
                                         </div>
-                                    </Card>
+                                    </Card> : 
+                                    contenuConditionsFinancieresParPDF && <Card>
+                                        <div>
+                                            <h3 className="font-medium">Conditions financières</h3>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Document de liaison</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">
+                                                        <div className='flex'>
+                                                            <DownloadButton donneePDFbase64={contenuConditionsFinancieresParPDF} />
+                                                        </div>
+                                                    </dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card>}
 
                                     {/* La fiche technique de l&apos;artiste */}
-                                    <Card>
+                                    {formData.ficheTechniqueArtiste.ficheTechniqueArtisteParPDF != true ? <Card>
                                         <div>
                                             <h3 className="font-medium">Fiche technique de l&apos;artiste</h3>
                                             <p>Aperçu des besoins et des informations liés à l&apos;artiste.</p>
@@ -700,23 +825,23 @@ function ProjectDetailsContent() {
                                             <dl className="sm:divide-y">
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Le besoin en backline</dt>
-                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.ficheTechniqueArtiste.besoinBackline}</dd>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.ficheTechniqueArtiste.besoinBackline}</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Le besoin en éclairage</dt>
-                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.ficheTechniqueArtiste.besoinEclairage}</dd>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.ficheTechniqueArtiste.besoinEclairage}</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Le besoin en équipements</dt>
-                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.ficheTechniqueArtiste.besoinEquipements}</dd>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.ficheTechniqueArtiste.besoinEquipements}</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Le besoin en scène</dt>
-                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.ficheTechniqueArtiste.besoinScene}</dd>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.ficheTechniqueArtiste.besoinScene}</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Le besoin en sonorisation</dt>
-                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.ficheTechniqueArtiste.besoinSonorisation}</dd>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.ficheTechniqueArtiste.besoinSonorisation}</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Ses liens promotionnels</dt>
@@ -731,11 +856,34 @@ function ProjectDetailsContent() {
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">L&apos;ordre de passage</dt>
-                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.extras.ordrePassage}</dd>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.ficheTechniqueArtiste.ordrePassage}</dd>
                                                 </div>
                                             </dl>
                                         </div>
-                                    </Card>
+                                    </Card> : 
+                                    contenuFicheTechniqueArtisteParPDF && <Card>
+                                        <div>
+                                            <h3 className="font-medium">Fiche technique de l&apos;artiste</h3>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Document de liaison</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">
+                                                        <div className='flex'>
+                                                            <DownloadButton donneePDFbase64={contenuFicheTechniqueArtisteParPDF} />
+                                                        </div>
+                                                    </dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card>}
+
+                                    {messageAucunFichier && <Card>
+                                        <div>
+                                            <h3 className="font-medium">{messageAucunFichier}</h3>
+                                        </div>
+                                    </Card>}
                                 </div>
 
                                 <div>
