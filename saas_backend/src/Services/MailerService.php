@@ -56,18 +56,18 @@ class MailerService
                     if ($utilisateur->getEmailUtilisateur() != null) {
                         $htmlMessage = str_replace(
                             [
-                                '{{projectName}}', 
+                                '{{projectName}}',
                                 '{{projectDescription}}',
-                                '{{userName}}', 
-                                '{{currentYear}}', 
+                                '{{userName}}',
+                                '{{currentYear}}',
                                 '{{emailUmodja}}',
                                 '{{networkName}}'
                             ],
                             [
-                                $data['projectName'], 
+                                $data['projectName'],
                                 $data['projectDescription'],
-                                $data['username'], 
-                                date('Y'), 
+                                $data['username'],
+                                date('Y'),
                                 $this->umodjaEmail,
                                 $reseau->getNomReseau()
                             ],
@@ -126,18 +126,18 @@ class MailerService
                     if ($utilisateur->getEmailUtilisateur() != null) {
                         $htmlMessage = str_replace(
                             [
-                                '{{projectName}}', 
+                                '{{projectName}}',
                                 '{{projectDescription}}',
-                                '{{userName}}', 
-                                '{{currentYear}}', 
+                                '{{userName}}',
+                                '{{currentYear}}',
                                 '{{emailUmodja}}',
                                 '{{networkName}}'
                             ],
                             [
-                                $data['projectName'], 
-                                $data['projectDescription'], 
-                                $data['username'], 
-                                date('Y'), 
+                                $data['projectName'],
+                                $data['projectDescription'],
+                                $data['username'],
+                                date('Y'),
                                 $this->umodjaEmail,
                                 $reseau->getNomReseau()
                             ],
