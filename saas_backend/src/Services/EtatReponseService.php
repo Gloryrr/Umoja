@@ -227,13 +227,13 @@ class EtatReponseService
             );
             return new JsonResponse([
                 'etat_reponse' => $etatReponseJSON,
-                'message' => "État de réponse supprimé",
+                'message' => "État de réponse supprimée",
                 'serialized' => false
             ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'etat_reponse' => null,
-                'message' => "État de réponse non supprimé !",
+                'message' => "État de réponse non supprimée !",
                 'serialized' => false
             ], Response::HTTP_BAD_REQUEST);
         }
@@ -280,13 +280,13 @@ class EtatReponseService
             );
             return new JsonResponse([
                 'etats_reponses' => $etatReponseJSON,
-                'message' => "Type d'offre supprimé",
+                'message' => "Etat de réponse supprimée",
                 'serialized' => false
             ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'etats_reponses' => null,
-                'message' => "Type d'offre non supprimé !",
+                'message' => "Etat de réponse non supprimée !",
                 'serialized' => false
             ], Response::HTTP_BAD_REQUEST);
         }
@@ -334,13 +334,13 @@ class EtatReponseService
             );
             return new JsonResponse([
                 'etats_reponses' => $etatReponseJSON,
-                'message' => "Type d'offre supprimé",
+                'message' => "Etat de réponse supprimée",
                 'serialized' => false
             ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'etats_reponses' => null,
-                'message' => "Type d'offre non supprimé !",
+                'message' => "Etat de réponse non supprimée !",
                 'serialized' => false
             ], Response::HTTP_BAD_REQUEST);
         }

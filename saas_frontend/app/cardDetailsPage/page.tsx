@@ -1,34 +1,72 @@
 "use client"
 
-import React, { Suspense, useState, useEffect } from 'react';
+import React, { Suspense, useState, useEffect, useCallback } from 'react';
+import { FaLink } from "react-icons/fa";
 import { useSearchParams } from 'next/navigation';
-import { FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
-import { Progress, Button, /*Modal,*/ Card, Spinner, Textarea } from 'flowbite-react';
+// import { FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
+import { Progress, Button, Modal, Card, Spinner, Textarea, Avatar, Tabs } from 'flowbite-react';
 import NumberInputModal from '@/app/components/ui/modalResponse';
-import { apiGet, apiPost } from '@/app/services/internalApiClients';
+import { apiGet, apiPost, apiDelete, apiPatch } from '@/app/services/internalApiClients';
 import NavigationHandler from '@/app/navigation/Router';
 import CommentaireSection from "@/app/components/Commentaires/CommentaireSection";
+import Image from 'next/image';
+import { FicheTechniqueArtiste, FormData } from '@/app/types/FormDataType';
+import ModifierOffreForm from '@/app/components/ui/modifierOffre';
+import DownloadButton from '@/app/components/DowloadFilePDF';
 
-type ConditionsFinancieres = {
+interface Extras {
+    extrasParPDF: boolean;
     id: number;
-};
+    descrExtras: string;
+    coutExtras: number;
+    exclusivite: string;
+    exception: string;
+    ordrePassage: string;
+    clausesConfidentialites: string;
+}
 
-type EtatOffre = {
+interface Reseau {
+    nomReseau: string;
+}
+
+interface GenreMusical {
+    nomGenreMusical: string;
+}
+
+interface Artiste {
+    nomArtiste: string;
+}
+  
+interface EtatOffre {
     id: number;
-};
+    nomEtat: string;
+}
 
-type Extras = {
+interface ConditionsFinancieres {
+    conditionsFinancieresParPDF: boolean;
     id: number;
-};
+    minimunGaranti: number;
+    conditionsPaiement: string;
+    pourcentageRecette: number;
+}
 
-type TypeOffre = {
+interface BudgetEstimatif {
+    budgetEstimatifParPDF: boolean;
+    id: number;
+    cachetArtiste: number;
+    fraisDeplacement: number;
+    fraisHebergement: number;
+    fraisRestauration: number;
+}
+
+interface TypeOffre {
     nomTypeOffre: string;
 };
 
-type Utilisateur = {
+interface Utilisateur {
     username: string;
 };
-type Project = {
+interface Project {
     id: number;
     titleOffre: string;
     descrTournee: string;
@@ -50,6 +88,10 @@ type Project = {
     typeOffre: TypeOffre;
     budgetEstimatif: BudgetEstimatif;
     conditionsFinancieres: ConditionsFinancieres;
+    ficheTechniqueArtiste: FicheTechniqueArtiste;
+    reseaux: Reseau[];
+    genresMusicaux: GenreMusical[];
+    artistes: Artiste[];
 };
 
 interface BudgetEstimatif {
@@ -73,6 +115,9 @@ interface Reponse {
     etatReponse : {nomEtatReponse : string};
     offreId: number;
     utilisateurId: number;
+    utilisateur: {
+        username: string;
+    };
     dateDebut: string;
     dateFin: string;
     prixParticipation: number;
@@ -93,17 +138,10 @@ async function fetchCommentaire(idCommenaire: number): Promise<Commentaire[]> {
     return JSON.parse(response.commentaires);
 }
 
-async function fetchBudgetEstimatif(idBudgetEstimatif: number): Promise<BudgetEstimatif[]> {
-    const response = await apiGet(`/budget-estimatif/${idBudgetEstimatif}`);
-    if (!response) {
-      throw new Error("Erreur lors de la récupération des détails de l'offre");
-    }
-    return JSON.parse(response.budget_estimatif);
-}
-
-function ProjectDetailsContent({ projects }: { projects: Project[] }) {
+function ProjectDetailsContent() {
     const [commentaires, setCommentaires] = useState<Commentaire[]>([]);
     const [budgetTotal, setBudgetTotal] = useState<number>(0);
+    const [reponsesValidees, setReponsesValidees] = useState<Reponse[]>([]);
     const [budgetTotalReponsesRecu, setBudgetTotalReponsesRecu] = useState<number>(0);
     const [pourcentageBudgetRecu, setPourcentageBudgetRecu] = useState<number>(0);
     const [nbContributions, setNbContributions] = useState<number>(0);
@@ -114,8 +152,26 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
     const [username, setUsername] = useState<string>("");
     const searchParams = useSearchParams();
     const id = Number(searchParams.get('id'));
-    const project = projects.find(p => p.id === Number(id));
+    const [project, setProject] = useState<Project>();
+    // const project = projects.find(p => p.id === Number(id));
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState<number>(1);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showModifyOffre, setShowModifyOffre] = useState(false);
+    const [formData, setFormData] = useState<FormData>({} as FormData);
+    const [liensPromotionnelsList, setLiensPromotionnelsList] = useState<string[]>([]);
+
+    const [extrasParPDF, setExtrasParPDF] = useState<boolean | null>(null);
+    const [budgetEstimatifParPDF, setBudgetEstimatifParPDF] = useState<boolean | null>(null);
+    const [conditionsFinancieresParPDF, setConditionsFinancieresParPDF] = useState<boolean | null>(null);
+    const [ficheTechniqueArtisteParPDF, setFicheTechniqueArtisteParPDF] = useState<boolean | null>(null);
+
+    const [contenuExtrasParPDF, setContenuExtrasParPDF] = useState<string | null>(null);
+    const [contenuBudgetEstimatifParPDF, setContenuBudgetEstimatifParPDF] = useState<string | null>(null);
+    const [contenuConditionsFinancieresParPDF, setContenuConditionsFinancieresParPDF] = useState<string | null>(null);
+    const [contenuFicheTechniqueArtisteParPDF, setContenuFicheTechniqueArtisteParPDF] = useState<string | null>(null);
+
+    const [messageAucunFichier, setMessageAucunFichier] = useState<string | null>(null);
     
     // const optionsDate: Intl.DateTimeFormatOptions = {
     //     year: 'numeric',
@@ -135,8 +191,8 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
     };
 
     const handleSubmitNumber = (startDate: Date | null, endDate: Date | null, price: number | null): void => {
-        console.log(startDate, endDate, price);
         setIsModalOpen(false);
+        console.log(startDate, endDate, price);
     };
 
     const handleCommentSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -187,12 +243,15 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
     function calculPrixTotalReponsesRecu(reponses: Reponse[]) {
         let total = 0;
         let nbContributions = 0;
+        const reponsesValidees: Reponse[] = [];
         reponses.forEach((reponse) => {
             if (reponse.etatReponse.nomEtatReponse === "Validée") {
+                reponsesValidees.push(reponse);
                 total += reponse.prixParticipation;
                 nbContributions++;
             }
         });
+        setReponsesValidees(reponsesValidees);
         setNbContributions(nbContributions);
         setBudgetTotalReponsesRecu(total);
         return total;
@@ -201,6 +260,91 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
     function calculPourcentageBudgetRecu() {
         return (pourcentageBudgetRecu / budgetTotal) * 100;
     }
+
+    function base64ToArrayBuffer(base64: string): ArrayBuffer {
+        const binaryString = atob(base64);
+        const len = binaryString.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        return bytes.buffer;
+    }
+
+    const setProjectProps = useCallback((project: Project) => {
+        const listeLiensPromo = project.liensPromotionnels.split(';')
+        listeLiensPromo.pop();
+        setLiensPromotionnelsList(listeLiensPromo);
+
+        const data: FormData = {
+            detailOffre: {
+                id: project.id,
+                titleOffre: project.titleOffre,
+                deadLine: project.deadLine,
+                descrTournee: project.descrTournee,
+                dateMinProposee: project.dateMinProposee,
+                dateMaxProposee: project.dateMaxProposee,
+                villeVisee: project.villeVisee,
+                regionVisee: project.regionVisee,
+                placesMin: project.placesMin,
+                placesMax: project.placesMax,
+                nbArtistesConcernes: project.nbArtistesConcernes,
+                nbInvitesConcernes: project.nbInvitesConcernes
+            },
+            extras: {
+                extrasParPDF: extrasParPDF,
+                descrExtras: project.extras?.descrExtras,
+                coutExtras: project.extras?.coutExtras,
+                exclusivite: project.extras?.exclusivite,
+                exception: project.extras?.exception,
+                clausesConfidentialites: project.extras?.clausesConfidentialites
+            },
+            etatOffre: {
+                nomEtatOffre: project.etatOffre.nomEtat
+            },
+            typeOffre: {
+                nomTypeOffre: project.typeOffre.nomTypeOffre
+            },
+            conditionsFinancieres: {
+                conditionsFinancieresParPDF: conditionsFinancieresParPDF,
+                minimunGaranti: project.conditionsFinancieres?.minimunGaranti,
+                conditionsPaiement: project.conditionsFinancieres?.conditionsPaiement,
+                pourcentageRecette: project.conditionsFinancieres?.pourcentageRecette
+            },
+            budgetEstimatif: {
+                budgetEstimatifParPDF: budgetEstimatifParPDF,
+                cachetArtiste: project.budgetEstimatif?.cachetArtiste,
+                fraisDeplacement: project.budgetEstimatif?.fraisDeplacement,
+                fraisHebergement: project.budgetEstimatif?.fraisHebergement,
+                fraisRestauration: project.budgetEstimatif?.fraisRestauration
+            },
+            ficheTechniqueArtiste: {
+                ficheTechniqueArtisteParPDF: ficheTechniqueArtisteParPDF,
+                besoinBackline: project.ficheTechniqueArtiste?.besoinBackline,
+                besoinEclairage: project.ficheTechniqueArtiste?.besoinEclairage,
+                besoinEquipements: project.ficheTechniqueArtiste?.besoinEquipements,
+                besoinScene: project.ficheTechniqueArtiste?.besoinScene,
+                besoinSonorisation: project.ficheTechniqueArtiste?.besoinSonorisation,
+                ordrePassage: project.extras?.ordrePassage,
+                liensPromotionnels: listeLiensPromo || [],
+                artiste: project.artistes || [],
+                nbArtistes: project.artistes.length
+            },
+            donneesSupplementaires: {
+                reseau: project.reseaux,
+                nbReseaux: project.reseaux.length,
+                genreMusical: project.genresMusicaux,
+                nbGenresMusicaux: project.genresMusicaux.length,
+            },
+            utilisateur: {
+                username : project.utilisateur.username
+            },
+            image: {
+                file: project.image ? base64ToArrayBuffer(project.image) : null,
+            }
+        };
+        setFormData(data);
+    }, [budgetEstimatifParPDF, conditionsFinancieresParPDF, extrasParPDF, ficheTechniqueArtisteParPDF]);
 
     useEffect(() => {
         const fetchDetailOffre = async (id: number) => {
@@ -218,9 +362,29 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
                         }
                     });
                 });
-                fetchBudgetEstimatif(response.offre.budgetEstimatif.id).then((budgetEstimatif) => {
-                    setBudgetTotal(calculBudgetTotal(budgetEstimatif[0]));
-                });
+                if (response.offre.budgetEstimatif) {
+                    setBudgetEstimatifParPDF(false);
+                    setBudgetTotal(calculBudgetTotal(response.offre.budgetEstimatif));
+                } else {
+                    setBudgetEstimatifParPDF(true);
+                }
+                if (response.offre.extras) {
+                    setExtrasParPDF(false);
+                } else {
+                    setExtrasParPDF(true);
+                }
+                if (response.offre.conditionsFinancieres) {
+                    setConditionsFinancieresParPDF(false);
+                } else {
+                    setConditionsFinancieresParPDF(true);
+                }
+                if (response.offre.ficheTechniqueArtiste) {
+                    setFicheTechniqueArtisteParPDF(false);
+                } else {
+                    setFicheTechniqueArtisteParPDF(true);
+                }
+                setProject(response.offre);
+                setProjectProps(response.offre);
             });
         };
 
@@ -232,7 +396,7 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
 
         fetchDetailOffre(id);
         fetchReponsesOffre(id);
-    }, [id]);
+    }, [id, setProjectProps]);
 
     useEffect(() => {
         const getUsername = async () => {
@@ -267,20 +431,56 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
         return { days, hours, minutes, seconds };
     }
 
-    useEffect(() => {
+    useEffect( () => {
+        const fetchFichiersProjet = async () => {
+            const data = {
+                idProjet: project?.id,
+            };
+            await apiPost('/get-sftp-fichiers', JSON.parse(JSON.stringify(data))).then(
+                (response) => {
+                    if (response.message_none_files) {
+                        setMessageAucunFichier(response.message_none_files);
+                    } else {
+                        if (response.files.budget_estimatif != null) {
+                            setContenuBudgetEstimatifParPDF(response.files.budget_estimatif.content);
+                        } else {
+                            setContenuBudgetEstimatifParPDF(null);
+                        }
+                        if (response.files.extras != null) {
+                            setContenuExtrasParPDF(response.files.extras.content);
+                        } else {
+                            setContenuExtrasParPDF(null);
+                        }
+                        if (response.files.conditions_financieres != null) {
+                            setContenuConditionsFinancieresParPDF(response.files.conditions_financieres.content);
+                        } else {
+                            setContenuConditionsFinancieresParPDF(null);
+                        }
+                        if (response.files.fiche_technique_artiste != null) {
+                            setContenuFicheTechniqueArtisteParPDF(response.files.fiche_technique_artiste.content);
+                        } else {
+                            setContenuFicheTechniqueArtisteParPDF(null);
+                        }
+                    }
+                }
+            );
+        };
+
         if (project) {
             const timer = setInterval(() => {
                 setTimeLeft(calculateTimeLeft(project.deadLine));
             }, 1000);
 
-            return () => clearInterval(timer); // Nettoyage pour éviter les fuites de mémoire
+            fetchFichiersProjet();
+
+            return () => clearInterval(timer);
         }
     }, [project]);
 
     if (!project) {
-        return <div className="flex items-center justify-center text-2xl">
-            <p>Chargement des détails de du projet ...</p>
-            <Spinner className="ml-4"size='l' />
+        return <div className="flex items-center justify-center text-2xl min-h-[50vh]">
+            <span>Chargement des détails du projet en cours...</span>
+            <Spinner className="ml-4" />
         </div>;
     }
 
@@ -288,37 +488,54 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
         return image ? `data:image/jpg;base64,${image}` : '/image-default-offre.jpg';
     }
 
+    const handleDelete = async () => {
+        await apiDelete(`/offre/delete/${project.id}`);
+        alert("Offre supprimée avec succès.");
+        window.location.href = "/networks";
+    };
+
+    const handleModify = async () => {
+        await apiPatch(`/offre/update/${project.id}`, JSON.parse(JSON.stringify(formData))).then(() => {
+            setShowModifyOffre(false);
+        });
+        alert("Offre modifiée avec succès.");
+        // window.location.href = "/networks";
+    };
+
     return (
         <div className="w-full flex items-center justify-center">
-            <div className="container mx-auto px-8 mb-10">
-                <h1 className="text-6xl font-bold mb-4 text-center">{project.titleOffre}</h1>
+            <div className="container mx-auto mb-10">
+                <h1 className="text-4xl font-bold mb-4 mt-6 text-center">{project.titleOffre}</h1>
                 <p className="text-xl mb-12 text-center">{project.descrTournee}</p>
 
-                <div className="flex flex-col md:flex-row">
+                <div className="flex flex-col md:flex-row ml-[10%] mr-[10%] px-8">
                     <div className="md:w-1/2 md:pr-4 mb-8 md:mb-0">
-                        <Card imgSrc={checkImageExist(project.image)} imgAlt={project.titleOffre}>
-                            {/* <div className="aspect-video">
-                                <iframe
-                                    className="w-full h-full"
-                                    title={project.titleOffre}
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowFullScreen
-                                ></iframe>
-                            </div> */}
-                        </Card>
+                        <Image 
+                            src={checkImageExist(project.image)}
+                            width={200}
+                            height={200} 
+                            alt={project.titleOffre} 
+                            className="w-full h-full" 
+                        />
                     </div>
                     <div className="md:w-1/2 md:pl-4">
-                        <div className="mb-6">
+                        <div className="mb-6 flex items-center mt-5">
+                            <Avatar
+                                alt="User settings"
+                                img="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+                                rounded
+                                className="h-10 w-10 mr-5"
+                            />
                             <h2 className="text-2xl font-semibold">{project.utilisateur.username}</h2>
                         </div>
-                        <div className="rounded-lg p-6 mb-8">
+                        <div className="rounded-lg mb-8">
                             <div className="flex justify-between mb-4">
                                 <div>
-                                    <p className="text-2xl font-bold">{budgetTotalReponsesRecu} €</p>
+                                    <p className="text-xl font-bold">{budgetTotalReponsesRecu} €</p>
                                     <p>sur {budgetTotal} €</p>
                                 </div>
                                 <div className="text-right">
-                                    <p className="text-2xl font-bold">{nbContributions}</p>
+                                    <p className="text-xl font-bold">{nbContributions}</p>
                                     <p>Contributions</p>
                                 </div>
                                 <div className="text-right">
@@ -358,59 +575,452 @@ function ProjectDetailsContent({ projects }: { projects: Project[] }) {
                                 onClose={handleCloseModal}
                                 onSubmit={handleSubmitNumber}
                             />
-                            <Button color="light">
-                                <FaFacebookF />
-                            </Button>
-                            <Button color="light">
-                                <FaTwitter />
-                            </Button>
-                            <Button color="light">
-                                <FaLinkedinIn />
-                            </Button>
                         </div>
                     </div>
                 </div>
 
-                <div className="mt-10 ml-[20%] mr-[20%] mx-auto">
-                    <h2 className="font-semibold mb-2">Commentaires</h2>
-                    <form onSubmit={handleCommentSubmit}>
-                    <Textarea
-                        value={commentaire}
-                        onChange={(e) => setCommentaire(e.target.value)}
-                        placeholder="Écrivez un commentaire..."
-                        rows={4}
-                        required
-                        className="mb-2"
-                    />
-                    {error && <p className="error">{error}</p>}
-                        <Button type="submit" disabled={loading}>
-                            {loading ? "Envoi..." : "Poster le commentaire"}
-                        </Button>
-                    </form>
-                </div>
+                <div>
+                    <Tabs
+                        aria-label="Tabs pour les onglets de détails, commentaires et contributions"
+                        onActiveTabChange={(tab) => setActiveTab(tab)}
+                        className='mx-auto mt-5'
+                    >
+                        <Tabs.Item title="Détails du projet" active={activeTab === 1}>
+                            <div className='ml-[10%] mr-[10%] px-8'>
+                                <div className="flex flex-col space-y-4">
+                                    {/* Informations principales */}
+                                    <Card>
+                                        <div>
+                                            <h3 className="font-medium">Détails du Projet</h3>
+                                            <p>Les informations principales sur le projet sont listées ci-dessous.</p>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Titre</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.titleOffre}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Description</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.descrTournee}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Date maximale de contribution</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.deadLine}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Date Minimum Proposée</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.dateMinProposee}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Date Maximum Proposée</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.dateMaxProposee}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Places Minimales</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.placesMin}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Places Maximales</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.placesMax}</dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card>
 
-                <CommentaireSection commentaires={commentaires} />
+                                    {/* Informations Supplémentaires */}
+                                    <Card>
+                                        <div>
+                                            <h3 className="font-medium">Détails Complémentaires</h3>
+                                            <p>Autres informations sur le projet.</p>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Région Visée</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.regionVisee}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Ville Visée</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.villeVisee}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Type d&apos;Offre</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.typeOffre.nomTypeOffre}</dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card>
+
+                                    {/* Artistes et Réseaux */}
+                                    <Card>
+                                        <div>
+                                            <h3 className="font-medium">Artistes et Réseaux</h3>
+                                            <p>Liste des artistes et réseaux impliqués dans ce projet.</p>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Artistes</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">
+                                                        {project.artistes.length > 0 ? project.artistes.map((artiste, index) => (
+                                                            <span key={index}>{artiste.nomArtiste}, </span>
+                                                        )) : "Aucun artiste lié au projet"}
+                                                    </dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Réseaux</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">
+                                                        {project.reseaux.map((reseau, index) => (
+                                                            <span key={index}>{reseau.nomReseau}, </span>
+                                                        ))}
+                                                    </dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card>
+
+                                    {/* Budget Estimatif */}
+                                    {formData.budgetEstimatif.budgetEstimatifParPDF != true ? <Card>
+                                        <div>
+                                            <h3 className="font-medium">Budget Estimatif</h3>
+                                            <p>Aperçu des coûts estimés pour ce projet.</p>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Cachet Artiste</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.budgetEstimatif.cachetArtiste} €</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Frais de Déplacement</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.budgetEstimatif.fraisDeplacement} €</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Frais d&apos;Hébergement</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.budgetEstimatif.fraisHebergement} €</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Frais de Restauration</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.budgetEstimatif.fraisRestauration} €</dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card> : 
+                                    contenuBudgetEstimatifParPDF && <Card>
+                                        <div>
+                                            <h3 className="font-medium">Budget estimatif</h3>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Document de liaison</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">
+                                                        <div className='flex'>
+                                                            <DownloadButton donneePDFbase64={contenuBudgetEstimatifParPDF} />
+                                                        </div>
+                                                    </dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card>}
+
+                                    {/* Extras de l&apos;évènement */}
+                                    {formData.extras.extrasParPDF != true ? <Card>
+                                        <div>
+                                            <h3 className="font-medium">Extras</h3>
+                                            <p>Aperçu des extras pour le projet.</p>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Description de l&apos;extras</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.extras.descrExtras}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Exclusivité</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.extras.exclusivite}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Coût de l&apos;extras</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.extras.coutExtras} €</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Exception</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.extras.exception}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Clauses de confidentialité</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.extras.clausesConfidentialites}</dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card> : 
+                                    contenuExtrasParPDF && <Card>
+                                        <div>
+                                            <h3 className="font-medium">Extras</h3>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Document de liaison</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">
+                                                        <div className='flex'>
+                                                            <DownloadButton donneePDFbase64={contenuExtrasParPDF} />
+                                                        </div>
+                                                    </dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card>}
+
+                                    {/* Conditions financière de l&apos;évènement */}
+                                    {formData.conditionsFinancieres.conditionsFinancieresParPDF != true ? <Card>
+                                        <div>
+                                            <h3 className="font-medium">Conditions financières</h3>
+                                            <p>Aperçu des conditions financières du projet.</p>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Le minimum garanti (en €)</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.conditionsFinancieres.minimunGaranti} €</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Les conditions de paiement</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.conditionsFinancieres.conditionsPaiement}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Le pourcentage de la recette</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.conditionsFinancieres.pourcentageRecette} %</dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card> : 
+                                    contenuConditionsFinancieresParPDF && <Card>
+                                        <div>
+                                            <h3 className="font-medium">Conditions financières</h3>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Document de liaison</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">
+                                                        <div className='flex'>
+                                                            <DownloadButton donneePDFbase64={contenuConditionsFinancieresParPDF} />
+                                                        </div>
+                                                    </dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card>}
+
+                                    {/* La fiche technique de l&apos;artiste */}
+                                    {formData.ficheTechniqueArtiste.ficheTechniqueArtisteParPDF != true ? <Card>
+                                        <div>
+                                            <h3 className="font-medium">Fiche technique de l&apos;artiste</h3>
+                                            <p>Aperçu des besoins et des informations liés à l&apos;artiste.</p>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Le besoin en backline</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.ficheTechniqueArtiste.besoinBackline}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Le besoin en éclairage</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.ficheTechniqueArtiste.besoinEclairage}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Le besoin en équipements</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.ficheTechniqueArtiste.besoinEquipements}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Le besoin en scène</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.ficheTechniqueArtiste.besoinScene}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Le besoin en sonorisation</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.ficheTechniqueArtiste.besoinSonorisation}</dd>
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Ses liens promotionnels</dt>
+                                                    {liensPromotionnelsList ? liensPromotionnelsList.map((lien: string, index: number) => {
+                                                        return <div className='flex items-center' key={`${index}`}>
+                                                            <FaLink className='mr-2'/>
+                                                            <a href={lien}>
+                                                                <dd className="mt-1 sm:mt-0 sm:col-span-2">{lien}</dd>
+                                                            </a>
+                                                        </div>
+                                                    }) : <dd className="mt-1 sm:mt-0 sm:col-span-2">Aucun liens promotionnels</dd>}
+                                                </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">L&apos;ordre de passage</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{formData.ficheTechniqueArtiste.ordrePassage}</dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card> : 
+                                    contenuFicheTechniqueArtisteParPDF && <Card>
+                                        <div>
+                                            <h3 className="font-medium">Fiche technique de l&apos;artiste</h3>
+                                        </div>
+                                        <div>
+                                            <dl className="sm:divide-y">
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="font-medium">Document de liaison</dt>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">
+                                                        <div className='flex'>
+                                                            <DownloadButton donneePDFbase64={contenuFicheTechniqueArtisteParPDF} />
+                                                        </div>
+                                                    </dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </Card>}
+
+                                    {messageAucunFichier && <Card>
+                                        <div>
+                                            <h3 className="font-medium">{messageAucunFichier}</h3>
+                                        </div>
+                                    </Card>}
+                                </div>
+
+                                <div>
+                                    {estCreateurOffre() ? (
+                                        <div className="flex justify-between items-center mt-4 mb-4">
+                                            <h3 className="font-medium">Actions possible sur le projet</h3>
+                                            <div className='flex space-x-4'>
+                                                <Button onClick={() => setShowModifyOffre(true)} color='warning' className="font-medium">Modifier</Button>
+                                                <Button onClick={() => setShowDeleteModal(true)} color='failure' className="font-medium">Supprimer</Button>
+                                            </div>
+                                        </div>
+                                    ) : null}
+                                </div>
+
+                                {/* Modal de confirmation */}
+                                <Modal
+                                    show={showDeleteModal}
+                                    onClose={() => setShowDeleteModal(false)}
+                                    >
+                                    <Modal.Header>Confirmation</Modal.Header>
+                                    <Modal.Body>
+                                        <p>Êtes-vous sûr de vouloir supprimer cette offre ? Cette action est irréversible.</p>
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                        {/* Boutons dans le modal */}
+                                        <Button color="gray" onClick={() => setShowDeleteModal(false)}>
+                                        Annuler
+                                        </Button>
+                                        <Button color="failure" onClick={handleDelete}>
+                                        Confirmer
+                                        </Button>
+                                    </Modal.Footer>
+                                </Modal>
+
+                                 {/* Modal de confirmation */}
+                                 <Modal
+                                    show={showModifyOffre}
+                                    onClose={() => setShowModifyOffre(false)}
+                                    size="7xl"
+                                >
+                                    <Modal.Header>Modification du projet</Modal.Header>
+                                    <Modal.Body>
+                                        <ModifierOffreForm 
+                                            project={formData}
+                                            onProjectDetailChange={(updatedDetailProject: FormData) => setFormData(updatedDetailProject)}
+                                            onProjectExtrasChange={(updatedExtrasProject: FormData) => setFormData(updatedExtrasProject)}
+                                            onProjectBudgetEstimatifChange={(updatedBudgetEstimatifProject: FormData) => setFormData(updatedBudgetEstimatifProject)}
+                                            onProjectFicheTechniqueArtisteChange={(updatedFicheTechniqueArtisteProject: FormData) => setFormData(updatedFicheTechniqueArtisteProject)}
+                                            onProjectConditionsFinancieresChange={(updatedConditionsFinancieresProject: FormData) => setFormData(updatedConditionsFinancieresProject)}
+                                            onProjectDonneesSupplementaireChange={(updatedDonneesSupplementairesProject: FormData) => setFormData(updatedDonneesSupplementairesProject)}
+                                        />
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                        {/* Boutons dans le modal */}
+                                        <Button color="gray" onClick={() => setShowModifyOffre(false)}>
+                                            Annuler
+                                        </Button>
+                                        <Button color="success" onClick={handleModify}>
+                                            Modifier
+                                        </Button>
+                                    </Modal.Footer>
+                                </Modal>
+
+                            </div>
+                        </Tabs.Item>
+
+                        <Tabs.Item title={`Espace commentaires : ${commentaires.length}`} active={activeTab === 2}>
+                            <div className='ml-[20%] mr-[20%]'>
+                                <h2 className="font-semibold text-lg mb-4">Commentaires</h2>
+                                <form onSubmit={handleCommentSubmit}>
+                                    <Textarea
+                                        value={commentaire}
+                                        onChange={(e) => setCommentaire(e.target.value)}
+                                        placeholder="Écrivez un commentaire..."
+                                        rows={4}
+                                        required
+                                        className="mb-2"
+                                    />
+                                    {error && <p className="text-red-500">{error}</p>}
+                                    <Button type="submit" disabled={loading}>
+                                        {loading ? "Envoi..." : "Poster le commentaire"}
+                                    </Button>
+                                </form>
+                                <div className="mt-6">
+                                    {commentaires.length > 0 ? (
+                                        <CommentaireSection commentaires={commentaires} />
+                                    ) : (
+                                        <p>Aucun commentaire pour le moment.</p>
+                                    )}
+                                </div>
+                            </div>
+                        </Tabs.Item>
+
+                        <Tabs.Item title={`Les différentes contributions : ${nbContributions}`} active={activeTab === 3}>
+                            <div className="ml-[20%] mr-[20%]">
+                                <h2 className="font-semibold text-lg mb-4">Contributions</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {reponsesValidees && reponsesValidees.length > 0 ? (
+                                        reponsesValidees.map((reponse, index) => (
+                                            <div key={index}>
+                                                <Card className="hover:shadow-lg transition-shadow">
+                                                    <div className="flex items-center space-x-4">
+                                                        <Avatar
+                                                            img={`https://flowbite.com/docs/images/people/profile-picture-${index % 6}.jpg`}
+                                                            rounded={true}
+                                                            alt={`Avatar de ${reponse.utilisateur.username}`}
+                                                        />
+                                                        <div>
+                                                            <h5 className="text-lg font-medium">{reponse.utilisateur.username}</h5>
+                                                            <p className="text-gray-600">
+                                                                A contribué : {reponse.prixParticipation} €
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </Card>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p className=" col-span-full">Aucune contribution trouvée.</p>
+                                    )}
+                                </div>
+                            </div>
+                        </Tabs.Item>
+                    </Tabs>
+                </div>
             </div>
         </div>
     );
 }
 
 export default function ProjectDetails() {
-    const [projects, setProjects] = useState<Project[]>([]);
-
-    useEffect(() => {
-        const fetchProjects = async () => {
-            await apiGet('/offres').then((response) => {
-                setProjects(response.offres);
-                console.log(response.offres);
-            });
-        };
-        fetchProjects();
-    }, []);
-
     return (
         <Suspense fallback={<div className="flex items-center justify-center">Chargement...</div>}>
-            <ProjectDetailsContent projects={projects} />
+            <ProjectDetailsContent/>
         </Suspense>
     );
 }
+
+
+// export default ProjectDetailsContent;

@@ -25,6 +25,7 @@ use App\Repository\ArtisteRepository;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * Class OffreService
@@ -75,7 +76,14 @@ class OffreService
         $offreJSON = $serializer->serialize(
             $offre,
             'json',
-            ['groups' => ['offre:read']]
+            ['groups' => [
+                'offre:read',
+                'extras:read',
+                'budget_estimatif:read',
+                'fiche_technique_artiste:read',
+                'conditions_financieres:read',
+                'artistes:read'
+            ]]
         );
         return new JsonResponse([
             'offre' => json_decode($offreJSON, true),
@@ -110,6 +118,43 @@ class OffreService
             'offres' => $offresJSON,
             'serialized' => true
         ], Response::HTTP_OK, ['Access-Control-Allow-Origin' => '*']);
+    }
+
+    /**
+     * Récupère les offres d'un réseau par rapport à son nom et renvoie une réponse JSON.
+     *
+     * @param OffreRepository $offreRepository Le repository des réseaux.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les réseaux listés.
+     */
+    public static function getOffresByReseau(
+        string $reseauName,
+        OffreRepository $offreRepository,
+        SerializerInterface $serializer,
+        PaginatorInterface $paginator,
+        string $page,
+        string $limit
+    ): JsonResponse {
+        try {
+            // on récupère tous les reseaux existants
+            $offres = $offreRepository->trouveOffresReseaux($reseauName);
+            $paginationOffres = $paginator->paginate($offres, $page, $limit);
+            $totalPages = ceil($paginationOffres->getTotalItemCount() / $paginationOffres->getItemNumberPerPage());
+            $reseauxJSON = $serializer->serialize(
+                $paginationOffres,
+                'json',
+                ['groups' => ['offre:read']]
+            );
+            return new JsonResponse([
+                'offres' => $reseauxJSON,
+                'nb_pages' => $totalPages,
+                'message' => "Offres du réseau {$reseauName}",
+                'serialized' => true
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
@@ -158,19 +203,25 @@ class OffreService
     public static function getOffreByUtilisateur(
         OffreRepository $offreRepository,
         SerializerInterface $serializer,
-        int $id
+        PaginatorInterface $paginator,
+        string $username,
+        int $page,
+        int $limit
     ): JsonResponse {
-        $offres = $offreRepository->findBy(['utilisateur' => $id]);
+        $offres = $offreRepository->trouveOffresUtilisateur($username);
+        $paginationOffres = $paginator->paginate($offres, $page, $limit);
+        $totalPages = ceil($paginationOffres->getTotalItemCount() / $paginationOffres->getItemNumberPerPage());
         for ($i = 0; $i < sizeof($offres); $i++) {
             $offres[$i]->setImage($offres[$i]->getImage());
         }
         $offreJSON = $serializer->serialize(
-            $offres,
+            $paginationOffres,
             'json',
             ['groups' => ['offre:read']]
         );
         return new JsonResponse([
             'offres' => $offreJSON,
+            'nb_pages' => $totalPages,
             'serialized' => true
         ], Response::HTTP_OK, ['Access-Control-Allow-Origin' => '*']);
     }
@@ -256,57 +307,82 @@ class OffreService
             $offre->setLiensPromotionnels($liensPromotionnels);
             $offre->setNbContributeur(0);
 
-            $extras = new Extras();
-            $extras->setDescrExtras($data['extras']['descrExtras']);
-            $extras->setCoutExtras(intval($data['extras']['coutExtras']));
-            $extras->setExclusivite($data['extras']['exclusivite']);
-            $extras->setException($data['extras']['exception']);
-            $extras->setOrdrePassage($data['ficheTechniqueArtiste']['ordrePassage']);
-            $extras->setClausesConfidentialites($data['extras']['clausesConfidentialites']);
-            $offre->setExtras($extras);
+            if (isset($data['extras']['extrasParPDF']) && $data['extras']['extrasParPDF'] == false) {
+                $extras = new Extras();
+                $extras->setDescrExtras($data['extras']['descrExtras']);
+                $extras->setCoutExtras(intval($data['extras']['coutExtras']));
+                $extras->setExclusivite($data['extras']['exclusivite']);
+                $extras->setException($data['extras']['exception']);
+                $extras->setOrdrePassage($data['ficheTechniqueArtiste']['ordrePassage']);
+                $extras->setClausesConfidentialites($data['extras']['clausesConfidentialites']);
+                $offre->setExtras($extras);
+            }
 
             if ($data['etatOffre']['nomEtatOffre'] == "") {
                 $etatOffre = $etatOffreRepository->findBy(['nomEtat' => 'En Cours'])[0];
+                $offre->setEtatOffre($etatOffre);
+            } else {
+                $etatOffre = new EtatOffre();
+                $etatOffre->setNomEtat($data['etatOffre']['nomEtatOffre']);
                 $offre->setEtatOffre($etatOffre);
             }
 
             if ($data['typeOffre']['nomTypeOffre'] == "") {
                 $typeOffre = $typeOffreRepository->findBy(['nomTypeOffre' => 'Tournée'])[0];
                 $offre->setTypeOffre($typeOffre);
+            } else {
+                $typeOffre = new TypeOffre();
+                $typeOffre->setNomTypeOffre($data['typeOffre']['nomTypeOffre']);
+                $offre->setTypeOffre($typeOffre);
             }
 
-            $conditionsFinancieres = new ConditionsFinancieres();
-            $conditionsFinancieres->setMinimunGaranti(intval($data['conditionsFinancieres']['minimumGaranti']));
-            $conditionsFinancieres->setConditionsPaiement($data['conditionsFinancieres']['conditionsPaiement']);
-            $conditionsFinancieres->setPourcentageRecette(
-                floatval($data['conditionsFinancieres']['pourcentageRecette'])
-            );
-            $offre->setConditionsFinancieres($conditionsFinancieres);
+            if (
+                isset($data['conditionsFinancieres']['conditionsFinancieresParPDF']) &&
+                $data['conditionsFinancieres']['conditionsFinancieresParPDF'] == false
+            ) {
+                $conditionsFinancieres = new ConditionsFinancieres();
+                $conditionsFinancieres->setMinimunGaranti(intval($data['conditionsFinancieres']['minimunGaranti']));
+                $conditionsFinancieres->setConditionsPaiement($data['conditionsFinancieres']['conditionsPaiement']);
+                $conditionsFinancieres->setPourcentageRecette(
+                    floatval($data['conditionsFinancieres']['pourcentageRecette'])
+                );
+                $offre->setConditionsFinancieres($conditionsFinancieres);
+            }
 
-            $budgetEstimatif = new BudgetEstimatif();
-            $budgetEstimatif->setCachetArtiste(intval($data['budgetEstimatif']['cachetArtiste']));
-            $budgetEstimatif->setFraisDeplacement(intval($data['budgetEstimatif']['fraisDeplacement']));
-            $budgetEstimatif->setFraisHebergement(intval($data['budgetEstimatif']['fraisHebergement']));
-            $budgetEstimatif->setFraisRestauration(intval($data['budgetEstimatif']['fraisRestauration']));
-            $offre->setBudgetEstimatif($budgetEstimatif);
+            if (
+                isset($data['budgetEstimatif']['budgetEstimatifParPDF']) &&
+                $data['budgetEstimatif']['budgetEstimatifParPDF'] == false
+            ) {
+                $budgetEstimatif = new BudgetEstimatif();
+                $budgetEstimatif->setCachetArtiste(intval($data['budgetEstimatif']['cachetArtiste']));
+                $budgetEstimatif->setFraisDeplacement(intval($data['budgetEstimatif']['fraisDeplacement']));
+                $budgetEstimatif->setFraisHebergement(intval($data['budgetEstimatif']['fraisHebergement']));
+                $budgetEstimatif->setFraisRestauration(intval($data['budgetEstimatif']['fraisRestauration']));
+                $offre->setBudgetEstimatif($budgetEstimatif);
+            }
 
-            $ficheTechniqueArtiste = new FicheTechniqueArtiste();
-            $ficheTechniqueArtiste->setBesoinBackline(
-                $data['ficheTechniqueArtiste']['besoinBackline']
-            );
-            $ficheTechniqueArtiste->setBesoinEclairage(
-                $data['ficheTechniqueArtiste']['besoinEclairage']
-            );
-            $ficheTechniqueArtiste->setBesoinEquipements(
-                $data['ficheTechniqueArtiste']['besoinEquipements']
-            );
-            $ficheTechniqueArtiste->setBesoinScene(
-                $data['ficheTechniqueArtiste']['besoinScene']
-            );
-            $ficheTechniqueArtiste->setBesoinSonorisation(
-                $data['ficheTechniqueArtiste']['besoinSonorisation']
-            );
-            $offre->setFicheTechniqueArtiste($ficheTechniqueArtiste);
+            if (
+                isset($data['ficheTechniqueArtiste']['ficheTechniqueArtisteParPDF']) &&
+                $data['ficheTechniqueArtiste']['ficheTechniqueArtisteParPDF'] == false
+            ) {
+                $ficheTechniqueArtiste = new FicheTechniqueArtiste();
+                $ficheTechniqueArtiste->setBesoinBackline(
+                    $data['ficheTechniqueArtiste']['besoinBackline']
+                );
+                $ficheTechniqueArtiste->setBesoinEclairage(
+                    $data['ficheTechniqueArtiste']['besoinEclairage']
+                );
+                $ficheTechniqueArtiste->setBesoinEquipements(
+                    $data['ficheTechniqueArtiste']['besoinEquipements']
+                );
+                $ficheTechniqueArtiste->setBesoinScene(
+                    $data['ficheTechniqueArtiste']['besoinScene']
+                );
+                $ficheTechniqueArtiste->setBesoinSonorisation(
+                    $data['ficheTechniqueArtiste']['besoinSonorisation']
+                );
+                $offre->setFicheTechniqueArtiste($ficheTechniqueArtiste);
+            }
 
             // création de l'objet de l'utilisateur qui a mit en ligne l'offre
             $utilisateur = $utilisateurRepository->trouveUtilisateurByUsername($data['utilisateur']['username']);
@@ -329,22 +405,29 @@ class OffreService
                 $offre->addGenreMusical($genreMusical[0]);
             }
 
-            $nb_artistes = intval($data['ficheTechniqueArtiste']['nbArtistes']);
-            for ($i = 0; $i < $nb_artistes; $i++) {
-                // $artiste = $artisteRepository->trouveArtisteByName($data['ficheTechniqueArtiste']['artiste'][$i]);
-                // print_r($artiste);
-                // switch (sizeof($artiste)) {
-                    // case 0:
-                $artisteObject = new Artiste();
-                $artisteObject->setNomArtiste($data['ficheTechniqueArtiste']['artiste'][$i]);
-                $artisteObject->setDescrArtiste("Artiste quelconque");
-                $artisteRepository->inscritArtiste($artisteObject);
-                        // break;
+            if (
+                isset($data['ficheTechniqueArtiste']['ficheTechniqueArtisteParPDF']) &&
+                $data['ficheTechniqueArtiste']['ficheTechniqueArtisteParPDF'] == false
+            ) {
+                $nb_artistes = intval($data['ficheTechniqueArtiste']['nbArtistes']);
+                for ($i = 0; $i < $nb_artistes; $i++) {
+                    // $artiste = $artisteRepository->trouveArtisteByName(
+                    //      $data['ficheTechniqueArtiste']['artiste'][$i]
+                    //);
+                    // print_r($artiste);
+                    // switch (sizeof($artiste)) {
+                        // case 0:
+                    $artisteObject = new Artiste();
+                    $artisteObject->setNomArtiste($data['ficheTechniqueArtiste']['artiste'][$i]['nomArtiste']);
+                    $artisteObject->setDescrArtiste("Artiste quelconque");
+                    $artisteRepository->inscritArtiste($artisteObject);
+                            // break;
 
-                    // default:
-                        // $offre->addArtiste($artiste[0]);
-                        // break;
-                // }
+                        // default:
+                            // $offre->addArtiste($artiste[0]);
+                            // break;
+                    // }
+                }
             }
 
             // ajout de l'offre en base de données
@@ -383,7 +466,10 @@ class OffreService
                 'serialized' => false
             ], Response::HTTP_BAD_REQUEST, ['Access-Control-Allow-Origin' => '*']);
         } catch (\Exception $e) {
-            throw new \RuntimeException("Erreur lors de la création de l'offre", $e->getMessage());
+            throw new \RuntimeException(
+                "Erreur lors de la création de l'offre",
+                $e->getMessage() . ' ' . $e->getLine()
+            );
         }
     }
 
@@ -392,6 +478,9 @@ class OffreService
      *
      * @param int $id L'identifiant de l'offre à mettre à jour.
      * @param OffreRepository $offreRepository Le repository des offres.
+     * @param ReseauRepository $reseauRepository Le repository des réseaux.
+     * @param GenreMusicalRepository $genreMusicalRepository Le repository des genres musicaux.
+     * @param ArtisteRepository $artisteRepository Le repository des artistes.
      * @param SerializerInterface $serializer Le service de sérialisation.
      * @param MailerService $mailerService Le service d'envoi de mail.
      * @param mixed $data Les nouvelles données de l'offre.
@@ -403,6 +492,9 @@ class OffreService
     public static function updateOffre(
         int $id,
         OffreRepository $offreRepository,
+        ReseauRepository $reseauRepository,
+        GenreMusicalRepository $genreMusicalRepository,
+        ArtisteRepository $artisteRepository,
         SerializerInterface $serializer,
         MailerService $mailerService,
         mixed $data
@@ -425,17 +517,17 @@ class OffreService
             if (isset($data['detailOffre']['titleOffre'])) {
                 $offre->setTitleOffre($data['detailOffre']['titleOffre']);
             }
-            if (isset($data['detailOffre']['deadline'])) {
-                $offre->setDeadline($data['detailOffre']['deadline']);
+            if (isset($data['detailOffre']['deadLine'])) {
+                $offre->setDeadline(date_create($data['detailOffre']['deadLine']));
             }
             if (isset($data['detailOffre']['descrTournee'])) {
                 $offre->setDescrTournee($data['detailOffre']['descrTournee']);
             }
             if (isset($data['detailOffre']['dateMinProposee'])) {
-                $offre->setDateMinProposee($data['detailOffre']['dateMinProposee']);
+                $offre->setDateMinProposee(date_create($data['detailOffre']['dateMinProposee']));
             }
             if (isset($data['detailOffre']['dateMaxProposee'])) {
-                $offre->setDateMaxProposee($data['detailOffre']['dateMaxProposee']);
+                $offre->setDateMaxProposee(date_create($data['detailOffre']['dateMaxProposee']));
             }
             if (isset($data['detailOffre']['villeVisee'])) {
                 $offre->setVilleVisee($data['detailOffre']['villeVisee']);
@@ -456,26 +548,55 @@ class OffreService
                 $offre->setNbInvitesConcernes($data['detailOffre']['nbInvitesConcernes']);
             }
             if (isset($data['ficheTechniqueArtiste']['liensPromotionnels'])) {
-                $offre->setLiensPromotionnels($data['ficheTechniqueArtiste']['liensPromotionnels']);
+                $liensPromotionnels = "";
+                foreach ($data['ficheTechniqueArtiste']['liensPromotionnels'] as $lien) {
+                    $liensPromotionnels .= "{$lien};";
+                }
+                $offre->setLiensPromotionnels($liensPromotionnels);
+            }
+            if (isset($data['image']['file'])) {
+                $offre->setImage($data['image']['file']);
+            }
+            if (isset($data['extras'])) {
+                $extras = new Extras();
+                if (isset($data['extras']['descrExtras'])) {
+                    $extras->setDescrExtras($data['extras']['descrExtras']);
+                }
+                if (isset($data['extras']['coutExtras'])) {
+                    $extras->setCoutExtras($data['extras']['coutExtras']);
+                }
+                if (isset($data['extras']['exclusivite'])) {
+                    $extras->setExclusivite($data['extras']['exclusivite']);
+                }
+                if (isset($data['extras']['exception'])) {
+                    $extras->setException($data['extras']['exception']);
+                }
+                if (isset($data['ficheTechniqueArtiste']['ordrePassage'])) {
+                    $extras->setOrdrePassage($data['ficheTechniqueArtiste']['ordrePassage']);
+                }
+                if (isset($data['extras']['clausesConfidentialites'])) {
+                    $extras->setClausesConfidentialites($data['extras']['clausesConfidentialites']);
+                }
+                $offre->setExtras($extras);
             }
             if (isset($data['etatOffre'])) {
                 $etatOffre = new EtatOffre();
                 if (isset($data['etatOffre']['nomEtatOffre'])) {
                     $etatOffre->setNomEtat($data['etatOffre']['nomEtatOffre']);
                 }
-                $offre->setExtras($etatOffre);
+                $offre->setEtatOffre($etatOffre);
             }
             if (isset($data['typeOffre'])) {
                 $typeOffre = new TypeOffre();
                 if (isset($data['typeOffre']['nomTypeOffre'])) {
                     $typeOffre->setNomTypeOffre($data['typeOffre']['nomTypeOffre']);
                 }
-                $offre->setExtras($typeOffre);
+                $offre->setTypeOffre($typeOffre);
             }
-            if (isset($data['conditionFinancieres'])) {
+            if (isset($data['conditionsFinancieres'])) {
                 $conditionsFinancieres = new ConditionsFinancieres();
-                if (isset($data['conditionsFinancieres']['minimumGaranti'])) {
-                    $conditionsFinancieres->setMinimunGaranti($data['conditionsFinancieres']['minimumGaranti']);
+                if (isset($data['conditionsFinancieres']['minimunGaranti'])) {
+                    $conditionsFinancieres->setMinimunGaranti($data['conditionsFinancieres']['minimunGaranti']);
                 }
                 if (isset($data['conditionsFinancieres']['conditionsPaiement'])) {
                     $conditionsFinancieres->setConditionsPaiement($data['conditionsFinancieres']['conditionsPaiement']);
@@ -530,6 +651,67 @@ class OffreService
                 }
                 $offre->setFicheTechniqueArtiste($ficheTechniqueArtiste);
             }
+            if (isset($data['donneesSupplementaires']['reseau'])) {
+                $nb_reseaux = intval($data['donneesSupplementaires']['nbReseaux']);
+                $reseaux_list = [];
+                for ($i = 0; $i < $nb_reseaux; $i++) {
+                    if (isset($data['donneesSupplementaires']['reseau'][$i]['nomReseau'])) {
+                        $reseau = $reseauRepository->trouveReseauByName(
+                            $data['donneesSupplementaires']['reseau'][$i]['nomReseau']
+                        );
+                        $offre->addReseau($reseau[0]);
+                        $reseaux_list[] = $reseau[0];
+                    }
+                }
+                foreach ($offre->getReseaux() as $reseauOffre) {
+                    if (!in_array($reseauOffre, $reseaux_list)) {
+                        $offre->removeReseau($reseauOffre);
+                    }
+                }
+            }
+            if (isset($data['donneesSupplementaires']['genreMusical'])) {
+                $nb_genres_musicaux = intval($data['donneesSupplementaires']['nbGenresMusicaux']);
+                $genres_list = [];
+                for ($i = 0; $i < $nb_genres_musicaux; $i++) {
+                    if (isset($data['donneesSupplementaires']['genreMusical'][$i]['nomGenreMusical'])) {
+                        $genreMusical = $genreMusicalRepository->trouveGenreMusicalByName(
+                            $data['donneesSupplementaires']['genreMusical'][$i]['nomGenreMusical']
+                        );
+                        $offre->addGenreMusical($genreMusical[0]);
+                        $genres_list[] = $genreMusical[0];
+                    }
+                }
+                foreach ($offre->getGenresMusicaux() as $genreOffre) {
+                    if (!in_array($genreOffre, $genres_list)) {
+                        $offre->removeGenreMusical($genreOffre);
+                    }
+                }
+            }
+            if (isset($data['ficheTechniqueArtiste']['artiste'])) {
+                $nb_artistes = intval($data['ficheTechniqueArtiste']['nbArtistes']);
+                $artistes_list = [];
+                for ($i = 0; $i < $nb_artistes; $i++) {
+                    $artiste = $artisteRepository->trouveArtisteByName(
+                        $data['ficheTechniqueArtiste']['artiste'][$i]['nomArtiste']
+                    );
+                    if (count($artiste) == 0) {
+                        $artisteObject = new Artiste();
+                        $artisteObject->setNomArtiste($data['ficheTechniqueArtiste']['artiste'][$i]['nomArtiste']);
+                        $artisteObject->setDescrArtiste("Artiste quelconque");
+                        $artisteRepository->inscritArtiste($artisteObject);
+                        $offre->addArtiste($artisteObject);
+                        $artistes_list[] = $artisteObject;
+                    } else {
+                        $offre->addArtiste($artiste[0]);
+                        $artistes_list[] = $artiste[0];
+                    }
+                }
+                foreach ($offre->getArtistes() as $artisteOffre) {
+                    if (!in_array($artisteOffre, $artistes_list)) {
+                        $offre->removeArtiste($artisteOffre);
+                    }
+                }
+            }
 
             $reseaux_list = $offre->getReseaux();
 
@@ -539,14 +721,14 @@ class OffreService
             // si l'action à réussi
             if ($rep) {
                 foreach ($reseaux_list as $reseau) {
-                    $utilisateurs = $reseau->getNomReseau()->getUtilisateurs();
+                    $utilisateurs = $reseau->getUtilisateurs();
                     foreach ($utilisateurs as $utilisateur) {
                         if ($utilisateur->getEmailUtilisateur() != null) {
                             $mailerService->sendEmail(
                                 $utilisateur->getEmailUtilisateur(),
                                 "Mise à jour d'offre",
-                                "<h1>Changement sur l'offre</h1>" +
-                                "<p>Une offre de votre réseau a récemment été modifié," +
+                                "<h1>Changement sur l'offre</h1>" .
+                                "<p>Une offre de votre réseau a récemment été modifié," .
                                 "Réseau : {$reseau->getNomReseau()}</p>"
                             );
                         }
@@ -571,7 +753,7 @@ class OffreService
                 ], Response::HTTP_BAD_REQUEST);
             }
         } catch (\Exception $e) {
-            throw new \RuntimeException("Erreur lors de la mise à jour de l'offre", $e->getMessage());
+            throw new \RuntimeException("Erreur lors de la mise à jour de l'offre", $e->getMessage() . $e->getLine());
         }
     }
 

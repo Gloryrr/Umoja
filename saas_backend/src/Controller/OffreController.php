@@ -16,6 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\OffreRepository;
+use Knp\Component\Pager\PaginatorInterface;
 
 class OffreController extends AbstractController
 {
@@ -81,6 +82,35 @@ class OffreController extends AbstractController
     }
 
     /**
+     * Récupère une liste d'offres en fonction d'une liste d'identifiant.
+     *
+     * @param Request $request, la requête avec les données de recherche
+     * @param OffreRepository $offreRepository, la classe CRUD des Offres
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/offres/reseau', name: 'get_offres_reseau', methods: ['POST'])]
+    public function getOffresReseau(
+        Request $request,
+        OffreRepository $offreRepository,
+        SerializerInterface $serializer,
+        PaginatorInterface $paginator,
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        $page = intval($data['page']);
+        $limit = intval($data['limit']);
+        $nomReseau = $data['nomReseau'];
+        return OffreService::getOffresByReseau(
+            $nomReseau,
+            $offreRepository,
+            $serializer,
+            $paginator,
+            $page,
+            $limit
+        );
+    }
+
+    /**
      * Récupère les offres fonction de leur titre et de leur appartenance à un réseau.
      *
      * @param Request $request, la requête avec les données de recherche
@@ -108,20 +138,30 @@ class OffreController extends AbstractController
     /**
      * Récupère toutes les offres qui sont liés à un utilisateur en particulier.
      *
+     * @param Request $request, la requête avec les données de recherche
+     * @param string $username, le nom d'utilisateur de l'utilisateur
      * @param OffreRepository $offreRepository, la classe CRUD des Offres
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
-    #[Route('/api/v1/offre/utilisateur/{id}', name: 'get_offre_by_utilisateur', methods: ['GET'])]
+    #[Route('/api/v1/offre/utilisateur/{username}', name: 'get_offre_by_utilisateur', methods: ['POST'])]
     public function getOffreByUtilisateur(
-        int $id,
+        Request $request,
+        string $username,
         OffreRepository $offreRepository,
         SerializerInterface $serializer,
+        PaginatorInterface $paginator,
     ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        $page = intval($data['page']);
+        $limit = intval($data['limit']);
         return OffreService::getOffreByUtilisateur(
             $offreRepository,
             $serializer,
-            $id
+            $paginator,
+            $username,
+            $page,
+            $limit
         );
     }
 
@@ -168,6 +208,9 @@ class OffreController extends AbstractController
      * @param int $id
      * @param Request $request
      * @param OffreRepository $offreRepository, la classe CRUD des Offres
+     * @param ReseauRepository $reseauRepository, la classe CRUD des réseaux
+     * @param GenreMusicalRepository $genreMusicalRepository, la classe CRUD des genres musicaux
+     * @param ArtisteRepository $artisteRepository, la classe CRUD des artistes
      * @param MailerService $mailerService, le service d'envoi de mail
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
@@ -177,6 +220,9 @@ class OffreController extends AbstractController
         int $id,
         Request $request,
         OffreRepository $offreRepository,
+        ReseauRepository $reseauRepository,
+        GenreMusicalRepository $genreMusicalRepository,
+        ArtisteRepository $artisteRepository,
         MailerService $mailerService,
         SerializerInterface $serializer
     ): JsonResponse {
@@ -184,6 +230,9 @@ class OffreController extends AbstractController
         return OffreService::updateOffre(
             $id,
             $offreRepository,
+            $reseauRepository,
+            $genreMusicalRepository,
+            $artisteRepository,
             $serializer,
             $mailerService,
             $data

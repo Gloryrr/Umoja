@@ -43,7 +43,7 @@ elif [ $instruction == "6" ]; then
 elif [ $instruction == "7" ]; then
     docker-compose exec application vendor/bin/phpunit --testdox --colors tests/Repository
 elif [ $instruction == "8" ]; then
-    docker-compose exec application vendor/bin/phpunit --coverage-text
+    docker-compose exec application vendor/bin/phpunit --coverage-text tests/Entity
 elif [ $instruction == "9" ]; then
     docker-compose exec application vendor/bin/phpcs -p --standard=PSR12 src
 elif [ $instruction == "10" ]; then

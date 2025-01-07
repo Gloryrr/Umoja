@@ -1,11 +1,13 @@
 "use client";
-import React from 'react';
-import { TextInput, Label, Card, Button } from 'flowbite-react';
+import React, {useEffect, useState} from 'react';
+import { TextInput, Label, Card, Button, Checkbox, FileInput } from 'flowbite-react';
 import { FiRefreshCw } from "react-icons/fi";
-import { useState } from 'react';
+import { Artiste } from '@/app/types/FormDataType';
+import { apiPostSFTP } from '@/app/services/internalApiClients';
 
 interface FicheTechniqueArtisteFormProps {
     ficheTechniqueArtiste: {
+        ficheTechniqueArtisteParPDF: boolean | null;
         besoinBackline: string | null;
         besoinEclairage: string | null;
         besoinEquipements: string | null;
@@ -13,21 +15,34 @@ interface FicheTechniqueArtisteFormProps {
         besoinSonorisation: string | null;
         ordrePassage: string | null;
         liensPromotionnels: string[];
-        artiste: string[];
+        artiste: Artiste[];
         nbArtistes: number | null;
     };
-    onFicheTechniqueChange: (name: string, value: string | string[] | number) => void;
+    idProjet: string;
+    onFicheTechniqueChange: (name: string, value: string | string[] | number | Artiste[] | boolean) => void;
 }
 
 const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
     ficheTechniqueArtiste,
     onFicheTechniqueChange,
+    idProjet,
 }) => {
+    const [offreId, setOffreId] = useState<string>(idProjet);
+    const [file, setFile] = useState<File | null>(null);
+    const [message, setMessage] = useState('');
+    const [colorMessage, setColorMessage] = useState('success');
+    const [isTextInputActive, setIsTextInputActive] = useState(true);
+
     const [liensPromotionnels, setLiensPromotionnels] = useState<string[]>(ficheTechniqueArtiste.liensPromotionnels || ['']);
-    const [artistes, setArtistes] = useState<string[]>(ficheTechniqueArtiste.artiste);
+    const [artistes, setArtistes] = useState<Artiste[]>(ficheTechniqueArtiste.artiste);
     const handleFicheTechniqueArtisteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        onFicheTechniqueChange(name, value);
+        const { name, value, type } = e.target as HTMLInputElement;
+        const newValue = type === "checkbox" ? !ficheTechniqueArtiste.ficheTechniqueArtisteParPDF : value;
+        
+        onFicheTechniqueChange(name, newValue);
+        if (name === 'ficheTechniqueArtisteParPDF') {
+            setIsTextInputActive(!isTextInputActive);
+        }
     };
 
     const handleReset = () => {
@@ -64,14 +79,14 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
 
     const handleArtisteChange = (index: number, value: string) => {
         const updatedArtistes = [...artistes];
-        updatedArtistes[index] = value;
+        updatedArtistes[index].nomArtiste = value;
         setArtistes(updatedArtistes);
         onFicheTechniqueChange('artiste', updatedArtistes);
         onFicheTechniqueChange('nbArtistes', updatedArtistes.length);
     };
 
     const addArtisteField = () => {
-        setArtistes([...artistes, ""]);
+        setArtistes([...artistes, {nomArtiste: ""}]);
     };
 
     const removeArtisteField = (index: number) => {
@@ -80,6 +95,38 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
         onFicheTechniqueChange('artiste', updatedArtistes);
         onFicheTechniqueChange('nbArtistes', updatedArtistes.length);
     };
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFile(e.target.files?.[0] || null);
+    };
+
+    useEffect(() => {
+        setOffreId(idProjet);
+    }, [idProjet]);
+
+    useEffect(() => {
+        if (offreId && file) {
+            const handleSubmit = async () => {
+    
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('idProjet', offreId.toString());
+                formData.append('typeFichier', "ficte_technique_artiste");
+    
+                try {
+                    await apiPostSFTP('/upload-sftp-fichier', formData);
+                    setColorMessage('text-green-500');
+                    setMessage('Le fichier a été transféré avec succès');
+                } catch (error) {
+                    console.error('Erreur lors du transfert du fichier :', error);
+                    setColorMessage('text-red-500');
+                    setMessage('Erreur lors du transfert du fichier, veuillez réessayer');
+                }
+            };
+    
+            handleSubmit();
+        }
+    }, [offreId, file]);
 
     return (
         <Card className="w-full shadow-none border-none">
@@ -96,11 +143,24 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                 </Button>
             </div>
 
+            <div className="mb-4">
+                <Checkbox
+                    id="ficheTechniqueArtisteParPDF"
+                    checked={isTextInputActive}
+                    onChange={handleFicheTechniqueArtisteChange}
+                    name="ficheTechniqueArtisteParPDF"
+                />
+                <Label htmlFor="ficheTechniqueArtisteParPDF" className="ml-2">
+                    Ne pas importer de PDF
+                </Label>
+            </div>
+
             {/* Section Backline et Éclairage */}
             <div className="grid grid-cols-2 gap-4 mb-5">
                 <div>
                     <Label htmlFor="besoinBackline" value="Besoin en backline:" />
                     <TextInput
+                        disabled={!isTextInputActive}
                         id="besoinBackline"
                         name="besoinBackline"
                         value={ficheTechniqueArtiste.besoinBackline ?? ""}
@@ -112,6 +172,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                 <div>
                     <Label htmlFor="besoinEclairage" value="Besoin en éclairage:" />
                     <TextInput
+                        disabled={!isTextInputActive}
                         id="besoinEclairage"
                         name="besoinEclairage"
                         value={ficheTechniqueArtiste.besoinEclairage ?? ""}
@@ -127,6 +188,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                 <div>
                     <Label htmlFor="besoinEquipements" value="Besoin en équipements:" />
                     <TextInput
+                        disabled={!isTextInputActive}
                         id="besoinEquipements"
                         name="besoinEquipements"
                         value={ficheTechniqueArtiste.besoinEquipements ?? ""}
@@ -138,6 +200,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                 <div>
                     <Label htmlFor="besoinScene" value="Besoin pour la scène:" />
                     <TextInput
+                        disabled={!isTextInputActive}
                         id="besoinScene"
                         name="besoinScene"
                         value={ficheTechniqueArtiste.besoinScene ?? ""}
@@ -152,6 +215,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
             <div className="mb-5">
                 <Label htmlFor="besoinSonorisation" value="Besoin en sonorisation:" />
                 <TextInput
+                    disabled={!isTextInputActive}
                     id="besoinSonorisation"
                     name="besoinSonorisation"
                     value={ficheTechniqueArtiste.besoinSonorisation ?? ""}
@@ -165,21 +229,22 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                     <h3 className="text-2xl font-semibold mb-4">Artistes Concernés</h3>
                 </div>
 
-                {artistes.map((artiste, index) => (
+                {artistes ? artistes.map((artiste, index) => (
                     <div key={index} className="flex items-center mb-2">
                         <TextInput
+                            disabled={!isTextInputActive}
                             type="text"
-                            value={artiste}
+                            value={artiste.nomArtiste}
                             onChange={(e) => handleArtisteChange(index, e.target.value)}
                             placeholder="Nom de l'artiste..."
                             className="w-full"
                         />
-                        <Button color="failure" onClick={() => removeArtisteField(index)} size="sm" className="ml-2">
+                        <Button color="failure" onClick={() => removeArtisteField(index)} size="sm" className="ml-2" disabled={!isTextInputActive}>
                             Supprimer
                         </Button>
                     </div>
-                ))}
-                <Button onClick={addArtisteField} className="mt-2 w-full">
+                )) : "Aucun artiste lié au projet"}
+                <Button onClick={addArtisteField} className="mt-2 w-full" disabled={!isTextInputActive}>
                     Ajouter un artiste
                 </Button>
             </div>
@@ -188,6 +253,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                 <div>
                     <Label htmlFor="ordrePassage" value="Ordre de passage des artistes durant l'évènement:" />
                     <TextInput
+                        disabled={!isTextInputActive}
                         id="ordrePassage"
                         name="ordrePassage"
                         type="text"
@@ -203,6 +269,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                 {liensPromotionnels.map((lien, index) => (
                     <div key={index} className="flex items-center mb-2">
                         <TextInput
+                            disabled={!isTextInputActive}
                             type="url"
                             value={lien}
                             onChange={(e) => handleLienChange(index, e.target.value)}
@@ -211,6 +278,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                             className="w-full"
                         />
                         <Button
+                            disabled={!isTextInputActive}
                             color="failure"
                             onClick={() => handleRemoveLien(index)}
                             className="ml-2"
@@ -222,10 +290,23 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                 <Button
                     onClick={handleAddLien}
                     className="mt-2 w-full"
+                    disabled={!isTextInputActive}
                 >
                     Ajouter un lien
                 </Button>
             </div>
+
+            <div className="flex">
+                <FileInput
+                    disabled={isTextInputActive}
+                    className="w-full mr-5"
+                    accept="application/pdf"
+                    onChange={handleFileChange}
+                />
+            </div>
+
+            {message && <p className={colorMessage}>{message}</p>}
+
         </Card>
     );
 };

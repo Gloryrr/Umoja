@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Fredoka, Nunito } from "next/font/google";
 import NavbarApp from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
+import React from "react";
 // import Head from "next/head";
 
 import "./globals.css";
@@ -40,14 +41,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({children,}: Readonly<{children: React.ReactNode;}>) {
   return (
-    <html lang="en">
-      {/*<Head>
-        <ThemeModeScript />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
-          rel="stylesheet"
-        />
-      </Head>*/}
+    <html lang="fr">
       <body className={`${fredoka.variable} ${nunito.variable} antialiased flex flex-col`}>
         <NavbarApp/>
           {children}

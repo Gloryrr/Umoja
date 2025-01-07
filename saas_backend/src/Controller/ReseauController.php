@@ -11,6 +11,7 @@ use App\Repository\ReseauRepository;
 use App\Repository\UtilisateurRepository;
 use App\Repository\GenreMusicalRepository;
 use App\Services\ReseauService;
+use Knp\Component\Pager\PaginatorInterface;
 
 class ReseauController extends AbstractController
 {
@@ -50,6 +51,34 @@ class ReseauController extends AbstractController
             $data['nomReseau'],
             $ReseauRepository,
             $serializer
+        );
+    }
+
+    /**
+     * Récupère les réseaux d'un utilisateur par rapport à son username.
+     *
+     * @param ReseauRepository $ReseauRepository, la classe CRUD des réseaux
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/reseaux/utilisateur', name: 'get_reseaux_utilisateurs', methods: ['POST'])]
+    public function getReseauxUtilisateur(
+        Request $request,
+        ReseauRepository $ReseauRepository,
+        SerializerInterface $serializer,
+        PaginatorInterface $paginator
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        $page = intval($data['page']);
+        $limit = intval($data['limit']);
+        $username = $data['username'];
+        return ReseauService::getReseauxUtilisateur(
+            $ReseauRepository,
+            $serializer,
+            $paginator,
+            $username,
+            $page,
+            $limit
         );
     }
 
@@ -205,7 +234,7 @@ class ReseauController extends AbstractController
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
-    #[Route('/api/v1/reseau/delete-genre-musical', name: 'delete_genre_musical', methods: ['DELETE'])]
+    #[Route('/api/v1/reseau/delete-genre-musical', name: 'delete_genre_musical_reseau', methods: ['DELETE'])]
     public function retireGenreMusicalReseau(
         Request $request,
         ReseauRepository $reseauRepository,

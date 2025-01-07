@@ -10,6 +10,7 @@
         <env name="JWT_SECRET_KEY" value="%kernel.project_dir%/config/jwt/private.pem"/>
         <env name="JWT_PUBLIC_KEY" value="%kernel.project_dir%/config/jwt/public.pem"/>
         <env name="JWT_PASSPHRASE" value="umodja"/>
+        <env name="MAILER_DSN" value="smtp://marmionsteven8@gmail.com:kyfu%20fphi%20ehik%20eluq@smtp.gmail.com:587?encryption=tls"/>
     </php>
 
     <testsuites>

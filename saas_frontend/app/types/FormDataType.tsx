@@ -1,5 +1,6 @@
 // type pour les détails de l'offre
 export type DetailOffre = {
+    id: number | null;
     titleOffre: string | null;
     deadLine: string | Date | null;
     descrTournee: string | null;
@@ -15,6 +16,7 @@ export type DetailOffre = {
 
 // type pour les extras
 export type Extras = {
+    extrasParPDF: boolean | null;
     descrExtras: string | null;
     coutExtras: number | null;
     exclusivite: string | null;
@@ -34,13 +36,15 @@ export type TypeOffre = {
 
 // type pour les conditions financières
 export type ConditionsFinancieres = {
-    minimumGaranti: number | null;
+    conditionsFinancieresParPDF: boolean | null;
+    minimunGaranti: number | null;
     conditionsPaiement: string | null;
     pourcentageRecette: number | null;
 };
 
 // type pour le budget estimatif
 export type BudgetEstimatif = {
+    budgetEstimatifParPDF: boolean | null;
     cachetArtiste: number | null;
     fraisDeplacement: number | null;
     fraisHebergement: number | null;
@@ -49,6 +53,7 @@ export type BudgetEstimatif = {
 
 // type pour la fiche technique de l'artiste
 export type FicheTechniqueArtiste = {
+    ficheTechniqueArtisteParPDF: boolean | null;
     besoinBackline: string | null;
     besoinEclairage: string | null;
     besoinEquipements: string | null;
@@ -56,17 +61,29 @@ export type FicheTechniqueArtiste = {
     besoinSonorisation: string | null;
     ordrePassage: string | null;
     liensPromotionnels: string[];
-    artiste: string[];
+    artiste: Artiste[];
     nbArtistes: number | null;
 };
 
 // type pour les données supplémentaires
 export type DonneesSupplementaires = {
-    reseau: string[];
+    reseau: Reseau[];
     nbReseaux: number | null;
-    genreMusical: string[];
+    genreMusical: GenreMusical[];
     nbGenresMusicaux: number | null;
 };
+
+export type Reseau = {
+    nomReseau: string;
+}
+
+export type GenreMusical = {
+    nomGenreMusical: string;
+}
+
+export type Artiste = {
+    nomArtiste: string;
+}
 
 // type pour l'utilisateur
 export type Utilisateur = {

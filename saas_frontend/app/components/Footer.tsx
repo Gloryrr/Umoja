@@ -6,11 +6,7 @@ import { Mail } from "lucide-react";
 // import { apiGet } from "../services/internalApiClients";
 
 function FooterComponent() {
-  function estPageDeConnexion() {
-    return (window.location.pathname == "" || window.location.pathname == "/");
-  }
 
-  if (!estPageDeConnexion()) {
     return (
       <Footer container className="py-12 rounded-none border-t border-dark dark:border-gray-500">
         <div className="w-full mx-auto">
@@ -96,7 +92,6 @@ function FooterComponent() {
         </div>
       </Footer>
     );
-  }
 }
 
 export default FooterComponent;

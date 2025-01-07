@@ -7,16 +7,16 @@ import BudgetEstimatifForm from '@/app/components/Form/Offre/BudgetEstimatifForm
 import DetailOffreForm from '@/app/components/Form/Offre/DetailOffreForm';
 import FicheTechniqueArtisteForm from '@/app/components/Form/Offre/FicheTechniqueArtiste';
 import InfoAdditionnelAlert from '@/app/components/Alerte/InfoAdditionnelAlerte';
-import { apiPost } from '@/app/services/internalApiClients';
+import { apiPost,apiGet } from '@/app/services/internalApiClients';
 import { HiInformationCircle } from "react-icons/hi";
-import { FormData } from '@/app/types/FormDataType';
+import { FormData, GenreMusical, Reseau } from '@/app/types/FormDataType';
 import SelectCheckbox from '@/app/components/SelectCheckbox';
-import { apiGet } from '@/app/services/internalApiClients';
 
 const OffreForm: React.FC = () => {
     const dateParDefaut = new Date().toISOString().split('T')[0] as string;
     const [formData, setFormData] = useState<FormData>({
         detailOffre: {
+            id: null,
             titleOffre: null,
             deadLine: dateParDefaut,
             descrTournee: null,
@@ -30,6 +30,7 @@ const OffreForm: React.FC = () => {
             nbInvitesConcernes: null
         },
         extras: {
+            extrasParPDF: false,
             descrExtras: null,
             coutExtras: null,
             exclusivite: null,
@@ -43,17 +44,20 @@ const OffreForm: React.FC = () => {
             nomTypeOffre: ""
         },
         conditionsFinancieres: {
-            minimumGaranti: null,
+            conditionsFinancieresParPDF: false,
+            minimunGaranti: null,
             conditionsPaiement: null,
             pourcentageRecette: null
         },
         budgetEstimatif: {
+            budgetEstimatifParPDF: false,
             cachetArtiste: null,
             fraisDeplacement: null,
             fraisHebergement: null,
             fraisRestauration: null
         },
         ficheTechniqueArtiste: {
+            ficheTechniqueArtisteParPDF: false,
             besoinBackline: null,
             besoinEclairage: null,
             besoinEquipements: null,
@@ -84,9 +88,9 @@ const OffreForm: React.FC = () => {
     const [offreId, setOffreId] = useState("");
     const [description, setDescription] = useState("");
     const [genresMusicaux, setGenresMusicaux] = useState<Array<{ nomGenreMusical: string }>>([]);
-    const [selectedGenres, setSelectedGenres] = useState<string[]>(formData.donneesSupplementaires.genreMusical);
+    const [selectedGenres, setSelectedGenres] = useState<GenreMusical[]>(formData.donneesSupplementaires.genreMusical);
     const [reseaux, setReseaux] = useState<Array<{ nomReseau: string }>>([]);
-    const [selectedReseaux, setSelectedReseaux] = useState<string[]>(formData.donneesSupplementaires.reseau);
+    const [selectedReseaux, setSelectedReseaux] = useState<Reseau[]>(formData.donneesSupplementaires.reseau);
 
     const valideFormulaire = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -96,7 +100,7 @@ const OffreForm: React.FC = () => {
             setTypeMessage("success");
             setDescription("Cliquez sur 'Voir plus' pour accéder aux détails de l'offre.");
             setMessageOffrePostee("Votre offre a bien été postée !");
-            setOffrePostee(true);   
+            setOffrePostee(true);
         } catch (error) {
             setTypeMessage("error");
             setMessageOffrePostee("Une erreur s'est produite durant le post de votre offre.");
@@ -115,7 +119,7 @@ const OffreForm: React.FC = () => {
                 console.error("Erreur lors du chargement des genres musicaux :", error);
             }
         };
-
+    
         const fetchReseauUtilisateur = async () => {
             try {
                 await apiGet("/me").then(async (response) => {
@@ -131,11 +135,11 @@ const OffreForm: React.FC = () => {
                 console.error("Erreur lors du chargement des données utilisateurs :", error);
             }
         };
-
+    
         fetchGenresMusicaux();
         fetchReseauUtilisateur();
-    }, []);
-
+    }, [setGenresMusicaux, setReseaux, formData.utilisateur]);
+    
     const checkInformationsDeBase = () => {
         const {
             titleOffre,
@@ -165,44 +169,56 @@ const OffreForm: React.FC = () => {
 
     const checkExtras = () => {
         const {
+            extrasParPDF,
             descrExtras,
             coutExtras,
             exclusivite,
             exception,
             clausesConfidentialites 
         } = formData.extras;
-        return !!(descrExtras && 
+        return !!((descrExtras && 
             coutExtras != null && 
             coutExtras > 0 && 
             exclusivite && 
             exception && 
-            clausesConfidentialites);
+            clausesConfidentialites) || extrasParPDF);
     };
 
     const checkConditionsFinancieres = () => {
         const {
-            minimumGaranti,
+            conditionsFinancieresParPDF,
+            minimunGaranti,
             conditionsPaiement,
             pourcentageRecette
         } = formData.conditionsFinancieres;
-        return !!(minimumGaranti != null && minimumGaranti > 0 && conditionsPaiement && pourcentageRecette != null && pourcentageRecette > 0);
+        if (conditionsFinancieresParPDF) {
+            return true;
+        } else {
+        return !!(minimunGaranti != null && 
+                    minimunGaranti > 0 && 
+                    conditionsPaiement && 
+                    pourcentageRecette != null && 
+                    pourcentageRecette > 0);
+        }
     };
 
     const checkBudgetEstimatif = () => {
         const {
+            budgetEstimatifParPDF,
             cachetArtiste,
             fraisDeplacement,
             fraisHebergement,
             fraisRestauration
         } = formData.budgetEstimatif;
-        return !!(cachetArtiste != null && cachetArtiste > 0 && 
+        return !!((cachetArtiste != null && cachetArtiste > 0 && 
             fraisDeplacement != null && fraisDeplacement > 0 && 
             fraisHebergement != null && fraisHebergement > 0 && 
-            fraisRestauration != null && fraisRestauration > 0);
+            fraisRestauration != null && fraisRestauration > 0) || budgetEstimatifParPDF);
     };
 
     const checkFicheTechniqueArtiste = () => {
         const {
+            ficheTechniqueArtisteParPDF,
             besoinBackline,
             besoinEclairage,
             besoinEquipements,
@@ -214,7 +230,7 @@ const OffreForm: React.FC = () => {
             nbArtistes
         } = formData.ficheTechniqueArtiste;
         return !!(
-            besoinBackline && 
+            (besoinBackline && 
             besoinEclairage && 
             besoinEquipements && 
             besoinScene && 
@@ -222,7 +238,7 @@ const OffreForm: React.FC = () => {
             ordrePassage && 
             artiste.length > 0 && 
             liensPromotionnels.length > 0 && 
-            nbArtistes != null && nbArtistes > 0
+            nbArtistes != null && nbArtistes > 0) || ficheTechniqueArtisteParPDF
         );
     };
 
@@ -239,7 +255,7 @@ const OffreForm: React.FC = () => {
             nbGenresMusicaux != null && nbGenresMusicaux > 0;
     };
 
-    const onDonneesSupplementairesChange = (name: string, value: string[] | number) => {
+    const onDonneesSupplementairesChange = (name: string, value: string[] | Reseau[] | GenreMusical[] | number) => {
         setFormData((prevData) => ({
             ...prevData,
             donneesSupplementaires: {
@@ -256,7 +272,7 @@ const OffreForm: React.FC = () => {
     ) => {
         const valueAsList = Array.isArray(value) 
             ? value 
-            : Object.values(value || {});
+            : Object.values(value ?? {});
     
         setFormData((prevData) => ({
             ...prevData,
@@ -281,7 +297,6 @@ const OffreForm: React.FC = () => {
             const arrayBuffer = await file.arrayBuffer();
             const uint8Array = new Uint8Array(arrayBuffer);
             const base64String = btoa(String.fromCharCode(...uint8Array));
-            console.log(section, field, base64String); 
     
             updateField(section, field, base64String);
         } catch (error) {
@@ -350,6 +365,7 @@ const OffreForm: React.FC = () => {
                                             }
                                         }))
                                     }
+                                    idProjet={offreId}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -368,6 +384,7 @@ const OffreForm: React.FC = () => {
                                             }
                                         }))
                                     }
+                                    idProjet={offreId}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -386,6 +403,7 @@ const OffreForm: React.FC = () => {
                                             }
                                         }))
                                     }
+                                    idProjet={offreId}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -404,6 +422,7 @@ const OffreForm: React.FC = () => {
                                             }
                                         }))
                                     }
+                                    idProjet={offreId}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -416,9 +435,16 @@ const OffreForm: React.FC = () => {
                                         <SelectCheckbox
                                             domaineSelection="Réseaux sur lesquels poster votre évènement :"
                                             options={reseaux.map((reseau) => ({ label: reseau.nomReseau, value: reseau.nomReseau }))}
-                                            selectedValues={selectedReseaux}
+                                            selectedValues={selectedReseaux.map((reseau) => reseau.nomReseau)}
                                             onSelectionChange={(updatedReseaux) => {
-                                                setSelectedReseaux(updatedReseaux);
+                                                const newSelectedReseaux = [];
+                                                for (let index = 0; index < updatedReseaux.length; index++) {
+                                                    const element = updatedReseaux[index];
+                                                    newSelectedReseaux.push({
+                                                        nomReseau: element
+                                                    })
+                                                }
+                                                setSelectedReseaux(newSelectedReseaux);
                                                 onDonneesSupplementairesChange("reseau", updatedReseaux);
                                                 onDonneesSupplementairesChange("nbReseaux", updatedReseaux.length);
                                             }}
@@ -429,9 +455,16 @@ const OffreForm: React.FC = () => {
                                         <SelectCheckbox
                                             domaineSelection="Genres musicaux en lien avec votre évènement :"
                                             options={genresMusicaux.map((genreMusical) => ({ label: genreMusical.nomGenreMusical, value: genreMusical.nomGenreMusical }))}
-                                            selectedValues={selectedGenres}
+                                            selectedValues={selectedGenres.map((genre) => genre.nomGenreMusical)}
                                             onSelectionChange={(updatedGenres) => {
-                                                setSelectedGenres(updatedGenres);
+                                                const newSelectedGenres = [];
+                                                for (let index = 0; index < updatedGenres.length; index++) {
+                                                    const element = updatedGenres[index];
+                                                    newSelectedGenres.push({
+                                                        nomGenreMusical: element
+                                                    })
+                                                }
+                                                setSelectedGenres(newSelectedGenres);
                                                 onDonneesSupplementairesChange("genreMusical", updatedGenres);
                                                 onDonneesSupplementairesChange("nbGenresMusicaux", updatedGenres.length);
                                             }}

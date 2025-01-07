@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20241205123755 extends AbstractMigration
+final class Version20250105193526 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -55,7 +55,7 @@ final class Version20241205123755 extends AbstractMigration
         $this->addSql('CREATE TABLE rattacher (genre_musical_id INT NOT NULL, offre_id INT NOT NULL, PRIMARY KEY(genre_musical_id, offre_id))');
         $this->addSql('CREATE INDEX IDX_C10DF74DFFFD05DC ON rattacher (genre_musical_id)');
         $this->addSql('CREATE INDEX IDX_C10DF74D4CC8505A ON rattacher (offre_id)');
-        $this->addSql('CREATE TABLE offre (id INT NOT NULL, extras_id INT NOT NULL, etat_offre_id INT NOT NULL, type_offre_id INT NOT NULL, conditions_financieres_id INT NOT NULL, budget_estimatif_id INT NOT NULL, fiche_technique_artiste_id INT NOT NULL, utilisateur_id INT NOT NULL, title_offre VARCHAR(50) NOT NULL, dead_line TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, descr_tournee VARCHAR(500) NOT NULL, date_min_proposee TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, date_max_proposee TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, ville_visee VARCHAR(50) NOT NULL, region_visee VARCHAR(50) NOT NULL, places_min INT NOT NULL, nb_contributeur INT NOT NULL, places_max INT NOT NULL, nb_artistes_concernes INT NOT NULL, nb_invites_concernes INT NOT NULL, liens_promotionnels VARCHAR(255) NOT NULL, image BYTEA DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE offre (id INT NOT NULL, extras_id INT DEFAULT NULL, etat_offre_id INT NOT NULL, type_offre_id INT NOT NULL, conditions_financieres_id INT DEFAULT NULL, budget_estimatif_id INT DEFAULT NULL, fiche_technique_artiste_id INT DEFAULT NULL, utilisateur_id INT NOT NULL, title_offre VARCHAR(50) NOT NULL, dead_line TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, descr_tournee VARCHAR(500) NOT NULL, date_min_proposee TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, date_max_proposee TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, ville_visee VARCHAR(50) NOT NULL, region_visee VARCHAR(50) NOT NULL, places_min INT NOT NULL, nb_contributeur INT NOT NULL, places_max INT NOT NULL, nb_artistes_concernes INT NOT NULL, nb_invites_concernes INT NOT NULL, liens_promotionnels VARCHAR(255) NOT NULL, image BYTEA DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_AF86866F955D4F3F ON offre (extras_id)');
         $this->addSql('CREATE INDEX IDX_AF86866FD11DF8CA ON offre (etat_offre_id)');
         $this->addSql('CREATE INDEX IDX_AF86866F813777A6 ON offre (type_offre_id)');

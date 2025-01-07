@@ -104,7 +104,7 @@ class Offre
     private string $liensPromotionnels;
 
     #[ORM\ManyToOne(targetEntity: Extras::class, inversedBy: "offres", cascade: ["persist"])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     #[Groups(['offre:read', 'offre:write'])]
     private Extras $extras;
 
@@ -119,17 +119,17 @@ class Offre
     private TypeOffre $typeOffre;
 
     #[ORM\ManyToOne(targetEntity: ConditionsFinancieres::class, inversedBy: "offres", cascade: ["persist"])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     #[Groups(['offre:read', 'offre:write'])]
     private ConditionsFinancieres $conditionsFinancieres;
 
     #[ORM\ManyToOne(targetEntity: BudgetEstimatif::class, inversedBy: "offres", cascade: ["persist"])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     #[Groups(['offre:read', 'offre:write'])]
     private BudgetEstimatif $budgetEstimatif;
 
     #[ORM\ManyToOne(targetEntity: FicheTechniqueArtiste::class, inversedBy: "offres", cascade: ["persist"])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     #[Groups(['offre:read', 'offre:write'])]
     private FicheTechniqueArtiste $ficheTechniqueArtiste;
 

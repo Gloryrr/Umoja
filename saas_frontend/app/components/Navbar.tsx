@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback,useState, useEffect } from "react";
 import { MegaMenu, Navbar, Dropdown, Avatar } from "flowbite-react";
 import NavigationHandler from "../navigation/Router";
 import Image from "next/image";
@@ -24,13 +24,14 @@ const NavbarApp = () => {
     { id: 3, text: "Créer un projet", href: "/offre" },
   ]);
 
-  const [username, setUsername] = useState(null);
+  const [username, setUsername] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchSearchResults = async (query: string) => {
-    if (query.length < 2) {
+  const fetchSearchResults = useCallback(async (query: string) => {
+    if (query.length < 1) {
       setSearchResults([]);
       return;
     }
@@ -77,12 +78,13 @@ const NavbarApp = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [username]);
 
   useEffect(() => {
     const fetchUtilisateur = async () => {
       await apiGet("/me").then((response) => {
           setUsername(response.utilisateur || "");
+          setEmail(response.email || "");
       })
     }
 
@@ -95,7 +97,7 @@ const NavbarApp = () => {
     }, 300);
   
     return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery]); 
+  }, [searchQuery, fetchSearchResults]);
 
   const deconnexion = () => {
     sessionStorage.setItem('token', '');
@@ -106,15 +108,8 @@ const NavbarApp = () => {
     if (typeof window !== "undefined" && window.location.pathname != "/") {
       window.location.href = "/";
     }
-  } 
-
-  function estPageDeConnexion() {
-    console.log(window.location.pathname);
-    return (window.location.pathname == "" || window.location.pathname == "/");
   }
 
-
-  if (!estPageDeConnexion()) {
     return (
       <MegaMenu className="w-full">
         <div className="flex items-center justify-between w-full py-4 border-b border-gray-300 dark:border-gray-500 px-4">
@@ -196,23 +191,24 @@ const NavbarApp = () => {
                 placeholder="Rechercher un projet dans vos réseaux..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none"
+                className="bg-white dark:bg-gray-800 dark:text-gray-100 w-full px-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none"
               />
-              <HiSearch className="absolute right-4 text-gray-500" />
+              <HiSearch className="absolute right-4 text-gray-500 bg-white dark:bg-gray-800 dark:text-gray-100" />
             </form>
 
             {/* Résultats de recherche dynamiques */}
-            {searchQuery.length >= 2 && (
+            {searchQuery.length >= 1 && (
               <div className="absolute z-10 w-full mt-2 border border-gray-300 rounded-md shadow-lg">
                 {isLoading ? (
-                  <p className="p-2 text-sm">Chargement...</p>
+                  <p className="bg-white dark:bg-gray-800 p-2 text-sm">Chargement...</p>
                 ) : searchResults.length > 0 ? (
                   <>
                     <ul>
                       {searchResults.map((result: SearchResult, index) => (
                         <li
                           key={index}
-                          className="bg-white p-4 text-sm border-b hover:bg-gray-100 flex flex-col space-y-1"
+                          className="bg-white dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-gray-100 p-4 text-sm border-b hover:bg-gray-100 flex flex-col space-y-1"
+                          onClick={() => window.location.href = `/cardDetailsPage?id=${result.id}`}
                         >
                           {/* Titre de l'offre */}
                           <h3 className="text-base font-bold">{result.titleOffre}</h3>
@@ -232,13 +228,13 @@ const NavbarApp = () => {
                     </ul>
                     <button
                       onClick={() => window.location.href = "/offres/resultats"}
-                      className="block w-full p-2 text-sm text-center rounded-b-md text-primary-600 hover:bg-gray-100"
+                      className="bg-white dark:bg-gray-800 dark:text-gray-100 block w-full p-2 text-sm text-center rounded-b-md text-primary-600"
                     >
                       Voir tous les résultats
                     </button>
                   </>
                 ) : (
-                  <p className="p-2 text-sm text-gray-500">
+                  <p className="bg-white dark:bg-gray-800 p-2 text-sm text-gray-500">
                     Aucun résultat trouvé.
                   </p>
                 )}
@@ -265,11 +261,11 @@ const NavbarApp = () => {
               }
             >
               <Dropdown.Header>
-                <span className="block text-sm font-medium text-black">
+                <span className="block text-sm font-medium text-black dark:text-gray-100">
                   {username}
                 </span>
                 <span className="block truncate text-sm text-gray">
-                  name@flowbite.com
+                  {email ? email.slice(0, email.indexOf("@")) : ""}
                 </span>
               </Dropdown.Header>
               <Dropdown.Item>
@@ -308,7 +304,6 @@ const NavbarApp = () => {
         </div>
       </MegaMenu>
     );
-  }
 };
 
 export default NavbarApp;

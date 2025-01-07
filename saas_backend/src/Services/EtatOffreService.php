@@ -118,7 +118,7 @@ class EtatOffreService
                 'serialized' => false
             ], Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
-            throw new \RuntimeException("Erreur lors de la création de l'état d'offre", $e->getCode());
+            throw new \RuntimeException("Erreur lors de la création de l'état d'offre", $e->getMessage());
         }
     }
 

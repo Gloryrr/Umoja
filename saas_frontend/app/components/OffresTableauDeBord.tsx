@@ -26,38 +26,23 @@ interface Offre {
 
 const TableDesOffres = () => {
     const [offres, setOffres] = useState<Offre[]>([]);
-    const [offresTaille, setOffresTaille] = useState<number>(0);
+    const [totalPage, setTotalPage] = useState<number>(0);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const offersPerPage = 10;
+    const limit = 10;
 
     const fetchPaginatedOffers = useCallback(
-        async (idUtilisateur: number) => {
-            const startIndex = (currentPage - 1) * offersPerPage;
+        async (username: string) => {
             try {
-                const response = await apiGet(`/offre/utilisateur/${idUtilisateur}`);
+                const data = {
+                    "page": currentPage,
+                    "limit": limit,
+                };
+                const response = await apiPost(`/offre/utilisateur/${username}`, JSON.parse(JSON.stringify(data)));
                 const allOffers: Offre[] = JSON.parse(response.offres);
-
-                const offersWithStates = await Promise.all(
-                    allOffers.map(async (offre) => {
-                        try {
-                            if (offre) {
-                                const etatResponse = await apiGet(`/etat-offre/${offre.etatOffre?.id}`);
-                                offre.etatOffre = JSON.parse(etatResponse.etat_offre)[0].nomEtat;
-                            }
-                        } catch (error) {
-                            console.error(`Erreur pour l'offre ${offre.id}`, error);
-                            if (offre.etatOffre) {
-                                offre.etatOffre.nomEtat = "État inconnu";
-                            }
-                        }
-                        return offre;
-                    })
-                );
-
-                setOffresTaille(allOffers.length);
-                setOffres(offersWithStates.slice(startIndex, startIndex + offersPerPage));
+                setTotalPage(JSON.parse(response.nb_pages));
+                setOffres(allOffers);
             } catch (error) {
                 console.error("Erreur lors de la récupération des offres paginées :", error);
                 setError("Erreur lors de la récupération des offres paginées.");
@@ -65,23 +50,14 @@ const TableDesOffres = () => {
                 setIsLoading(false);
             }
         },
-        [currentPage, offersPerPage]
+        [currentPage, limit]
     );
 
     const fetchUserOffers = useCallback(async () => {
         await apiGet("/me").then(async (response) => {
             try {
-                const data = { "username" : response.utilisateur };
-                const userResponse = await apiPost("/utilisateur", JSON.parse(JSON.stringify(data)));
-                if (!userResponse) {
-                    setError("Aucune offre trouvée pour cet utilisateur.");
-                    setIsLoading(false);
-                    return;
-                }
-                console.log(userResponse);
-    
-                const userId = JSON.parse(userResponse.utilisateur)[0].id;
-                fetchPaginatedOffers(userId);
+                setOffres([]);
+                fetchPaginatedOffers(response.utilisateur);
             } catch (error) {
                 console.error("Erreur réseau :", error);
                 setError("Erreur lors de la récupération des offres.");
@@ -117,7 +93,7 @@ const TableDesOffres = () => {
                 <Pagination
                     className="mb-4"
                     currentPage={currentPage}
-                    totalPages={Math.ceil(offresTaille / offersPerPage)}
+                    totalPages={totalPage}
                     onPageChange={(page) => setCurrentPage(page)}
                 />
             </div>
@@ -165,7 +141,7 @@ const TableDesOffres = () => {
                 <Pagination
                     className="mt-4"
                     currentPage={currentPage}
-                    totalPages={Math.ceil(offresTaille / offersPerPage)}
+                    totalPages={totalPage}
                     onPageChange={(page) => setCurrentPage(page)}
                 />
             </div>

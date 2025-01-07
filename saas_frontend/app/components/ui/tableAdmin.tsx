@@ -4,13 +4,16 @@ interface Column {
   header: string;
   accessor: string;
 }
+type Row = {
+  [key: string]: string | number | boolean | null | React.JSX.Element;
+};
 
-interface TableProps {
+interface TableProps<T extends Row> {
   columns: Column[];
-  data: any[];
+  data: T[]; // This will now be strongly typed based on the columns
 }
 
-const Table: React.FC<TableProps> = ({ columns, data }) => {
+const Table = <T extends Row>({ columns, data }: TableProps<T>) => {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white">
@@ -31,7 +34,7 @@ const Table: React.FC<TableProps> = ({ columns, data }) => {
             <tr key={rowIndex}>
               {columns.map((column) => (
                 <td key={column.accessor} className="px-6 py-4 whitespace-nowrap">
-                  {row[column.accessor]}
+                  {row[column.accessor as keyof T]} {/* Type casting to T */}
                 </td>
               ))}
             </tr>

@@ -47,6 +47,31 @@ export const apiPost = async (endpoint: string, data: JSON) => {
     }
 };
 
+// Fonction POST
+export const apiPostSFTP = async (endpoint: string, data: FormData) => {
+    const token = sessionStorage.getItem('token');
+    const options: RequestInit = {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+    };
+
+    if (data instanceof FormData) {
+        options.body = data;
+    } else {
+        options.headers = {
+            ...options.headers,
+            'Content-Type': 'application/json',
+        };
+        options.body = JSON.stringify(data);
+    }
+
+    const response = await fetch(`${BASE_URL}${endpoint}`, options);
+    return renvoieReponsePromise(response);
+};
+
+
 // Fonction PATCH
 export const apiPatch = async (endpoint: string, data: JSON) => {
     const token = sessionStorage.getItem('token');
