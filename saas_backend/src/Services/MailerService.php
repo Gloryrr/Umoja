@@ -53,33 +53,35 @@ class MailerService
             foreach ($reseaux_list as $reseau) {
                 $utilisateurs = $reseau->getUtilisateurs();
                 foreach ($utilisateurs as $utilisateur) {
-                    if ($utilisateur->getEmailUtilisateur() != null) {
-                        $htmlMessage = str_replace(
-                            [
-                                '{{projectName}}',
-                                '{{projectDescription}}',
-                                '{{userName}}',
-                                '{{currentYear}}',
-                                '{{emailUmodja}}',
-                                '{{networkName}}'
-                            ],
-                            [
-                                $data['projectName'],
-                                $data['projectDescription'],
-                                $data['username'],
-                                date('Y'),
-                                $this->umodjaEmail,
-                                $reseau->getNomReseau()
-                            ],
-                            $htmlTemplate
-                        );
-                        $email = (new Email())
-                            ->from(new Address($this->umodjaEmail, $this->umodjaName))
-                            ->to($utilisateur->getEmailUtilisateur())
-                            ->subject($subject)
-                            ->html($htmlMessage);
-
-                        $this->mailer->send($email);
+                    if ($utilisateur->getPreferenceNotification()->isEmailNouvelleOffre()) {
+                        if ($utilisateur->getEmailUtilisateur() != null) {
+                            $htmlMessage = str_replace(
+                                [
+                                    '{{projectName}}',
+                                    '{{projectDescription}}',
+                                    '{{userName}}',
+                                    '{{currentYear}}',
+                                    '{{emailUmodja}}',
+                                    '{{networkName}}'
+                                ],
+                                [
+                                    $data['projectName'],
+                                    $data['projectDescription'],
+                                    $data['username'],
+                                    date('Y'),
+                                    $this->umodjaEmail,
+                                    $reseau->getNomReseau()
+                                ],
+                                $htmlTemplate
+                            );
+                            $email = (new Email())
+                                ->from(new Address($this->umodjaEmail, $this->umodjaName))
+                                ->to($utilisateur->getEmailUtilisateur())
+                                ->subject($subject)
+                                ->html($htmlMessage);
+    
+                            $this->mailer->send($email);
+                        }
                     }
                 }
             }
@@ -123,33 +125,35 @@ class MailerService
             foreach ($reseaux_list as $reseau) {
                 $utilisateurs = $reseau->getUtilisateurs();
                 foreach ($utilisateurs as $utilisateur) {
-                    if ($utilisateur->getEmailUtilisateur() != null) {
-                        $htmlMessage = str_replace(
-                            [
-                                '{{projectName}}',
-                                '{{projectDescription}}',
-                                '{{userName}}',
-                                '{{currentYear}}',
-                                '{{emailUmodja}}',
-                                '{{networkName}}'
-                            ],
-                            [
-                                $data['projectName'],
-                                $data['projectDescription'],
-                                $data['username'],
-                                date('Y'),
-                                $this->umodjaEmail,
-                                $reseau->getNomReseau()
-                            ],
-                            $htmlTemplate
-                        );
-                        $email = (new Email())
-                            ->from(new Address($this->umodjaEmail, $this->umodjaName))
-                            ->to($utilisateur->getEmailUtilisateur())
-                            ->subject($subject)
-                            ->html($htmlMessage);
-
-                        $this->mailer->send($email);
+                    if ($utilisateur->getPreferenceNotification()->isEmailUpdateOffre()) {
+                        if ($utilisateur->getEmailUtilisateur() != null) {
+                            $htmlMessage = str_replace(
+                                [
+                                    '{{projectName}}',
+                                    '{{projectDescription}}',
+                                    '{{userName}}',
+                                    '{{currentYear}}',
+                                    '{{emailUmodja}}',
+                                    '{{networkName}}'
+                                ],
+                                [
+                                    $data['projectName'],
+                                    $data['projectDescription'],
+                                    $data['username'],
+                                    date('Y'),
+                                    $this->umodjaEmail,
+                                    $reseau->getNomReseau()
+                                ],
+                                $htmlTemplate
+                            );
+                            $email = (new Email())
+                                ->from(new Address($this->umodjaEmail, $this->umodjaName))
+                                ->to($utilisateur->getEmailUtilisateur())
+                                ->subject($subject)
+                                ->html($htmlMessage);
+    
+                            $this->mailer->send($email);
+                        }
                     }
                 }
             }
