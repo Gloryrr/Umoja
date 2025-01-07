@@ -79,7 +79,7 @@ class MailerService
                                 ->to($utilisateur->getEmailUtilisateur())
                                 ->subject($subject)
                                 ->html($htmlMessage);
-    
+
                             $this->mailer->send($email);
                         }
                     }
@@ -151,7 +151,7 @@ class MailerService
                                 ->to($utilisateur->getEmailUtilisateur())
                                 ->subject($subject)
                                 ->html($htmlMessage);
-    
+
                             $this->mailer->send($email);
                         }
                     }
