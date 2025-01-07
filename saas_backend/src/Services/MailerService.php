@@ -62,38 +62,38 @@ class MailerService
     ): JsonResponse {
         try {
             $user = $security->getUser();
-    
+
             if (!$user) {
                 return new JsonResponse(['error' => 'Utilisateur non authentifié'], 401);
             }
-    
+
             $username = $user->getUserIdentifier();
             $userArray = $utilisateurRepository->trouveUtilisateurByUsername($username);
-    
+
             $messageContent = htmlspecialchars($data['message'], ENT_QUOTES, 'UTF-8');
             $fromEmail = $userArray[0]->getEmailUtilisateur();
             $fromName = $username;
             $subject = "Message de {$fromName} - Service contact d'Umodja";
-    
+
             // Charger le fichier HTML
             $templatePath = __DIR__ . '/../../templates/emails/contact_umodja.html.twig';
             $htmlTemplate = file_get_contents($templatePath);
-    
+
             // Remplacer les variables dynamiques dans le template
             $htmlMessage = str_replace(
                 ['{{fromName}}', '{{fromEmail}}', '{{subject}}', '{{messageContent}}', '{{currentYear}}'],
                 [$fromName, $fromEmail, $subject, $messageContent, date('Y')],
                 $htmlTemplate
             );
-    
+
             $email = (new Email())
                 ->from(new Address($fromEmail, $fromName))
                 ->to($this->umodjaEmail)
                 ->subject($subject)
                 ->html($htmlMessage);
-    
+
             $this->mailer->send($email);
-    
+
             return new JsonResponse([
                 'mail' => 'succès',
                 'message' => 'Message envoyé avec succès.',
