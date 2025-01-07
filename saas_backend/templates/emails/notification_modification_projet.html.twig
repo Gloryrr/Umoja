@@ -1,4 +1,4 @@
-<!-- project_creation_notification.html -->
+<!-- project_update_notification.html -->
 <html>
 <head>
     <style>
@@ -54,25 +54,23 @@
     <div class="email-container">
         <!-- Header -->
         <div class="email-header">
-            <h1>Umodja - Nouveau Projet</h1>
+            <h1>Umodja - Mise à Jour de Projet</h1>
         </div>
 
         <!-- Body -->
         <div class="email-body">
-            <h2 style="color: #0056b3;">Un nouveau projet a été créé !</h2>
+            <h2 style="color: #0056b3;">Mise à jour des informations du projet</h2>
             <p><strong>Nom du projet :</strong> {{projectName}}</p>
-            <p><strong>Description :</strong> {{projectDescription}}</p>
             <p><strong>Réseau associé :</strong> {{networkName}}</p>
-            <p><strong>Statut de la cagnotte :</strong> Ouverte</p>
             <hr>
             <p>Bonjour {{userName}},</p>
-            <p>Nous avons le plaisir de vous informer qu'un nouveau projet a été créé dans le réseau <strong>{{networkName}}</strong>. Voici les détails :</p>
+            <p>Nous vous informons que les informations du projet <strong>{{projectName}}</strong> dans le réseau <strong>{{networkName}}</strong> ont été mises à jour. Voici les détails des changements :</p>
             <ul>
                 <li><strong>Nom du projet :</strong> {{projectName}}</li>
-                <li><strong>Description :</strong> {{projectDescription}}</li>
-                <li><strong>Cagnotte :</strong> Ouverte pour les contributions.</li>
+                <li><strong>Description mise à jour :</strong> {{projectDescription}}</li>
+                <li>Et découvrez toutes les autres informations qui viennent d'être mises à jour ici : {{lienOffreDetail}}</li>
             </ul>
-            <p>Vous pouvez découvrir ce projet et contribuer dès maintenant en visitant votre espace Umodja.</p>
+            <p>Vous pouvez consulter les modifications directement sur votre espace Umodja.</p>
             <hr>
             <p style="font-size: 12px; color: #888;">Ceci est une notification automatique. Pour plus d'informations, veuillez visiter notre site ou contacter notre support.</p>
         </div>
@@ -80,7 +78,7 @@
         <!-- Footer -->
         <div class="email-footer">
             <p>&copy; {{currentYear}} Umodja. Tous droits réservés.</p>
-            <p>Visitez notre site web : <a href="http://localhost:3000">localhost:3000</a></p>
+            <p>Visitez notre site web : <a href="https://localhost:3000">localhost:3000</a></p>
             <p>Si vous avez des questions, contactez-nous à <a href="mailto:{{emailUmodja}}">{{emailUmodja}}</a>.</p>
         </div>
     </div>
