@@ -79,7 +79,7 @@ export default function ContactForm() {
           <Toast>
             <HiCheck className="h-5 w-5 text-red-500" />
             <div className="ml-3 text-sm font-normal">
-              Erreur lors de l'envoi du message
+              Erreur lors de l&apos;envoi du message
             </div>
 
             {/* Barre de vie */}
