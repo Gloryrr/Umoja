@@ -111,7 +111,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                 const formData = new FormData();
                 formData.append('file', file);
                 formData.append('idProjet', offreId.toString());
-                formData.append('typeFichier', "ficte_technique_artiste");
+                formData.append('typeFichier', "fiche_technique_artiste");
     
                 try {
                     await apiPostSFTP('/upload-sftp-fichier', formData);
