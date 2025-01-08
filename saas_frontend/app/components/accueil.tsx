@@ -80,14 +80,14 @@ export default function Accueil() {
 
     if (projects.length === 0) {
         return (
-            <div className="flex items-center justify-center h-screen w-full bg-gray-800">
+            <div className="flex items-center justify-center h-screen w-screen bg-gray-800">
                 <p className="text-2xl font-semibold text-white">Vous n&apos;avez pas d&apos;offre en cours</p>
             </div>
         );
     }
-
+    
     return (
-        <div className="container mx-auto p-4 bg-gray-800 w-full min-h-screen">
+        <div className="pl-[10rem] pt-[2rem] pb-[4rem] bg-gray-800 w-screen min-h-screen">
             <h1 className="text-3xl font-bold mb-6 text-white">Projets en cours</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {projects.map((project) => (
