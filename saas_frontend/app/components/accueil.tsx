@@ -10,6 +10,7 @@ import { GrInProgress } from 'react-icons/gr';
 
 export default function Accueil() {
     const [projects, setProjects] = useState<any[]>([]);
+    const [nbContributeur, setProjectsNbContributeur] = useState<any[]>([]);
 
     const fetchProjects = async () => {
         try {
@@ -20,6 +21,22 @@ export default function Accueil() {
             } else {
                 console.error('Response does not contain offres array:', response);
             }
+        } catch (error) {
+            console.error('Erreur lors de la récupération des offres:', error);
+        }
+    };
+
+    const fetchProjectsNbContributeur = async () => {
+        try {
+            {projects.map((project) => (
+                const response = await apiGet(`/responses/offre/${projects.id}`);
+                console.log('API response:', response); // Log the response
+                if (response && response.offres && Array.isArray(response.offres)) {
+                    setProjectsNbContributeur(response.offres);
+                } else {
+                    console.error('Response does not contain offres array:', response);
+                }
+            ))}
         } catch (error) {
             console.error('Erreur lors de la récupération des offres:', error);
         }
