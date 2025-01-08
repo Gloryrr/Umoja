@@ -2,7 +2,7 @@ import React from 'react'
 
 export const Card = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={`bg-gray-900 text-white rounded-lg shadow-lg overflow-hidden ${className}`}
+    className={`rounded-lg shadow-lg overflow-hidden ${className}`}
     {...props}
   />
 )
@@ -16,7 +16,7 @@ export const CardHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDiv
 
 export const CardTitle = ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
   <h3
-    className={`text-[1.5rem] font-bold mb-2 font-fredoka text-white ${className}`}
+    className={`text-[1.5rem] font-bold mb-2 font-fredoka ${className}`}
     {...props}
   />
 )

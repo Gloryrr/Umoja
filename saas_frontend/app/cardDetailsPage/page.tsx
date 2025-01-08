@@ -606,15 +606,15 @@ function ProjectDetailsContent() {
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Date maximale de contribution</dt>
-                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.deadLine}</dd>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{new Date(project.deadLine).toLocaleDateString()}</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Date Minimum Proposée</dt>
-                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.dateMinProposee}</dd>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{new Date(project.dateMinProposee).toLocaleDateString()}</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Date Maximum Proposée</dt>
-                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{project.dateMaxProposee}</dd>
+                                                    <dd className="mt-1 sm:mt-0 sm:col-span-2">{new Date(project.dateMaxProposee).toLocaleDateString()}</dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="font-medium">Places Minimales</dt>
