@@ -60,6 +60,27 @@ class ReponseController extends AbstractController
     }
 
     /**
+     * Récupère toutes les réponses existantes pour une offre donnée.
+     *
+     * @param int $id, l'identifiant de l'offre
+     * @param ReponseRepository $reponseRepository, le repository CRUD des réponses
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/reponses/PrixGlobalContribution/offre/{id}', name: 'get_reponses_pour_offre', methods: ['GET'])]
+    public function getParticipationGloabalPourOffre(
+        int $id,
+        ReponseRepository $reponseRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        return ReponseService::getParticipationGloabalPourOffre(
+            $id,
+            $reponseRepository,
+            $serializer
+        );
+    }
+
+    /**
      * Récupère une réponse par son id.
      *
      * @param int $id, l'identifiant de la réponse

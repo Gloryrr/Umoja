@@ -127,6 +127,36 @@ class ReponseService
         ], Response::HTTP_OK);
     }
 
+
+    /**
+     * Récupère toutes les réponses pour une offre donnée et renvoie une réponse JSON.
+     *
+     * @param int $id L'identifiant de l'offre.
+     * @param ReponseRepository $reponseRepository Le repository des réponses.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     *
+     * @return JsonResponse La réponse JSON contenant les réponses pour l'offre donnée.
+     */
+    public static function getParticipationGloabalPourOffre(
+        int $id,
+        ReponseRepository $reponseRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        // On récupère les réponses pour l'offre donnée
+        $reponses = $reponseRepository->findBy(['offre' => $id]);
+        $totalPrixParticipation = 0;
+        foreach ($reponses as $reponse) {
+            if ($reponse->getEtatReponse()->getNomEtatReponse() === 'Validée') {
+                $totalPrixParticipation += $reponse->getPrixParticipation();
+            }
+        }
+        return new JsonResponse([
+            'totalPrixParticipation' => $totalPrixParticipation,
+            'message' => "prix de participation global des réponses pour l'offre $id",
+            'serialized' => true
+        ], Response::HTTP_OK);
+    }
+
     /**
      * Crée une nouvelle réponse et renvoie une réponse JSON.
      *
