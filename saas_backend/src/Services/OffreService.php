@@ -435,20 +435,6 @@ class OffreService
 
             // vérification de l'action en BDD
             if ($rep) {
-                foreach ($reseaux_list as $reseau) {
-                    $utilisateurs = $reseau->getUtilisateurs();
-                    foreach ($utilisateurs as $utilisateur) {
-                        if ($utilisateur->getEmailUtilisateur() != null) {
-                            $mailerService->sendEmail(
-                                $utilisateur->getEmailUtilisateur(),
-                                "Nouvelle offre",
-                                "<h1>Une nouvelle offre</h1> " .
-                                "<p>Une nouvelle offre a été ajoutée sur le réseau {$reseau->getNomReseau()}</p>"
-                            );
-                        }
-                    }
-                }
-
                 $offreJSON = $serializer->serialize(
                     $offre,
                     'json',
@@ -713,27 +699,11 @@ class OffreService
                 }
             }
 
-            $reseaux_list = $offre->getReseaux();
-
             // sauvegarde des modifications dans la BDD
             $rep = $offreRepository->updateOffre($offre);
 
             // si l'action à réussi
             if ($rep) {
-                foreach ($reseaux_list as $reseau) {
-                    $utilisateurs = $reseau->getUtilisateurs();
-                    foreach ($utilisateurs as $utilisateur) {
-                        if ($utilisateur->getEmailUtilisateur() != null) {
-                            $mailerService->sendEmail(
-                                $utilisateur->getEmailUtilisateur(),
-                                "Mise à jour d'offre",
-                                "<h1>Changement sur l'offre</h1>" .
-                                "<p>Une offre de votre réseau a récemment été modifié," .
-                                "Réseau : {$reseau->getNomReseau()}</p>"
-                            );
-                        }
-                    }
-                }
                 $offreJSON = $serializer->serialize(
                     $offre,
                     'json',

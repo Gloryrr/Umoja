@@ -1,0 +1,86 @@
+<!-- project_update_notification.html -->
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .email-header {
+            background-color: #0056b3;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .email-header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .email-body {
+            padding: 20px;
+        }
+        .email-body p {
+            margin: 10px 0;
+        }
+        .email-footer {
+            background-color: #f1f1f1;
+            color: #555;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 12px;
+        }
+        .email-footer a {
+            color: #0056b3;
+            text-decoration: none;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="email-header">
+            <h1>Umodja - Mise à Jour de Projet</h1>
+        </div>
+
+        <!-- Body -->
+        <div class="email-body">
+            <h2 style="color: #0056b3;">Mise à jour des informations du projet</h2>
+            <p><strong>Nom du projet :</strong> {{projectName}}</p>
+            <p><strong>Réseau associé :</strong> {{networkName}}</p>
+            <hr>
+            <p>Bonjour {{userName}},</p>
+            <p>Nous vous informons que les informations du projet <strong>{{projectName}}</strong> dans le réseau <strong>{{networkName}}</strong> ont été mises à jour. Voici les détails des changements :</p>
+            <ul>
+                <li><strong>Nom du projet :</strong> {{projectName}}</li>
+                <li><strong>Description mise à jour :</strong> {{projectDescription}}</li>
+                <li>Et découvrez toutes les autres informations qui viennent d'être mises à jour ici : {{lienOffreDetail}}</li>
+            </ul>
+            <p>Vous pouvez consulter les modifications directement sur votre espace Umodja.</p>
+            <hr>
+            <p style="font-size: 12px; color: #888;">Ceci est une notification automatique. Pour plus d'informations, veuillez visiter notre site ou contacter notre support.</p>
+        </div>
+
+        <!-- Footer -->
+        <div class="email-footer">
+            <p>&copy; {{currentYear}} Umodja. Tous droits réservés.</p>
+            <p>Visitez notre site web : <a href="https://localhost:3000">localhost:3000</a></p>
+            <p>Si vous avez des questions, contactez-nous à <a href="mailto:{{emailUmodja}}">{{emailUmodja}}</a>.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,65 +1,155 @@
-"use client"
-import React from 'react';
-import { FaUser, FaEnvelope, FaComment } from "react-icons/fa";
-import NavigationHandler from '../../navigation/Router';
-
-interface User {
-  name: string;
-  email: string;
-}
-
-const user: User = {
-  name: "John Doe",
-  email: "john.doe@example.com"
-};
+"use client";
+import React, { useState } from "react";
+import { Button, Label, Textarea, Card, Spinner, Toast } from "flowbite-react";
+import { HiCheck } from "react-icons/hi"; // Icone pour la popup
+import { apiPost } from "@/app/services/internalApiClients";
 
 export default function ContactForm() {
+  const [message, setMessage] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [showSuccess, setShowSuccess] = useState<boolean>(false);
+  const [showError, setShowError] = useState<boolean>(false);
+  const [messageRetourAction, setMessageRetourAction] = useState<string>("");
+  const [etatRetourActionIsOk, setEtatRetourActionIsOk] = useState<boolean | null>(null);
 
-const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    const nom = (e.target as HTMLFormElement).elements.namedItem('Nom') as HTMLInputElement;
-    const email = (e.target as HTMLFormElement).elements.namedItem('Email') as HTMLInputElement;
-    const message = (e.target as HTMLFormElement).elements.namedItem('Message') as HTMLTextAreaElement;
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    setLoading(true);
+    e.preventDefault();
 
-    console.log('Nom:', nom.value);
-    console.log('Email:', email.value);
-    console.log('Message:', message.value);
-    console.log('Nom:', nom.value);
+    const data = {
+      message: message,
+    };
 
+    await apiPost("/envoi-message-to-umodja", JSON.parse(JSON.stringify(data)))
+      .then(() => {
+        setShowSuccess(true);
+        setMessageRetourAction("Message envoyé avec succès !");
+        setEtatRetourActionIsOk(true);
+      })
+      .catch(() => {
+        setShowError(true);
+        setMessageRetourAction("Erreur lors de l'envoi du message");
+        setEtatRetourActionIsOk(false);
+      })
+      .finally(() => {
+        setLoading(false);
+        setMessage("");
+        setTimeout(() => setShowSuccess(false), 3000);
+        setTimeout(() => setShowError(false), 3000);
+      });
   };
-  
+
   return (
-    <div className='w-auto bg-transparent text-white rounded-lg p-8 font-nunito'>
-      
-      <h1 className=' text-center pb-12 font-fredoka text-2xl md:text-8xl '>Contactez-nous !</h1>
-      <form onSubmit={handleSubmit}>
+    <div>
+      {/* Affichage de la popup */}
+      {showSuccess && (
+        <div className="fixed top-4 right-4 z-50">
+          <Toast>
+            <HiCheck className="h-5 w-5 text-green-500" />
+            <div className="ml-3 text-sm font-normal">
+              Message envoyé avec succès !
+            </div>
 
-        <div className="relative w-full h-1/6 my-8">
-          <input type="text" name='Nom' placeholder="Nom" defaultValue={user.name} required className="w-full h-full bg-gray-700 cursor-not-allowed outline-none border-solid border-2 border-white rounded-full text-lg text-white p-5 pr-12 placeholder-white" readOnly/>
-          <FaUser className='absolute right-5 top-1/2 transform -translate-y-1/2 text-lg' />
+            {/* Barre de vie */}
+            <div className="absolute bottom-0 left-0 h-1 w-full bg-green-200">
+              <div
+                className="h-full bg-green-500 transition-all duration-3000"
+                style={{
+                  animation: "shrink 3s linear forwards",
+                }}
+              ></div>
+            </div>
+          </Toast>
+
+          <style jsx>{`
+            @keyframes shrink {
+              from {
+                width: 100%;
+              }
+              to {
+                width: 0%;
+              }
+            }
+          `}</style>
         </div>
+      )}
 
-        <div className="relative w-full h-1/2 my-8">
-          <input type="email" name='Email' placeholder="Email" defaultValue={user.email} required className="w-full h-full bg-gray-700 cursor-not-allowed outline-none border-solid border-2 border-white rounded-full text-lg text-white p-5 pr-12 placeholder-white" readOnly />
-          <FaEnvelope className='absolute right-5 top-1/2 transform -translate-y-1/2 text-lg' />
+      {showError && (
+        <div className="fixed top-4 right-4 z-50">
+          <Toast>
+            <HiCheck className="h-5 w-5 text-red-500" />
+            <div className="ml-3 text-sm font-normal">
+              Erreur lors de l&apos;envoi du message
+            </div>
+
+            {/* Barre de vie */}
+            <div className="absolute bottom-0 left-0 h-1 w-full bg-red-200">
+              <div
+                className="h-full bg-red-500 transition-all duration-3000"
+                style={{
+                  animation: "shrink 3s linear forwards",
+                }}
+              ></div>
+            </div>
+          </Toast>
+
+          <style jsx>{`
+            @keyframes shrink {
+              from {
+                width: 100%;
+              }
+              to {
+                width: 0%;
+              }
+            }
+          `}</style>
         </div>
+      )}
 
-        <div className="relative w-full h-1/2 my-8">
-          <textarea placeholder="Message" name='Message' required className="w-full h-32 bg-transparent outline-none cursor-pointer border-solid border-2 border-white rounded-lg text-lg text-white p-5 placeholder-white resize-none"></textarea>
-          <FaComment className='absolute right-5 top-5 text-lg' />
-        </div>
-
-        <button className="w-full h-11 bg-blue-700 text-white border-none outline-none rounded-full shadow-md cursor-pointer text-lg font-bold" type="submit">Envoyer</button>
-
-        <div className="text-sm text-center my-4">
-          <p>Vous avez des questions ?  
-          <NavigationHandler>
-            {(handleNavigation: (path: string) => void) => (
-              <a onClick={() => handleNavigation('/faq')} className="text-white no-underline font-semibold hover:underline"> Consultez notre FAQ</a>
-            )}
-          </NavigationHandler>
+      <Card className="mt-20 mb-20">
+        <div className="mb-6">
+          <h1 className="text-center text-2xl font-bold mb-2">Contactez-nous</h1>
+          <p className="ml-[10%] mr-[10%] italic">
+            Indiquez nous votre problème ou simple message de que vous voulez nous communiquer...
           </p>
         </div>
-      </form>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <Label className="font-semibold" htmlFor="message" value="Message" />
+            <Textarea
+              className="mt-2"
+              name="Message"
+              placeholder="Bonjour..."
+              rows={4}
+              required
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            />
+            {etatRetourActionIsOk == false && (
+              <div className="text-red-500 text-sm mt-2">
+                <span>{messageRetourAction}</span>
+              </div>
+            )}
+            {etatRetourActionIsOk == true && (
+              <div className="text-green-500 text-sm mt-2">
+                <span>{messageRetourAction}</span>
+              </div>
+            )}
+          </div>
+          <div className="flex ml-auto">
+            <Button className="mt-2" type="submit" disabled={loading}>
+              {loading ? (
+                <div>
+                  <span>Envoi en cours...</span>
+                  <Spinner size="sm" className="ml-2" />
+                </div>
+              ) : (
+                <span>Envoyer</span>
+              )}
+            </Button>
+          </div>
+        </form>
+      </Card>
     </div>
   );
 }

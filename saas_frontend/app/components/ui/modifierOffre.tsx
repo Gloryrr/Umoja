@@ -48,6 +48,13 @@ const ModifierOffreForm: React.FC<{
             setDescription("Cliquez sur 'Voir plus' pour accéder aux détails de l'offre.");
             setMessageOffreModifiee("Votre offre a bien été modifiée !");
             setOffreModifiee(true);
+            const data = {
+                'projectName' : formData.detailOffre.titleOffre,
+                'projectDescription' : formData.detailOffre.descrTournee,
+                'username' : formData.utilisateur.username,
+                'offreId' : JSON.parse(offreModifiee.offre).id
+            };
+            await apiPost('/envoi-email-update-projet', JSON.parse(JSON.stringify(data)));
         } catch (error) {
             setTypeMessage("error");
             setMessageOffreModifiee("Une erreur s'est produite durant la modification de votre offre.");

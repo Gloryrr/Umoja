@@ -101,6 +101,13 @@ const OffreForm: React.FC = () => {
             setDescription("Cliquez sur 'Voir plus' pour accéder aux détails de l'offre.");
             setMessageOffrePostee("Votre offre a bien été postée !");
             setOffrePostee(true);
+            const data = {
+                'projectName' : formData.detailOffre.titleOffre,
+                'projectDescription' : formData.detailOffre.descrTournee,
+                'username' : formData.utilisateur.username,
+                'offreId' : JSON.parse(offrePostee.offre).id
+            };
+            await apiPost('/envoi-email-new-projet', JSON.parse(JSON.stringify(data)));
         } catch (error) {
             setTypeMessage("error");
             setMessageOffrePostee("Une erreur s'est produite durant le post de votre offre.");
@@ -108,6 +115,7 @@ const OffreForm: React.FC = () => {
             throw new Error("Erreur lors du post de l'offre :", error as Error);
         }
     };
+
 
     useEffect(() => {
         const fetchGenresMusicaux = async () => {
