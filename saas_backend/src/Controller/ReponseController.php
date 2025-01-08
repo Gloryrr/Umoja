@@ -67,7 +67,12 @@ class ReponseController extends AbstractController
      * @param SerializerInterface $serializer, le serializer JSON pour les réponses
      * @return JsonResponse
      */
-    #[Route('/api/v1/reponses/PrixGlobalContribution/offre/{id}', name: 'get_reponses_pour_offre', methods: ['GET'])]
+    #[Route(
+        '/api/v1/reponses/PrixGlobalContribution/offre/{id}',
+        name: 'get_prix_global_contribution_pour_offre',
+        methods: ['GET']
+    )
+    ]
     public function getParticipationGloabalPourOffre(
         int $id,
         ReponseRepository $reponseRepository,
