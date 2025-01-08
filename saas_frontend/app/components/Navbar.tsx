@@ -141,39 +141,57 @@ const NavbarApp = () => {
                   </a>
                 ))}
                 <MegaMenu.Dropdown toggle={<span className="cursor-pointer">Services</span>}>
-                  <ul className="grid grid-cols-3 gap-4 p-4">
-                    <li>
-                      <a
-                        href="/contact"
-                        className="hover:text-primary-600 dark:hover:text-primary-500"
-                      >
-                        Contactez-nous
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/offre/public"
-                        className="hover:text-primary-600 dark:hover:text-primary-500"
-                      >
-                        Découvrir les projets
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="#"
-                        className="hover:text-primary-600 dark:hover:text-primary-500"
-                      >
-                        Support Center
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="#"
-                        className="hover:text-primary-600 dark:hover:text-primary-500"
-                      >
-                        License
-                      </a>
-                    </li>
+                  <ul className="grid grid-cols-3">
+                    <div className="space-y-4 p-4">
+                      <li>
+                        <a
+                          href="/contact"
+                          className="hover:text-primary-600 dark:hover:text-primary-500"
+                        >
+                          Contactez-nous
+                        </a>
+                      </li>
+                    </div>
+                    <div className="space-y-4 p-4">
+                      <li>
+                        <a
+                          href="/fonctionnement-projet"
+                          className="hover:text-primary-600 dark:hover:text-primary-500"
+                        >
+                          Le fonctionnement
+                        </a>
+                      </li>
+                    </div>
+                    <div className="space-y-4 p-4">
+                      <li>
+                        <a
+                          href="/participations"
+                          className="hover:text-primary-600 dark:hover:text-primary-500"
+                        >
+                          Les Contributions
+                        </a>
+                      </li>
+                    </div>
+                    <div className="space-y-4 p-4">
+                      <li>
+                        <a
+                          href="/umodja"
+                          className="hover:text-primary-600 dark:hover:text-primary-500"
+                        >
+                          Umodja
+                        </a>
+                      </li>
+                    </div>
+                    <div className="space-y-4 p-4">
+                      <li>
+                        <a
+                          href="/comprendre-les-preferences-de-notifications"
+                          className="hover:text-primary-600 dark:hover:text-primary-500"
+                        >
+                          Les préférences
+                        </a>
+                      </li>
+                    </div>
                   </ul>
                 </MegaMenu.Dropdown>
               </nav>

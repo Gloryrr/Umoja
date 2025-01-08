@@ -21,9 +21,10 @@ function FooterComponent() {
                 name="UmoDJA"
                 className="text-lg font-bold"
               />
-              <p className="mt-4 text-sm mr-6">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti veritatis, in fuga quis necessitatibus modi mollitia ipsum sit at illo? Veniam consectetur accusantium, sint corporis pariatur fugit dolores soluta perspiciatis?
-              </p>
+                <p className="mt-4 text-sm mr-6">
+                  UmoDJA est une plateforme innovante dédiée à la gestion et au suivi de projets collaboratifs. 
+                  Découvrez comment contribuez et démarrez votre projets musicaux dès maintenant !
+                </p>
             </div>
   
             {/* Colonne droite : liens */}
@@ -55,6 +56,12 @@ function FooterComponent() {
                   <Footer.Link href="/consentement-mail" className="text-sm">
                     Mon consentement aux emails
                   </Footer.Link>
+                  <Footer.Link href="/comprendre-les-preferences-de-notifications" className="text-sm">
+                    Les préférences
+                  </Footer.Link>
+                  <Footer.Link href="/politique-confidentialite" className="text-sm">
+                    Politique de confidentialité
+                  </Footer.Link>
                 </Footer.LinkGroup>
               </div>
   
@@ -82,7 +89,7 @@ function FooterComponent() {
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-center sm:text-left">
             <Footer.Copyright
               by="UmoDJA™"
-              year={2024}
+              year={new Date().getFullYear()}
               className="text-sm mb-4 sm:mb-0"
             />
             <div className="flex justify-center space-x-6">
