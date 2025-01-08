@@ -10,8 +10,7 @@ import { GrInProgress } from 'react-icons/gr';
 
 export default function Accueil() {
     const [projects, setProjects] = useState<any[]>([]);
-    const [nbContributeur, setProjectsNbContributeur] = useState<any[]>([]);
-
+    let compteurNbContributeur = 0;
     const fetchProjects = async () => {
         try {
             const response = await apiGet('/offres');
@@ -26,17 +25,17 @@ export default function Accueil() {
         }
     };
 
-    const fetchProjectsNbContributeur = async () => {
+    const fetchProjectsNbContributeur = async (projects: any[]) => {
         try {
-            {projects.map((project) => (
-                const response = await apiGet(`/responses/offre/${projects.id}`);
+            const nbContributeurPromises = projects.map(async (project) => {
+                const response = await apiGet(`/responses/offre/${project.id}`);
                 console.log('API response:', response); // Log the response
-                if (response && response.offres && Array.isArray(response.offres)) {
-                    setProjectsNbContributeur(response.offres);
-                } else {
-                    console.error('Response does not contain offres array:', response);
-                }
-            ))}
+                for (const reponse of response.reponses) {
+                    if(reponse.etatReponse === "accepte") {
+                        compteurNbContributeur++;
+                    }
+                }        
+            });
         } catch (error) {
             console.error('Erreur lors de la récupération des offres:', error);
         }
@@ -70,7 +69,7 @@ export default function Accueil() {
                             <CardContent>
                                 <CardTitle>{project.titleOffre}</CardTitle>
                                 <div className="flex justify-between text-sm mb-2 font-fredoka">
-                                    <span>{project.nb_contributeur} contributions</span>
+                                    <span>{compteurNbContributeur} contributions</span>
                                     <span>{new Date(project.deadLine).toLocaleDateString()}</span>
                                 </div>
                                 <p className="text-sm text-gray-400 mb-4 font-fredoka">{project.descrTournee}</p>
