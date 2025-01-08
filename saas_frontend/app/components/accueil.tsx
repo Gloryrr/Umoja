@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { apiGet } from '../services/internalApiClients'; // Assurez-vous que le chemin est correct
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card';
 import Link from 'next/link';
@@ -15,8 +15,22 @@ interface BudgetEstimatif {
     fraisRestauration: number;
 }
 
+interface Project {
+    id: number;
+    titleOffre: string;
+    image: string;
+    descrTournee: string;
+    deadLine: string;
+    budgetEstimatif: BudgetEstimatif;
+}
+
+interface Reponse {
+    etatReponse: { nomEtatReponse: string };
+    prixParticipation: number;
+}
+
 export default function Accueil() {
-    const [projects, setProjects] = useState<any[]>([]);
+    const [projects, setProjects] = useState<Project[]>([]);
     const [nbContributions, setNbContributions] = useState<{ [key: number]: { compteurNbContributeur: number, ContributionGlobale: number } }>({});
 
     function calculBudgetTotal(budgetEstimatif: BudgetEstimatif) {
@@ -26,7 +40,40 @@ export default function Accueil() {
             budgetEstimatif.fraisRestauration;
     }
 
-    const fetchProjects = async () => {
+    const fetchProjectsNbContributeur = useCallback(async (id: number) => {
+        try {
+            const response = await apiGet(`/reponses/offre/${id}`);
+            let compteurNbContributeur = 0;
+            let ContributionGlobale = 0;
+            const reponses: Reponse[] = JSON.parse(response.reponses);
+            for (const reponse of reponses) {
+                if (reponse.etatReponse.nomEtatReponse === "Validée") {
+                    compteurNbContributeur++;
+                    ContributionGlobale += reponse.prixParticipation;
+                }
+            }
+            return { compteurNbContributeur, ContributionGlobale };
+        } catch (error) {
+            console.error('Erreur lors de la récupération des offres:', error);
+            return { compteurNbContributeur: 0, ContributionGlobale: 0 };
+        }
+    }, []);
+
+    const fetchAllProjectsNbContributeur = useCallback(async (projects: Project[]) => {
+        const contributions = await Promise.all(
+            projects.map(async (project) => {
+                const { compteurNbContributeur, ContributionGlobale } = await fetchProjectsNbContributeur(project.id);
+                return { id: project.id, compteurNbContributeur, ContributionGlobale };
+            })
+        );
+        const contributionsMap = contributions.reduce((acc, { id, compteurNbContributeur, ContributionGlobale }) => {
+            acc[id] = { compteurNbContributeur, ContributionGlobale };
+            return acc;
+        }, {} as { [key: number]: { compteurNbContributeur: number, ContributionGlobale: number } });
+        setNbContributions(contributionsMap);
+    }, [fetchProjectsNbContributeur]);
+
+    const fetchProjects = useCallback(async () => {
         try {
             const response = await apiGet('/offres');
             // console.log('API response:', response); // Log the response
@@ -39,44 +86,11 @@ export default function Accueil() {
         } catch (error) {
             console.error('Erreur lors de la récupération des offres:', error);
         }
-    };
-
-    const fetchProjectsNbContributeur = async (id: number) => {
-        try {
-            const response = await apiGet(`/reponses/offre/${id}`);
-            let compteurNbContributeur = 0;
-            let ContributionGlobale = 0;
-            const reponses = JSON.parse(response.reponses);
-            for (const reponse of reponses) {
-                if ((reponse as any).etatReponse.nomEtatReponse === "Validée") {
-                    compteurNbContributeur++;
-                    ContributionGlobale += (reponse as any).prixParticipation;
-                }
-            }
-            return { compteurNbContributeur, ContributionGlobale };
-        } catch (error) {
-            console.error('Erreur lors de la récupération des offres:', error);
-            return { compteurNbContributeur: 0, ContributionGlobale: 0 };
-        }
-    };
-
-    const fetchAllProjectsNbContributeur = async (projects: any[]) => {
-        const contributions = await Promise.all(
-            projects.map(async (project) => {
-                const { compteurNbContributeur, ContributionGlobale } = await fetchProjectsNbContributeur(project.id);
-                return { id: project.id, compteurNbContributeur, ContributionGlobale };
-            })
-        );
-        const contributionsMap = contributions.reduce((acc, { id, compteurNbContributeur, ContributionGlobale }) => {
-            acc[id] = { compteurNbContributeur, ContributionGlobale };
-            return acc;
-        }, {} as { [key: number]: { compteurNbContributeur: number, ContributionGlobale: number } });
-        setNbContributions(contributionsMap);
-    };
+    }, [fetchAllProjectsNbContributeur]);
 
     useEffect(() => {
         fetchProjects();
-    }, []);
+    }, [fetchProjects]);
 
     if (projects.length === 0) {
         return (
@@ -87,7 +101,7 @@ export default function Accueil() {
     }
     
     return (
-        <div className="pl-[10rem] pt-[2rem] pb-[4rem] bg-gray-800 w-screen min-h-screen">
+        <div className="pl-[10rem] pt-[4rem] pb-[2rem] bg-gray-800 w-screen min-h-screen">
             <h1 className="text-3xl font-bold mb-6 text-white">Projets en cours</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {projects.map((project) => (
