@@ -56,6 +56,12 @@ function FooterComponent() {
                   <Footer.Link href="/consentement-mail" className="text-sm">
                     Mon consentement aux emails
                   </Footer.Link>
+                  <Footer.Link href="/comprendre-les-preferences-de-notifications" className="text-sm">
+                    Les préférences
+                  </Footer.Link>
+                  <Footer.Link href="/politique-confidentialite" className="text-sm">
+                    Politique de confidentialité
+                  </Footer.Link>
                 </Footer.LinkGroup>
               </div>
   
