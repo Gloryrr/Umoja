@@ -73,10 +73,6 @@ function ConnectionForm() {
           </div>
 
           <div className="flex justify-between text-sm my-4">
-            <label className="flex items-center">
-              <TextInput type="checkbox" className="accent-white mr-1" />
-              Se rappeler de moi
-            </label>
             <a href="#" className="no-underline hover:underline">
               Mot de passe oublié ?
             </a>
