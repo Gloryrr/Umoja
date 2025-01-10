@@ -580,7 +580,7 @@ class OffreService
                 $offre->setTypeOffre($typeOffre);
             }
             if (
-                isset($data['conditionsFinancieres']['conditionsFinancieresParPDF']) && 
+                isset($data['conditionsFinancieres']['conditionsFinancieresParPDF']) &&
                 $data['conditionsFinancieres']['conditionsFinancieresParPDF'] == false
             ) {
                 $conditionsFinancieres = new ConditionsFinancieres();
@@ -596,7 +596,7 @@ class OffreService
                 $offre->setConditionsFinancieres($conditionsFinancieres);
             }
             if (
-                isset($data['budgetEstimatif']['budgetEstimatifParPDF']) && 
+                isset($data['budgetEstimatif']['budgetEstimatifParPDF']) &&
                 $data['budgetEstimatif']['budgetEstimatifParPDF'] == false
             ) {
                 $budgetEstimatif = new BudgetEstimatif();
@@ -615,7 +615,7 @@ class OffreService
                 $offre->setBudgetEstimatif($budgetEstimatif);
             }
             if (
-                isset($data['ficheTechniqueArtiste']['ficheTechniqueArtisteParPDF']) && 
+                isset($data['ficheTechniqueArtiste']['ficheTechniqueArtisteParPDF']) &&
                 $data['ficheTechniqueArtiste']['ficheTechniqueArtisteParPDF'] == false
             ) {
                 $ficheTechniqueArtiste = new FicheTechniqueArtiste();
@@ -732,7 +732,10 @@ class OffreService
                 ], Response::HTTP_BAD_REQUEST);
             }
         } catch (\Exception $e) {
-            throw new \RuntimeException("Erreur lors de la mise à jour de l'offre", $e->getMessage() . ' ' . $e->getLine());
+            throw new \RuntimeException(
+                "Erreur lors de la mise à jour de l'offre",
+                $e->getMessage() . ' ' . $e->getLine()
+            );
         }
     }
 
