@@ -543,7 +543,7 @@ class OffreService
             if (isset($data['image']['file'])) {
                 $offre->setImage($data['image']['file']);
             }
-            if (isset($data['extras'])) {
+            if (isset($data['extras']['extrasParPDF']) && $data['extras']['extrasParPDF'] == false) {
                 $extras = new Extras();
                 if (isset($data['extras']['descrExtras'])) {
                     $extras->setDescrExtras($data['extras']['descrExtras']);
@@ -579,7 +579,10 @@ class OffreService
                 }
                 $offre->setTypeOffre($typeOffre);
             }
-            if (isset($data['conditionsFinancieres'])) {
+            if (
+                isset($data['conditionsFinancieres']['conditionsFinancieresParPDF']) && 
+                $data['conditionsFinancieres']['conditionsFinancieresParPDF'] == false
+            ) {
                 $conditionsFinancieres = new ConditionsFinancieres();
                 if (isset($data['conditionsFinancieres']['minimunGaranti'])) {
                     $conditionsFinancieres->setMinimunGaranti($data['conditionsFinancieres']['minimunGaranti']);
@@ -592,7 +595,10 @@ class OffreService
                 }
                 $offre->setConditionsFinancieres($conditionsFinancieres);
             }
-            if (isset($data['budgetEstimatif'])) {
+            if (
+                isset($data['budgetEstimatif']['budgetEstimatifParPDF']) && 
+                $data['budgetEstimatif']['budgetEstimatifParPDF'] == false
+            ) {
                 $budgetEstimatif = new BudgetEstimatif();
                 if (isset($data['budgetEstimatif']['cachetArtiste'])) {
                     $budgetEstimatif->setCachetArtiste($data['budgetEstimatif']['cachetArtiste']);
@@ -608,7 +614,10 @@ class OffreService
                 }
                 $offre->setBudgetEstimatif($budgetEstimatif);
             }
-            if (isset($data['ficheTechniqueArtiste'])) {
+            if (
+                isset($data['ficheTechniqueArtiste']['ficheTechniqueArtisteParPDF']) && 
+                $data['ficheTechniqueArtiste']['ficheTechniqueArtisteParPDF'] == false
+            ) {
                 $ficheTechniqueArtiste = new FicheTechniqueArtiste();
                 if (isset($data['ficheTechniqueArtiste']['besoinBackline'])) {
                     $ficheTechniqueArtiste->setBesoinBackline(
@@ -723,7 +732,7 @@ class OffreService
                 ], Response::HTTP_BAD_REQUEST);
             }
         } catch (\Exception $e) {
-            throw new \RuntimeException("Erreur lors de la mise à jour de l'offre", $e->getMessage() . $e->getLine());
+            throw new \RuntimeException("Erreur lors de la mise à jour de l'offre", $e->getMessage() . ' ' . $e->getLine());
         }
     }
 
