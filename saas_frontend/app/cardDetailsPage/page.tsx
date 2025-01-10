@@ -498,7 +498,13 @@ function ProjectDetailsContent() {
         await apiPatch(`/offre/update/${project.id}`, JSON.parse(JSON.stringify(formData))).then(() => {
             setShowModifyOffre(false);
         });
-        alert("Offre modifiée avec succès.");
+        const data = {
+            'projectName' : formData.detailOffre.titleOffre,
+            'projectDescription' : formData.detailOffre.descrTournee,
+            'username' : formData.utilisateur.username,
+            'offreId' : project.id
+        };
+        await apiPost('/envoi-email-update-projet', JSON.parse(JSON.stringify(data)));
         // window.location.href = "/networks";
     };
 

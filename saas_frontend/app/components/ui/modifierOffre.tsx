@@ -33,7 +33,7 @@ const ModifierOffreForm: React.FC<{
     const [offreModifiee, setOffreModifiee] = useState(false);
     const [messageOffreModifiee, setMessageOffreModifiee] = useState("");
     const [typeMessage, setTypeMessage] = useState<"success" | "error">("success");
-    const [offreId, setOffreId] = useState("");
+    const [offreId, setOffreId] = useState<number | null>(null);
     const [description, setDescription] = useState("");
     const [genresMusicaux, setGenresMusicaux] = useState<Array<{ nomGenreMusical: string }>>([]);
     const [selectedGenres, setSelectedGenres] = useState<GenreMusical[]>(project.donneesSupplementaires.genreMusical);
