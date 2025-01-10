@@ -103,7 +103,7 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
             );
         };
 
-        if (budgetEstimatif) {
+        if (budgetEstimatif && offreId) {
             fetchFichiersProjet();
         }
     }, [budgetEstimatif, offreId]);

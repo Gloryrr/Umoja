@@ -117,7 +117,7 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
             );
         };
 
-        if (extras) {
+        if (extras && offreId) {
             fetchFichiersProjet();
         }
     }, [extras, offreId]);

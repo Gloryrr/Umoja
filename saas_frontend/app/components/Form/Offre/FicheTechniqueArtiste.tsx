@@ -155,7 +155,7 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
             );
         };
 
-        if (ficheTechniqueArtiste) {
+        if (ficheTechniqueArtiste && offreId) {
             fetchFichiersProjet();
         }
     }, [ficheTechniqueArtiste, offreId]);

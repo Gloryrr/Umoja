@@ -120,7 +120,7 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
             );
         };
 
-        if (conditionsFinancieres) {
+        if (conditionsFinancieres && offreId) {
             fetchFichiersProjet();
         }
     }, [conditionsFinancieres, offreId]);
