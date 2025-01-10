@@ -28,6 +28,7 @@ const ModifierOffreForm: React.FC<{
         onProjectConditionsFinancieresChange,
         onProjectDonneesSupplementaireChange
     }) => {
+    //console.log(project);
     const [formData, setFormData] = useState<FormData>(project);
     const [offreModifiee, setOffreModifiee] = useState(false);
     const [messageOffreModifiee, setMessageOffreModifiee] = useState("");
@@ -38,6 +39,13 @@ const ModifierOffreForm: React.FC<{
     const [selectedGenres, setSelectedGenres] = useState<GenreMusical[]>(project.donneesSupplementaires.genreMusical);
     const [reseaux, setReseaux] = useState<Array<{ nomReseau: string }>>([]);
     const [selectedReseaux, setSelectedReseaux] = useState<Reseau[]>(formData.donneesSupplementaires.reseau);
+
+    const [contenuExtrasParPDF, setContenuExtrasParPDF] = useState<string | null>(null);
+    const [contenuBudgetEstimatifParPDF, setContenuBudgetEstimatifParPDF] = useState<string | null>(null);
+    const [contenuConditionsFinancieresParPDF, setContenuConditionsFinancieresParPDF] = useState<string | null>(null);
+    const [contenuFicheTechniqueArtisteParPDF, setContenuFicheTechniqueArtisteParPDF] = useState<string | null>(null);
+    
+    const [messageAucunFichier, setMessageAucunFichier] = useState<string | null>(null);
 
     const valideFormulaire = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -250,6 +258,46 @@ const ModifierOffreForm: React.FC<{
         return isValid ? 'bg-green-500' : 'bg-red-500';
     };
 
+    // useEffect( () => {
+    //     const fetchFichiersProjet = async () => {
+    //         const data = {
+    //             idProjet: project.detailOffre.id,
+    //         };
+    //         await apiPost('/get-sftp-fichiers', JSON.parse(JSON.stringify(data))).then(
+    //             (response) => {
+    //                 if (response.message_none_files) {
+    //                     setMessageAucunFichier(response.message_none_files);
+    //                 } else {
+    //                     if (response.files.budget_estimatif != null) {
+    //                         setContenuBudgetEstimatifParPDF(response.files.budget_estimatif.content);
+    //                     } else {
+    //                         setContenuBudgetEstimatifParPDF(null);
+    //                     }
+    //                     if (response.files.extras != null) {
+    //                         setContenuExtrasParPDF(response.files.extras.content);
+    //                     } else {
+    //                         setContenuExtrasParPDF(null);
+    //                     }
+    //                     if (response.files.conditions_financieres != null) {
+    //                         setContenuConditionsFinancieresParPDF(response.files.conditions_financieres.content);
+    //                     } else {
+    //                         setContenuConditionsFinancieresParPDF(null);
+    //                     }
+    //                     if (response.files.fiche_technique_artiste != null) {
+    //                         setContenuFicheTechniqueArtisteParPDF(response.files.fiche_technique_artiste.content);
+    //                     } else {
+    //                         setContenuFicheTechniqueArtisteParPDF(null);
+    //                     }
+    //                 }
+    //             }
+    //         );
+    //     };
+
+    //     if (project) {
+    //         fetchFichiersProjet();
+    //     }
+    // }, [project]);
+    
     return (
         <div className="w-full flex items-start justify-center">
             <div className="w-full">
@@ -308,7 +356,7 @@ const ModifierOffreForm: React.FC<{
                                         }));
                                         onProjectExtrasChange(formData);
                                     }}
-                                    idProjet={offreId}
+                                    idProjet={formData.detailOffre.id ?? null}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -328,7 +376,7 @@ const ModifierOffreForm: React.FC<{
                                         }));
                                         onProjectConditionsFinancieresChange(formData);
                                     }}
-                                    idProjet={offreId}
+                                    idProjet={formData.detailOffre.id ?? null}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -348,7 +396,7 @@ const ModifierOffreForm: React.FC<{
                                         }));
                                         onProjectBudgetEstimatifChange(formData);
                                     }}
-                                    idProjet={offreId}
+                                    idProjet={formData.detailOffre.id ?? null}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -368,7 +416,7 @@ const ModifierOffreForm: React.FC<{
                                         }));
                                         onProjectFicheTechniqueArtisteChange(formData);
                                     }}
-                                    idProjet={offreId}
+                                    idProjet={formData.detailOffre.id ?? null}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>

@@ -1,9 +1,9 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { apiGet } from "@/app/services/externalApiClients";
 import { Card, Label, TextInput, Select, Button, Checkbox, FileInput } from "flowbite-react";
 import { FiRefreshCw } from "react-icons/fi";
-import { apiPostSFTP } from "@/app/services/internalApiClients";
+import { apiPostSFTP, apiPost } from "@/app/services/internalApiClients";
 
 interface ConditionsFinancieresFormProps {
     conditionsFinancieres: {
@@ -12,7 +12,7 @@ interface ConditionsFinancieresFormProps {
         conditionsPaiement: string | null;
         pourcentageRecette: number | null;
     };
-    idProjet: string;
+    idProjet: number | null;
     onConditionsFinancieresChange: (name: string, value: string | boolean) => void;
 }
 
@@ -21,11 +21,17 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
     onConditionsFinancieresChange,
     idProjet,
 }) => {
-    const [offreId, setOffreId] = useState<string>(idProjet);
+    const [offreId, setOffreId] = useState<number | null>(idProjet);
     const [file, setFile] = useState<File | null>(null);
     const [message, setMessage] = useState('');
     const [colorMessage, setColorMessage] = useState('success');
-    const [isTextInputActive, setIsTextInputActive] = useState(true);
+    const [isTextInputActive, setIsTextInputActive] = useState<boolean>(!conditionsFinancieres.conditionsFinancieresParPDF);
+
+    const [contenuConditionsFinancieresParPDF, setContenuConditionsFinancieresParPDF] = useState<string | null>(null);
+
+    const [messageAucunFichier, setMessageAucunFichier] = useState<string | null>(null);
+
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const handleConditionsFinancieresChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target as HTMLInputElement;
@@ -92,6 +98,57 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
             handleSubmit();
         }
     }, [offreId, file]);
+
+    useEffect( () => {
+        const fetchFichiersProjet = async () => {
+            const data = {
+                idProjet: offreId,
+            };
+            await apiPost('/get-sftp-fichiers', JSON.parse(JSON.stringify(data))).then(
+                (response) => {
+                    //console.log(response);
+                    if (response.message_none_files) {
+                        setMessageAucunFichier(response.message_none_files);
+                    } else {
+                        if (response.files.conditions_financieres != null) {
+                            setContenuConditionsFinancieresParPDF(response.files.conditions_financieres.content);
+                        } else {
+                            setContenuConditionsFinancieresParPDF(null);
+                        }
+                    }
+                }
+            );
+        };
+
+        if (conditionsFinancieres) {
+            fetchFichiersProjet();
+        }
+    }, [conditionsFinancieres, offreId]);
+
+    // Convertir base64 en Blob et en fichier
+    const base64ToFile = (base64 : string) => {
+        const byteString = atob(base64); // Décoder le contenu base64
+        const mimeString = "pdf" // on accepte que les pdf par défaut
+        const arrayBuffer = new ArrayBuffer(byteString.length);
+        const intArray = new Uint8Array(arrayBuffer);
+
+        for (let i = 0; i < byteString.length; i++) {
+            intArray[i] = byteString.charCodeAt(i);
+        }
+
+        const blob = new Blob([arrayBuffer], { type: mimeString });
+        return new File([blob], `conditions_financieres_pdf_${offreId}.pdf`, { type: mimeString });
+    };
+
+    // Charger automatiquement le fichier dans l'input file
+    useEffect(() => {
+        if (contenuConditionsFinancieresParPDF && fileInputRef.current) {
+            const file = base64ToFile(contenuConditionsFinancieresParPDF);
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInputRef.current.files = dataTransfer.files;
+        }
+    }, [contenuConditionsFinancieresParPDF])
 
     return (
         <Card className="shadow-none border-none mx-auto w-full">
@@ -179,7 +236,9 @@ const ConditionsFinancieresForm: React.FC<ConditionsFinancieresFormProps> = ({
                     className="w-full mr-5"
                     accept="application/pdf"
                     onChange={handleFileChange}
+                    ref={fileInputRef}
                 />
+                {messageAucunFichier && <p className="text-red-500">{messageAucunFichier}</p>}
             </div>
 
             {message && <p className={colorMessage}>{message}</p>}

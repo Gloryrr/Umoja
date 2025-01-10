@@ -1,9 +1,9 @@
 "use client";
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef } from 'react';
 import { TextInput, Label, Card, Button, Checkbox, FileInput } from 'flowbite-react';
 import { FiRefreshCw } from "react-icons/fi";
 import { Artiste } from '@/app/types/FormDataType';
-import { apiPostSFTP } from '@/app/services/internalApiClients';
+import { apiPostSFTP, apiPost } from '@/app/services/internalApiClients';
 
 interface FicheTechniqueArtisteFormProps {
     ficheTechniqueArtiste: {
@@ -18,7 +18,7 @@ interface FicheTechniqueArtisteFormProps {
         artiste: Artiste[];
         nbArtistes: number | null;
     };
-    idProjet: string;
+    idProjet: number | null;
     onFicheTechniqueChange: (name: string, value: string | string[] | number | Artiste[] | boolean) => void;
 }
 
@@ -27,11 +27,17 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
     onFicheTechniqueChange,
     idProjet,
 }) => {
-    const [offreId, setOffreId] = useState<string>(idProjet);
+    const [offreId, setOffreId] = useState<number | null>(idProjet);
     const [file, setFile] = useState<File | null>(null);
     const [message, setMessage] = useState('');
     const [colorMessage, setColorMessage] = useState('success');
-    const [isTextInputActive, setIsTextInputActive] = useState(true);
+    const [isTextInputActive, setIsTextInputActive] = useState<boolean>(!ficheTechniqueArtiste.ficheTechniqueArtisteParPDF);
+
+    const [contenuFicheTechniqueArtisteParPDF, setContenuFicheTechniqueArtisteParPDF] = useState<string | null>(null);
+
+    const [messageAucunFichier, setMessageAucunFichier] = useState<string | null>(null);
+
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const [liensPromotionnels, setLiensPromotionnels] = useState<string[]>(ficheTechniqueArtiste.liensPromotionnels || ['']);
     const [artistes, setArtistes] = useState<Artiste[]>(ficheTechniqueArtiste.artiste);
@@ -127,6 +133,57 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
             handleSubmit();
         }
     }, [offreId, file]);
+
+    useEffect( () => {
+        const fetchFichiersProjet = async () => {
+            const data = {
+                idProjet: offreId,
+            };
+            await apiPost('/get-sftp-fichiers', JSON.parse(JSON.stringify(data))).then(
+                (response) => {
+                    //console.log(response);
+                    if (response.message_none_files) {
+                        setMessageAucunFichier(response.message_none_files);
+                    } else {
+                        if (response.files.fiche_technique_artiste != null) {
+                            setContenuFicheTechniqueArtisteParPDF(response.files.fiche_technique_artiste.content);
+                        } else {
+                            setContenuFicheTechniqueArtisteParPDF(null);
+                        }
+                    }
+                }
+            );
+        };
+
+        if (ficheTechniqueArtiste) {
+            fetchFichiersProjet();
+        }
+    }, [ficheTechniqueArtiste, offreId]);
+
+    // Convertir base64 en Blob et en fichier
+    const base64ToFile = (base64 : string) => {
+        const byteString = atob(base64); // Décoder le contenu base64
+        const mimeString = "pdf" // on accepte que les pdf par défaut
+        const arrayBuffer = new ArrayBuffer(byteString.length);
+        const intArray = new Uint8Array(arrayBuffer);
+
+        for (let i = 0; i < byteString.length; i++) {
+            intArray[i] = byteString.charCodeAt(i);
+        }
+
+        const blob = new Blob([arrayBuffer], { type: mimeString });
+        return new File([blob], `fiche_technique_artiste_pdf_${offreId}.pdf`, { type: mimeString });
+    };
+
+    // Charger automatiquement le fichier dans l'input file
+    useEffect(() => {
+        if (contenuFicheTechniqueArtisteParPDF && fileInputRef.current) {
+            const file = base64ToFile(contenuFicheTechniqueArtisteParPDF);
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInputRef.current.files = dataTransfer.files;
+        }
+    }, [contenuFicheTechniqueArtisteParPDF]);
 
     return (
         <Card className="w-full shadow-none border-none">
@@ -302,7 +359,9 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
                     className="w-full mr-5"
                     accept="application/pdf"
                     onChange={handleFileChange}
+                    ref={fileInputRef}
                 />
+                {messageAucunFichier && <p className="text-red-500">{messageAucunFichier}</p>}
             </div>
 
             {message && <p className={colorMessage}>{message}</p>}
