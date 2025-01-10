@@ -85,7 +85,7 @@ const OffreForm: React.FC = () => {
     const [offrePostee, setOffrePostee] = useState(false);
     const [messageOffrePostee, setMessageOffrePostee] = useState("");
     const [typeMessage, setTypeMessage] = useState<"success" | "error">("success");
-    const [offreId, setOffreId] = useState("");
+    const [offreId, setOffreId] = useState<number | null>(null);
     const [description, setDescription] = useState("");
     const [genresMusicaux, setGenresMusicaux] = useState<Array<{ nomGenreMusical: string }>>([]);
     const [selectedGenres, setSelectedGenres] = useState<GenreMusical[]>(formData.donneesSupplementaires.genreMusical);

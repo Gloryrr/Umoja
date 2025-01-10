@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
     Label,
     TextInput,
@@ -11,6 +11,7 @@ import {
 } from 'flowbite-react';
 import { apiPostSFTP } from '@/app/services/internalApiClients';
 import { FiRefreshCw } from 'react-icons/fi';
+import { apiPost} from '@/app/services/internalApiClients';
 
 interface ExtrasFormProps {
     extras: {
@@ -21,7 +22,7 @@ interface ExtrasFormProps {
         exception: string | null;
         clausesConfidentialites: string | null;
     };
-    idProjet: string;
+    idProjet: number | null;
     onExtrasChange: (name: string, value: string | boolean) => void;
 }
 
@@ -30,11 +31,19 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
     onExtrasChange,
     idProjet,
 }) => {
-    const [offreId, setOffreId] = useState<string>(idProjet);
+
+    //console.log(idProjet);
+    const [offreId, setOffreId] = useState<number | null>(idProjet ?? null);
     const [file, setFile] = useState<File | null>(null);
     const [message, setMessage] = useState('');
     const [colorMessage, setColorMessage] = useState('success');
-    const [isTextInputActive, setIsTextInputActive] = useState(true);
+    const [isTextInputActive, setIsTextInputActive] = useState<boolean>(!extras.extrasParPDF);
+
+    const [contenuExtrasParPDF, setContenuExtrasParPDF] = useState<string | null>(null);
+
+    const [messageAucunFichier, setMessageAucunFichier] = useState<string | null>(null);
+
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const handleExtrasChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value, type } = e.target as HTMLInputElement;
@@ -85,6 +94,58 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
         onExtrasChange("exception", "");
         onExtrasChange("clausesConfidentialites", "");
     };
+
+    useEffect( () => {
+        const fetchFichiersProjet = async () => {
+            const data = {
+                idProjet: offreId,
+            };
+            await apiPost('/get-sftp-fichiers', JSON.parse(JSON.stringify(data))).then(
+                (response) => {
+                    //console.log(response);
+                    if (response.message_none_files) {
+                        setMessageAucunFichier(response.message_none_files);
+                    } else {
+                        if (response.files.extras != null) {
+                            setContenuExtrasParPDF(response.files.extras.content);
+                            //console.log(response.files.extras.content);
+                        } else {
+                            setContenuExtrasParPDF(null);
+                        }
+                    }
+                }
+            );
+        };
+
+        if (extras && offreId) {
+            fetchFichiersProjet();
+        }
+    }, [extras, offreId]);
+
+    // Charger automatiquement le fichier dans l'input file
+    useEffect(() => {
+        // Convertir base64 en Blob et en fichier
+        const base64ToFile = (base64 : string) => {
+            const byteString = atob(base64); // Décoder le contenu base64
+            const mimeString = "pdf" // on accepte que les pdf par défaut
+            const arrayBuffer = new ArrayBuffer(byteString.length);
+            const intArray = new Uint8Array(arrayBuffer);
+    
+            for (let i = 0; i < byteString.length; i++) {
+                intArray[i] = byteString.charCodeAt(i);
+            }
+    
+            const blob = new Blob([arrayBuffer], { type: mimeString });
+            return new File([blob], `extras_pdf_${offreId}.pdf`, { type: mimeString });
+        };
+
+        if (contenuExtrasParPDF && fileInputRef.current) {
+            const file = base64ToFile(contenuExtrasParPDF);
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInputRef.current.files = dataTransfer.files; // Injecte le fichier dans l'input file
+        }
+    }, [contenuExtrasParPDF, offreId]);
 
     return (
         <Card className="shadow-none border-none mx-auto w-full">
@@ -188,7 +249,9 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
                     className="w-full mr-5"
                     accept="application/pdf"
                     onChange={handleFileChange}
+                    ref={fileInputRef}
                 />
+                {messageAucunFichier && <p className="text-red-500">{messageAucunFichier}</p>}
             </div>
 
             {message && <p className={colorMessage}>{message}</p>}

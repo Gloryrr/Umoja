@@ -1,8 +1,8 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, Label, TextInput, Button, Checkbox, FileInput } from 'flowbite-react';
 import { FiRefreshCw } from "react-icons/fi";
-import { apiPostSFTP } from '@/app/services/internalApiClients';
+import { apiPostSFTP, apiPost } from '@/app/services/internalApiClients';
 
 interface BudgetEstimatifFormProps {
     budgetEstimatif: {
@@ -12,7 +12,7 @@ interface BudgetEstimatifFormProps {
         fraisHebergement: number | null;
         fraisRestauration: number | null;
     };
-    idProjet: string;
+    idProjet: number | null;
     onBudgetEstimatifChange: (name: string, value: number | boolean) => void;
 }
 
@@ -21,11 +21,17 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
     onBudgetEstimatifChange,
     idProjet,
 }) => {
-    const [offreId, setOffreId] = useState<string>(idProjet);
+    const [offreId, setOffreId] = useState<number | null>(idProjet);
     const [file, setFile] = useState<File | null>(null);
     const [message, setMessage] = useState('');
     const [colorMessage, setColorMessage] = useState('success');
-    const [isTextInputActive, setIsTextInputActive] = useState(true);
+    const [isTextInputActive, setIsTextInputActive] = useState<boolean>(!budgetEstimatif.budgetEstimatifParPDF);
+    
+    const [contenuBudgetEstimatifParPDF, setContenuBudgetEstimatifParPDF] = useState<string | null>(null);
+
+    const [messageAucunFichier, setMessageAucunFichier] = useState<string | null>(null);
+
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const handleBudgetEstimatifChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type } = e.target as HTMLInputElement;
@@ -75,6 +81,57 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
             handleSubmit();
         }
     }, [offreId, file]);
+
+    useEffect( () => {
+        const fetchFichiersProjet = async () => {
+            const data = {
+                idProjet: offreId,
+            };
+            await apiPost('/get-sftp-fichiers', JSON.parse(JSON.stringify(data))).then(
+                (response) => {
+                    //console.log(response);
+                    if (response.message_none_files) {
+                        setMessageAucunFichier(response.message_none_files);
+                    } else {
+                        if (response.files.budget_estimatif != null) {
+                            setContenuBudgetEstimatifParPDF(response.files.budget_estimatif.content);
+                        } else {
+                            setContenuBudgetEstimatifParPDF(null);
+                        }
+                    }
+                }
+            );
+        };
+
+        if (budgetEstimatif && offreId) {
+            fetchFichiersProjet();
+        }
+    }, [budgetEstimatif, offreId]);
+
+    // Charger automatiquement le fichier dans l'input file
+    useEffect(() => {
+        // Convertir base64 en Blob et en fichier
+        const base64ToFile = (base64 : string) => {
+            const byteString = atob(base64); // Décoder le contenu base64
+            const mimeString = "pdf" // on accepte que les pdf par défaut
+            const arrayBuffer = new ArrayBuffer(byteString.length);
+            const intArray = new Uint8Array(arrayBuffer);
+
+            for (let i = 0; i < byteString.length; i++) {
+                intArray[i] = byteString.charCodeAt(i);
+            }
+
+            const blob = new Blob([arrayBuffer], { type: mimeString });
+            return new File([blob], `budget_estimatif_pdf_${offreId}.pdf`, { type: mimeString });
+        };
+
+        if (contenuBudgetEstimatifParPDF && fileInputRef.current) {
+            const file = base64ToFile(contenuBudgetEstimatifParPDF);
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInputRef.current.files = dataTransfer.files;
+        }
+    }, [contenuBudgetEstimatifParPDF, offreId]);
 
     return (
         <Card className="shadow-none border-none mx-auto w-full">
@@ -171,7 +228,9 @@ const BudgetEstimatifForm: React.FC<BudgetEstimatifFormProps> = ({
                     className="w-full mr-5"
                     accept="application/pdf"
                     onChange={handleFileChange}
+                    ref={fileInputRef}
                 />
+                {messageAucunFichier && <p className="text-red-500">{messageAucunFichier}</p>}
             </div>
 
             {message && <p className={colorMessage}>{message}</p>}

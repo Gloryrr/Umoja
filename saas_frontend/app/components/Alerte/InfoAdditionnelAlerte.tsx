@@ -4,7 +4,7 @@ import { Button } from 'flowbite-react';
 interface InfoAdditionnelAlertProps {
     isSuccess: boolean;
     description: string;
-    offreId: string;
+    offreId: number | null;
     onDismiss: () => void;
 }
 

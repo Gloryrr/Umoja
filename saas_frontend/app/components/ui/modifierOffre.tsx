@@ -28,11 +28,12 @@ const ModifierOffreForm: React.FC<{
         onProjectConditionsFinancieresChange,
         onProjectDonneesSupplementaireChange
     }) => {
+    //console.log(project);
     const [formData, setFormData] = useState<FormData>(project);
     const [offreModifiee, setOffreModifiee] = useState(false);
     const [messageOffreModifiee, setMessageOffreModifiee] = useState("");
     const [typeMessage, setTypeMessage] = useState<"success" | "error">("success");
-    const [offreId, setOffreId] = useState("");
+    const [offreId, setOffreId] = useState<number | null>(null);
     const [description, setDescription] = useState("");
     const [genresMusicaux, setGenresMusicaux] = useState<Array<{ nomGenreMusical: string }>>([]);
     const [selectedGenres, setSelectedGenres] = useState<GenreMusical[]>(project.donneesSupplementaires.genreMusical);
@@ -250,6 +251,46 @@ const ModifierOffreForm: React.FC<{
         return isValid ? 'bg-green-500' : 'bg-red-500';
     };
 
+    // useEffect( () => {
+    //     const fetchFichiersProjet = async () => {
+    //         const data = {
+    //             idProjet: project.detailOffre.id,
+    //         };
+    //         await apiPost('/get-sftp-fichiers', JSON.parse(JSON.stringify(data))).then(
+    //             (response) => {
+    //                 if (response.message_none_files) {
+    //                     setMessageAucunFichier(response.message_none_files);
+    //                 } else {
+    //                     if (response.files.budget_estimatif != null) {
+    //                         setContenuBudgetEstimatifParPDF(response.files.budget_estimatif.content);
+    //                     } else {
+    //                         setContenuBudgetEstimatifParPDF(null);
+    //                     }
+    //                     if (response.files.extras != null) {
+    //                         setContenuExtrasParPDF(response.files.extras.content);
+    //                     } else {
+    //                         setContenuExtrasParPDF(null);
+    //                     }
+    //                     if (response.files.conditions_financieres != null) {
+    //                         setContenuConditionsFinancieresParPDF(response.files.conditions_financieres.content);
+    //                     } else {
+    //                         setContenuConditionsFinancieresParPDF(null);
+    //                     }
+    //                     if (response.files.fiche_technique_artiste != null) {
+    //                         setContenuFicheTechniqueArtisteParPDF(response.files.fiche_technique_artiste.content);
+    //                     } else {
+    //                         setContenuFicheTechniqueArtisteParPDF(null);
+    //                     }
+    //                 }
+    //             }
+    //         );
+    //     };
+
+    //     if (project) {
+    //         fetchFichiersProjet();
+    //     }
+    // }, [project]);
+    
     return (
         <div className="w-full flex items-start justify-center">
             <div className="w-full">
@@ -308,7 +349,7 @@ const ModifierOffreForm: React.FC<{
                                         }));
                                         onProjectExtrasChange(formData);
                                     }}
-                                    idProjet={offreId}
+                                    idProjet={formData.detailOffre.id ?? null}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -328,7 +369,7 @@ const ModifierOffreForm: React.FC<{
                                         }));
                                         onProjectConditionsFinancieresChange(formData);
                                     }}
-                                    idProjet={offreId}
+                                    idProjet={formData.detailOffre.id ?? null}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -348,7 +389,7 @@ const ModifierOffreForm: React.FC<{
                                         }));
                                         onProjectBudgetEstimatifChange(formData);
                                     }}
-                                    idProjet={offreId}
+                                    idProjet={formData.detailOffre.id ?? null}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
@@ -368,7 +409,7 @@ const ModifierOffreForm: React.FC<{
                                         }));
                                         onProjectFicheTechniqueArtisteChange(formData);
                                     }}
-                                    idProjet={offreId}
+                                    idProjet={formData.detailOffre.id ?? null}
                                 />
                             </Accordion.Content>
                         </Accordion.Panel>
