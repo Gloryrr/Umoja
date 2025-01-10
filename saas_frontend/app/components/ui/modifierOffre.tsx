@@ -40,13 +40,6 @@ const ModifierOffreForm: React.FC<{
     const [reseaux, setReseaux] = useState<Array<{ nomReseau: string }>>([]);
     const [selectedReseaux, setSelectedReseaux] = useState<Reseau[]>(formData.donneesSupplementaires.reseau);
 
-    const [contenuExtrasParPDF, setContenuExtrasParPDF] = useState<string | null>(null);
-    const [contenuBudgetEstimatifParPDF, setContenuBudgetEstimatifParPDF] = useState<string | null>(null);
-    const [contenuConditionsFinancieresParPDF, setContenuConditionsFinancieresParPDF] = useState<string | null>(null);
-    const [contenuFicheTechniqueArtisteParPDF, setContenuFicheTechniqueArtisteParPDF] = useState<string | null>(null);
-    
-    const [messageAucunFichier, setMessageAucunFichier] = useState<string | null>(null);
-
     const valideFormulaire = async (e: React.FormEvent) => {
         e.preventDefault();
         try {

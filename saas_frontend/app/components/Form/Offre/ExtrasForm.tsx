@@ -122,30 +122,30 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
         }
     }, [extras, offreId]);
 
-    // Convertir base64 en Blob et en fichier
-    const base64ToFile = (base64 : string) => {
-        const byteString = atob(base64); // Décoder le contenu base64
-        const mimeString = "pdf" // on accepte que les pdf par défaut
-        const arrayBuffer = new ArrayBuffer(byteString.length);
-        const intArray = new Uint8Array(arrayBuffer);
-
-        for (let i = 0; i < byteString.length; i++) {
-            intArray[i] = byteString.charCodeAt(i);
-        }
-
-        const blob = new Blob([arrayBuffer], { type: mimeString });
-        return new File([blob], `extras_pdf_${offreId}.pdf`, { type: mimeString });
-    };
-
     // Charger automatiquement le fichier dans l'input file
     useEffect(() => {
+        // Convertir base64 en Blob et en fichier
+        const base64ToFile = (base64 : string) => {
+            const byteString = atob(base64); // Décoder le contenu base64
+            const mimeString = "pdf" // on accepte que les pdf par défaut
+            const arrayBuffer = new ArrayBuffer(byteString.length);
+            const intArray = new Uint8Array(arrayBuffer);
+    
+            for (let i = 0; i < byteString.length; i++) {
+                intArray[i] = byteString.charCodeAt(i);
+            }
+    
+            const blob = new Blob([arrayBuffer], { type: mimeString });
+            return new File([blob], `extras_pdf_${offreId}.pdf`, { type: mimeString });
+        };
+
         if (contenuExtrasParPDF && fileInputRef.current) {
             const file = base64ToFile(contenuExtrasParPDF);
             const dataTransfer = new DataTransfer();
             dataTransfer.items.add(file);
             fileInputRef.current.files = dataTransfer.files; // Injecte le fichier dans l'input file
         }
-    }, [contenuExtrasParPDF]);
+    }, [contenuExtrasParPDF, offreId]);
 
     return (
         <Card className="shadow-none border-none mx-auto w-full">
