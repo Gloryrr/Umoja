@@ -14,20 +14,11 @@ const LookUsersReseauModal: React.FC<LookUsersReseauModalProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState(''); // État pour le champ de recherche
   // Filtrer les utilisateurs en fonction du nom ou de l'email
-
-  console.log(reseau);
-  console.log(reseau);
-  console.log(reseau);
-  console.log(reseau);
-  console.log(reseau);
-  console.log(reseau);
   const filteredUsers = reseau.utilisateurs.filter(
     (user) =>
       user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.emailUtilisateur.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  console.log(filteredUsers);
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-md shadow-lg max-w-lg w-full">

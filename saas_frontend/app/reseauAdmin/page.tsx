@@ -54,7 +54,6 @@ export default function ReseauManagement() {
 
     const utilisateursArray = JSON.parse(fetchData.reseaux);
 
-    console.log(utilisateursArray);
     if (Array.isArray(utilisateursArray)) {
       setOriginalReseau(utilisateursArray);
       setFilteredReseau(utilisateursArray);
@@ -81,8 +80,6 @@ export default function ReseauManagement() {
     const reseauData: JSON = JSON.parse(JSON.stringify(reseauDataString));
     
     await apiDeleteWithParams(`/reseau/delete-membre`, reseauData);
-    console.log(`Utilisateur avec l'ID ${userId} supprimé du réseau ${reseau.id}`);
-    console.log("Utilisateurs mis à jour :", updatedUsers);
 
     setLookUsersReseauOpen(false);
     loadReseaux();
@@ -98,8 +95,6 @@ export default function ReseauManagement() {
       };
   
       const ReseauData: JSON = JSON.parse(JSON.stringify(reseauDataString));
-  
-      console.log(newReseau);
   
       // Remplacer 'await' par '.then()' pour gérer la promesse
       apiPost('/reseau/create', ReseauData)
@@ -118,7 +113,6 @@ export default function ReseauManagement() {
   const handleEditReseau = async (updatedReseau: Reseaux) => {
     try {
       const ReseauData: JSON = JSON.parse(JSON.stringify(updatedReseau));
-      console.log(updatedReseau);
       await apiPatch(`/reseau/update/${updatedReseau.id}`, ReseauData);
       loadReseaux();
 
@@ -137,7 +131,6 @@ export default function ReseauManagement() {
       const reseauData: JSON = JSON.parse(JSON.stringify(reseauDataString));
       
       await apiPost('/reseau/add-membre', reseauData);
-      console.log(`Utilisateur avec l'ID ${userId} ajouté au réseau ${idReseau}`);
       setAddUsersReseauOpen(false);
       loadReseaux();
     } catch (error) {
@@ -147,10 +140,8 @@ export default function ReseauManagement() {
 
   const handleDeleteUser = async (id: number) => {
     try {
-        console.log(id);
         await apiDelete(`/reseau/delete/${id}`);
         loadReseaux();
-        console.log(`Reseau ${id} supprimé avec succès.`);
     } catch (error) {
         console.error('Erreur lors de la suppression du reseau:', error);
     }

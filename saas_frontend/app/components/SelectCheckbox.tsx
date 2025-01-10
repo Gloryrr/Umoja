@@ -11,8 +11,6 @@ interface SelectCheckboxProps {
 const SelectCheckbox: React.FC<SelectCheckboxProps> = ({ domaineSelection, options, selectedValues, onSelectionChange }) => {
     const [isOpen, setIsOpen] = useState(false);
 
-    //console.log(selectedValues);
-
     const handleCheckboxChange = (value: string, checked: boolean) => {
         const updatedValues = checked
             ? [...selectedValues, value]

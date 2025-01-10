@@ -190,9 +190,8 @@ function ProjectDetailsContent() {
         setIsModalOpen(false);
     };
 
-    const handleSubmitNumber = (startDate: Date | null, endDate: Date | null, price: number | null): void => {
+    const handleSubmitNumber = (): void => {
         setIsModalOpen(false);
-        console.log(startDate, endDate, price);
     };
 
     const handleCommentSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

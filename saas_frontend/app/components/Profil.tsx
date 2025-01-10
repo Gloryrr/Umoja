@@ -21,7 +21,6 @@ const Profil: React.FC = () => {
             try {
                 const response = await apiPost("/utilisateur", JSON.parse(JSON.stringify(data)));
                 if (response) {
-                    console.log(response);
                     setUserInfo(JSON.parse(response.utilisateur)[0]);
                 } else {
                     console.error("Erreur lors de la récupération des données utilisateur.");

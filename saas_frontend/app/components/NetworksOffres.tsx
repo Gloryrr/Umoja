@@ -55,7 +55,6 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
                     const offres = JSON.parse(reponse.offres);
                     if (offres) {
                         setOffres(offres);
-                        console.log(offres);
                         setTotalPages(reponse.nb_pages);
                     } else {
                         console.warn("Aucune offre trouvée pour ce réseau.");
@@ -71,7 +70,6 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
         try {
             const genresMusicaux = await apiGet(`/genres-musicaux`);
             if (genresMusicaux) {
-                console.log(genresMusicaux);
                 setGenresMusicauxApi(JSON.parse(genresMusicaux.genres_musicaux));
             }
         } catch (error) {

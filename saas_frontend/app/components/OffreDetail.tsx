@@ -86,7 +86,6 @@ async function fetchOffreDetails(id: number): Promise<Offre> {
   if (!response) {
     throw new Error("Erreur lors de la récupération des détails de l'offre");
   }
-  console.log(response.offre);
   return response.offre;
 }
 
@@ -185,10 +184,8 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
           });
         });
         const allCommentaires: Commentaire[] = [];
-        console.log(data.commenteesPar);
         data.commenteesPar.forEach((commentaire) => {
           fetchCommentaire(commentaire.id).then((commentaireData) => {
-            console.log(commentaireData);
             if (Array.isArray(commentaireData)) {
               allCommentaires.push(...commentaireData);
             } else {
@@ -242,7 +239,6 @@ export default function OffreDetail({ offreId }: OffreDetailProps) {
         budgetEstimatif.fraisRestauration;
   
       setMontantTotal(total);
-      console.log("Montant total calculé :", total);
     }
   }, [budgetEstimatif]);  
 

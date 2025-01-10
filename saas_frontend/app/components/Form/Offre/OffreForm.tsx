@@ -136,7 +136,6 @@ const OffreForm: React.FC = () => {
                     const data = { username };
                     const datasUser = await apiPost('/utilisateur', JSON.parse(JSON.stringify(data)));
                     const reseauxListe: Array<{ nomReseau: string }> = JSON.parse(datasUser.utilisateur)[0].reseaux;
-                    console.log(reseauxListe);
                     setReseaux(reseauxListe);
                 });
             } catch (error) {

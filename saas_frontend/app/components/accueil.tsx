@@ -48,7 +48,6 @@ export default function Accueil() {
     function fetchAllGenresMusicaux() {
         apiGet('/genres-musicaux').then((response) => {
             setGenresMusicaux(JSON.parse(response.genres_musicaux));
-            console.log(JSON.parse(response.genres_musicaux));
         }).catch((error) => {
             console.error('Erreur lors de la récupération des genres musicaux:', error);
         });

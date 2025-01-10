@@ -97,10 +97,8 @@ export default function UserManagement() {
 
   const handleDeleteUser = async (id: number) => {
     try {
-        console.log(id);
         await apiDelete(`/utilisateurs/delete/${id}`);
         loadUtilisateur();
-        console.log(`Utilisateur ${id} supprimé avec succès.`);
     } catch (error) {
         console.error('Erreur lors de la suppression de l\'utilisateur:', error);
     }

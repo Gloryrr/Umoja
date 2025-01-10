@@ -31,8 +31,6 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
     onExtrasChange,
     idProjet,
 }) => {
-
-    //console.log(idProjet);
     const [offreId, setOffreId] = useState<number | null>(idProjet ?? null);
     const [file, setFile] = useState<File | null>(null);
     const [message, setMessage] = useState('');
@@ -102,13 +100,11 @@ const ExtrasForm: React.FC<ExtrasFormProps> = ({
             };
             await apiPost('/get-sftp-fichiers', JSON.parse(JSON.stringify(data))).then(
                 (response) => {
-                    //console.log(response);
                     if (response.message_none_files) {
                         setMessageAucunFichier(response.message_none_files);
                     } else {
                         if (response.files.extras != null) {
                             setContenuExtrasParPDF(response.files.extras.content);
-                            //console.log(response.files.extras.content);
                         } else {
                             setContenuExtrasParPDF(null);
                         }

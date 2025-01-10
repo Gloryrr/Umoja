@@ -28,7 +28,6 @@ const ModifierOffreForm: React.FC<{
         onProjectConditionsFinancieresChange,
         onProjectDonneesSupplementaireChange
     }) => {
-    //console.log(project);
     const [formData, setFormData] = useState<FormData>(project);
     const [offreModifiee, setOffreModifiee] = useState(false);
     const [messageOffreModifiee, setMessageOffreModifiee] = useState("");

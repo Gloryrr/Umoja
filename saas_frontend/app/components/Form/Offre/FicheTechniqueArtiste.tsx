@@ -141,7 +141,6 @@ const FicheTechniqueArtisteForm: React.FC<FicheTechniqueArtisteFormProps> = ({
             };
             await apiPost('/get-sftp-fichiers', JSON.parse(JSON.stringify(data))).then(
                 (response) => {
-                    //console.log(response);
                     if (response.message_none_files) {
                         setMessageAucunFichier(response.message_none_files);
                     } else {

@@ -20,7 +20,6 @@ const NumberInputModal: React.FC<NumberInputModalProps> = ({ username, isOpen, o
     if (startDate !== null && endDate !== null && price !== null) {
       const urlParams = new URLSearchParams(window.location.search);
       const idOffre = urlParams.get('id');
-      console.log(username);
       const reponse = {
         username: username,
         idOffre: idOffre,
