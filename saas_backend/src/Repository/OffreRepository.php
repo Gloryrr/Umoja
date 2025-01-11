@@ -90,6 +90,31 @@ class OffreRepository extends ServiceEntityRepository
     }
 
     /**
+     * Récupère les offres à partir d'une liste de noms de réseau.
+     *
+     * @param array $nomsReseaux Les noms des réseaux.
+     * @return Offre[] Une liste d'offres correspondant aux critères.
+     *
+     * @throws \RuntimeException Si une erreur survient lors de la récupération.
+     */
+    public function getOffresByNomsReseaux(array $nomsReseaux): array
+    {
+        try {
+            return $this->createQueryBuilder('o')
+                ->innerJoin('o.reseaux', 'r')
+                ->andWhere('r.nomReseau IN (:nomsReseaux)')
+                ->setParameter('nomsReseaux', $nomsReseaux)
+                ->getQuery()
+                ->getResult();
+        } catch (\Exception $e) {
+            throw new \RuntimeException(
+                "Erreur lors de la récupération des offres par noms de réseau : " .
+                $e->getCode() . ", " . $e->getMessage()
+            );
+        }
+    }
+
+    /**
      * Trouve les offres d'un utilisateur par rapport à son id.
      *
      * @param int $idUtilisateur L'identifiant de l'utilisateur.

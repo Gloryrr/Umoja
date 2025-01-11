@@ -22,6 +22,7 @@ use App\Repository\UtilisateurRepository;
 use App\Repository\ReseauRepository;
 use App\Repository\GenreMusicalRepository;
 use App\Repository\ArtisteRepository;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -218,6 +219,65 @@ class OffreService
             $paginationOffres,
             'json',
             ['groups' => ['offre:read']]
+        );
+        return new JsonResponse([
+            'offres' => $offreJSON,
+            'nb_pages' => $totalPages,
+            'serialized' => true
+        ], Response::HTTP_OK, ['Access-Control-Allow-Origin' => '*']);
+    }
+
+    /**
+     * Récupère les offres à partir d'une liste de réseaux et renvoie une réponse JSON.
+     *
+     * @param OffreRepository $offreRepository Le repository des offres.
+     * @param SerializerInterface $serializer Le service de sérialisation.
+     * @param mixed $data Les données des offres à récupérer.
+     *
+     * @return JsonResponse La réponse JSON contenant les offres.
+     */
+    public static function getOffresReseaux(
+        OffreRepository $offreRepository,
+        UtilisateurRepository $utilisateurRepository,
+        SerializerInterface $serializer,
+        PaginatorInterface $paginator,
+        int $page,
+        int $limit,
+        Security $security
+    ): JsonResponse {
+
+        $user = $security->getUser();
+
+        // Vérifie si aucun utilisateur n'est connecté
+        if (!$user) {
+            return new JsonResponse(
+                ['error' => 'Utilisateur non authentifié'],
+                401
+            );
+        }
+
+        $userArray = $utilisateurRepository->trouveUtilisateurByUsername($user->getUserIdentifier());
+
+        $listeReseaux = $userArray[0]->getReseaux();
+
+        $reseaux = [];
+        foreach ($listeReseaux as $reseau) {
+            $reseaux[] = $reseau->getNomReseau();
+        }
+
+        $offres = $offreRepository->getOffresByNomsReseaux($reseaux);
+        $paginationOffres = $paginator->paginate($offres, $page, $limit);
+        $totalPages = ceil($paginationOffres->getTotalItemCount() / $paginationOffres->getItemNumberPerPage());
+        for ($i = 0; $i < sizeof($offres); $i++) {
+            $offres[$i]->setImage($offres[$i]->getImage());
+        }
+        $offreJSON = $serializer->serialize(
+            $paginationOffres,
+            'json',
+            ['groups' => [
+                'offre:read',
+                'budget_estimatif:read',
+            ]]
         );
         return new JsonResponse([
             'offres' => $offreJSON,
