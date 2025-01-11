@@ -2,9 +2,10 @@
 
 import React, { Suspense, useState, useEffect, useCallback } from 'react';
 import { FaLink } from "react-icons/fa";
+import { HiCheck } from 'react-icons/hi';
 import { useSearchParams } from 'next/navigation';
 // import { FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
-import { Progress, Button, Modal, Card, Spinner, Textarea, Avatar, Tabs } from 'flowbite-react';
+import { Progress, Button, Modal, Card, Spinner, Textarea, Avatar, Tabs, Toast } from 'flowbite-react';
 import NumberInputModal from '@/app/components/ui/modalResponse';
 import { apiGet, apiPost, apiDelete, apiPatch } from '@/app/services/internalApiClients';
 import NavigationHandler from '@/app/navigation/Router';
@@ -172,6 +173,11 @@ function ProjectDetailsContent() {
     const [contenuFicheTechniqueArtisteParPDF, setContenuFicheTechniqueArtisteParPDF] = useState<string | null>(null);
 
     const [messageAucunFichier, setMessageAucunFichier] = useState<string | null>(null);
+
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [showError, setShowError] = useState(false);
+
+    const [donneesSauvegardees, setDonneesSauvegardees] = useState(false);
     
     // const optionsDate: Intl.DateTimeFormatOptions = {
     //     year: 'numeric',
@@ -494,22 +500,97 @@ function ProjectDetailsContent() {
     };
 
     const handleModify = async () => {
-        await apiPatch(`/offre/update/${project.id}`, JSON.parse(JSON.stringify(formData))).then(() => {
-            setShowModifyOffre(false);
-        });
-        const data = {
-            'projectName' : formData.detailOffre.titleOffre,
-            'projectDescription' : formData.detailOffre.descrTournee,
-            'username' : formData.utilisateur.username,
-            'offreId' : project.id
-        };
-        await apiPost('/envoi-email-update-projet', JSON.parse(JSON.stringify(data)));
-        // window.location.href = "/networks";
+        try {
+            await apiPatch(`/offre/update/${project.id}`, JSON.parse(JSON.stringify(formData))).then(() => {
+                setShowModifyOffre(false);
+                setShowSuccess(true);
+                setTimeout(() => {
+                    setShowSuccess(false);
+                }, 3000);
+            });
+            const data = {
+                'projectName' : formData.detailOffre.titleOffre,
+                'projectDescription' : formData.detailOffre.descrTournee,
+                'username' : formData.utilisateur.username,
+                'offreId' : project.id
+            };
+            await apiPost('/envoi-email-update-projet', JSON.parse(JSON.stringify(data)));
+            // window.location.href = "/networks";
+        } catch (error) {
+            console.error("Erreur réseau :", error);
+            setShowError(true);
+            setTimeout(() => {
+                setShowError(false);
+            }, 3000);
+        }
     };
 
     return (
         <div className="w-full flex items-center justify-center">
             <div className="container mx-auto mb-10">
+                {showSuccess && (
+                        <div className="fixed top-4 right-4 z-50">
+                        <Toast>
+                            <HiCheck className="h-5 w-5 text-green-500" />
+                            <div className="ml-3 text-sm font-normal">
+                                Projet modifié avec succès
+                            </div>
+
+                            {/* Barre de vie */}
+                            <div className="absolute bottom-0 left-0 h-1 w-full bg-green-200">
+                            <div
+                                className="h-full bg-green-500 transition-all duration-3000"
+                                style={{
+                                animation: "shrink 3s linear forwards",
+                                }}
+                            ></div>
+                            </div>
+                        </Toast>
+
+                        <style jsx>{`
+                            @keyframes shrink {
+                            from {
+                                width: 100%;
+                            }
+                            to {
+                                width: 0%;
+                            }
+                            }
+                        `}</style>
+                        </div>
+                    )}
+
+                    {showError && (
+                        <div className="fixed top-4 right-4 z-50">
+                        <Toast>
+                            <HiCheck className="h-5 w-5 text-red-500" />
+                            <div className="ml-3 text-sm font-normal">
+                                Erreur lors de la sauvegarde du projet
+                            </div>
+
+                            {/* Barre de vie */}
+                            <div className="absolute bottom-0 left-0 h-1 w-full bg-red-200">
+                            <div
+                                className="h-full bg-red-500 transition-all duration-3000"
+                                style={{
+                                animation: "shrink 3s linear forwards",
+                                }}
+                            ></div>
+                            </div>
+                        </Toast>
+
+                        <style jsx>{`
+                            @keyframes shrink {
+                            from {
+                                width: 100%;
+                            }
+                            to {
+                                width: 0%;
+                            }
+                            }
+                        `}</style>
+                        </div>
+                    )}
                 <h1 className="text-4xl font-bold mb-4 mt-6 text-center">{project.titleOffre}</h1>
                 <p className="text-xl mb-12 text-center">{project.descrTournee}</p>
 
@@ -933,12 +1014,14 @@ function ProjectDetailsContent() {
                                     <Modal.Body>
                                         <ModifierOffreForm 
                                             project={formData}
-                                            onProjectDetailChange={(updatedDetailProject: FormData) => setFormData(updatedDetailProject)}
-                                            onProjectExtrasChange={(updatedExtrasProject: FormData) => setFormData(updatedExtrasProject)}
-                                            onProjectBudgetEstimatifChange={(updatedBudgetEstimatifProject: FormData) => setFormData(updatedBudgetEstimatifProject)}
-                                            onProjectFicheTechniqueArtisteChange={(updatedFicheTechniqueArtisteProject: FormData) => setFormData(updatedFicheTechniqueArtisteProject)}
-                                            onProjectConditionsFinancieresChange={(updatedConditionsFinancieresProject: FormData) => setFormData(updatedConditionsFinancieresProject)}
-                                            onProjectDonneesSupplementaireChange={(updatedDonneesSupplementairesProject: FormData) => setFormData(updatedDonneesSupplementairesProject)}
+                                            onProjectInformationsChange={(updatedInformationsProject: FormData) => setFormData(updatedInformationsProject)}
+                                            onDonneesSauvegardees={(donneeSauvegarde: boolean) => setDonneesSauvegardees(donneeSauvegarde)}
+                                            //onProjectDetailChange={(updatedDetailProject: FormData) => setFormData(updatedDetailProject)}
+                                            //onProjectExtrasChange={(updatedExtrasProject: FormData) => setFormData(updatedExtrasProject)}
+                                            //onProjectBudgetEstimatifChange={(updatedBudgetEstimatifProject: FormData) => setFormData(updatedBudgetEstimatifProject)}
+                                            //onProjectFicheTechniqueArtisteChange={(updatedFicheTechniqueArtisteProject: FormData) => setFormData(updatedFicheTechniqueArtisteProject)}
+                                            //onProjectConditionsFinancieresChange={(updatedConditionsFinancieresProject: FormData) => setFormData(updatedConditionsFinancieresProject)}
+                                            //onProjectDonneesSupplementaireChange={(updatedDonneesSupplementairesProject: FormData) => setFormData(updatedDonneesSupplementairesProject)}
                                         />
                                     </Modal.Body>
                                     <Modal.Footer>
@@ -946,7 +1029,7 @@ function ProjectDetailsContent() {
                                         <Button color="gray" onClick={() => setShowModifyOffre(false)}>
                                             Annuler
                                         </Button>
-                                        <Button color="success" onClick={handleModify}>
+                                        <Button color="success" onClick={handleModify} disabled={!donneesSauvegardees}>
                                             Modifier
                                         </Button>
                                     </Modal.Footer>

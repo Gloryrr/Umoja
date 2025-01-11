@@ -57,7 +57,6 @@ export default function Accueil() {
     }, []);
 
     function calculBudgetTotal(budgetEstimatif: BudgetEstimatif) {
-        console.log(budgetEstimatif);
         if (!budgetEstimatif) return 0;
 
         return budgetEstimatif.cachetArtiste + 
@@ -114,7 +113,6 @@ export default function Accueil() {
             const response = await apiPost('/offres/reseaux/', JSON.parse(JSON.stringify(data)));
             if (response && response.offres && Array.isArray(JSON.parse(response.offres))) {
                 const newProjects = JSON.parse(response.offres);
-                console.log(newProjects);
                 setProjects((prevProjects) => [...prevProjects, ...newProjects]);
                 setDisplayedProjects(newProjects.slice(0, 6));
                 await fetchAllProjectsNbContributeur(newProjects).then(() => {
