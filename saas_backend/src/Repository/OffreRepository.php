@@ -108,7 +108,8 @@ class OffreRepository extends ServiceEntityRepository
                 ->getResult();
         } catch (\Exception $e) {
             throw new \RuntimeException(
-                "Erreur lors de la récupération des offres par noms de réseau : " . $e->getCode() . ", " . $e->getMessage()
+                "Erreur lors de la récupération des offres par noms de réseau : " .
+                $e->getCode() . ", " . $e->getMessage()
             );
         }
     }
