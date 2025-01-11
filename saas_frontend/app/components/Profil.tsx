@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
-import { Button, Card, TextInput, Label, Badge } from "flowbite-react";
+import { Button, Card, TextInput, Label, Badge, Spinner } from "flowbite-react";
 import { apiGet, apiPatch, apiPost } from "@/app/services/internalApiClients";
 
 const Profil: React.FC = () => {
@@ -60,7 +60,12 @@ const Profil: React.FC = () => {
     };
 
     if (userInfo.id == "") {
-        return <div>Chargement...</div>;
+        return (
+            <div className="flex justify-center min-h-[300px] items-center">
+                <p>Chargement des données de votre profil, veuillez patienter quelques secondes</p>
+                <Spinner className="ml-2" />
+            </div>
+        );
     }
 
     return (

@@ -571,7 +571,7 @@ function ProjectDetailsContent() {
                                     )}
                                 </NavigationHandler>
                             )}
-                            <Button color="info" onClick={handleOpenModal}>
+                            <Button color="info" onClick={handleOpenModal} disabled={timeLeft === null}>
                                 Répondre
                             </Button>
                             <NumberInputModal

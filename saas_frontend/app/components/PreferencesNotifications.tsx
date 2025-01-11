@@ -3,7 +3,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Card, ToggleSwitch, Button, ListGroup } from 'flowbite-react';
 import { apiGet, apiPatch } from '@/app/services/internalApiClients';
-import { DarkThemeToggle, Flowbite } from "flowbite-react";
+import { DarkThemeToggle, Flowbite, Toast } from "flowbite-react";
+import { HiCheck } from 'react-icons/hi';
 
 const PreferencesNotifications: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -14,6 +15,9 @@ const PreferencesNotifications: React.FC = () => {
     reponse_offre: false,
   });
 
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+
   const updatePreferences = async () => {
     if (!username) return;
 
@@ -22,9 +26,11 @@ const PreferencesNotifications: React.FC = () => {
       const response = await apiPatch(`/utilisateur/preference-notification/update/${username}`, data);
 
       if (response) {
-        alert('Préférences sauvegardées avec succès !');
+        setShowSuccess(true);
+        setTimeout(() => setShowSuccess(false), 3000);
       } else {
-        alert('Erreur lors de la sauvegarde des préférences.');
+        setShowError(true);
+        setTimeout(() => setShowError(false), 3000);
       }
     } catch (error) {
       console.error("Erreur réseau :", error);
@@ -84,6 +90,70 @@ const PreferencesNotifications: React.FC = () => {
 
   return (
     <div className="mx-auto mt-10 mb-10">
+      {showSuccess && (
+        <div className="fixed top-4 right-4 z-50">
+          <Toast>
+            <HiCheck className="h-5 w-5 text-green-500" />
+            <div className="ml-3 text-sm font-normal">
+              Préférences de notifications sauvegardées avec succès
+            </div>
+
+            {/* Barre de vie */}
+            <div className="absolute bottom-0 left-0 h-1 w-full bg-green-200">
+              <div
+                className="h-full bg-green-500 transition-all duration-3000"
+                style={{
+                  animation: "shrink 3s linear forwards",
+                }}
+              ></div>
+            </div>
+          </Toast>
+
+          <style jsx>{`
+            @keyframes shrink {
+              from {
+                width: 100%;
+              }
+              to {
+                width: 0%;
+              }
+            }
+          `}</style>
+        </div>
+      )}
+
+      {showError && (
+        <div className="fixed top-4 right-4 z-50">
+          <Toast>
+            <HiCheck className="h-5 w-5 text-red-500" />
+            <div className="ml-3 text-sm font-normal">
+              Erreur lors de la sauvegarde des préférences de vos préférences de notifications
+            </div>
+
+            {/* Barre de vie */}
+            <div className="absolute bottom-0 left-0 h-1 w-full bg-red-200">
+              <div
+                className="h-full bg-red-500 transition-all duration-3000"
+                style={{
+                  animation: "shrink 3s linear forwards",
+                }}
+              ></div>
+            </div>
+          </Toast>
+
+          <style jsx>{`
+            @keyframes shrink {
+              from {
+                width: 100%;
+              }
+              to {
+                width: 0%;
+              }
+            }
+          `}</style>
+        </div>
+      )}
+
       <Card>
         <h2 className="text-2xl font-bold text-center mb-6">Notifications</h2>
 

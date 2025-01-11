@@ -79,7 +79,7 @@ const TableDesOffres = () => {
     if (isLoading) {
         return  <div className="flex items-center">
                     <p className="mr-2">Chargement des offres...</p>
-                    <Spinner size="xl" className="mt-2"></Spinner>
+                    <Spinner className="mt-2"></Spinner>
                 </div> 
     }
 
@@ -89,25 +89,29 @@ const TableDesOffres = () => {
 
     return (
         <section>
-            <div className="flex justify-center">
-                <Pagination
-                    className="mb-4"
-                    currentPage={currentPage}
-                    totalPages={totalPage}
-                    onPageChange={(page) => setCurrentPage(page)}
-                />
-            </div>
+            {offres.length > 0 && ( 
+                <div className="flex justify-center">
+                    <Pagination
+                        className="mb-4"
+                        currentPage={currentPage}
+                        totalPages={totalPage}
+                        onPageChange={(page) => setCurrentPage(page)}
+                    />
+                </div>
+            )}
             <div className="mx-auto overflow-x-auto">
                 <Table striped hoverable>
-                    <Table.Head>
-                        <Table.HeadCell className="font-bold mx-auto">Titre</Table.HeadCell>
-                        <Table.HeadCell className="font-bold mx-auto">Date Limite de réponse</Table.HeadCell>
-                        <Table.HeadCell className="font-bold mx-auto">Localisation</Table.HeadCell>
-                        <Table.HeadCell className="font-bold mx-auto">Statut</Table.HeadCell>
-                        <Table.HeadCell><span className="sr-only">Edit</span></Table.HeadCell>
-                    </Table.Head>
+                    {offres.length > 0 && (
+                        <Table.Head>
+                            <Table.HeadCell className="font-bold mx-auto">Titre</Table.HeadCell>
+                            <Table.HeadCell className="font-bold mx-auto">Date Limite de réponse</Table.HeadCell>
+                            <Table.HeadCell className="font-bold mx-auto">Localisation</Table.HeadCell>
+                            <Table.HeadCell className="font-bold mx-auto">Statut</Table.HeadCell>
+                            <Table.HeadCell><span className="sr-only">Edit</span></Table.HeadCell>
+                        </Table.Head>
+                    )}
                     <Table.Body>
-                        {offres.map((offre) => (
+                        {offres.length > 0 && offres.map((offre) => (
                             <Table.Row key={offre.id} className="bg-white dark:border-gray-700">
                                 <Table.Cell>{offre.titleOffre}</Table.Cell>
                                 <Table.Cell
@@ -133,18 +137,28 @@ const TableDesOffres = () => {
                                     </a>
                                 </Table.Cell>
                             </Table.Row>
-                        ))}
+                        )) || (
+                            <Table.Row>
+                                <Table.Cell colSpan={5} className="text-center">
+                                    Aucune offre trouvée
+                                </Table.Cell>
+                            </Table.Row>
+                        )}
                     </Table.Body>
                 </Table>
             </div>
-            <div className="flex justify-center">
-                <Pagination
-                    className="mt-4"
-                    currentPage={currentPage}
-                    totalPages={totalPage}
-                    onPageChange={(page) => setCurrentPage(page)}
-                />
-            </div>
+            {
+                offres.length > 0 && (
+                    <div className="flex justify-center">
+                        <Pagination
+                            className="mt-4"
+                            currentPage={currentPage}
+                            totalPages={totalPage}
+                            onPageChange={(page) => setCurrentPage(page)}
+                        />
+                    </div>
+                )
+            }
         </section>
     );
 };
