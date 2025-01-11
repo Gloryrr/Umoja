@@ -170,13 +170,16 @@ export default function Accueil() {
                 <Link key={project.id} href={`cardDetailsPage?id=${project.id}`}>
                     <Card className="w-full max-w-sm cursor-pointer shadow-lg hover:shadow-xl transition-shadow">
                     <CardHeader className="relative">
-                        <Image 
-                            width={480} 
-                            height={480} 
-                            src={project.image ? `data:image/jpg;base64,${project.image}` : '/image-default-offre.jpg'} 
-                            alt="image du projet" 
-                            className="w-full object-cover rounded-t-lg" 
-                        />
+                        <div className='relative'>
+                            <div className="absolute top-0 left-0 bg-black bg-opacity-20 w-full h-full rounded-t-lg"></div>
+                            <Image 
+                                width={480} 
+                                height={480} 
+                                src={project.image ? `data:image/jpg;base64,${project.image}` : '/image-default-offre.jpg'} 
+                                alt="image du projet" 
+                                className="w-full object-cover rounded-t-lg" 
+                            />
+                        </div>
                         {project.deadLine < new Date().toISOString() && (project.budgetEstimatif != null || project.budgetEstimatif != undefined) ? (
                             <div className={`absolute top-2 left-2 text-xs font-semibold px-2 py-2 rounded ${nbContributions[project.id]?.ContributionGlobale >= calculBudgetTotal(project.budgetEstimatif) ? 'bg-green-500' : 'bg-orange-500'}`}>
                                 {nbContributions[project.id]?.ContributionGlobale >= calculBudgetTotal(project.budgetEstimatif) ? <FaCheck /> : <GrInProgress />}
