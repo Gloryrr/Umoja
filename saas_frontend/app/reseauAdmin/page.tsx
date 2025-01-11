@@ -69,7 +69,7 @@ export default function ReseauManagement() {
       userId: number
     ) => {
     // Filtrer les utilisateurs pour exclure celui dont l'ID correspond
-    const updatedUsers = reseau.utilisateurs.filter((user) => user.id !== userId);
+    //const updatedUsers = reseau.utilisateurs.filter((user) => user.id !== userId);
   
 
   

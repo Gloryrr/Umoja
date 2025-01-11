@@ -274,7 +274,10 @@ class OffreService
         $offreJSON = $serializer->serialize(
             $paginationOffres,
             'json',
-            ['groups' => ['offre:read']]
+            ['groups' => [
+                'offre:read',
+                'budget_estimatif:read',
+            ]]
         );
         return new JsonResponse([
             'offres' => $offreJSON,

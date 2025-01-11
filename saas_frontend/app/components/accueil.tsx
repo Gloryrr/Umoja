@@ -41,11 +41,8 @@ export default function Accueil() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [displayedProjects, setDisplayedProjects] = useState<Project[]>([]);
     const [nbContributions, setNbContributions] = useState<{ [key: number]: { compteurNbContributeur: number, ContributionGlobale: number } }>({});
-    const [projectsToShow, setProjectsToShow] = useState<number>(6);
     const [projectIsLoading, setProjectIsLoading] = useState(true);
     const [genresMusicaux, setGenresMusicaux] = useState<GenreMusical[]>([]);
-    const [page, setPage] = useState<number>(1);
-    const [nbPages, setNbPages] = useState<number>(0);
 
     function fetchAllGenresMusicaux() {
         apiGet('/genres-musicaux').then((response) => {
@@ -60,6 +57,7 @@ export default function Accueil() {
     }, []);
 
     function calculBudgetTotal(budgetEstimatif: BudgetEstimatif) {
+        console.log(budgetEstimatif);
         if (!budgetEstimatif) return 0;
 
         return budgetEstimatif.cachetArtiste + 
@@ -111,14 +109,14 @@ export default function Accueil() {
         try {
             const data = {
                 'page': 1,
-                'limit': projectsToShow*2,
+                'limit': 6*2,
             };
             const response = await apiPost('/offres/reseaux/', JSON.parse(JSON.stringify(data)));
             if (response && response.offres && Array.isArray(JSON.parse(response.offres))) {
                 const newProjects = JSON.parse(response.offres);
                 console.log(newProjects);
                 setProjects((prevProjects) => [...prevProjects, ...newProjects]);
-                setDisplayedProjects(newProjects.slice(0, projectsToShow));
+                setDisplayedProjects(newProjects.slice(0, 6));
                 await fetchAllProjectsNbContributeur(newProjects).then(() => {
                     setProjectIsLoading(false);
                 });
@@ -128,14 +126,14 @@ export default function Accueil() {
         } catch (error) {
             console.error('Erreur lors de la récupération des offres:', error);
         }
-    }, [fetchAllProjectsNbContributeur, page]);
+    }, [fetchAllProjectsNbContributeur]);
 
     const loadMoreProjects = () => {
-        setDisplayedProjects((prev) => [...prev, ...projects.slice(prev.length, prev.length + projectsToShow)]);
+        setDisplayedProjects((prev) => [...prev, ...projects.slice(prev.length, prev.length + 6)]);
     };
 
     const showLessProjects = () => {
-        setDisplayedProjects((prev) => prev.slice(0, projectsToShow));
+        setDisplayedProjects((prev) => prev.slice(0, 6));
     };
 
     function randomChoiceBetweenOneAndSix() {
@@ -175,16 +173,16 @@ export default function Accueil() {
                         <Image 
                             width={480} 
                             height={480} 
-                            src={`data:image/jpg;base64,${project.image}` || '/image-default-offre.jpg'} 
+                            src={project.image ? `data:image/jpg;base64,${project.image}` : '/image-default-offre.jpg'} 
                             alt="image du projet" 
-                            className="w-full h-48 object-cover rounded-t-lg" 
+                            className="w-full object-cover rounded-t-lg" 
                         />
-                        {project.deadLine < new Date().toISOString() && project.budgetEstimatif != null ? (
+                        {project.deadLine < new Date().toISOString() && (project.budgetEstimatif != null || project.budgetEstimatif != undefined) ? (
                             <div className={`absolute top-2 left-2 text-xs font-semibold px-2 py-2 rounded ${nbContributions[project.id]?.ContributionGlobale >= calculBudgetTotal(project.budgetEstimatif) ? 'bg-green-500' : 'bg-orange-500'}`}>
                                 {nbContributions[project.id]?.ContributionGlobale >= calculBudgetTotal(project.budgetEstimatif) ? <FaCheck /> : <GrInProgress />}
                             </div>
                         ) : (
-                            <div className="absolute top-2 left-2 text-xs font-semibold px-2 py-2 rounded bg-gray-500">
+                            <div className="absolute top-2 left-2 text-xs font-semibold px-2 py-2 rounded bg-orange-500">
                                 <GrInProgress />
                             </div>
                         )}
@@ -201,21 +199,21 @@ export default function Accueil() {
                         <div className="w-full">
                         <div className="flex justify-between text-sm mb-2 font-fredoka">
                             <span>
-                                {project.budgetEstimatif != null ? (
+                                {(project.budgetEstimatif != null || project.budgetEstimatif != undefined) ? (
                                     ` ${nbContributions[project.id]?.ContributionGlobale} €`
                                 ) : (
                                     null
                                 )}
                             </span>
                             <span>
-                                {project.budgetEstimatif != null ? (
+                                {(project.budgetEstimatif != null || project.budgetEstimatif != undefined) ? (
                                     `sur ${calculBudgetTotal(project.budgetEstimatif)} €`
                                 ) : (
                                     'Budget non renseigné, merci de prendre connaissances des documents de liaisons'
                                 )}
                             </span>
                         </div>
-                        {project.budgetEstimatif != null ? (
+                        {(project.budgetEstimatif != null || project.budgetEstimatif != undefined) ? (
                             <div className="w-full rounded-full h-2 mb-2">
                                 <div className={`h-2 rounded-full ${nbContributions[project.id]?.ContributionGlobale >= calculBudgetTotal(project.budgetEstimatif) ? 'bg-green-500' : 'bg-orange-500'}`} style={{ width: `${Math.min((nbContributions[project.id]?.ContributionGlobale / calculBudgetTotal(project.budgetEstimatif)) * 100, 100)}%` }}></div>
                             </div>
@@ -223,8 +221,8 @@ export default function Accueil() {
                             null
                         )}
                         <div className={`text-right text-sm font-semibold font-fredoka ${nbContributions[project.id]?.ContributionGlobale >= calculBudgetTotal(project.budgetEstimatif) ? 'text-green-500' : 'text-orange-500'}`}>
-                            {project.budgetEstimatif != null ? (
-                                `${Math.round((nbContributions[project.id]?.ContributionGlobale / calculBudgetTotal(project.budgetEstimatif)) * 100) || 0}%}`
+                            {(project.budgetEstimatif != null || project.budgetEstimatif != undefined) ? (
+                                `${Math.round((nbContributions[project.id]?.ContributionGlobale / calculBudgetTotal(project.budgetEstimatif)) * 100) || 0}%`
                             ) : (
                                 null
                             )}
