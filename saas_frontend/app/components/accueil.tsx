@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { apiGet } from '../services/internalApiClients';
+import { apiGet, apiPost } from '../services/internalApiClients';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card';
-import { Button, Carousel } from 'flowbite-react';
+import { Button, Carousel, Spinner } from 'flowbite-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FaCheck } from 'react-icons/fa';
@@ -41,9 +41,11 @@ export default function Accueil() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [displayedProjects, setDisplayedProjects] = useState<Project[]>([]);
     const [nbContributions, setNbContributions] = useState<{ [key: number]: { compteurNbContributeur: number, ContributionGlobale: number } }>({});
-    const [projectsToShow, setProjectsToShow] = useState(6);
+    const [projectsToShow, setProjectsToShow] = useState<number>(6);
     const [projectIsLoading, setProjectIsLoading] = useState(true);
     const [genresMusicaux, setGenresMusicaux] = useState<GenreMusical[]>([]);
+    const [page, setPage] = useState<number>(1);
+    const [nbPages, setNbPages] = useState<number>(0);
 
     function fetchAllGenresMusicaux() {
         apiGet('/genres-musicaux').then((response) => {
@@ -89,37 +91,51 @@ export default function Accueil() {
         const contributions = await Promise.all(
             projects.map(async (project) => {
                 const { compteurNbContributeur, ContributionGlobale } = await fetchProjectsNbContributeur(project.id);
-                return { id: project.id, compteurNbContributeur, ContributionGlobale };
+                return { 
+                    id: project.id, 
+                    compteurNbContributeur, 
+                    ContributionGlobale 
+                };
             })
         );
-        const contributionsMap = contributions.reduce((acc, { id, compteurNbContributeur, ContributionGlobale }) => {
-            acc[id] = { compteurNbContributeur, ContributionGlobale };
-            return acc;
-        }, {} as { [key: number]: { compteurNbContributeur: number, ContributionGlobale: number } });
+        const contributionsMap = contributions.reduce((
+            acc, { id, compteurNbContributeur, ContributionGlobale }) => {
+                acc[id] = { compteurNbContributeur, ContributionGlobale };
+                return acc;
+            }, 
+            {} as { [key: number]: { compteurNbContributeur: number, ContributionGlobale: number } });
         setNbContributions(contributionsMap);
     }, [fetchProjectsNbContributeur]);
 
     const fetchProjects = useCallback(async () => {
         try {
-            const response = await apiGet('/offres');
-            if (response && response.offres && Array.isArray(response.offres)) {
-                setProjects(response.offres);
-                setDisplayedProjects(response.offres.slice(0, projectsToShow));
-                await fetchAllProjectsNbContributeur(response.offres).then(() => setProjectIsLoading(false));
+            const data = {
+                'page': 1,
+                'limit': projectsToShow*2,
+            };
+            const response = await apiPost('/offres/reseaux/', JSON.parse(JSON.stringify(data)));
+            if (response && response.offres && Array.isArray(JSON.parse(response.offres))) {
+                const newProjects = JSON.parse(response.offres);
+                console.log(newProjects);
+                setProjects((prevProjects) => [...prevProjects, ...newProjects]);
+                setDisplayedProjects(newProjects.slice(0, projectsToShow));
+                await fetchAllProjectsNbContributeur(newProjects).then(() => {
+                    setProjectIsLoading(false);
+                });
             } else {
-                console.error('Response does not contain offres array:', response);
+                console.error('Aucunes offres n\'a été récupérées', response);
             }
         } catch (error) {
             console.error('Erreur lors de la récupération des offres:', error);
         }
-    }, [fetchAllProjectsNbContributeur, projectsToShow]);
+    }, [fetchAllProjectsNbContributeur, page]);
 
     const loadMoreProjects = () => {
-        setProjectsToShow((prev) => prev + 6);
+        setDisplayedProjects((prev) => [...prev, ...projects.slice(prev.length, prev.length + projectsToShow)]);
     };
 
     const showLessProjects = () => {
-        setProjectsToShow((prev) => Math.max(prev - 6, 6));
+        setDisplayedProjects((prev) => prev.slice(0, projectsToShow));
     };
 
     function randomChoiceBetweenOneAndSix() {
@@ -129,10 +145,6 @@ export default function Accueil() {
     useEffect(() => {
         fetchProjects();
     }, [fetchProjects]);
-
-    useEffect(() => {
-        setDisplayedProjects(projects.slice(0, projectsToShow));
-    }, [projects, projectsToShow]);
 
     return (
         <div className="w-full pb-[2rem] min-h-screen">
@@ -160,10 +172,22 @@ export default function Accueil() {
                 <Link key={project.id} href={`cardDetailsPage?id=${project.id}`}>
                     <Card className="w-full max-w-sm cursor-pointer shadow-lg hover:shadow-xl transition-shadow">
                     <CardHeader className="relative">
-                        <Image width={480} height={480} src={`data:image/jpeg;base64,${project.image}` || '/image-default-offre.jpg'} alt="image du projet" className="w-full h-48 object-cover rounded-t-lg" />
-                        <div className={`absolute top-2 left-2 text-xs font-semibold px-2 py-2 rounded ${nbContributions[project.id]?.ContributionGlobale >= calculBudgetTotal(project.budgetEstimatif) ? 'bg-green-500' : 'bg-orange-500'}`}>
-                        {nbContributions[project.id]?.ContributionGlobale >= calculBudgetTotal(project.budgetEstimatif) ? <FaCheck /> : <GrInProgress />}
-                        </div>
+                        <Image 
+                            width={480} 
+                            height={480} 
+                            src={`data:image/jpg;base64,${project.image}` || '/image-default-offre.jpg'} 
+                            alt="image du projet" 
+                            className="w-full h-48 object-cover rounded-t-lg" 
+                        />
+                        {project.deadLine < new Date().toISOString() && project.budgetEstimatif != null ? (
+                            <div className={`absolute top-2 left-2 text-xs font-semibold px-2 py-2 rounded ${nbContributions[project.id]?.ContributionGlobale >= calculBudgetTotal(project.budgetEstimatif) ? 'bg-green-500' : 'bg-orange-500'}`}>
+                                {nbContributions[project.id]?.ContributionGlobale >= calculBudgetTotal(project.budgetEstimatif) ? <FaCheck /> : <GrInProgress />}
+                            </div>
+                        ) : (
+                            <div className="absolute top-2 left-2 text-xs font-semibold px-2 py-2 rounded bg-gray-500">
+                                <GrInProgress />
+                            </div>
+                        )}
                     </CardHeader>
                     <CardContent className="p-4">
                         <CardTitle>{project.titleOffre}</CardTitle>
@@ -176,14 +200,34 @@ export default function Accueil() {
                     <CardFooter className="p-4">
                         <div className="w-full">
                         <div className="flex justify-between text-sm mb-2 font-fredoka">
-                            <span>{nbContributions[project.id]?.ContributionGlobale?.toLocaleString()} €</span>
-                            <span>sur {calculBudgetTotal(project.budgetEstimatif)} €</span>
+                            <span>
+                                {project.budgetEstimatif != null ? (
+                                    ` ${nbContributions[project.id]?.ContributionGlobale} €`
+                                ) : (
+                                    null
+                                )}
+                            </span>
+                            <span>
+                                {project.budgetEstimatif != null ? (
+                                    `sur ${calculBudgetTotal(project.budgetEstimatif)} €`
+                                ) : (
+                                    'Budget non renseigné, merci de prendre connaissances des documents de liaisons'
+                                )}
+                            </span>
                         </div>
-                        <div className="w-full rounded-full h-2 mb-2">
-                            <div className={`h-2 rounded-full ${nbContributions[project.id]?.ContributionGlobale >= calculBudgetTotal(project.budgetEstimatif) ? 'bg-green-500' : 'bg-orange-500'}`} style={{ width: `${Math.min((nbContributions[project.id]?.ContributionGlobale / calculBudgetTotal(project.budgetEstimatif)) * 100, 100)}%` }}></div>
-                        </div>
+                        {project.budgetEstimatif != null ? (
+                            <div className="w-full rounded-full h-2 mb-2">
+                                <div className={`h-2 rounded-full ${nbContributions[project.id]?.ContributionGlobale >= calculBudgetTotal(project.budgetEstimatif) ? 'bg-green-500' : 'bg-orange-500'}`} style={{ width: `${Math.min((nbContributions[project.id]?.ContributionGlobale / calculBudgetTotal(project.budgetEstimatif)) * 100, 100)}%` }}></div>
+                            </div>
+                        ) : (
+                            null
+                        )}
                         <div className={`text-right text-sm font-semibold font-fredoka ${nbContributions[project.id]?.ContributionGlobale >= calculBudgetTotal(project.budgetEstimatif) ? 'text-green-500' : 'text-orange-500'}`}>
-                            {Math.round((nbContributions[project.id]?.ContributionGlobale / calculBudgetTotal(project.budgetEstimatif)) * 100)}%
+                            {project.budgetEstimatif != null ? (
+                                `${Math.round((nbContributions[project.id]?.ContributionGlobale / calculBudgetTotal(project.budgetEstimatif)) * 100) || 0}%}`
+                            ) : (
+                                null
+                            )}
                         </div>
                         </div>
                     </CardFooter>
@@ -195,7 +239,7 @@ export default function Accueil() {
             <div className="text-center mt-8 flex flex-col gap-4">
                 <div className='flex'>
                 <div className='flex gap-2 ml-auto mr-auto'>
-                    {projectsToShow < projects.length && (
+                    {displayedProjects.length < 12 && (
                     <Button
                         color="light"
                         onClick={loadMoreProjects}
@@ -205,7 +249,7 @@ export default function Accueil() {
                         <IoIosArrowDown className="ml-2 mb-auto mt-auto" />
                     </Button>
                     )}
-                    {projectsToShow > 6 && (
+                    {displayedProjects.length > 6 && (
                     <Button
                         className='flex items-center'
                         onClick={showLessProjects}
@@ -223,7 +267,11 @@ export default function Accueil() {
                     </Button>
                 </Link>
                 </div>
-            </div>) : null}
+            </div>) : 
+                <div className="flex justify-center items-center w-full h-64">
+                    <Spinner color="info" />
+                </div>
+            }
             </div>
 
             <Card className='mt-20 mb-20 relative overflow-hidden rounded-none shadow-lg'>

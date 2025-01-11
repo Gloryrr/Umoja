@@ -13,6 +13,7 @@ use App\Services\OffreService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\OffreRepository;
@@ -161,7 +162,38 @@ class OffreController extends AbstractController
             $paginator,
             $username,
             $page,
-            $limit
+            $limit,
+        );
+    }
+
+    /**
+     * Récupère les offres appartenant à des réseaux particulier
+     *
+     * @param Request $request, la requête avec les données de recherche
+     * @param OffreRepository $offreRepository, la classe CRUD des Offres
+     * @param SerializerInterface $serializer, le serializer JSON pour les réponses
+     * @return JsonResponse
+     */
+    #[Route('/api/v1/offres/reseaux/', name: 'get_offres_by_reseaux', methods: ['POST'])]
+    public function getOffresReseaux(
+        Request $request,
+        OffreRepository $offreRepository,
+        UtilisateurRepository $utilisateurRepository,
+        SerializerInterface $serializer,
+        PaginatorInterface $paginator,
+        Security $security
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        $page = intval($data['page']);
+        $limit = intval($data['limit']);
+        return OffreService::getOffresReseaux(
+            $offreRepository,
+            $utilisateurRepository,
+            $serializer,
+            $paginator,
+            $page,
+            $limit,
+            $security
         );
     }
 
