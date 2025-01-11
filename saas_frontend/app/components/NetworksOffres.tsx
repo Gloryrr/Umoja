@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { apiPost, apiGet } from "@/app/services/internalApiClients";
-import { Card, Button, Pagination, Select, TextInput, Dropdown, Checkbox } from "flowbite-react";
+import { Card, Button, Pagination, Select, TextInput, Dropdown, Checkbox, Spinner } from "flowbite-react";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 import Image from "next/image";
 
@@ -42,9 +42,11 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
     const limit = 9;
     const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
     const [totalPages, setTotalPages] = useState<number>(0);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const getOffresNetworks = useCallback(async (name: string) => {
         try {
+            setLoading(true);
             const data = {
                 nomReseau: name,
                 page: currentPage,
@@ -59,10 +61,13 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
                     } else {
                         console.warn("Aucune offre trouvée pour ce réseau.");
                     }
+                    setLoading(false);
                 }
-            );
+            ) ;
         } catch (error) {
             console.error("Erreur lors de la récupération des offres :", error);
+        } finally {
+            setLoading(false);
         }
     }, [currentPage, limit]);
     
@@ -136,8 +141,8 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
     });
 
     return (
-        <div className="p-6 ml-[15%] mr-[15%]">
-            <div className="flex justify-between items-center mb-6">
+        <div className="p-6">
+            <div className="flex justify-between mb-6">
                 <h1 className="text-2xl font-bold">Réseau : {networksName}</h1>
                 <Button onClick={resetNetwork} color="light">
                     <FaArrowAltCircleLeft className="mr-2" size={18} />
@@ -145,14 +150,17 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
                 </Button>
             </div>
 
-            <div className="flex flex-wrap gap-4 mb-6">
+            <div className="flex flex-wrap gap-4 mb-6 justify-center">
                 <TextInput
                     type="text"
                     placeholder="Rechercher par nom"
                     value={searchQuery}
                     onChange={handleSearch}
                 />
-                <Select value={sortOption} onChange={handleSortChange}>
+                <Select 
+                    value={sortOption} 
+                    onChange={handleSortChange}
+                >
                     <option value="dateCroissant">Date croissante</option>
                     <option value="dateDecroissant">Date décroissante</option>
                     <option value="nomCroissant">Nom croissant</option>
@@ -213,8 +221,8 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
                 </div>
             )}
 
-            {sortedAndFilteredOffres.length > 0 ? (
-                <div className="grid grid-cols-3 gap-4 justify-items-stretch">
+            {sortedAndFilteredOffres.length > 0 && loading == false ? (
+                <div className="grid grid-cols-3 gap-4 justify-items ml-[15%] mr-[15%]">
                     {sortedAndFilteredOffres.map((offre) => (
                         <Card
                             key={offre.id}
@@ -222,7 +230,7 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
                         >
                             <div className="w-full h-40 relative">
                                 <Image
-                                    src={`data:image/jpg;base64,${offre.image}`}
+                                    src={offre.image ? `data:image/jpg;base64,${offre.image}` : "/image-default-offre.jpg"}
                                     alt={offre.titleOffre}
                                     layout="fill"
                                     objectFit="cover"
@@ -233,7 +241,7 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
                                 <h5 className="text-xl font-bold">{offre.titleOffre}</h5>
                                 <p className="text-sm text-gray-600">{offre.descrTournee}</p>
                                 <p className="text-sm text-gray-500">
-                                    Date limite: {offre.deadLine}
+                                    Date limite: {new Date(offre.deadLine).toLocaleDateString()}
                                 </p>
                                 <p className="text-sm text-gray-500">
                                     Localisation: {offre.villeVisee}, {offre.regionVisee}
@@ -251,7 +259,15 @@ function NetworksOffres({ networksName, resetNetwork }: NetworksOffresProps) {
                     ))}
                 </div>
             ) : (
-                <p>Aucune offre disponible.</p>
+                sortedAndFilteredOffres.length == 0 && loading == false ? (
+                    <div className="flex justify-center items-center h-96">
+                        <p className="text-lg text-gray-500">Aucune offre trouvée.</p>
+                    </div>
+                ) : (
+                    <div className="flex justify-center items-center h-96">
+                        <Spinner />
+                    </div>
+                )
             )}
 
             {totalPages > 1 && (

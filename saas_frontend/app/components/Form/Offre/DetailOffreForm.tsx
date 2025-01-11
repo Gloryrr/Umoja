@@ -30,7 +30,6 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
 
     const handleDetailOffreChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        onDetailOffreChange(name, value);
 
         if (name === 'deadLine') {
             onDetailOffreChange('deadLine', value);
@@ -40,16 +39,12 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                     onDetailOffreChange('dateMaxProposee', value);
                 }
             }
-        }
-        
-        if (name === 'dateMinProposee') {
+        } else if (name === 'dateMinProposee') {
             onDetailOffreChange('dateMinProposee', value);
             if (!detailOffre.dateMaxProposee || new Date(detailOffre.dateMaxProposee) < new Date(value)) {
                 onDetailOffreChange('dateMaxProposee', value);
             }
-        }
-
-        if (name === 'placesMin') {
+        } else if (name === 'placesMin') {
             setPlacesMin(Number(value));
             if (Number(value) > Number(placesMax)) {
                 setPlacesMax(Number(value));
@@ -57,6 +52,8 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
             }
         } else if (name === 'placesMax') {
             setPlacesMax(Number(value));
+        } else {
+            onDetailOffreChange(name, value);
         }
     };
 

@@ -1,67 +1,61 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { Accordion, Alert, Timeline, FileInput, Label, Card } from 'flowbite-react';
+import { Accordion, /*Alert,*/ Timeline, FileInput, Label, Card, Button } from 'flowbite-react';
 import ExtrasForm from '@/app/components/Form/Offre/ExtrasForm';
 import ConditionsFinancieresForm from '@/app/components/Form/Offre/ConditionsFinancieresForm';
 import BudgetEstimatifForm from '@/app/components/Form/Offre/BudgetEstimatifForm';
 import DetailOffreForm from '@/app/components/Form/Offre/DetailOffreForm';
 import FicheTechniqueArtisteForm from '@/app/components/Form/Offre/FicheTechniqueArtiste';
-import InfoAdditionnelAlert from '@/app/components/Alerte/InfoAdditionnelAlerte';
-import { apiPost,apiGet, apiPatch } from '@/app/services/internalApiClients';
-import { HiInformationCircle } from "react-icons/hi";
+// import InfoAdditionnelAlert from '@/app/components/Alerte/InfoAdditionnelAlerte';
+import { apiPost,apiGet, /*apiPatch*/ } from '@/app/services/internalApiClients';
+// import { HiInformationCircle } from "react-icons/hi";
 import { FormData, GenreMusical, Reseau } from '@/app/types/FormDataType';
 import SelectCheckbox from '@/app/components/SelectCheckbox';
 
 const ModifierOffreForm: React.FC<{ 
     project: FormData, 
-    onProjectDetailChange : (formData : FormData) => void,
-    onProjectExtrasChange : (formData : FormData) => void,
-    onProjectBudgetEstimatifChange : (formData : FormData) => void,
-    onProjectFicheTechniqueArtisteChange : (formData : FormData) => void,
-    onProjectConditionsFinancieresChange : (formData : FormData) => void,
-    onProjectDonneesSupplementaireChange : (formData : FormData) => void,
+    onProjectInformationsChange : (formData : FormData) => void,
+    onDonneesSauvegardees: (donneesSauvegardees: boolean) => void,
 }> = ({ project, 
-        onProjectDetailChange, 
-        onProjectExtrasChange, 
-        onProjectBudgetEstimatifChange, 
-        onProjectFicheTechniqueArtisteChange,
-        onProjectConditionsFinancieresChange,
-        onProjectDonneesSupplementaireChange
+        onProjectInformationsChange,
+        onDonneesSauvegardees
     }) => {
     const [formData, setFormData] = useState<FormData>(project);
-    const [offreModifiee, setOffreModifiee] = useState(false);
-    const [messageOffreModifiee, setMessageOffreModifiee] = useState("");
-    const [typeMessage, setTypeMessage] = useState<"success" | "error">("success");
-    const [offreId, setOffreId] = useState<number | null>(null);
-    const [description, setDescription] = useState("");
+    // const [offreModifiee, setOffreModifiee] = useState(false);
+    // const [messageOffreModifiee, setMessageOffreModifiee] = useState("");
+    // const [typeMessage, setTypeMessage] = useState<"success" | "error">("success");
+    // const [offreId, setOffreId] = useState<number | null>(null);
+    // const [description, setDescription] = useState("");
     const [genresMusicaux, setGenresMusicaux] = useState<Array<{ nomGenreMusical: string }>>([]);
     const [selectedGenres, setSelectedGenres] = useState<GenreMusical[]>(project.donneesSupplementaires.genreMusical);
     const [reseaux, setReseaux] = useState<Array<{ nomReseau: string }>>([]);
     const [selectedReseaux, setSelectedReseaux] = useState<Reseau[]>(formData.donneesSupplementaires.reseau);
 
-    const valideFormulaire = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            const offreModifiee = await apiPatch(`/offre/update/${formData.detailOffre.id}`, JSON.parse(JSON.stringify(formData)));
-            setOffreId(JSON.parse(offreModifiee.offre).id);
-            setTypeMessage("success");
-            setDescription("Cliquez sur 'Voir plus' pour accéder aux détails de l'offre.");
-            setMessageOffreModifiee("Votre offre a bien été modifiée !");
-            setOffreModifiee(true);
-            const data = {
-                'projectName' : formData.detailOffre.titleOffre,
-                'projectDescription' : formData.detailOffre.descrTournee,
-                'username' : formData.utilisateur.username,
-                'offreId' : JSON.parse(offreModifiee.offre).id
-            };
-            await apiPost('/envoi-email-update-projet', JSON.parse(JSON.stringify(data)));
-        } catch (error) {
-            setTypeMessage("error");
-            setMessageOffreModifiee("Une erreur s'est produite durant la modification de votre offre.");
-            setOffreModifiee(true);
-            throw new Error("Erreur lors de la modification de l'offre :", error as Error);
-        }
-    };
+    const [donneesSauvegardees, setDonneesSauvegardees] = useState(false);
+
+    // const valideFormulaire = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     try {
+    //         const offreModifiee = await apiPatch(`/offre/update/${formData.detailOffre.id}`, JSON.parse(JSON.stringify(formData)));
+    //         setOffreId(JSON.parse(offreModifiee.offre).id);
+    //         setTypeMessage("success");
+    //         setDescription("Cliquez sur 'Voir plus' pour accéder aux détails de l'offre.");
+    //         setMessageOffreModifiee("Votre offre a bien été modifiée !");
+    //         setOffreModifiee(true);
+    //         const data = {
+    //             'projectName' : formData.detailOffre.titleOffre,
+    //             'projectDescription' : formData.detailOffre.descrTournee,
+    //             'username' : formData.utilisateur.username,
+    //             'offreId' : JSON.parse(offreModifiee.offre).id
+    //         };
+    //         await apiPost('/envoi-email-update-projet', JSON.parse(JSON.stringify(data)));
+    //     } catch (error) {
+    //         setTypeMessage("error");
+    //         setMessageOffreModifiee("Une erreur s'est produite durant la modification de votre offre.");
+    //         setOffreModifiee(true);
+    //         throw new Error("Erreur lors de la modification de l'offre :", error as Error);
+    //     }
+    // };
 
     useEffect(() => {
         const fetchGenresMusicaux = async () => {
@@ -250,6 +244,11 @@ const ModifierOffreForm: React.FC<{
         return isValid ? 'bg-green-500' : 'bg-red-500';
     };
 
+    useEffect(() => {
+        onProjectInformationsChange(formData);
+        onDonneesSauvegardees(donneesSauvegardees);
+    }, [formData, onProjectInformationsChange]);
+
     // useEffect( () => {
     //     const fetchFichiersProjet = async () => {
     //         const data = {
@@ -293,7 +292,7 @@ const ModifierOffreForm: React.FC<{
     return (
         <div className="w-full flex items-start justify-center">
             <div className="w-full">
-                {offreModifiee && (
+                {/* {offreModifiee && (
                     <Alert
                         color={typeMessage === "success" ? "green" : "failure"}
                         onDismiss={() => setOffreModifiee(false)}
@@ -308,11 +307,13 @@ const ModifierOffreForm: React.FC<{
                             />
                         }
                     >
-                        <span className='font-medium'>Info alerte ! </span>{messageOffreModifiee}
+                        <span className='font-medium'>Info alerte ! </span>
+                        {messageOffreModifiee}
                     </Alert>
-                )}
-                <form onSubmit={valideFormulaire} className="w-full mx-auto rounded-lg space-y-4 font-nunito">
+                )} */}
+                <form className="w-full mx-auto rounded-lg space-y-4 font-nunito">
                     <h2 className="text-2xl font-semibold text-center mb-10">Modifier votre offre</h2>
+                    <p>Une fois vos informations modifiées, merci de cliquer sur le bouton de sauvegarde en bas du formulaire</p>
                     <Accordion collapseAll>
                         <Accordion.Panel>
                             <Accordion.Title>Informations de base</Accordion.Title>
@@ -327,7 +328,7 @@ const ModifierOffreForm: React.FC<{
                                                 [name]: value
                                             }
                                         }))
-                                        onProjectDetailChange(formData);
+                                        //onProjectDetailChange(formData);
                                     }}
                                 />
                             </Accordion.Content>
@@ -346,7 +347,7 @@ const ModifierOffreForm: React.FC<{
                                                 [name]: value
                                             }
                                         }));
-                                        onProjectExtrasChange(formData);
+                                        //onProjectExtrasChange(formData);
                                     }}
                                     idProjet={formData.detailOffre.id ?? null}
                                 />
@@ -366,7 +367,7 @@ const ModifierOffreForm: React.FC<{
                                                 [name]: value
                                             }
                                         }));
-                                        onProjectConditionsFinancieresChange(formData);
+                                        //onProjectConditionsFinancieresChange(formData);
                                     }}
                                     idProjet={formData.detailOffre.id ?? null}
                                 />
@@ -386,7 +387,7 @@ const ModifierOffreForm: React.FC<{
                                                 [name]: value
                                             }
                                         }));
-                                        onProjectBudgetEstimatifChange(formData);
+                                        //onProjectBudgetEstimatifChange(formData);
                                     }}
                                     idProjet={formData.detailOffre.id ?? null}
                                 />
@@ -406,7 +407,7 @@ const ModifierOffreForm: React.FC<{
                                                 [name]: value
                                             }
                                         }));
-                                        onProjectFicheTechniqueArtisteChange(formData);
+                                        //onProjectFicheTechniqueArtisteChange(formData);
                                     }}
                                     idProjet={formData.detailOffre.id ?? null}
                                 />
@@ -433,7 +434,7 @@ const ModifierOffreForm: React.FC<{
                                                 setSelectedReseaux(newSelectedReseaux);
                                                 onDonneesSupplementairesChange("reseau", newSelectedReseaux);
                                                 onDonneesSupplementairesChange("nbReseaux", newSelectedReseaux.length);
-                                                onProjectDonneesSupplementaireChange(formData);
+                                                //onProjectDonneesSupplementaireChange(formData);
                                             }}
                                         />
                                     </div>
@@ -454,7 +455,7 @@ const ModifierOffreForm: React.FC<{
                                                 setSelectedGenres(newSelectedGenres);
                                                 onDonneesSupplementairesChange("genreMusical", newSelectedGenres);
                                                 onDonneesSupplementairesChange("nbGenresMusicaux", newSelectedGenres.length);
-                                                onProjectDonneesSupplementaireChange(formData);
+                                                //onProjectDonneesSupplementaireChange(formData);
                                             }}
                                         />
                                     </div>
@@ -474,6 +475,14 @@ const ModifierOffreForm: React.FC<{
                                 updateFieldWithBlob("image", "file", file);
                             }}
                         />
+                    </div>
+
+                    <div className="flex justify-center">
+                        <Button
+                            onClick={() => setDonneesSauvegardees(true)}
+                        >
+                            Sauvegarder
+                        </Button>
                     </div>
                 </form>
             </div>
