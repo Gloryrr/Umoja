@@ -247,7 +247,7 @@ const ModifierOffreForm: React.FC<{
     useEffect(() => {
         onProjectInformationsChange(formData);
         onDonneesSauvegardees(donneesSauvegardees);
-    }, [formData, onProjectInformationsChange]);
+    }, [formData, onProjectInformationsChange, donneesSauvegardees, onDonneesSauvegardees]);
 
     // useEffect( () => {
     //     const fetchFichiersProjet = async () => {
