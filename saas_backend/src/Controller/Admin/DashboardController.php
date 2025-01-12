@@ -59,23 +59,29 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Panel admin', 'fa fa-home');
-        yield MenuItem::linkToCrud('Utilisateur', 'fas fa-list', Utilisateur::class);
-        yield MenuItem::linkToCrud('Artiste', 'fas fa-list', Artiste::class);
-        yield MenuItem::linkToCrud('BudgetEstimatif', 'fas fa-list', BudgetEstimatif::class);
-        yield MenuItem::linkToCrud('GenreMusical', 'fas fa-list', GenreMusical::class);
-        yield MenuItem::linkToCrud('Commentaire', 'fas fa-list', Commentaire::class);
-        yield MenuItem::linkToCrud('ConditionsFinancieres', 'fas fa-list', ConditionsFinancieres::class);
-        yield MenuItem::linkToCrud('EtatOffre', 'fas fa-list', EtatOffre::class);
-        yield MenuItem::linkToCrud('EtatReponse', 'fas fa-list', EtatReponse::class);
-        yield MenuItem::linkToCrud('Extras', 'fas fa-list', Extras::class);
-        yield MenuItem::linkToCrud('Offre', 'fas fa-list', Offre::class);
-        yield MenuItem::linkToCrud('Reponse', 'fas fa-list', Reponse::class);
-        yield MenuItem::linkToCrud('FicheTechniqueArtiste', 'fas fa-list', FicheTechniqueArtiste::class);
-        yield MenuItem::linkToCrud('PreferenceNotification', 'fas fa-list', PreferenceNotification::class);
-        yield MenuItem::linkToCrud('Reseau', 'fas fa-list', Reseau::class);
-        yield MenuItem::linkToCrud('TypeOffre', 'fas fa-list', TypeOffre::class);
+
+        yield MenuItem::section('UMODJA', 'fa fa-home');
+        yield MenuItem::linkToUrl('Revenir sur l\'application', 'fas fa-arrow-left', 'http://localhost:3000/profil');
+
+        yield MenuItem::section('Instances gérables');
+        yield MenuItem::linkToCrud('Utilisateur', 'fas fa-user', Utilisateur::class);
+        yield MenuItem::linkToCrud('Artiste', 'fas fa-microphone', Artiste::class);
+        yield MenuItem::linkToCrud('Budget Estimatif', 'fas fa-dollar-sign', BudgetEstimatif::class);
+        yield MenuItem::linkToCrud('Genre Musical', 'fas fa-music', GenreMusical::class);
+        yield MenuItem::linkToCrud('Commentaire', 'fas fa-comments', Commentaire::class);
+        yield MenuItem::linkToCrud('Conditions Financières', 'fas fa-file-invoice-dollar', ConditionsFinancieres::class);
+        yield MenuItem::linkToCrud('État Offre', 'fas fa-clipboard-check', EtatOffre::class);
+        yield MenuItem::linkToCrud('État Réponse', 'fas fa-reply', EtatReponse::class);
+        yield MenuItem::linkToCrud('Extras', 'fas fa-plus-circle', Extras::class);
+        yield MenuItem::linkToCrud('Offre', 'fas fa-briefcase', Offre::class);
+        yield MenuItem::linkToCrud('Réponse', 'fas fa-reply-all', Reponse::class);
+        yield MenuItem::linkToCrud('Fiche Technique Artiste', 'fas fa-file-alt', FicheTechniqueArtiste::class);
+        yield MenuItem::linkToCrud('Préférence Notification', 'fas fa-bell', PreferenceNotification::class);
+        yield MenuItem::linkToCrud('Réseau', 'fas fa-network-wired', Reseau::class);
+        yield MenuItem::linkToCrud('Type Offre', 'fas fa-tags', TypeOffre::class);
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
 
+        yield MenuItem::section('Liens utiles');
         yield MenuItem::linkToUrl('Revenir sur l\'application', 'fas fa-arrow-left', 'http://localhost:3000/profil');
     }
 }
