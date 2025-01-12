@@ -69,7 +69,11 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Budget Estimatif', 'fas fa-dollar-sign', BudgetEstimatif::class);
         yield MenuItem::linkToCrud('Genre Musical', 'fas fa-music', GenreMusical::class);
         yield MenuItem::linkToCrud('Commentaire', 'fas fa-comments', Commentaire::class);
-        yield MenuItem::linkToCrud('Conditions Financières', 'fas fa-file-invoice-dollar', ConditionsFinancieres::class);
+        yield MenuItem::linkToCrud(
+            'Conditions Financières',
+            'fas fa-file-invoice-dollar',
+            ConditionsFinancieres::class
+        );
         yield MenuItem::linkToCrud('État Offre', 'fas fa-clipboard-check', EtatOffre::class);
         yield MenuItem::linkToCrud('État Réponse', 'fas fa-reply', EtatReponse::class);
         yield MenuItem::linkToCrud('Extras', 'fas fa-plus-circle', Extras::class);
