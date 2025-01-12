@@ -1,0 +1,77 @@
+<!-- email_template.html -->
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .email-header {
+            background-color: #0056b3;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .email-header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .email-body {
+            padding: 20px;
+        }
+        .email-body p {
+            margin: 10px 0;
+        }
+        .email-footer {
+            background-color: #f1f1f1;
+            color: #555;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 12px;
+        }
+        .email-footer a {
+            color: #0056b3;
+            text-decoration: none;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="email-header">
+            <h1>Umodja - Service de Contact</h1>
+        </div>
+
+        <!-- Body -->
+        <div class="email-body">
+            <h2 style="color: #0056b3;">Message de contact</h2>
+            <p><strong>De :</strong> {{fromName}} ({{fromEmail}})</p>
+            <p><strong>Sujet :</strong> {{subject}}</p>
+            <hr>
+            <p style="font-size: 14px; line-height: 1.6;">{{messageContent}}</p>
+            <hr>
+            <p style="font-size: 12px; color: #888;">Ceci est un message envoyé via le service de contact d'Umodja.</p>
+        </div>
+
+        <!-- Footer -->
+        <div class="email-footer">
+            <p>&copy; {{currentYear}} Umodja. Tous droits réservés.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+security:
+    enable_authenticator_manager: true
+    password_hashers:
+        App\Entity\Utilisateur:
+            algorithm: auto
+
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\Utilisateur
+                property: username
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js|(/api/doc))/
+            security: false
+
+        register: 
+            pattern: ^/api/v1/register$
+            stateless: true
+            security: false
+
+        login:
+            pattern: ^/api/v1/login$
+            stateless: true
+            json_login:
+                check_path: /api/v1/login
+                username_path: username
+                password_path: mdpUtilisateur
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        api:
+            pattern: ^/api/v1/
+            stateless: true
+            jwt: ~
+
+    access_control:
+        - { path: ^/api/v1/register$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/v1/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/v1/, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/doc/swagger/ui, roles: ROLE_ADMIN }
+        - { path: ^admin/, roles: ROLE_ADMIN }
