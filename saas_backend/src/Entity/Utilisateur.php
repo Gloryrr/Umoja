@@ -230,6 +230,24 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * Retourne le rôle de l'utilisateur.
+     */
+    public function getRoleUtilisateur(): string
+    {
+        return $this->roleUtilisateur;
+    }
+
+    /**
+     * Définit le rôle de l'utilisateur.
+     */
+    public function setRoleUtilisateur(string $roleUtilisateur): static
+    {
+        $this->roleUtilisateur = $roleUtilisateur;
+
+        return $this;
+    }
+
+    /**
      * Récupère le nom de l'utilisateur.
      *
      * @return string
