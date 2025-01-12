@@ -325,6 +325,13 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->genresMusicaux;
     }
 
+    public function setGenresMusicaux(Collection $genresMusicaux): self
+    {
+        $this->genresMusicaux = $genresMusicaux;
+
+        return $this;
+    }
+
     public function addGenreMusical(GenreMusical $genreMusical): self
     {
         if (!$this->genresMusicaux->contains($genreMusical)) {
@@ -391,6 +398,13 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function getOffresCommentees(): Collection
     {
         return $this->offresCommentees;
+    }
+
+    public function setOffresCommentees(Collection $offresCommentees): self
+    {
+        $this->offresCommentees = $offresCommentees;
+
+        return $this;
     }
 
     public function addOffreCommentee(Offre $offreCommentee): self

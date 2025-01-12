@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxml2-dev \
     libonig-dev \
     libzip-dev \
-    && docker-php-ext-install pdo pdo_pgsql curl mbstring xml zip \
+    && docker-php-ext-install pdo pdo_pgsql curl mbstring xml zip intl \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Créer et définir le répertoire de travail

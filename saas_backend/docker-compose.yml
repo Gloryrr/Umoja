@@ -4,7 +4,7 @@ services:
         ports:
             - "8000:80"
         volumes:
-            - .:/app/saas/backend/nginx/
+            - .:/app/saas/backend/
             - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf 
         networks:
             - symfony-network
