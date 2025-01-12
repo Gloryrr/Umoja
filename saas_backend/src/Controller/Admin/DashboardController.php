@@ -17,7 +17,6 @@ use App\Entity\FicheTechniqueArtiste;
 use App\Entity\PreferenceNotification;
 use App\Entity\Reseau;
 use App\Entity\TypeOffre;
-
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
