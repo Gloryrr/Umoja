@@ -75,5 +75,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Reseau', 'fas fa-list', Reseau::class);
         yield MenuItem::linkToCrud('TypeOffre', 'fas fa-list', TypeOffre::class);
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
+
+        yield MenuItem::linkToUrl('Revenir sur l\'application', 'fas fa-arrow-left', 'http://localhost:3000/profil');
     }
 }
