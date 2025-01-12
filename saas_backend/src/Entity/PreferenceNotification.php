@@ -41,7 +41,9 @@ class PreferenceNotification
     /**
      * @var Collection<int, Utilisateur>
      */
+    #[Groups(['preference_notification:read', 'preference_notification:write'])]
     #[ORM\OneToMany(targetEntity: Utilisateur::class, mappedBy: 'preferenceNotification')]
+    #[MaxDepth(1)]
     private Collection $utilisateur;
 
     public function __construct()

@@ -230,6 +230,24 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * Retourne le rôle de l'utilisateur.
+     */
+    public function getRoleUtilisateur(): string
+    {
+        return $this->roleUtilisateur;
+    }
+
+    /**
+     * Définit le rôle de l'utilisateur.
+     */
+    public function setRoleUtilisateur(string $roleUtilisateur): static
+    {
+        $this->roleUtilisateur = $roleUtilisateur;
+
+        return $this;
+    }
+
+    /**
      * Récupère le nom de l'utilisateur.
      *
      * @return string
@@ -325,6 +343,13 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->genresMusicaux;
     }
 
+    public function setGenresMusicaux(Collection $genresMusicaux): self
+    {
+        $this->genresMusicaux = $genresMusicaux;
+
+        return $this;
+    }
+
     public function addGenreMusical(GenreMusical $genreMusical): self
     {
         if (!$this->genresMusicaux->contains($genreMusical)) {
@@ -391,6 +416,13 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function getOffresCommentees(): Collection
     {
         return $this->offresCommentees;
+    }
+
+    public function setOffresCommentees(Collection $offresCommentees): self
+    {
+        $this->offresCommentees = $offresCommentees;
+
+        return $this;
     }
 
     public function addOffreCommentee(Offre $offreCommentee): self

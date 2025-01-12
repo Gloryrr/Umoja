@@ -11,6 +11,7 @@
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^3.2",
+        "easycorp/easyadmin-bundle": "^4.20",
         "knplabs/knp-paginator-bundle": "^6.6",
         "lexik/jwt-authentication-bundle": "^2.21",
         "nelmio/api-doc-bundle": "^4.33",
@@ -31,6 +32,7 @@
         "symfony/security-bundle": "6.4.*",
         "symfony/serializer": "6.4.*",
         "symfony/twig-bundle": "6.4.*",
+        "symfony/webpack-encore-bundle": "^2.2",
         "symfony/yaml": "6.4.*",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/twig": "^2.12|^3.0"
