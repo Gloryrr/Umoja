@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
-import { Button, Card, TextInput, Label, Badge, Spinner } from "flowbite-react";
+import { Button, Card, TextInput, Label, Badge, Spinner, Toast } from "flowbite-react";
 import { apiGet, apiPatch, apiPost } from "@/app/services/internalApiClients";
+import { HiCheck } from 'react-icons/hi';
 
 const Profil: React.FC = () => {
     const [userInfo, setUserInfo] = useState({
@@ -15,6 +16,50 @@ const Profil: React.FC = () => {
     });
     const [editedUserInfo, setEditedUserInfo] = useState(userInfo);
     const [isEditing, setIsEditing] = useState(false);
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
+    const [passwords, setPasswords] = useState({
+        currentPassword: "",
+        newPassword: "",
+        confirmNewPassword: "",
+    });
+
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [showError, setShowError] = useState(false);
+
+    const [messageMotDePasseDifferent, setMessageMotDePasseDifferent] = useState("");
+
+    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setPasswords((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    const handlePasswordReset = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (passwords.newPassword !== passwords.confirmNewPassword) {
+            setMessageMotDePasseDifferent("Les mots de passe ne correspondent pas");
+            return;
+        }
+        try {
+            const data = {
+                currentPassword: passwords.currentPassword,
+                newPassword: passwords.newPassword,
+            };
+            const response = await apiPatch("/utilisateur/update-mot-de-passe", JSON.parse(JSON.stringify(data)));
+            if (JSON.parse(response.utilisateur)) {
+                setShowSuccess(true);
+                setTimeout(() => setShowSuccess(false), 3000);
+            } else {
+                setShowError(true);
+                setTimeout(() => setShowError(false), 3000);
+            }
+            setShowPasswordModal(false);
+        } catch (error) {
+            console.error("Erreur lors de la réinitialisation du mot de passe :", error);
+        }
+    };
 
     const fetchUserProfile = useCallback(async () => {
         await apiGet("/me").then( async (response) => {
@@ -191,6 +236,152 @@ const Profil: React.FC = () => {
                     </div>
                 )}
             </Card>
+
+            <Card className="mx-auto mt-10 mb-10">
+                <h2 className="text-2xl font-bold mb-4">Réinitialiser votre mot de passe</h2>
+                <p>
+                    Vous pouvez réinitialiser votre mot de passe en cliquant sur le bouton ci-dessous.
+                </p>
+                <div className="flex justify-between">
+                    <Button onClick={() => setShowPasswordModal(true)} className="w-full">
+                        Réinitialiser le mot de passe
+                    </Button>
+                </div>
+            </Card>
+
+            {showSuccess && (
+                <div className="fixed top-4 right-4 z-50">
+                    <Toast>
+                    <HiCheck className="h-5 w-5 text-green-500" />
+                    <div className="ml-3 text-sm font-normal">
+                        Mot de passe sauvegardé avec succès
+                    </div>
+        
+                    {/* Barre de vie */}
+                    <div className="absolute bottom-0 left-0 h-1 w-full bg-green-200">
+                        <div
+                        className="h-full bg-green-500 transition-all duration-3000"
+                        style={{
+                            animation: "shrink 3s linear forwards",
+                        }}
+                        ></div>
+                    </div>
+                    </Toast>
+        
+                    <style jsx>{`
+                    @keyframes shrink {
+                        from {
+                        width: 100%;
+                        }
+                        to {
+                        width: 0%;
+                        }
+                    }
+                    `}</style>
+                </div>
+                )}
+        
+                {showError && (
+                <div className="fixed top-4 right-4 z-50">
+                    <Toast>
+                    <HiCheck className="h-5 w-5 text-red-500" />
+                    <div className="ml-3 text-sm font-normal">
+                        Erreur lors de la sauvegarde du mot de passe
+                    </div>
+        
+                    {/* Barre de vie */}
+                    <div className="absolute bottom-0 left-0 h-1 w-full bg-red-200">
+                        <div
+                        className="h-full bg-red-500 transition-all duration-3000"
+                        style={{
+                            animation: "shrink 3s linear forwards",
+                        }}
+                        ></div>
+                    </div>
+                    </Toast>
+        
+                    <style jsx>{`
+                    @keyframes shrink {
+                        from {
+                        width: 100%;
+                        }
+                        to {
+                        width: 0%;
+                        }
+                    }
+                    `}</style>
+                </div>
+                )}
+
+            {showPasswordModal && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <h2 className="text-xl font-bold mb-4">Réinitialiser votre mot de passe</h2>
+                        <form className="flex flex-col gap-2" onSubmit={handlePasswordReset}>
+                            <div>
+                                <Label htmlFor="currentPassword" value="Mot de passe actuel" className="font-semibold" />
+                                <TextInput
+                                    id="currentPassword"
+                                    name="currentPassword"
+                                    type="password"
+                                    placeholder="Mot de passe actuel"
+                                    value={passwords.currentPassword}
+                                    onChange={handlePasswordChange}
+                                    required
+                                    className="rounded-lg mt-2"
+                                />
+                                <p
+                                    className="text-sm text-red-500 mt-1 mb-2"
+                                >
+                                    Nous sommes dans l&apos;obligation de vérifier votre identité
+                                </p>
+                            </div>
+                            <div>
+                                <Label htmlFor="newPassword" value="Nouveau mot de passe" className="font-semibold" />
+                                <TextInput
+                                    id="newPassword"
+                                    name="newPassword"
+                                    type="password"
+                                    placeholder="Nouveau mot de passe"
+                                    value={passwords.newPassword}
+                                    onChange={handlePasswordChange}
+                                    required
+                                    className="rounded-lg mt-2"
+                                />
+                            </div>
+                            <div>
+                                <Label htmlFor="confirmNewPassword" value="Confirmer le nouveau mot de passe" className="font-semibold" />
+                                <TextInput
+                                    id="confirmNewPassword"
+                                    name="confirmNewPassword"
+                                    type="password"
+                                    placeholder="Confirmer le nouveau mot de passe"
+                                    value={passwords.confirmNewPassword}
+                                    onChange={handlePasswordChange}
+                                    required
+                                    className="rounded-lg mt-2"
+                                />
+                            </div>
+                            <p className="text-sm text-red-500 mt-1 mb-2">
+                                Assurez-vous de bien confirmer votre nouveau mot de passe
+                            </p>
+                            {messageMotDePasseDifferent && (
+                                <p className="text-sm text-red-500 mt-1 mb-2">
+                                    {messageMotDePasseDifferent}
+                                </p>
+                            )}
+                            <div className="flex justify-end gap-2 mt-6">
+                                <Button color="gray" onClick={() => setShowPasswordModal(false)} className="rounded-lg mt-2">
+                                    Annuler
+                                </Button>
+                                <Button type="submit" className="rounded-lg mt-2">
+                                    Enregistrer
+                                </Button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
 
             {userInfo.roleUtilisateur == "ROLE_ADMIN" ? (
                 <Card className="mx-auto mt-10 mb-10">
