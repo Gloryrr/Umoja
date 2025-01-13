@@ -27,6 +27,7 @@ class UtilisateurCrudController extends AbstractCrudController
             EmailField::new('emailUtilisateur'),
             TextField::new('username'),
             TextField::new('roleUtilisateur'),
+            TextField::new('mdpUtilisateur')->onlyOnForms(),
             AssociationField::new('reseaux')
                 ->setFormTypeOption('by_reference', false)
                 ->setFormTypeOption('multiple', true)
