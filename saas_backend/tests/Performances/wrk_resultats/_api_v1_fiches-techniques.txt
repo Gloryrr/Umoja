@@ -1,0 +1,9 @@
+Running 2s test @ http://localhost:8000/api/v1/fiches-techniques
+  2 threads and 50 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.65s   194.77ms   1.99s    63.64%
+    Req/Sec    14.18     10.55    30.00     63.64%
+  22 requests in 2.00s, 7.22KB read
+  Non-2xx or 3xx responses: 22
+Requests/sec:     10.98
+Transfer/sec:      3.60KB

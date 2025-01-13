@@ -1,0 +1,9 @@
+Running 2s test @ http://localhost:8000/api/v1/artistes
+  2 threads and 50 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.09s   548.27ms   1.77s    51.67%
+    Req/Sec    16.03      8.40    40.00     79.41%
+  60 requests in 2.00s, 19.69KB read
+  Non-2xx or 3xx responses: 60
+Requests/sec:     29.95
+Transfer/sec:      9.83KB

@@ -1,0 +1,9 @@
+Running 2s test @ http://localhost:8000/api/v1/etat-offre/1
+  2 threads and 50 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.68s   193.78ms   1.98s    61.54%
+    Req/Sec    17.77     12.23    40.00     76.92%
+  26 requests in 2.00s, 8.53KB read
+  Non-2xx or 3xx responses: 26
+Requests/sec:     12.97
+Transfer/sec:      4.26KB
