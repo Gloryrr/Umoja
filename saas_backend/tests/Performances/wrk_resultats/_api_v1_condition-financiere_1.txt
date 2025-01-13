@@ -1,0 +1,9 @@
+Running 2s test @ http://localhost:8000/api/v1/condition-financiere/1
+  2 threads and 50 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.69s   195.66ms   1.98s    60.00%
+    Req/Sec    17.00     10.18    30.00     61.54%
+  25 requests in 2.00s, 8.20KB read
+  Non-2xx or 3xx responses: 25
+Requests/sec:     12.49
+Transfer/sec:      4.10KB
