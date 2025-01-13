@@ -34,3 +34,11 @@ Une fois le lancement du serveur effectué, merci d'ouvrir votre navigateur et d
 ```text
 localhost:3000
 ```
+
+## Testting
+
+### e2e
+
+Des tests d'interfaces sont accessibles depuis le dossier ./tests/e2e/, ces tests sont à lancer depuis Selenium IDE. Selenium IDE est une extension de navigateur qui permet de faire des test e2e.
+
+Merci d'installler l'extension et d'importer les tests qui se trouvent dans le dossier.
