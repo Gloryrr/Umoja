@@ -12,8 +12,8 @@ use App\Services\MailerService;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\PreferenceNotification;
 
-class UtilisateurCrudController extends AbstractCrudController {
-
+class UtilisateurCrudController extends AbstractCrudController
+{
     private MailerService $mailerService;
 
     public function __construct(MailerService $mailerService)
@@ -53,7 +53,7 @@ class UtilisateurCrudController extends AbstractCrudController {
         ];
     }
     public function persistEntity(
-        EntityManagerInterface $entityManager, 
+        EntityManagerInterface $entityManager,
         $entityInstance,
     ): void {
         if ($entityInstance instanceof Utilisateur) {
