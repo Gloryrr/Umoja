@@ -77,6 +77,27 @@ class UtilisateurController extends AbstractController
     }
 
     /**
+     * Permet à l'utilisateur de modifier son mot de passe.
+     */
+    #[Route('/api/v1/utilisateur/update-mot-de-passe', name: 'update_mot_de_passe', methods: ['PATCH'])]
+    public function updateMotDePasse(
+        Request $request,
+        UserPasswordHasherInterface $passwordHasher,
+        UtilisateurRepository $utilisateurRepository,
+        SerializerInterface $serializer,
+        Security $security
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        return UtilisateurService::updateMotDePasse(
+            $utilisateurRepository,
+            $passwordHasher,
+            $serializer,
+            $data,
+            $security
+        );
+    }
+
+    /**
      * Crée un nouvel utilisateur.
      *
      * @param Request $request

@@ -119,6 +119,80 @@ class UtilisateurService
     }
 
     /**
+     * Permet à l'utilisateur de modifier son mot de passe et renvoie une réponse JSON.
+     */
+    public static function updateMotDePasse(
+        UtilisateurRepository $utilisateurRepository,
+        UserPasswordHasherInterface $passwordHasher,
+        SerializerInterface $serializer,
+        mixed $data,
+        Security $security
+    ): JsonResponse {
+        // récupération de l'utilisateur
+        $user = $security->getUser();
+
+        // Vérifie si aucun utilisateur n'est connecté
+        if (!$user) {
+            return new JsonResponse(
+                ['error' => 'Utilisateur non authentifié'],
+                401
+            );
+        }
+
+        $utilisateur = $utilisateurRepository->trouveUtilisateurByUsername($user->getUserIdentifier());
+
+        // test si le mot de passe courant est le bon
+        if (!$passwordHasher->isPasswordValid($utilisateur[0], $data['currentPassword'])) {
+            return new JsonResponse([
+                'utilisateur' => null,
+                'message' => 'Mot de passe actuel incorrect, merci de fournir un mot de passe valide',
+                'serialized' => false
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // si pas d'utilisateur trouvé
+        if ($utilisateur[0] == null) {
+            return new JsonResponse([
+                'utilisateur' => null,
+                'message' => 'Utilisateur non trouvé, merci de fournir un identifiant valide',
+                'serialized' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // hashage du mot de passe
+        $hashedPassword = $passwordHasher->hashPassword(
+            $utilisateur[0],
+            $data['newPassword']
+        );
+        $utilisateur[0]->setMdpUtilisateur($hashedPassword);
+
+        // sauvegarde des modifications dans la BDD
+        $rep = $utilisateurRepository->updateUtilisateur($utilisateur[0]);
+
+        // si l'action à réussi
+        if ($rep) {
+            $utilisateurJSON = $serializer->serialize(
+                $utilisateur[0],
+                'json',
+                ['groups' => ['utilisateur:read']]
+            );
+
+            return new JsonResponse([
+                'utilisateur' => $utilisateurJSON,
+                'message' => "Mot de passe modifié avec succès",
+                'serialized' => true
+            ], Response::HTTP_OK);
+        } else {
+            return new JsonResponse([
+                'utilisateur' => null,
+                'message' => "Mot de passe non modifié, merci de vérifier l'erreur décrite",
+                'serialized' => false
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+
+    /**
      * Crée un nouvel utilisateur et renvoie une réponse JSON.
      *
      * @param JWTTokenManagerInterface $JWTManager Le service de gestion des tokens JWT.
