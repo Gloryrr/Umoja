@@ -167,6 +167,14 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * Retourne le mot de passe Utilisateur
+     */
+    public function getMdpUtilisateur(): string
+    {
+        return $this->mdpUtilisateur;
+    }
+
+    /**
      * Définit le mot de passe de l'utilisateur.
      *
      * @param string $mdpUtilisateur
@@ -174,6 +182,12 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setMdpUtilisateur(string $mdpUtilisateur): static
     {
+        // Vérifie si le mot de passe est déjà chiffré
+        if (!password_get_info($mdpUtilisateur)['algo']) {
+            // Chiffre le mot de passe s'il ne l'est pas
+            $mdpUtilisateur = password_hash($mdpUtilisateur, PASSWORD_DEFAULT);
+        }
+
         $this->mdpUtilisateur = $mdpUtilisateur;
 
         return $this;

@@ -63,8 +63,11 @@ class UtilisateurTest extends TestCase
      */
     public function testMdpUtilisateur()
     {
-        $this->utilisateur->setMdpUtilisateur("password123");
-        $this->assertEquals("password123", $this->utilisateur->getPassword());
+        $plainPassword = "password123";
+        $hashedPassword = password_hash($plainPassword, PASSWORD_BCRYPT);
+        
+        $this->utilisateur->setMdpUtilisateur($hashedPassword);
+        $this->assertTrue(password_verify($plainPassword, $this->utilisateur->getPassword()));
     }
 
     /**

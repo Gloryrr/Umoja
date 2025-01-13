@@ -1,9 +1,5 @@
 # Saas WEB
 
-## Branche
-
-Branche develop -- branche de versionnage de développement, petite(s) feature(s) implémentée(s)
-
 ## Préambule - Présentation
 
 Si pour vous, avoir un outil d'organisation, de planification et de consultation pour des évênements musicaux a toujours été une difficuté conséquente. Découvrez notre solution dès maintenant.  
@@ -24,13 +20,27 @@ Pour toutes demandes d'accès, merci d'adresser la demande au propriétaire du d
 
 #### Backend
 
-1. `cd backend` - Navigation dans le dossier dédié au backend
-2. // mettre les autres étapes - déploiement conteneurs docker pour le backend
+Afin de mettre en place le backend, merci de construire les différents services docker associés:
+
+```sh
+bash config_sh/backend/build_symfony.sh
+```
+
+Une fois le script terminé, les différents services sont accessibles.
 
 #### Frontend
 
-1. `cd frontend` - Navigation dans le dossier dédié au frontend
-2. // mettre les autres étapes - déploiement conteneurs docker pour le frontend
+Afin de lancer les interfaces de l'application, merci de suivre la commande d'installation du container docker:
+
+```sh
+bash config_sh/frontend/build_react.sh
+```
+
+Une fois le container construit et sans erreur, merci de lancer l'application via l'exécution de la commande ci-dessous:
+
+```sh
+bash config_sh/frontend/start_front.sh
+```
 
 ### Accessible partout
 
@@ -48,6 +58,6 @@ La plateforme a été développé depuis deux langages principaux :
 2. `React`, utilisation de npm en package manager, JS en complémentarité de front
 3. Archi logicielle en `API REST`
 4. Modèle de conception en `MVC`
-5. Stockage avec // on mettra le SGBD choisie  
+5. Stockage avec `PostgreSQL`  
 
 La plateforme est donc techniquement composée avec une **architecture WEB 4-tier** classique en 4 couches distinctes : UI/UX avec le frontend, distribution des données avec l'API REST, logique métier avec le backend et mise en stockage avec notre SGBD.
