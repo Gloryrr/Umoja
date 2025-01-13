@@ -1,0 +1,9 @@
+Running 2s test @ http://localhost:8000/api/v1/offres
+  2 threads and 50 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.74s   167.39ms   1.99s    60.00%
+    Req/Sec    18.00     13.17    40.00     70.00%
+  20 requests in 2.01s, 6.56KB read
+  Non-2xx or 3xx responses: 20
+Requests/sec:      9.97
+Transfer/sec:      3.27KB

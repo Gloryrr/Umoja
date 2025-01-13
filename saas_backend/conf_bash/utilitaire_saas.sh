@@ -23,6 +23,8 @@ echo -e "\t10. Corriger les erreurs de codage"
 echo -e "\t11. Générer la documentation API"
 echo -e "\t12. Créer la base de données de test"
 echo -e "\t13. Créer un test"
+echo -e "\t14. Exécuter les tests de performances"
+echo -e "\t15. Quitter"
 
 read -p "Entrer l'instruction demandée : " instruction
 
@@ -55,6 +57,11 @@ elif [ $instruction == "12" ]; then
     docker-compose exec application php bin/console doctrine:schema:update --force --env=test
 elif [ $instruction == "13" ]; then
     docker-compose exec application php bin/console make:test
+elif [ $instruction == "14" ]; then
+    bash tests/Performances/wrk-testing.sh
+elif [ $instruction == "15" ]; then
+    echo "Fermeture de l'utilitaire"
+    exit
 else
     echo "Instruction non reconnue"
 fi

@@ -1,0 +1,9 @@
+Running 2s test @ http://localhost:8000/api/v1/genres-musicaux
+  2 threads and 50 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.78s   138.74ms   1.98s    50.00%
+    Req/Sec    18.50     14.47    30.00     66.67%
+  14 requests in 2.00s, 4.59KB read
+  Non-2xx or 3xx responses: 14
+Requests/sec:      6.98
+Transfer/sec:      2.29KB

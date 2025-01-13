@@ -1,0 +1,9 @@
+Running 2s test @ http://localhost:8000/api/v1/budget-estimatif/1
+  2 threads and 50 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.60s   226.97ms   1.97s    57.14%
+    Req/Sec    15.69     10.21    30.00     62.50%
+  28 requests in 2.00s, 9.19KB read
+  Non-2xx or 3xx responses: 28
+Requests/sec:     13.97
+Transfer/sec:      4.58KB

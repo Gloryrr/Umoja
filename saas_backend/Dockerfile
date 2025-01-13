@@ -1,7 +1,7 @@
 # Utiliser l'image PHP avec l'extension nécessaire
 FROM php:8.1-fpm
 
-# Installer les dépendances système et les extensions PHP nécessaires
+# Installer les dépendances système, les extensions PHP nécessaires, et wrk
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     libcurl4-openssl-dev \
@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxml2-dev \
     libonig-dev \
     libzip-dev \
+    wrk \
     && docker-php-ext-install pdo pdo_pgsql curl mbstring xml zip intl \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 

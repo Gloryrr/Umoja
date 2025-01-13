@@ -1,0 +1,9 @@
+Running 2s test @ http://localhost:8000/api/v1/reponses/PrixGlobalContribution/offre/1
+  2 threads and 50 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.68s   176.83ms   1.99s    50.00%
+    Req/Sec    15.08     11.56    40.00     66.67%
+  22 requests in 2.00s, 7.22KB read
+  Non-2xx or 3xx responses: 22
+Requests/sec:     10.98
+Transfer/sec:      3.60KB
