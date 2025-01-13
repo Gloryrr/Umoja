@@ -58,6 +58,6 @@ La plateforme a été développé depuis deux langages principaux :
 2. `React`, utilisation de npm en package manager, JS en complémentarité de front
 3. Archi logicielle en `API REST`
 4. Modèle de conception en `MVC`
-5. Stockage avec // on mettra le SGBD choisie  
+5. Stockage avec `PostgreSQL`  
 
 La plateforme est donc techniquement composée avec une **architecture WEB 4-tier** classique en 4 couches distinctes : UI/UX avec le frontend, distribution des données avec l'API REST, logique métier avec le backend et mise en stockage avec notre SGBD.
