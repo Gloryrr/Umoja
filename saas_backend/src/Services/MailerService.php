@@ -219,4 +219,41 @@ class MailerService
             throw new \RuntimeException('' . $e->getMessage());
         }
     }
+
+    /**
+     * Notifie un utilisateur que son compte vient d'être créer dans l'application
+     */
+    public function sendEmailNewUser(
+        mixed $data
+    ): JsonResponse {
+        try {
+            $subject = "Création de votre compte Umodja";
+
+            // Charger le fichier HTML
+            $templatePath = __DIR__ . '/../../templates/emails/notification_creation_compte.html.twig';
+            $htmlTemplate = file_get_contents($templatePath);
+
+            // Remplacer les variables dynamiques dans le template
+            $htmlMessage = str_replace(
+                ['{{userName}}', '{{userEmail}}', '{{mdpUtilisateur}}', '{{currentYear}}', '{{emailUmodja}}'],
+                [$data['username'], $data['emailUtilisateur'], $data['username'] ,date('Y'), $this->umodjaEmail],
+                $htmlTemplate
+            );
+
+            $email = (new Email())
+                ->from(new Address($this->umodjaEmail, $this->umodjaName))
+                ->to($data['emailUtilisateur'])
+                ->subject($subject)
+                ->html($htmlMessage);
+
+            $this->mailer->send($email);
+
+            return new JsonResponse([
+                'mail' => 'succès',
+                'message' => 'E-mail envoyé avec succès.'
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            throw new \RuntimeException('' . $e->getMessage());
+        }
+    }
 }

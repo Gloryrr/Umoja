@@ -71,6 +71,14 @@ class PreferenceNotification
         return $this->email_nouvelle_offre;
     }
 
+    /**
+     * Retourne les notifications par email pour les nouvelles offres
+     */
+    public function getEmailNouvelleOffre(): bool
+    {
+        return $this->email_nouvelle_offre;
+    }
+
     public function setEmailNouvelleOffre(bool $email_nouvelle_offre): static
     {
         $this->email_nouvelle_offre = $email_nouvelle_offre;

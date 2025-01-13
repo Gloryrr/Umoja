@@ -3,16 +3,24 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Utilisateur;
-use Doctrine\ORM\Query\Expr\Select;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
+use App\Services\MailerService;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\PreferenceNotification;
 
-class UtilisateurCrudController extends AbstractCrudController
-{
+class UtilisateurCrudController extends AbstractCrudController {
+
+    private MailerService $mailerService;
+
+    public function __construct(MailerService $mailerService)
+    {
+        $this->mailerService = $mailerService;
+    }
+
     public static function getEntityFqcn(): string
     {
         return Utilisateur::class;
@@ -43,5 +51,21 @@ class UtilisateurCrudController extends AbstractCrudController
                     'choice_label' => 'nomGenreMusical',
                 ]),
         ];
+    }
+    public function persistEntity(
+        EntityManagerInterface $entityManager, 
+        $entityInstance,
+    ): void {
+        if ($entityInstance instanceof Utilisateur) {
+            $preferencesNotification = new PreferenceNotification();
+            $entityInstance->setPreferenceNotification($preferencesNotification);
+            $data = [
+                'emailUtilisateur' => $entityInstance->getEmailUtilisateur(),
+                'username' => $entityInstance->getUsername(),
+            ];
+            $this->mailerService->sendEmailNewUser($data);
+        }
+
+        parent::persistEntity($entityManager, $entityInstance);
     }
 }

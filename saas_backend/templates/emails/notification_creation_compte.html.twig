@@ -1,0 +1,85 @@
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .email-header {
+            background-color: #0056b3;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .email-header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .email-body {
+            padding: 20px;
+        }
+        .email-body p {
+            margin: 10px 0;
+        }
+        .email-footer {
+            background-color: #f1f1f1;
+            color: #555;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 12px;
+        }
+        .email-footer a {
+            color: #0056b3;
+            text-decoration: none;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="email-header">
+            <h1>Bienvenue sur Umodja</h1>
+        </div>
+
+        <!-- Body -->
+        <div class="email-body">
+            <h2 style="color: #0056b3;">Votre compte a été créé avec succès !</h2>
+            <p>Bonjour {{userName}},</p>
+            <p>Nous sommes ravis de vous accueillir sur Umodja. Votre compte a été créé avec succès, et vous pouvez dès à présent accéder à l'application et explorer toutes ses fonctionnalités.</p>
+            <p>Voici un récapitulatif de vos informations : </p>
+            <ul>
+                <li><strong>Nom d'utilisateur :</strong> {{userName}}</li>
+                <li><strong>Email :</strong> {{userEmail}}</li>
+                <li><strong>Mot de passe fourni :</strong> {{mdpUtilisateur}}</li>
+            </ul>
+            <p><strong>Pour votre première connexion, votre mot de passe est votre username, merci de le changer dès que possible</strong></p>
+            <p>Pour vous connecter, rendez-vous sur : <a href="http://localhost:3000">localhost:3000</a>.</p>
+            <p>Si vous rencontrez des difficultés ou avez des questions, n'hésitez pas à nous contacter.</p>
+            <hr>
+            <p style="font-size: 12px; color: #888;">Ceci est une notification automatique. Pour toute assistance, veuillez visiter notre site ou contacter notre support.</p>
+        </div>
+
+        <!-- Footer -->
+        <div class="email-footer">
+            <p>&copy; {{currentYear}} Umodja. Tous droits réservés.</p>
+            <p>Visitez notre site web : <a href="http://localhost:3000">localhost:3000</a></p>
+            <p>Si vous avez des questions, contactez-nous à <a href="mailto:{{emailUmodja}}">{{emailUmodja}}</a>.</p>
+        </div>
+    </div>
+</body>
+</html>
