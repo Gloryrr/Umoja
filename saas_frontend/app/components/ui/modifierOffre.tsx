@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Accordion, /*Alert,*/ Timeline, FileInput, Label, Card, Button } from 'flowbite-react';
 import ExtrasForm from '@/app/components/Form/Offre/ExtrasForm';
 import ConditionsFinancieresForm from '@/app/components/Form/Offre/ConditionsFinancieresForm';
@@ -32,6 +32,24 @@ const ModifierOffreForm: React.FC<{
     const [selectedReseaux, setSelectedReseaux] = useState<Reseau[]>(formData.donneesSupplementaires.reseau);
 
     const [donneesSauvegardees, setDonneesSauvegardees] = useState(false);
+
+    const imageInputRef = useRef<HTMLInputElement | null>(null);
+
+    const arrayBufferToFile = (arrayBuffer: ArrayBuffer) => {
+        const mimeString = "image/jpg"; // on accepte que les jpg par défaut
+        const blob = new Blob([arrayBuffer], { type: mimeString });
+        return new File([blob], `image_projet.jpg`, { type: mimeString });
+    };
+
+    useEffect(() => {
+        if (imageInputRef.current && project.image?.file) {
+            const file = arrayBufferToFile(project.image.file);
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            imageInputRef.current.files = dataTransfer.files;
+            updateFieldWithBlob("image", "file", file);
+        }
+    }, [project.image]);
 
     // const valideFormulaire = async (e: React.FormEvent) => {
     //     e.preventDefault();
@@ -474,6 +492,7 @@ const ModifierOffreForm: React.FC<{
                                 const file = e.target.files?.[0] || null;
                                 updateFieldWithBlob("image", "file", file);
                             }}
+                            ref={imageInputRef}
                         />
                     </div>
 
