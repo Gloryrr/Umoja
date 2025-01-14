@@ -42,12 +42,32 @@ const ModifierOffreForm: React.FC<{
     };
 
     useEffect(() => {
+        const SetPropsImageFieldWithBlob = async (
+            section: keyof FormData,
+            field: string,
+            file: File | null
+        ) => {
+            if (!file) {
+                updateField(section, field, null);
+                return;
+            }
+        
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const uint8Array = new Uint8Array(arrayBuffer);
+                const base64String = btoa(String.fromCharCode(...uint8Array));
+        
+                updateField(section, field, base64String);
+            } catch (error) {
+                console.error("Erreur lors de la conversion du fichier en base64:", error);
+            }
+        };
         if (imageInputRef.current && project.image?.file) {
             const file = arrayBufferToFile(project.image.file);
             const dataTransfer = new DataTransfer();
             dataTransfer.items.add(file);
             imageInputRef.current.files = dataTransfer.files;
-            updateFieldWithBlob("image", "file", file);
+            SetPropsImageFieldWithBlob("image", "file", file);
         }
     }, [project.image]);
 
