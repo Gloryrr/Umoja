@@ -36,13 +36,13 @@ class SftpService
     ): bool {
         try {
             $sftp = new SFTP($this->host, $this->port);
-    
+
             if (!$sftp->login($this->username, $this->password)) {
                 throw new \RuntimeException('Accès au serveur SFTP impossible');
             }
-    
+
             $username = $userInterface->getUserIdentifier();
-    
+
             // Créer les répertoires si nécessaire
             if (!$sftp->chdir("{$this->remoteDir}/{$username}")) {
                 $sftp->mkdir("{$this->remoteDir}/{$username}");
@@ -53,9 +53,9 @@ class SftpService
             if (!$sftp->chdir("{$this->remoteDir}/{$username}/{$idProjet}/{$typeFichier}")) {
                 $sftp->mkdir("{$this->remoteDir}/{$username}/{$idProjet}/{$typeFichier}");
             }
-    
+
             $remoteDirPath = "{$this->remoteDir}/{$username}/{$idProjet}/{$typeFichier}";
-    
+
             // Supprimer les fichiers existants dans le répertoire
             $existingFiles = $sftp->nlist($remoteDirPath);
             if ($existingFiles !== false) {
@@ -65,9 +65,9 @@ class SftpService
                     }
                 }
             }
-    
+
             $remoteFilePath = "{$remoteDirPath}/{$remoteFileName}";
-    
+
             // Upload du fichier
             return $sftp->put(
                 $remoteFilePath,
@@ -76,7 +76,7 @@ class SftpService
         } catch (\Throwable $th) {
             throw new \RuntimeException($th->getMessage());
         }
-    }    
+    }
 
     public function uploadFichier(
         Request $request,
