@@ -110,7 +110,7 @@ export default function ContactForm() {
         <div className="mb-6">
           <h1 className="text-center text-2xl font-bold mb-2">Contactez-nous</h1>
           <p className="ml-[10%] mr-[10%] italic">
-            Indiquez nous votre problème ou simple message de que vous voulez nous communiquer...
+            Indiquez nous votre problème ou simple message que vous voulez nous communiquer...
           </p>
         </div>
         <form onSubmit={handleSubmit}>

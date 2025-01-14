@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouvelle Contribution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .email-header {
+            background-color: #0056b3;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .email-header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .email-body {
+            padding: 20px;
+        }
+        .email-body p {
+            margin: 10px 0;
+        }
+        .email-footer {
+            background-color: #f1f1f1;
+            color: #555;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 12px;
+        }
+        .email-footer a {
+            color: #0056b3;
+            text-decoration: none;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="email-header">
+            <h1>Notification de Nouvelle Contribution</h1>
+        </div>
+
+        <!-- Body -->
+        <div class="email-body">
+            <p>Bonjour {{userName}},</p>
+            <p>Nous sommes heureux de vous informer qu'une nouvelle demande de contribution a été faite à votre projet musical <strong>{{projectName}}</strong>.</p>
+            <p>Votre projet est accessible depuis le lien suivant : <a href="http://localhost:3000/propositions/{{idOffre}}">projet musical</a></p>
+            <p>Vous pouvez consulter les détails de cette contribution en vous connectant à votre compte.</p>
+            <p>Merci de faire partie de notre communauté musicale.</p>
+            <hr>
+            <p>Cordialement,</p>
+            <p>L'équipe d'umodja</p>
+        </div>
+
+        <!-- Footer -->
+        <div class="email-footer">
+            <p>&copy; {{currentYear}} Umodja. Tous droits réservés.</p>
+            <p>Visitez notre site web : <a href="http://localhost:3000">localhost:3000</a></p>
+            <p>Si vous avez des questions, contactez-nous à <a href="mailto:{{emailUmodja}}">{{emailUmodja}}</a>.</p>
+        </div>
+    </div>
+</body>
+</html>

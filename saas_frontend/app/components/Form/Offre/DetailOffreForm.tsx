@@ -50,6 +50,7 @@ const DetailOffreForm: React.FC<DetailOffreFormProps> = ({
                 setPlacesMax(Number(value));
                 onDetailOffreChange('placesMax', value);
             }
+            onDetailOffreChange(name, value);
         } else if (name === 'placesMax') {
             setPlacesMax(Number(value));
         } else {

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Accordion, /*Alert,*/ Timeline, FileInput, Label, Card, Button } from 'flowbite-react';
 import ExtrasForm from '@/app/components/Form/Offre/ExtrasForm';
 import ConditionsFinancieresForm from '@/app/components/Form/Offre/ConditionsFinancieresForm';
@@ -32,6 +32,44 @@ const ModifierOffreForm: React.FC<{
     const [selectedReseaux, setSelectedReseaux] = useState<Reseau[]>(formData.donneesSupplementaires.reseau);
 
     const [donneesSauvegardees, setDonneesSauvegardees] = useState(false);
+
+    const imageInputRef = useRef<HTMLInputElement | null>(null);
+
+    const arrayBufferToFile = (arrayBuffer: ArrayBuffer) => {
+        const mimeString = "image/jpg"; // on accepte que les jpg par défaut
+        const blob = new Blob([arrayBuffer], { type: mimeString });
+        return new File([blob], `image_projet.jpg`, { type: mimeString });
+    };
+
+    useEffect(() => {
+        const SetPropsImageFieldWithBlob = async (
+            section: keyof FormData,
+            field: string,
+            file: File | null
+        ) => {
+            if (!file) {
+                updateField(section, field, null);
+                return;
+            }
+        
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const uint8Array = new Uint8Array(arrayBuffer);
+                const base64String = btoa(String.fromCharCode(...uint8Array));
+        
+                updateField(section, field, base64String);
+            } catch (error) {
+                console.error("Erreur lors de la conversion du fichier en base64:", error);
+            }
+        };
+        if (imageInputRef.current && project.image?.file) {
+            const file = arrayBufferToFile(project.image.file);
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            imageInputRef.current.files = dataTransfer.files;
+            SetPropsImageFieldWithBlob("image", "file", file);
+        }
+    }, [project.image]);
 
     // const valideFormulaire = async (e: React.FormEvent) => {
     //     e.preventDefault();
@@ -474,6 +512,7 @@ const ModifierOffreForm: React.FC<{
                                 const file = e.target.files?.[0] || null;
                                 updateFieldWithBlob("image", "file", file);
                             }}
+                            ref={imageInputRef}
                         />
                     </div>
 
