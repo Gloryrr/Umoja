@@ -256,4 +256,44 @@ class MailerService
             throw new \RuntimeException('' . $e->getMessage());
         }
     }
+
+    /**
+     * Notifie un utilisateur que son compte vient d'être créer dans l'application
+     */
+    public function sendEmailNewContribution(
+        OffreRepository $offreRepository,
+        mixed $data
+    ): JsonResponse {
+        try {
+            $offre = $offreRepository->find($data['idOffre']);
+            $subject = "Nouvelle contribution sur votre projet Umodja";
+
+            // Charger le fichier HTML
+            $templatePath = __DIR__ . '/../../templates/emails/notification_nouvelle_contribution.html.twig';
+            $htmlTemplate = file_get_contents($templatePath);
+
+            // Remplacer les variables dynamiques dans le template
+            $htmlMessage = str_replace(
+                ['{{userName}}', '{{projectName}}', '{{idOffre}}', '{{currentYear}}', '{{emailUmodja}}'],
+                [$data['username'], $offre->getTitleOffre(), $data['idOffre'], date('Y'), $this->umodjaEmail],
+                $htmlTemplate
+            );
+
+            $email = (new Email())
+                ->from(new Address($this->umodjaEmail, $this->umodjaName))
+                ->to($offre->getUtilisateur()->getEmailUtilisateur())
+                ->subject($subject)
+                ->html($htmlMessage);
+
+            $this->mailer->send($email);
+
+            return new JsonResponse([
+                'mail' => 'succès',
+                'message' => 'E-mail envoyé avec succès.'
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            throw new \RuntimeException('' . $e->getMessage());
+        }
+    }
 }
+

@@ -28,7 +28,15 @@ const NumberInputModal: React.FC<NumberInputModalProps> = ({ username, isOpen, o
         prixParticipation: price
       };
       try {
-        await apiPost('/reponse/create', JSON.parse(JSON.stringify(reponse)));
+        await apiPost('/reponse/create', JSON.parse(JSON.stringify(reponse))).then(async () => {
+          const data = {
+            'idOffre' : idOffre,
+            'username' : username,
+            'prixParticipation' : price,
+          };
+          await apiPost('/envoi-email-new-contribution', JSON.parse(JSON.stringify(data)));
+          }
+        );
         onSubmit(startDate, endDate, price);
       } catch (error) {
         console.error('Error:', error);

@@ -36,4 +36,17 @@ class EmailController extends AbstractController
             $data,
         );
     }
+
+    #[Route('/api/v1/envoi-email-new-contribution', name: 'envoi_email_nouvelle_contribution', methods: ['POST'])]
+    public function sendEmailNewContribution(
+        OffreRepository $offreRepository,
+        Request $request,
+        MailerService $mailerService,
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        return $mailerService->sendEmailNewContribution(
+            $offreRepository,
+            $data,
+        );
+    }
 }
