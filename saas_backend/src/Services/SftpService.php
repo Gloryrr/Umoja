@@ -36,12 +36,14 @@ class SftpService
     ): bool {
         try {
             $sftp = new SFTP($this->host, $this->port);
-
+    
             if (!$sftp->login($this->username, $this->password)) {
                 throw new \RuntimeException('Accès au serveur SFTP impossible');
             }
+    
             $username = $userInterface->getUserIdentifier();
-
+    
+            // Créer les répertoires si nécessaire
             if (!$sftp->chdir("{$this->remoteDir}/{$username}")) {
                 $sftp->mkdir("{$this->remoteDir}/{$username}");
             }
@@ -51,13 +53,22 @@ class SftpService
             if (!$sftp->chdir("{$this->remoteDir}/{$username}/{$idProjet}/{$typeFichier}")) {
                 $sftp->mkdir("{$this->remoteDir}/{$username}/{$idProjet}/{$typeFichier}");
             }
-            if ($sftp->file_exists("{$this->remoteDir}/{$username}/{$idProjet}/{$typeFichier}/{$remoteFileName}")) {
-                throw new \RuntimeException(
-                    'Un fichier avec ce nom existe déjà, merci de le renommer ou de supprimer le fichier déjà existant'
-                );
+    
+            $remoteDirPath = "{$this->remoteDir}/{$username}/{$idProjet}/{$typeFichier}";
+    
+            // Supprimer les fichiers existants dans le répertoire
+            $existingFiles = $sftp->nlist($remoteDirPath);
+            if ($existingFiles !== false) {
+                foreach ($existingFiles as $file) {
+                    if ($file !== '.' && $file !== '..') {
+                        $sftp->delete("{$remoteDirPath}/{$file}");
+                    }
+                }
             }
-
-            $remoteFilePath = "{$this->remoteDir}/{$username}/{$idProjet}/{$typeFichier}/{$remoteFileName}";
+    
+            $remoteFilePath = "{$remoteDirPath}/{$remoteFileName}";
+    
+            // Upload du fichier
             return $sftp->put(
                 $remoteFilePath,
                 file_get_contents($localFilePath)
@@ -65,7 +76,7 @@ class SftpService
         } catch (\Throwable $th) {
             throw new \RuntimeException($th->getMessage());
         }
-    }
+    }    
 
     public function uploadFichier(
         Request $request,
