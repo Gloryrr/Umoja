@@ -394,7 +394,7 @@ function ProjectDetailsContent() {
         };
 
         const fetchReponsesOffre = async (id: number) => {
-            await apiGet(`/reponses/offre/${id}`).then((response) => {
+            await apiGet(`/reponses/offre/${id}`).then(async (response) => {
                 setPourcentageBudgetRecu(calculPrixTotalReponsesRecu(JSON.parse(response.reponses)));
             });
         };
