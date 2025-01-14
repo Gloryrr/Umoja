@@ -161,6 +161,7 @@ const OffreForm: React.FC = () => {
             nbArtistesConcernes,
             nbInvitesConcernes
         } = formData.detailOffre;
+        console.log(formData.detailOffre);
         return !!(titleOffre && 
             deadLine && 
             descrTournee && 
@@ -345,7 +346,8 @@ const OffreForm: React.FC = () => {
                             <Accordion.Content className='p-0'>
                                 <DetailOffreForm
                                     detailOffre={formData.detailOffre}
-                                    onDetailOffreChange={(name, value) =>
+                                    onDetailOffreChange={(name, value) => {
+                                        console.log(name, value);
                                         setFormData((prevData) => ({
                                             ...prevData,
                                             detailOffre: {
@@ -353,6 +355,7 @@ const OffreForm: React.FC = () => {
                                                 [name]: value
                                             }
                                         }))
+                                    }
                                     }
                                 />
                             </Accordion.Content>
