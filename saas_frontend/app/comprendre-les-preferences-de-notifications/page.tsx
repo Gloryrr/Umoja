@@ -13,7 +13,7 @@ const NotificationPreferencesPage: React.FC = () => {
             {/* Section avec texte explicatif */}
             <Card className="mb-8 p-6 shadow-lg bg-white border border-gray-200 rounded-xl">
                 <p className="mb-4">
-                    Umodja exerce le droit d&apos;envoyer des emails en fonction de vos préférences de notifications. Vous pouvez choisir de recevoir des emails pour :
+                    Umoja exerce le droit d&apos;envoyer des emails en fonction de vos préférences de notifications. Vous pouvez choisir de recevoir des emails pour :
                 </p>
 
                 {/* Liste des options de notifications */}
