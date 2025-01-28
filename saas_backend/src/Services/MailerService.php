@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Repository\ReponseRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
@@ -243,6 +244,120 @@ class MailerService
             $email = (new Email())
                 ->from(new Address($this->umojaEmail, $this->umojaName))
                 ->to($data['emailUtilisateur'])
+                ->subject($subject)
+                ->html($htmlMessage);
+
+            $this->mailer->send($email);
+
+            return new JsonResponse([
+                'mail' => 'succès',
+                'message' => 'E-mail envoyé avec succès.'
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            throw new \RuntimeException('' . $e->getMessage());
+        }
+    }
+
+    public function sendEmailValidationPropositionContribution(
+        ReponseRepository $reponseRepository,
+        Security $security,
+        UtilisateurRepository $utilisateurRepository,
+        mixed $data,
+    ): JsonResponse {
+        try {
+            // récupération de l'utilisateur
+            $user = $security->getUser();
+
+            if (!$user) {
+                return new JsonResponse(['error' => 'Utilisateur non authentifié'], 401);
+            }
+
+            $username = $user->getUserIdentifier();
+            $userArray = $utilisateurRepository->trouveUtilisateurByUsername($username);
+
+            // Préparation de la template HTML
+            $templatePath =
+                __DIR__ .
+                '/../../templates/emails/notification_validation_proposition_contribution.html.twig';
+
+            $htmlTemplate = file_get_contents($templatePath);
+
+            $subject = "Validation de votre proposition de contribution - Umoja";
+
+            // Préparation de l'envoi de l'email à tous les utilisateurs concernés
+            $reponse = $reponseRepository->find($data['idProposition']);
+            if (!$reponse) {
+                return new JsonResponse(['error' => 'Réponse non trouvée'], Response::HTTP_NOT_FOUND);
+            }
+
+            $offreTitre = $reponse->getOffre()->getTitleOffre();
+            $offreId = $reponse->getOffre()->getId();
+
+            // Remplacer les variables dynamiques dans le template
+            $htmlMessage = str_replace(
+                ['{{userName}}', '{{projectName}}', '{{idOffre}}', '{{currentYear}}', '{{emailUmoja}}'],
+                [$username, $offreTitre, $offreId, date('Y'), $this->umojaEmail],
+                $htmlTemplate
+            );
+
+            $email = (new Email())
+                ->from(new Address($this->umojaEmail, $this->umojaName))
+                ->to($userArray[0]->getEmailUtilisateur())
+                ->subject($subject)
+                ->html($htmlMessage);
+
+            $this->mailer->send($email);
+
+            return new JsonResponse([
+                'mail' => 'succès',
+                'message' => 'E-mail envoyé avec succès.'
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            throw new \RuntimeException('' . $e->getMessage());
+        }
+    }
+
+    public function sendEmailRefusPropositionContribution(
+        ReponseRepository $reponseRepository,
+        Security $security,
+        UtilisateurRepository $utilisateurRepository,
+        mixed $data,
+    ): JsonResponse {
+        try {
+            // récupération de l'utilisateur
+            $user = $security->getUser();
+
+            if (!$user) {
+                return new JsonResponse(['error' => 'Utilisateur non authentifié'], 401);
+            }
+
+            $username = $user->getUserIdentifier();
+            $userArray = $utilisateurRepository->trouveUtilisateurByUsername($username);
+
+            // Préparation de la template HTML
+            $templatePath = __DIR__ . '/../../templates/emails/notification_refus_proposition_contribution.html.twig';
+            $htmlTemplate = file_get_contents($templatePath);
+
+            $subject = "Refus de votre proposition de contribution - Umoja";
+
+            // Préparation de l'envoi de l'email à tous les utilisateurs concernés
+            $reponse = $reponseRepository->find($data['idProposition']);
+            if (!$reponse) {
+                return new JsonResponse(['error' => 'Réponse non trouvée'], Response::HTTP_NOT_FOUND);
+            }
+
+            $offreTitre = $reponse->getOffre()->getTitleOffre();
+
+            // Remplacer les variables dynamiques dans le template
+            $htmlMessage = str_replace(
+                ['{{userName}}', '{{projectName}}', '{{messageRefus}}', '{{currentYear}}', '{{emailUmoja}}'],
+                [$username, $offreTitre, $data['messageRefus'], date('Y'), $this->umojaEmail],
+                $htmlTemplate
+            );
+
+            $email = (new Email())
+                ->from(new Address($this->umojaEmail, $this->umojaName))
+                ->to($userArray[0]->getEmailUtilisateur())
                 ->subject($subject)
                 ->html($htmlMessage);
 
