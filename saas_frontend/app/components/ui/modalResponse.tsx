@@ -81,7 +81,7 @@ const NumberInputModal: React.FC<NumberInputModalProps> = ({ username, isOpen, o
         idOffre: idOffre,
         prixParticipation: price,
         nomSalleFestival: nomSalleFestival,
-        nomSalleConcert: nomSalleConcert,
+        nomSalleConcert: nomSalleConcert,  
         ville: ville,
         datesPossible: datesPossible,
         capacite: capacite,

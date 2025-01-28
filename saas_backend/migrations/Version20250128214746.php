@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250105193526 extends AbstractMigration
+final class Version20250128214746 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -64,7 +64,7 @@ final class Version20250105193526 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_AF86866FC3E139A ON offre (fiche_technique_artiste_id)');
         $this->addSql('CREATE INDEX IDX_AF86866FFB88E14F ON offre (utilisateur_id)');
         $this->addSql('CREATE TABLE preference_notification (id INT NOT NULL, email_nouvelle_offre BOOLEAN NOT NULL, email_update_offre BOOLEAN NOT NULL, reponse_offre BOOLEAN NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE TABLE reponse (id INT NOT NULL, etat_reponse_id INT NOT NULL, offre_id INT NOT NULL, utilisateur_id INT NOT NULL, date_debut TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, date_fin TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, prix_participation DOUBLE PRECISION NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE reponse (id INT NOT NULL, etat_reponse_id INT NOT NULL, offre_id INT NOT NULL, utilisateur_id INT NOT NULL, prix_participation DOUBLE PRECISION NOT NULL, nom_salle_festival VARCHAR(255) NOT NULL, nom_salle_concert VARCHAR(255) NOT NULL, ville VARCHAR(255) NOT NULL, dates_possible VARCHAR(255) NOT NULL, capacite INT NOT NULL, deadline DATE NOT NULL, duree_show VARCHAR(255) NOT NULL, montant_cachet INT NOT NULL, devise_cachet VARCHAR(255) NOT NULL, extras VARCHAR(255) NOT NULL, cout_extras INT NOT NULL, ordre_passage VARCHAR(255) NOT NULL, conditions_generales VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_5FB6DEC766548797 ON reponse (etat_reponse_id)');
         $this->addSql('CREATE INDEX IDX_5FB6DEC74CC8505A ON reponse (offre_id)');
         $this->addSql('CREATE INDEX IDX_5FB6DEC7FB88E14F ON reponse (utilisateur_id)');

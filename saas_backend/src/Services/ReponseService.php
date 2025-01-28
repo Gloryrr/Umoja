@@ -181,20 +181,54 @@ class ReponseService
             // Vérifie que les données nécessaires sont présentes
             if (
                 (
+                    empty($data['username']) ||
                     empty($data['idOffre']) ||
-                    empty($data['dateDebut']) ||
-                    empty($data['dateFin']) ||
                     empty($data['prixParticipation']) ||
-                    empty($data['username'])
+                    empty($data['nomSalleFestival']) ||
+                    empty($data['nomSalleConcert']) ||
+                    empty($data['ville']) ||
+                    empty($data['datesPossible']) ||
+                    empty($data['capacite']) ||
+                    empty($data['deadline']) ||
+                    empty($data['dureeShow']) ||
+                    empty($data['montantCachet']) ||
+                    empty($data['deviseCachet']) ||
+                    empty($data['extras']) ||
+                    empty($data['coutsExtras']) ||
+                    empty($data['ordrePassage']) ||
+                    empty($data['conditionsGenerales'])
                 )
             ) {
                 throw new \InvalidArgumentException("Toutes les données de la réponse sont requises.");
             }
 
+            $dates = "";
+            for ($i = 0; $i < count($data['datesPossible']); $i++) {
+                $dates .= (new \DateTime(
+                    $data['datesPossible'][$i]["dateDebut"]
+                    ))->format('Y-m-d') . " - ";
+                $dates .= (new \DateTime(
+                    $data['datesPossible'][$i]["dateFin"]
+                    ))->format('Y-m-d') . " - ";
+            }
+
             // Création de l'objet Reponse
             $reponse = new Reponse();
-            $reponse->setDateDebut(new \DateTime($data['dateDebut']));
-            $reponse->setDateFin(new \DateTime($data['dateFin']));
+            // $reponse->setDateDebut(new \DateTime($data['dateDebut']));
+            // $reponse->setDateFin(new \DateTime($data['dateFin']));
+            $reponse->setNomSalleFestival($data['nomSalleFestival']);
+            $reponse->setNomSalleConcert($data['nomSalleConcert']);
+            $reponse->setVille($data['ville']);
+            $reponse->setCapacite($data['capacite']);
+            $reponse->setDatesPossible($dates);
+            $reponse->setDeadline(new \DateTime($data['deadline']));
+            $reponse->setDureeShow($data['dureeShow']);
+            $reponse->setMontantCachet($data['montantCachet']);
+            $reponse->setDeviseCachet($data['deviseCachet']);
+            $reponse->setExtras($data['extras']);
+            $reponse->setCoutExtras($data['coutsExtras']);
+            $reponse->setOrdrePassage($data['ordrePassage']);
+            $reponse->setConditionsGenerales($data['conditionsGenerales']);
             $reponse->setPrixParticipation($data['prixParticipation']);
 
             $utilisateur = $utilisateurRepository->trouveUtilisateurByUsername($data['username']);
