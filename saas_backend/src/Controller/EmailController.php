@@ -32,7 +32,7 @@ class EmailController extends AbstractController
         name: 'envoi_email_validation_proposition_contribution',
         methods: ['POST']
     )]
-    public function sendEmailValidationPropositionContribution (
+    public function sendEmailValidationPropositionContribution(
         ReponseRepository $reponseRepository,
         UtilisateurRepository $utilisateurRepository,
         Request $request,
@@ -53,7 +53,7 @@ class EmailController extends AbstractController
         name: 'envoi_email_refus_proposition_contribution',
         methods: ['POST']
     )]
-    public function sendEmailRefusPropositionContribution (
+    public function sendEmailRefusPropositionContribution(
         ReponseRepository $reponseRepository,
         UtilisateurRepository $utilisateurRepository,
         Request $request,

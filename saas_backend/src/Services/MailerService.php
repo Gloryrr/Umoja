@@ -276,7 +276,10 @@ class MailerService
             $userArray = $utilisateurRepository->trouveUtilisateurByUsername($username);
 
             // Préparation de la template HTML
-            $templatePath = __DIR__ . '/../../templates/emails/notification_validation_proposition_contribution.html.twig';
+            $templatePath =
+                __DIR__ .
+                '/../../templates/emails/notification_validation_proposition_contribution.html.twig';
+
             $htmlTemplate = file_get_contents($templatePath);
 
             $subject = "Validation de votre proposition de contribution - Umoja";
@@ -344,7 +347,7 @@ class MailerService
             }
 
             $offreTitre = $reponse->getOffre()->getTitleOffre();
-            
+
             // Remplacer les variables dynamiques dans le template
             $htmlMessage = str_replace(
                 ['{{userName}}', '{{projectName}}', '{{messageRefus}}', '{{currentYear}}', '{{emailUmoja}}'],
