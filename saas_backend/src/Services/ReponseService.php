@@ -206,10 +206,10 @@ class ReponseService
             for ($i = 0; $i < count($data['datesPossible']); $i++) {
                 $dates .= (new \DateTime(
                     $data['datesPossible'][$i]["dateDebut"]
-                    ))->format('Y-m-d') . " - ";
+                ))->format('Y-m-d') . " - ";
                 $dates .= (new \DateTime(
                     $data['datesPossible'][$i]["dateFin"]
-                    ))->format('Y-m-d') . " - ";
+                ))->format('Y-m-d') . " - ";
             }
 
             // Création de l'objet Reponse
