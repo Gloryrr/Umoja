@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Umodja API documentation",
+        "title": "Umoja API documentation",
         "description": "Documentation de l'API avec OpenAPI (Swagger).",
         "version": "1.0.0"
     },

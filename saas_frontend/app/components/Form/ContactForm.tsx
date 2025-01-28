@@ -20,7 +20,7 @@ export default function ContactForm() {
       message: message,
     };
 
-    await apiPost("/envoi-message-to-umodja", JSON.parse(JSON.stringify(data)))
+    await apiPost("/envoi-message-to-umoja", JSON.parse(JSON.stringify(data)))
       .then(() => {
         setShowSuccess(true);
         setMessageRetourAction("Message envoyé avec succès !");

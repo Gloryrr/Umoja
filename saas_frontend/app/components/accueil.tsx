@@ -154,7 +154,7 @@ export default function Accueil() {
                 className="w-full object-cover h-64"
             />
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 text-white">
-                <h1 className="text-4xl font-bold mb-4 text-center mb-10">UMODJA</h1>
+                <h1 className="text-4xl font-bold mb-4 text-center mb-10">Umoja</h1>
                 <p className="text-center text-white text-lg mb-6">
                 Rejoignez notre plateforme de collaboration pour vos projet musicaux et contribuez à des projets au sein de vos réseaux !
                 </p>
@@ -292,7 +292,7 @@ export default function Accueil() {
             {genresMusicaux && (
             <div className="ml-[25%] mr-[25%] h-64 mb-10">
                 <h2 className="text-2xl font-bold text-center">Découvrez les genres de musiques</h2>
-                <p className="text-center mt-5">Les genres de musiques courament trouvées dans les projets UMODJA !</p>
+                <p className="text-center mt-5">Les genres de musiques courament trouvées dans les projets Umoja !</p>
                 <Carousel 
                     slideInterval={2000} 
                     indicators={false} 

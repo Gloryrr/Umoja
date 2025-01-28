@@ -27,7 +27,7 @@ export default function ConsentementNotifications() {
           Consentement aux Notifications
         </h1>
         <p className="text-sm mb-2">
-          En acceptant, vous autorisez <strong>UmoDJA</strong> à vous envoyer des emails pour :
+          En acceptant, vous autorisez <strong>Umoja</strong> à vous envoyer des emails pour :
         </p>
         <ul className="list-disc pl-6 mb-6 text-sm">
           <li>Des mises à jour sur vos projets</li>
@@ -50,7 +50,7 @@ export default function ConsentementNotifications() {
                 className="mr-2"
               />
               <label htmlFor="consentement" className="text-sm">
-                J&apos;accepte de recevoir des notifications et emails de la part de UmoDJA.
+                J&apos;accepte de recevoir des notifications et emails de la part de Umoja.
               </label>
             </div>
             <Button type="submit" className="w-full mt-4" disabled={!isChecked}>

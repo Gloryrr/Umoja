@@ -14,14 +14,14 @@ use App\Repository\OffreRepository;
 class MailerService
 {
     private MailerInterface $mailer;
-    private string $umodjaEmail;
-    private string $umodjaName;
+    private string $umojaEmail;
+    private string $umojaName;
 
     public function __construct(MailerInterface $mailer)
     {
         $this->mailer = $mailer;
-        $this->umodjaEmail = "marmionsteven8@gmail.com"; // à changer lors de la mise en route de l'application
-        $this->umodjaName = "UMODJA";
+        $this->umojaEmail = "marmionsteven8@gmail.com"; // à changer lors de la mise en route de l'application
+        $this->umojaName = "Umoja";
     }
 
     /**
@@ -40,7 +40,7 @@ class MailerService
             $templatePath = __DIR__ . '/../../templates/emails/notification_creation_projet.html.twig';
             $htmlTemplate = file_get_contents($templatePath);
 
-            $subject = "Création d'un nouveau projet sur Umodja";
+            $subject = "Création d'un nouveau projet sur Umoja";
 
             // Préparation de l'envoi de l'email à tous les utilisateurs concernés
             $offre = $offreRepository->find($data['offreId']);
@@ -61,7 +61,7 @@ class MailerService
                                     '{{projectDescription}}',
                                     '{{userName}}',
                                     '{{currentYear}}',
-                                    '{{emailUmodja}}',
+                                    '{{emailUmoja}}',
                                     '{{networkName}}'
                                 ],
                                 [
@@ -69,13 +69,13 @@ class MailerService
                                     $data['projectDescription'],
                                     $data['username'],
                                     date('Y'),
-                                    $this->umodjaEmail,
+                                    $this->umojaEmail,
                                     $reseau->getNomReseau()
                                 ],
                                 $htmlTemplate
                             );
                             $email = (new Email())
-                                ->from(new Address($this->umodjaEmail, $this->umodjaName))
+                                ->from(new Address($this->umojaEmail, $this->umojaName))
                                 ->to($utilisateur->getEmailUtilisateur())
                                 ->subject($subject)
                                 ->html($htmlMessage);
@@ -111,7 +111,7 @@ class MailerService
             $templatePath = __DIR__ . '/../../templates/emails/notification_modification_projet.html.twig';
             $htmlTemplate = file_get_contents($templatePath);
 
-            $subject = "Modification d'un projet sur Umodja";
+            $subject = "Modification d'un projet sur Umoja";
 
             // Préparation de l'envoi de l'email à tous les utilisateurs concernés
             $offre = $offreRepository->find($data['offreId']);
@@ -133,7 +133,7 @@ class MailerService
                                     '{{projectDescription}}',
                                     '{{userName}}',
                                     '{{currentYear}}',
-                                    '{{emailUmodja}}',
+                                    '{{emailUmoja}}',
                                     '{{networkName}}'
                                 ],
                                 [
@@ -141,13 +141,13 @@ class MailerService
                                     $data['projectDescription'],
                                     $data['username'],
                                     date('Y'),
-                                    $this->umodjaEmail,
+                                    $this->umojaEmail,
                                     $reseau->getNomReseau()
                                 ],
                                 $htmlTemplate
                             );
                             $email = (new Email())
-                                ->from(new Address($this->umodjaEmail, $this->umodjaName))
+                                ->from(new Address($this->umojaEmail, $this->umojaName))
                                 ->to($utilisateur->getEmailUtilisateur())
                                 ->subject($subject)
                                 ->html($htmlMessage);
@@ -168,11 +168,11 @@ class MailerService
     }
 
     /**
-     * Envoi un email à umodja afin de permettre à n'importe quel utilisateur de nous contacter
+     * Envoi un email à umoja afin de permettre à n'importe quel utilisateur de nous contacter
      * @param string $contenu Le contenu du mail
      * @return void
      */
-    public function sendMessageToUmodja(
+    public function sendMessageToUmoja(
         UtilisateurRepository $utilisateurRepository,
         Security $security,
         mixed $data
@@ -190,10 +190,10 @@ class MailerService
             $messageContent = htmlspecialchars($data['message'], ENT_QUOTES, 'UTF-8');
             $fromEmail = $userArray[0]->getEmailUtilisateur();
             $fromName = $username;
-            $subject = "Message de {$fromName} - Service contact d'Umodja";
+            $subject = "Message de {$fromName} - Service contact d'Umoja";
 
             // Charger le fichier HTML
-            $templatePath = __DIR__ . '/../../templates/emails/contact_umodja.html.twig';
+            $templatePath = __DIR__ . '/../../templates/emails/contact_umoja.html.twig';
             $htmlTemplate = file_get_contents($templatePath);
 
             // Remplacer les variables dynamiques dans le template
@@ -205,7 +205,7 @@ class MailerService
 
             $email = (new Email())
                 ->from(new Address($fromEmail, $fromName))
-                ->to($this->umodjaEmail)
+                ->to($this->umojaEmail)
                 ->subject($subject)
                 ->html($htmlMessage);
 
@@ -227,7 +227,7 @@ class MailerService
         mixed $data
     ): JsonResponse {
         try {
-            $subject = "Création de votre compte Umodja";
+            $subject = "Création de votre compte Umoja";
 
             // Charger le fichier HTML
             $templatePath = __DIR__ . '/../../templates/emails/notification_creation_compte.html.twig';
@@ -235,13 +235,13 @@ class MailerService
 
             // Remplacer les variables dynamiques dans le template
             $htmlMessage = str_replace(
-                ['{{userName}}', '{{userEmail}}', '{{mdpUtilisateur}}', '{{currentYear}}', '{{emailUmodja}}'],
-                [$data['username'], $data['emailUtilisateur'], $data['username'] ,date('Y'), $this->umodjaEmail],
+                ['{{userName}}', '{{userEmail}}', '{{mdpUtilisateur}}', '{{currentYear}}', '{{emailUmoja}}'],
+                [$data['username'], $data['emailUtilisateur'], $data['username'] ,date('Y'), $this->umojaEmail],
                 $htmlTemplate
             );
 
             $email = (new Email())
-                ->from(new Address($this->umodjaEmail, $this->umodjaName))
+                ->from(new Address($this->umojaEmail, $this->umojaName))
                 ->to($data['emailUtilisateur'])
                 ->subject($subject)
                 ->html($htmlMessage);
@@ -266,7 +266,7 @@ class MailerService
     ): JsonResponse {
         try {
             $offre = $offreRepository->find($data['idOffre']);
-            $subject = "Nouvelle contribution sur votre projet Umodja";
+            $subject = "Nouvelle contribution sur votre projet Umoja";
 
             // Charger le fichier HTML
             $templatePath = __DIR__ . '/../../templates/emails/notification_nouvelle_contribution.html.twig';
@@ -274,13 +274,13 @@ class MailerService
 
             // Remplacer les variables dynamiques dans le template
             $htmlMessage = str_replace(
-                ['{{userName}}', '{{projectName}}', '{{idOffre}}', '{{currentYear}}', '{{emailUmodja}}'],
-                [$data['username'], $offre->getTitleOffre(), $data['idOffre'], date('Y'), $this->umodjaEmail],
+                ['{{userName}}', '{{projectName}}', '{{idOffre}}', '{{currentYear}}', '{{emailUmoja}}'],
+                [$data['username'], $offre->getTitleOffre(), $data['idOffre'], date('Y'), $this->umojaEmail],
                 $htmlTemplate
             );
 
             $email = (new Email())
-                ->from(new Address($this->umodjaEmail, $this->umodjaName))
+                ->from(new Address($this->umojaEmail, $this->umojaName))
                 ->to($offre->getUtilisateur()->getEmailUtilisateur())
                 ->subject($subject)
                 ->html($htmlMessage);

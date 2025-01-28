@@ -4,23 +4,23 @@ FROM ubuntu:latest
 RUN apt update && apt install -y openssh-server && rm -rf /var/lib/apt/lists/*
 
 # Créer un utilisateur dédié au SFTP
-RUN useradd -m sftpumodja && echo "sftpumodja:umodja" | chpasswd
+RUN useradd -m sftpumoja && echo "sftpumoja:umoja" | chpasswd
 
 # Configurer SSHD pour SFTP uniquement
 RUN mkdir -p /etc/ssh
 RUN echo '\
-Match User sftpumodja\n\
+Match User sftpumoja\n\
     ForceCommand internal-sftp\n\
     PasswordAuthentication yes\n\
-    ChrootDirectory /home/sftpumodja\n\
+    ChrootDirectory /home/sftpumoja\n\
     PermitTunnel no\n\
     AllowAgentForwarding no\n\
     AllowTcpForwarding no\n\
     X11Forwarding no\n' >> /etc/ssh/sshd_config
 
 # Créer le répertoire Chroot
-RUN mkdir -p /home/sftpumodja/uploads && chown root:root /home/sftpumodja && chmod 755 /home/sftpumodja && \
-    chown sftpumodja:sftpumodja /home/sftpumodja/uploads
+RUN mkdir -p /home/sftpumoja/uploads && chown root:root /home/sftpumoja && chmod 755 /home/sftpumoja && \
+    chown sftpumoja:sftpumoja /home/sftpumoja/uploads
 
 # Créer le répertoire /run/sshd pour la séparation des privilèges
 RUN mkdir -p /run/sshd && chown root:root /run/sshd

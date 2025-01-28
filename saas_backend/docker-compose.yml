@@ -41,7 +41,7 @@ services:
         ports:
             - "2222:22"
         volumes:
-            - sftp_data:/home/sftpumodja/uploads
+            - sftp_data:/home/sftpumoja/uploads
         networks:
             - symfony-network
 
