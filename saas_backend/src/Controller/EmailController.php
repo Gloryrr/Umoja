@@ -3,11 +3,14 @@
 namespace App\Controller;
 
 use App\Repository\OffreRepository;
+use App\Repository\ReponseRepository;
+use App\Repository\UtilisateurRepository;
 use App\Services\MailerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 class EmailController extends AbstractController
 {
@@ -20,6 +23,48 @@ class EmailController extends AbstractController
         $data = json_decode($request->getContent(), true);
         return $mailerService->sendEmailNewProjet(
             $offreRepository,
+            $data,
+        );
+    }
+
+    #[Route(
+        '/api/v1/envoi-email-validation-proposition-contribution',
+        name: 'envoi_email_validation_proposition_contribution',
+        methods: ['POST']
+    )]
+    public function sendEmailValidationPropositionContribution (
+        ReponseRepository $reponseRepository,
+        UtilisateurRepository $utilisateurRepository,
+        Request $request,
+        MailerService $mailerService,
+        Security $security
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        return $mailerService->sendEmailValidationPropositionContribution(
+            $reponseRepository,
+            $security,
+            $utilisateurRepository,
+            $data,
+        );
+    }
+
+    #[Route(
+        '/api/v1/envoi-email-refus-proposition-contribution',
+        name: 'envoi_email_refus_proposition_contribution',
+        methods: ['POST']
+    )]
+    public function sendEmailRefusPropositionContribution (
+        ReponseRepository $reponseRepository,
+        UtilisateurRepository $utilisateurRepository,
+        Request $request,
+        MailerService $mailerService,
+        Security $security
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        return $mailerService->sendEmailRefusPropositionContribution(
+            $reponseRepository,
+            $security,
+            $utilisateurRepository,
             $data,
         );
     }
