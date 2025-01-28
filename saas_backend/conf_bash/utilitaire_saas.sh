@@ -24,7 +24,8 @@ echo -e "\t11. Générer la documentation API"
 echo -e "\t12. Créer la base de données de test"
 echo -e "\t13. Créer un test"
 echo -e "\t14. Exécuter les tests de performances"
-echo -e "\t15. Quitter"
+echo -e "\t15. Initier la base de prod"
+echo -e "\t16. Quitter"
 
 read -p "Entrer l'instruction demandée : " instruction
 
@@ -60,6 +61,10 @@ elif [ $instruction == "13" ]; then
 elif [ $instruction == "14" ]; then
     bash tests/Performances/wrk-testing.sh
 elif [ $instruction == "15" ]; then
+    docker-compose exec application php bin/console doctrine:database:create --env=prod
+    docker-compose exec application php bin/console doctrine:schema:update --force --env=prod
+    docker-compose exec application php bin/console doctrine:fixtures:load --env=prod
+elif [ $instruction == "16" ]; then
     echo "Fermeture de l'utilitaire"
     exit
 else

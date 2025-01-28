@@ -1,19 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // import DatePicker from 'react-datepicker';
-import { Button, Label, Modal, TextInput, Datepicker, Textarea } from 'flowbite-react';
+import { Button, Label, Modal, TextInput, Datepicker, Textarea, Select, FileInput } from 'flowbite-react';
 import 'react-datepicker/dist/react-datepicker.css';
-import { apiPost, /*apiGet*/ } from "@/app/services/internalApiClients"; // Ensure this import is correct
+import { apiPost, /*apiGet*/ } from "@/app/services/internalApiClients";
+import { apiGet } from "@/app/services/externalApiClients";
+import { apiPostSFTP } from "@/app/services/internalApiClients";
 
 interface NumberInputModalProps {
   username: string;
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (startDate: Date | null, endDate: Date | null, price: number | null) => void;
+  onSubmit: () => void;
+}
+
+interface DatesPossible {
+  dateDebut: Date;
+  dateFin: Date;
 }
 
 const NumberInputModal: React.FC<NumberInputModalProps> = ({ username, isOpen, onClose, onSubmit }) => {
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
   const [price, setPrice] = useState<number | null>(null);
 
 // - Nom Salle ou Festival
@@ -33,9 +38,9 @@ const NumberInputModal: React.FC<NumberInputModalProps> = ({ username, isOpen, o
   const [nomSalleFestival, setNomSalleFestival] = useState<string | null>(null);
   const [nomSalleConcert, setNomSalleConcert] = useState<string | null>(null);
   const [ville, setVille] = useState<string | null>(null);
-  const [datePossible, setDatePossible] = useState<string | null>(null);
+  const [datesPossible, setDatesPossible] = useState<Array<DatesPossible>>([]);
   const [capacite, setCapacite] = useState<number | null>(null);
-  const [deadline, setDeadline] = useState<string | null>(null);
+  const [deadline, setDeadline] = useState<Date | null>(null);
   const [dureeShow, setDureeShow] = useState<string | null>(null);
   const [montantCachet, setMontantCachet] = useState<number | null>(null);
   const [deviseCachet, setDeviseCachet] = useState<string | null>(null);
@@ -43,36 +48,73 @@ const NumberInputModal: React.FC<NumberInputModalProps> = ({ username, isOpen, o
   const [coutsExtras, setCoutsExtras] = useState<number | null>(null);
   const [ordrePassage, setOrdrePassage] = useState<string | null>(null);
   const [conditionsGenerales, setConditionsGenerales] = useState<string | null>(null);
-  const [fichierJoint, setFichierJoint] = useState<string | null>(null);
+  const [conditionsPaiement, setConditionsPaiement] = useState<string[]>([]);
+  const [file, setFile] = useState<File | null>(null);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFile(e.target.files?.[0] || null);
+  };
+
+
+  // Fonction pour ajouter un nouveau champ de date
+  const handleAddDates = () => {
+    setDatesPossible((prev) => [...prev, { dateDebut: new Date(), dateFin: new Date() }]);
+  };
+
+  // Fonction pour mettre à jour une date dans l'état
+  const handleDateChange = (
+    index: number,
+    key: "dateDebut" | "dateFin",
+    date: Date
+  ) => {
+    const updatedDates = [...datesPossible];
+    updatedDates[index][key] = date;
+    setDatesPossible(updatedDates);
+  };
 
   const handleSubmit = async () => {
-    if (startDate !== null && endDate !== null && price !== null) {
+    if (datesPossible.length != 0 && price !== null) {
       const urlParams = new URLSearchParams(window.location.search);
       const idOffre = urlParams.get('id');
       const reponse = {
         username: username,
         idOffre: idOffre,
-        dateDebut: startDate,
-        dateFin: endDate,
-        prixParticipation: price
-        // nomSalleFestival: nomSalleFestival,
-        // nomSalleConcert: nomSalleConcert,
-        // ville: ville,
-        // datePossible: datePossible,
-        // capacite: capacite,
-        // deadline: deadline,
-        // dureeShow: dureeShow,
-        // montantCachet: montantCachet,
-        // deviseCachet: deviseCachet,
-        // extras: extras,
-        // coutsExtras: coutsExtras,
-        // ordrePassage: ordrePassage,
-        // conditionsGenerales: conditionsGenerales,
-        // fichierJoint: fichierJoint,
+        prixParticipation: price,
+        nomSalleFestival: nomSalleFestival,
+        nomSalleConcert: nomSalleConcert,  
+        ville: ville,
+        datesPossible: datesPossible,
+        capacite: capacite,
+        deadline: deadline,
+        dureeShow: dureeShow,
+        montantCachet: montantCachet,
+        deviseCachet: deviseCachet,
+        extras: extras,
+        coutsExtras: coutsExtras,
+        ordrePassage: ordrePassage,
+        conditionsGenerales: conditionsGenerales,
       };
+
+      if (file && idOffre) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('idProjet', idOffre.toString());
+        formData.append('typeFichier', "proposition_contribution");
+
+        try {
+          await apiPostSFTP('/upload-sftp-fichier', formData);
+          // setColorMessage('text-green-500');
+          // setMessage('Le fichier a été transféré avec succès');
+        } catch (error) {
+          console.error('Erreur lors du transfert du fichier :', error);
+          // setColorMessage('text-red-500');
+          // setMessage('Erreur lors du transfert du fichier, veuillez réessayer');
+        }
+      }
+
       try {
         await apiPost('/reponse/create', JSON.parse(JSON.stringify(reponse))).then(async () => {
-          onSubmit(startDate, endDate, price);
+          onSubmit();
           const data = {
             'idOffre' : idOffre,
             'username' : username,
@@ -86,6 +128,22 @@ const NumberInputModal: React.FC<NumberInputModalProps> = ({ username, isOpen, o
     }
   };
 
+  useEffect(() => {
+    const fetchMonnaieExistantes = async () => {
+        try {
+            const data: { currencies: Record<string, unknown> }[] = await apiGet("https://restcountries.com/v3.1/all");
+            const monnaieList = Array.from(
+                new Set(data.flatMap((country) => Object.keys(country.currencies || {})))
+            );
+            setConditionsPaiement(monnaieList);
+        } catch (error) {
+            console.error("Erreur lors de la récupération des monnaies existantes :", error);
+        }
+    };
+
+    fetchMonnaieExistantes();
+  }, []);
+
   if (!isOpen) return null;
 
   return (
@@ -97,30 +155,55 @@ const NumberInputModal: React.FC<NumberInputModalProps> = ({ username, isOpen, o
       </Modal.Header>
       <Modal.Body>
         <div className="space-y-6">
-          {/* Date de début */}
-          <div className='flex flex-col'>
-            <Label htmlFor="startDate" value="Sélectionnez une date de début" />
-            <Datepicker
-              id="startDate"
-              //onSelect={(date) => setStartDate(date)}
-              //selected={startDate}
-              onChange={(date) => setStartDate(date)}
-              className="mt-2"
-              // calendarClassName="text-black" // Texte noir pour le calendrier
-            />
-          </div>
+          {/* Bouton pour ajouter des dates */}
+          <Button
+            onClick={handleAddDates}
+          >
+            Ajouter des dates
+          </Button>
 
-          {/* Date de fin */}
-          <div className='flex flex-col'>
-            <Label htmlFor="endDate" value="Sélectionnez une date de fin" />
-            <Datepicker
-              id="endDate"
-              //onSelect={startDate}
-              //selected={endDate}
-              onChange={(date) => setEndDate(date)}
-              className="mt-2"
-              // calendarClassName="text-black" // Texte noir pour le calendrier
-            />
+          {/* Liste des champs dynamiques */}
+          <div className="mt-4 space-y-4">
+            {datesPossible.map((date, index) => (
+              <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Date de début */}
+                <div className="flex flex-col">
+                  <Label htmlFor={`startDate-${index}`} value="Sélectionnez une date de début" />
+                  <Datepicker
+                    id={`startDate-${index}`}
+                    value={date.dateDebut}
+                    onChange={(selectedDate) =>
+                      selectedDate && handleDateChange(index, "dateDebut", selectedDate)
+                    }
+                    className="mt-2"
+                  />
+                </div>
+
+                {/* Date de fin */}
+                <div className="flex flex-col">
+                  <Label htmlFor={`endDate-${index}`} value="Sélectionnez une date de fin" />
+                  <Datepicker
+                    id={`endDate-${index}`}
+                    value={date.dateFin}
+                    onChange={(selectedDate) =>
+                      selectedDate && handleDateChange(index, "dateFin", selectedDate)
+                    }
+                    className="mt-2"
+                  />
+                </div>
+
+                <Button
+                  color="failure"
+                  onClick={() => {
+                    const updatedDates = [...datesPossible];
+                    updatedDates.splice(index, 1);
+                    setDatesPossible(updatedDates);
+                  }}
+                >
+                  Supprimer la ligne
+                </Button>
+              </div>
+            ))}
           </div>
 
           {/* Prix */}
@@ -189,22 +272,6 @@ const NumberInputModal: React.FC<NumberInputModalProps> = ({ username, isOpen, o
             />
           </div>
 
-          {/* Date(s) possible(s) */}
-          <div>
-            <Label htmlFor="datePossible" value="Date(s) possible(s)" />
-            <TextInput
-              id="datePossible"
-              type="text"
-              value={datePossible !== null ? datePossible : ""}
-              onChange={(e) => {
-                const value = e.target.value;
-                setDatePossible(value);
-              }}
-              className="mt-2"
-              placeholder='15/07/2022'
-            />
-          </div>
-
           {/* Capacité */}
           <div>
             <Label htmlFor="capacite" value="Capacité" />
@@ -226,12 +293,12 @@ const NumberInputModal: React.FC<NumberInputModalProps> = ({ username, isOpen, o
           {/* Deadline */}
           <div>
             <Label htmlFor="deadline" value="Deadline" />
-            <TextInput
+            <Datepicker
               id="deadline"
               type="text"
-              value={deadline !== null ? deadline : ""}
+              value={deadline !== null ? deadline : new Date()}
               onChange={(e) => {
-                const value = e.target.value;
+                const value = e;
                 setDeadline(value);
               }}
               className="mt-2"
@@ -275,26 +342,31 @@ const NumberInputModal: React.FC<NumberInputModalProps> = ({ username, isOpen, o
 
           {/* Devise du cachet */}
           <div>
-            <Label htmlFor="deviseCachet" value="Devise du cachet" />
-            <TextInput
+            <Label htmlFor="conditionsPaiement" value="Devise du cachet:" />
+            <Select
               id="deviseCachet"
-              type="text"
-              value={deviseCachet !== null ? deviseCachet : ""}
+              value={deviseCachet ?? ""}
               onChange={(e) => {
                 const value = e.target.value;
                 setDeviseCachet(value);
               }}
-              className="mt-2"
-              placeholder='€'
-            />
+              required
+              className="mt-1"
+            >
+              <option value="">Sélectionnez une monnaie</option>
+              {conditionsPaiement.map((monnaie, index) => (
+                  <option key={index} value={monnaie}>
+                      {monnaie}
+                  </option>
+              ))}
+            </Select>
           </div>
 
           {/* Extra */}
           <div>
             <Label htmlFor="extras" value="Extra" />
-            <TextInput
+            <Textarea
               id="extras"
-              type="text"
               value={extras !== null ? extras : ""}
               onChange={(e) => {
                 const value = e.target.value;
@@ -356,23 +428,21 @@ const NumberInputModal: React.FC<NumberInputModalProps> = ({ username, isOpen, o
 
           {/* Possibilité d’ajouter un fichier joint à l’offre */}
           <div>
-            <Label htmlFor="fichierJoint" value="Possibilité d’ajouter un fichier joint à l’offre" />
-            <TextInput
-              id="fichierJoint"
-              type="text"
-              value={fichierJoint !== null ? fichierJoint : ""}
-              onChange={(e) => {
-                const value = e.target.value;
-                setFichierJoint(value);
-              }}
+            <Label 
+              htmlFor="file" 
+              value="Ajouter un fichier joint à la proposition de contribution" 
+            />
+            <FileInput
               className="mt-2"
+              accept="application/pdf"
+              onChange={handleFileChange}
             />
           </div>
         </div>
       </Modal.Body>
       <Modal.Footer>
         {/* Boutons */}
-        <Button color="blue" onClick={handleSubmit}>
+        <Button onClick={handleSubmit}>
           Soumettre
         </Button>
         <Button color="gray" onClick={onClose}>
