@@ -3,9 +3,12 @@ FROM node:18 AS builder
 
 WORKDIR /app_frontend
 
+# on limite l'utilisation de la RAM à 512 Mo
+ENV NODE_OPTIONS=--max_old_space_size=512
+
 # Copier uniquement les fichiers nécessaires à l'installation des dépendances
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm ci --only=production
 
 # Copier le reste du projet
 COPY . .
