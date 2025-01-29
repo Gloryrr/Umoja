@@ -26,7 +26,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
 class DashboardController extends AbstractDashboardController
 {
-    #[Route('/admin_umodja', name: 'admin')]
+    #[Route('/admin_umoja', name: 'admin')]
     public function index(): Response
     {
         //return parent::index();
@@ -53,14 +53,14 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('UMODJA panel admin');
+            ->setTitle('Umoja panel admin');
     }
 
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Panel admin', 'fa fa-home');
 
-        yield MenuItem::section('UMODJA', 'fa fa-home');
+        yield MenuItem::section('Umoja', 'fa fa-home');
         yield MenuItem::linkToUrl('Revenir sur l\'application', 'fas fa-arrow-left', 'http://localhost:3000/profil');
 
         yield MenuItem::section('Instances gérables');

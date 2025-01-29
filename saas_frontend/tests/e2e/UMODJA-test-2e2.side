@@ -1,7 +1,7 @@
 {
   "id": "babe5a0e-e9aa-4de4-bd86-19cb890a9559",
   "version": "2.0",
-  "name": "UMODJA-test-2e2",
+  "name": "Umoja-test-2e2",
   "url": "http://localhost:3000",
   "tests": [{
     "id": "4b129a34-2b9d-45b5-9299-fa3b2deea17b",
@@ -2510,7 +2510,7 @@
     }]
   }, {
     "id": "ece62535-df53-4cd5-9367-b971d75251c8",
-    "name": "services - umodja",
+    "name": "services - umoja",
     "commands": [{
       "id": "743db02d-86a6-4cdd-bdc8-75b73d88350e",
       "comment": "",
@@ -2609,15 +2609,15 @@
       "id": "3a453d18-3b2b-4e40-a232-0d1a6e5029d1",
       "comment": "",
       "command": "click",
-      "target": "linkText=Umodja",
+      "target": "linkText=Umoja",
       "targets": [
-        ["linkText=Umodja", "linkText"],
+        ["linkText=Umoja", "linkText"],
         ["css=.space-y-4:nth-child(4) .hover\\3Atext-primary-600", "css:finder"],
-        ["xpath=//a[contains(text(),'Umodja')]", "xpath:link"],
+        ["xpath=//a[contains(text(),'Umoja')]", "xpath:link"],
         ["xpath=//div[@id=':Ricq:']/ul/ul/div[4]/li/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/umodja')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/umoja')]", "xpath:href"],
         ["xpath=//div[4]/li/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Umodja')]", "xpath:innerText"]
+        ["xpath=//a[contains(.,'Umoja')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -2628,7 +2628,7 @@
       "targets": [
         ["css=.text-2xl:nth-child(1)", "css:finder"],
         ["xpath=//h1", "xpath:position"],
-        ["xpath=//h1[contains(.,'UmoDJA')]", "xpath:innerText"]
+        ["xpath=//h1[contains(.,'Umoja')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -2639,7 +2639,7 @@
       "targets": [
         ["css=.text-2xl:nth-child(1)", "css:finder"],
         ["xpath=//h1", "xpath:position"],
-        ["xpath=//h1[contains(.,'UmoDJA')]", "xpath:innerText"]
+        ["xpath=//h1[contains(.,'Umoja')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -2650,7 +2650,7 @@
       "targets": [
         ["css=.text-2xl:nth-child(1)", "css:finder"],
         ["xpath=//h1", "xpath:position"],
-        ["xpath=//h1[contains(.,'UmoDJA')]", "xpath:innerText"]
+        ["xpath=//h1[contains(.,'Umoja')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -2680,15 +2680,15 @@
       "id": "3295f5b9-f3a3-486f-a7c6-21163653fc52",
       "comment": "",
       "command": "click",
-      "target": "linkText=Umodja",
+      "target": "linkText=Umoja",
       "targets": [
-        ["linkText=Umodja", "linkText"],
+        ["linkText=Umoja", "linkText"],
         ["css=.space-y-4:nth-child(4) .hover\\3Atext-primary-600", "css:finder"],
-        ["xpath=//a[contains(text(),'Umodja')]", "xpath:link"],
+        ["xpath=//a[contains(text(),'Umoja')]", "xpath:link"],
         ["xpath=//div[@id=':Ricq:']/ul/ul/div[4]/li/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/umodja')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/umoja')]", "xpath:href"],
         ["xpath=//div[4]/li/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Umodja')]", "xpath:innerText"]
+        ["xpath=//a[contains(.,'Umoja')]", "xpath:innerText"]
       ],
       "value": ""
     }]
@@ -4732,7 +4732,7 @@
         ["linkText=Artiste", "linkText"],
         ["css=.menu-item:nth-child(6) > .menu-item-contents", "css:finder"],
         ["xpath=//nav[@id='main-menu']/ul/li[6]/a", "xpath:idRelative"],
-        ["xpath=//a[@href='http://localhost:8000/admin_umodja?crudAction=index&crudControllerFqcn=App%5CController%5CAdmin%5CArtisteCrudController']", "xpath:href"],
+        ["xpath=//a[@href='http://localhost:8000/admin_umoja?crudAction=index&crudControllerFqcn=App%5CController%5CAdmin%5CArtisteCrudController']", "xpath:href"],
         ["xpath=//li[6]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Artiste')]", "xpath:innerText"]
       ],
@@ -4818,7 +4818,7 @@
         ["linkText=Extras", "linkText"],
         ["css=.menu-item:nth-child(13) > .menu-item-contents", "css:finder"],
         ["xpath=//nav[@id='main-menu']/ul/li[13]/a", "xpath:idRelative"],
-        ["xpath=//a[@href='http://localhost:8000/admin_umodja?crudAction=index&crudControllerFqcn=App%5CController%5CAdmin%5CExtrasCrudController']", "xpath:href"],
+        ["xpath=//a[@href='http://localhost:8000/admin_umoja?crudAction=index&crudControllerFqcn=App%5CController%5CAdmin%5CExtrasCrudController']", "xpath:href"],
         ["xpath=//li[13]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Extras')]", "xpath:innerText"]
       ],
@@ -4832,7 +4832,7 @@
         ["linkText=Offre", "linkText"],
         ["css=.menu-item:nth-child(14) > .menu-item-contents", "css:finder"],
         ["xpath=//nav[@id='main-menu']/ul/li[14]/a", "xpath:idRelative"],
-        ["xpath=//a[@href='http://localhost:8000/admin_umodja?crudAction=index&crudControllerFqcn=App%5CController%5CAdmin%5COffreCrudController']", "xpath:href"],
+        ["xpath=//a[@href='http://localhost:8000/admin_umoja?crudAction=index&crudControllerFqcn=App%5CController%5CAdmin%5COffreCrudController']", "xpath:href"],
         ["xpath=//li[14]/a", "xpath:position"]
       ],
       "value": ""
@@ -4951,7 +4951,7 @@
     "tests": ["4b129a34-2b9d-45b5-9299-fa3b2deea17b"]
   }, {
     "id": "b541f237-2c66-4589-b945-7235f1ec0b70",
-    "name": "Umodja - e2e - complet",
+    "name": "Umoja - e2e - complet",
     "persistSession": false,
     "parallel": true,
     "timeout": 300,

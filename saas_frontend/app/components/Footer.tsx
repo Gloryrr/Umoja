@@ -15,14 +15,14 @@ function FooterComponent() {
             {/* Colonne gauche : logo et texte */}
             <div>
               <Footer.Brand
-                href="https://umodja.com"
+                href="https://umoja.com"
                 src="/favicon.ico"
-                alt="UmoDJA Logo"
-                name="UmoDJA"
+                alt="Umoja Logo"
+                name="Umoja"
                 className="text-lg font-bold"
               />
                 <p className="mt-4 text-sm mr-6">
-                  UmoDJA est une plateforme innovante dédiée à la gestion et au suivi de projets collaboratifs. 
+                  Umoja est une plateforme innovante dédiée à la gestion et au suivi de projets collaboratifs. 
                   Découvrez comment contribuez et démarrez votre projets musicaux dès maintenant !
                 </p>
             </div>
@@ -50,8 +50,8 @@ function FooterComponent() {
               <div>
                 <Footer.Title title="À propos" className="uppercase text-sm font-semibold mb-4" />
                 <Footer.LinkGroup col className="space-y-4">
-                  <Footer.Link href="/umodja" className="text-sm">
-                    Qui est UmoDJA ?
+                  <Footer.Link href="/umoja" className="text-sm">
+                    Qui est Umoja ?
                   </Footer.Link>
                   <Footer.Link href="/consentement-mail" className="text-sm">
                     Mon consentement aux emails
@@ -88,7 +88,7 @@ function FooterComponent() {
           {/* Réseaux sociaux et copyright */}
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-center sm:text-left">
             <Footer.Copyright
-              by="UmoDJA™"
+              by="Umoja™"
               year={new Date().getFullYear()}
               className="text-sm mb-4 sm:mb-0"
             />

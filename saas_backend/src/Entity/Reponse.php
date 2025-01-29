@@ -64,24 +64,6 @@ class Reponse
     private Utilisateur $utilisateur;
 
     /**
-     * La date de début de la participation à l'offre.
-     *
-     * @var \DateTimeInterface
-     */
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(['reponse:read', 'reponse:write'])]
-    private \DateTimeInterface $dateDebut;
-
-    /**
-     * La date de fin de la participation à l'offre.
-     *
-     * @var \DateTimeInterface
-     */
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(['reponse:read', 'reponse:write'])]
-    private \DateTimeInterface $dateFin;
-
-    /**
      * Le montant du prix de participation à l'offre.
      *
      * @var float
@@ -89,6 +71,58 @@ class Reponse
     #[ORM\Column]
     #[Groups(['reponse:read', 'reponse:write'])]
     private float $prixParticipation;
+
+    #[ORM\Column(length: 255, nullable: false)]
+    #[Groups(['reponse:read', 'reponse:write'])]
+    private ?string $nomSalleFestival = null;
+
+    #[ORM\Column(length: 255, nullable: false)]
+    #[Groups(['reponse:read', 'reponse:write'])]
+    private ?string $nomSalleConcert = null;
+
+    #[ORM\Column(length: 255, nullable: false)]
+    #[Groups(['reponse:read', 'reponse:write'])]
+    private ?string $ville = null;
+
+    #[ORM\Column(length: 255, nullable: false)]
+    #[Groups(['reponse:read', 'reponse:write'])]
+    private ?string $datesPossible = null;
+
+    #[ORM\Column(nullable: false)]
+    #[Groups(['reponse:read', 'reponse:write'])]
+    private ?int $capacite = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: false)]
+    #[Groups(['reponse:read', 'reponse:write'])]
+    private ?\DateTimeInterface $deadline = null;
+
+    #[ORM\Column(length: 255, nullable: false)]
+    #[Groups(['reponse:read', 'reponse:write'])]
+    private ?string $dureeShow = null;
+
+    #[ORM\Column(nullable: false)]
+    #[Groups(['reponse:read', 'reponse:write'])]
+    private ?int $montantCachet = null;
+
+    #[ORM\Column(length: 255, nullable: false)]
+    #[Groups(['reponse:read', 'reponse:write'])]
+    private ?string $deviseCachet = null;
+
+    #[ORM\Column(length: 255, nullable: false)]
+    #[Groups(['reponse:read', 'reponse:write'])]
+    private ?string $extras = null;
+
+    #[ORM\Column(nullable: false)]
+    #[Groups(['reponse:read', 'reponse:write'])]
+    private ?int $coutExtras = null;
+
+    #[ORM\Column(length: 255, nullable: false)]
+    #[Groups(['reponse:read', 'reponse:write'])]
+    private ?string $ordrePassage = null;
+
+    #[ORM\Column(length: 255, nullable: false)]
+    #[Groups(['reponse:read', 'reponse:write'])]
+    private ?string $conditionsGenerales = null;
 
     /**
      * Retourne l'identifiant de la réponse.
@@ -192,58 +226,6 @@ class Reponse
     }
 
     /**
-     * Retourne la date de début de la participation à l'offre.
-     *
-     * @return \DateTimeInterface
-     * La date de début de la participation.
-     */
-    public function getDateDebut(): \DateTimeInterface
-    {
-        return $this->dateDebut;
-    }
-
-    /**
-     * Définit la date de début de la participation à l'offre.
-     *
-     * @param \DateTimeInterface $dateDebut
-     * La date de début de la participation.
-     *
-     * @return static
-     */
-    public function setDateDebut(\DateTimeInterface $dateDebut): static
-    {
-        $this->dateDebut = $dateDebut;
-
-        return $this;
-    }
-
-    /**
-     * Retourne la date de fin de la participation à l'offre.
-     *
-     * @return \DateTimeInterface
-     * La date de fin de la participation.
-     */
-    public function getDateFin(): \DateTimeInterface
-    {
-        return $this->dateFin;
-    }
-
-    /**
-     * Définit la date de fin de la participation à l'offre.
-     *
-     * @param \DateTimeInterface $dateFin
-     * La date de fin de la participation.
-     *
-     * @return static
-     */
-    public function setDateFin(\DateTimeInterface $dateFin): static
-    {
-        $this->dateFin = $dateFin;
-
-        return $this;
-    }
-
-    /**
      * Retourne le montant du prix de participation à l'offre.
      *
      * @return float
@@ -265,6 +247,162 @@ class Reponse
     public function setPrixParticipation(?float $prixParticipation): static
     {
         $this->prixParticipation = $prixParticipation;
+
+        return $this;
+    }
+
+    public function getNomSalleFestival(): ?string
+    {
+        return $this->nomSalleFestival;
+    }
+
+    public function setNomSalleFestival(string $nomSalleFestival): static
+    {
+        $this->nomSalleFestival = $nomSalleFestival;
+
+        return $this;
+    }
+
+    public function getNomSalleConcert(): ?string
+    {
+        return $this->nomSalleConcert;
+    }
+
+    public function setNomSalleConcert(string $nomSalleConcert): static
+    {
+        $this->nomSalleConcert = $nomSalleConcert;
+
+        return $this;
+    }
+
+    public function getVille(): ?string
+    {
+        return $this->ville;
+    }
+
+    public function setVille(string $ville): static
+    {
+        $this->ville = $ville;
+
+        return $this;
+    }
+
+    public function getDatesPossible(): ?string
+    {
+        return $this->datesPossible;
+    }
+
+    public function setDatesPossible(string $datesPossible): static
+    {
+        $this->datesPossible = $datesPossible;
+
+        return $this;
+    }
+
+    public function getCapacite(): ?int
+    {
+        return $this->capacite;
+    }
+
+    public function setCapacite(int $capacite): static
+    {
+        $this->capacite = $capacite;
+
+        return $this;
+    }
+
+    public function getDeadline(): ?\DateTimeInterface
+    {
+        return $this->deadline;
+    }
+
+    public function setDeadline(\DateTimeInterface $deadline): static
+    {
+        $this->deadline = $deadline;
+
+        return $this;
+    }
+
+    public function getDureeShow(): ?string
+    {
+        return $this->dureeShow;
+    }
+
+    public function setDureeShow(string $dureeShow): static
+    {
+        $this->dureeShow = $dureeShow;
+
+        return $this;
+    }
+
+    public function getMontantCachet(): ?int
+    {
+        return $this->montantCachet;
+    }
+
+    public function setMontantCachet(int $montantCachet): static
+    {
+        $this->montantCachet = $montantCachet;
+
+        return $this;
+    }
+
+    public function getDeviseCachet(): ?string
+    {
+        return $this->deviseCachet;
+    }
+
+    public function setDeviseCachet(string $deviseCachet): static
+    {
+        $this->deviseCachet = $deviseCachet;
+
+        return $this;
+    }
+
+    public function getExtras(): ?string
+    {
+        return $this->extras;
+    }
+
+    public function setExtras(string $extras): static
+    {
+        $this->extras = $extras;
+
+        return $this;
+    }
+
+    public function getCoutExtras(): ?int
+    {
+        return $this->coutExtras;
+    }
+
+    public function setCoutExtras(int $coutExtras): static
+    {
+        $this->coutExtras = $coutExtras;
+
+        return $this;
+    }
+
+    public function getOrdrePassage(): ?string
+    {
+        return $this->ordrePassage;
+    }
+
+    public function setOrdrePassage(string $ordrePassage): static
+    {
+        $this->ordrePassage = $ordrePassage;
+
+        return $this;
+    }
+
+    public function getConditionsGenerales(): ?string
+    {
+        return $this->conditionsGenerales;
+    }
+
+    public function setConditionsGenerales(string $conditionsGenerales): static
+    {
+        $this->conditionsGenerales = $conditionsGenerales;
 
         return $this;
     }

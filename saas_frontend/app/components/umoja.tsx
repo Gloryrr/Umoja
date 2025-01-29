@@ -3,22 +3,22 @@
 import { Card, Button } from "flowbite-react";
 import { Music, Users, Globe } from "lucide-react";
 
-function UmodDJA() {
+function Umoja() {
   return (
     <div className="py-12 px-6">
       {/* Titre principal */}
       <div className="text-center mb-10">
-        <h1 className="text-2xl font-bold mb-4">UmoDJA</h1>
+        <h1 className="text-2xl font-bold mb-4">Umoja</h1>
       </div>
 
       {/* Présentation du concept */}
       <section className="mb-12">
         <Card className="max-w-4xl mx-auto">
-          <h2 className="text-xl font-bold mb-4">Qu&apos;est-ce qu&apos;UmoDJA ?</h2>
+          <h2 className="text-xl font-bold mb-4">Qu&apos;est-ce qu&apos;Umoja ?</h2>
           <p className="text-gray-700">
-            UmoDJA est une plateforme participative dédiée aux projets d&apos;événements musicaux. Elle permet aux artistes,
+            Umoja est une plateforme participative dédiée aux projets d&apos;événements musicaux. Elle permet aux artistes,
             organisateurs et passionnés de collaborer pour créer des expériences uniques. Que vous soyez musicien,
-            DJ, ou simplement fan de musique, UmoDJA vous offre les outils pour financer, organiser et vivre des
+            DJ, ou simplement fan de musique, Umoja vous offre les outils pour financer, organiser et vivre des
             événements mémorables.
           </p>
         </Card>
@@ -69,4 +69,4 @@ function UmodDJA() {
   );
 }
 
-export default UmodDJA;
+export default Umoja;

@@ -9,7 +9,7 @@ use Doctrine\Persistence\ObjectManager;
 use App\Entity\Utilisateur;
 use App\Entity\GenreMusical;
 use App\Entity\Reseau;
-use App\Entity\Artiste;
+use App\Entity\PreferenceNotification;
 use App\Entity\EtatReponse;
 
 class AppFixtures extends Fixture
@@ -17,6 +17,19 @@ class AppFixtures extends Fixture
     public function load(
         ObjectManager $manager,
     ): void {
+        // Préférences de notification
+        $preferenceNotification = new PreferenceNotification();
+
+        // Utilisateurs
+        $admin = new Utilisateur();
+        $admin->setEmailUtilisateur("marmionsteven8@gmail.com");
+        $admin->setMdpUtilisateur("admin");
+        $admin->setUsername("admin");
+        $admin->setRoles("ROLE_ADMIN");
+        $admin->setPreferenceNotification($preferenceNotification);
+
+        $manager->persist($admin);
+
         // États de réponse
         $etatReponseEnAttente = $this->createEtatReponse(
             "En Attente",

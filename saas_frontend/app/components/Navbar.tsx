@@ -122,7 +122,7 @@ const NavbarApp = () => {
               alt="Flowbite React Logo"
             />
             <span className="text-xl font-semibold whitespace-nowrap dark:text-white">
-              UmoDJA
+              Umoja
             </span>
           </Navbar.Brand>
 
@@ -175,10 +175,10 @@ const NavbarApp = () => {
                     <div className="space-y-4 p-4">
                       <li>
                         <a
-                          href="/umodja"
+                          href="/umoja"
                           className="hover:text-primary-600 dark:hover:text-primary-500"
                         >
-                          Umodja
+                          Umoja
                         </a>
                       </li>
                     </div>

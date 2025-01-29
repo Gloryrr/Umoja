@@ -12,7 +12,7 @@ const PrivacyPolicyPage: React.FC = () => {
             {/* Section introduction */}
             <Card className="mb-8 p-6 shadow-lg border border-gray-200 rounded-xl">
                 <p className="text-gray-700 dark:text-gray-300 mb-4">
-                    Chez Umodja, la protection de vos données personnelles est une priorité. Cette politique de confidentialité explique comment nous collectons, utilisons et protégeons vos informations personnelles lorsque vous utilisez nos services.
+                    Chez Umoja, la protection de vos données personnelles est une priorité. Cette politique de confidentialité explique comment nous collectons, utilisons et protégeons vos informations personnelles lorsque vous utilisez nos services.
                 </p>
 
                 <p className="text-gray-700 dark:text-gray-300 mb-4">

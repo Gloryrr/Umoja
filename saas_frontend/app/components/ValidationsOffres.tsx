@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { apiGet, apiPatch } from "@/app//services/internalApiClients";
-import { Alert, Button, Card, Pagination, Checkbox } from "flowbite-react";
+import { apiGet, apiPatch, apiPost } from "@/app//services/internalApiClients";
+import { Alert, Button, Card, Pagination, Checkbox, Textarea } from "flowbite-react";
 import NavigationHandler from "@/app/navigation/Router";
 
 interface EtatReponse {
@@ -38,6 +38,8 @@ function ValidationsOffres({ idOffre }: { idOffre: number }) {
         validee: false,
         refusee: false,
     });
+    const [messageRefusMap, setMessageRefusMap] = useState<{ [key: number]: string }>({});
+    const [warningMessageRefusVide, setWarningMessageRefusVide] = useState<{ [key: number]: string | null }>({});
 
     // Récupérer les propositions
     function getPropositionDeContributions(idOffre: number) {
@@ -53,13 +55,18 @@ function ValidationsOffres({ idOffre }: { idOffre: number }) {
 
     // Gérer la validation
     function handleValidation(idProposition: number) {
+        setWarningMessageRefusVide((prev) => ({
+            ...prev,
+            [idProposition]: null,
+        }));
+
         const updatedProposition = {
             ...propositionsDeContributions.find((prop) => prop.id === idProposition),
             etatReponse: { nomEtatReponse: "Validée" },
         };
         const data = updatedProposition;
 
-        apiPatch(`/reponse/update/${idProposition}`, JSON.parse(JSON.stringify(data))).then(() => {
+        apiPatch(`/reponse/update/${idProposition}`, JSON.parse(JSON.stringify(data))).then(async () => {
             setPropositionsDeContributions((prev) =>
                 prev.map((prop) =>
                     prop.id === idProposition
@@ -68,27 +75,55 @@ function ValidationsOffres({ idOffre }: { idOffre: number }) {
                 )
             );
             setSuccessMessage(`Proposition ${idProposition} validée avec succès.`);
+            const data = {
+                idProposition: idProposition
+            }
+            await apiPost(
+                '/envoi-email-validation-proposition-contribution', 
+                JSON.parse(JSON.stringify(data))
+            );
         });
     }
 
     // Gérer le refus
     function handleRefus(idProposition: number) {
-        const updatedProposition = {
-            ...propositionsDeContributions.find((prop) => prop.id === idProposition),
-            etatReponse: { nomEtatReponse: "Refusée" },
-        };
-        const data = updatedProposition;
+        const messageRefus = messageRefusMap[idProposition];
+        if (!messageRefus || messageRefus.trim() === "") {
+            setWarningMessageRefusVide((prev) => ({
+                ...prev,
+                [idProposition]: "Veuillez indiquer un motif de refus",
+            }));
+        } else {
+            setWarningMessageRefusVide((prev) => ({
+                ...prev,
+                [idProposition]: null,
+            }));
 
-        apiPatch(`/reponse/update/${idProposition}`, JSON.parse(JSON.stringify(data))).then(() => {
-            setPropositionsDeContributions((prev) =>
-                prev.map((prop) =>
-                    prop.id === idProposition
-                        ? { ...prop, etatReponse: { nomEtatReponse: "Refusée" } }
-                        : prop
-                )
-            );
-            setSuccessMessage(`Proposition ${idProposition} refusée avec succès.`);
-        });
+            const updatedProposition = {
+                ...propositionsDeContributions.find((prop) => prop.id === idProposition),
+                etatReponse: { nomEtatReponse: "Refusée" },
+            };
+            const data = updatedProposition;
+    
+            apiPatch(`/reponse/update/${idProposition}`, JSON.parse(JSON.stringify(data))).then(async () => {
+                setPropositionsDeContributions((prev) =>
+                    prev.map((prop) =>
+                        prop.id === idProposition
+                            ? { ...prop, etatReponse: { nomEtatReponse: "Refusée" } }
+                            : prop
+                    )
+                );
+                setSuccessMessage(`Proposition ${idProposition} refusée avec succès.`);
+                const data = {
+                    idProposition: idProposition,
+                    messageRefus: messageRefus
+                }
+                await apiPost(
+                    '/envoi-email-refus-proposition-contribution',
+                    JSON.parse(JSON.stringify(data))
+                );
+            });
+        }
     }
 
     // Filtrer les propositions par état
@@ -150,12 +185,6 @@ function ValidationsOffres({ idOffre }: { idOffre: number }) {
                     </Button>
                 )}
             </NavigationHandler>
-
-            <Button
-                className="mb-6"
-            >
-                Barre de progression de l&apos;offre
-            </Button>
 
             {successMessage && (
                 <Alert color="success" className="mb-5" onDismiss={() => setSuccessMessage(null)}>
@@ -248,6 +277,22 @@ function ValidationsOffres({ idOffre }: { idOffre: number }) {
                             >
                                 Refuser
                             </Button>
+                        </div>
+
+                        <div>
+                            <Textarea
+                                placeholder="Votre proposition ne me convient pas car ..."
+                                value={messageRefusMap[proposition.id] || ""}
+                                onChange={(e) =>
+                                    setMessageRefusMap((prev) => ({
+                                        ...prev,
+                                        [proposition.id]: e.target.value,
+                                    }))
+                                }
+                            />
+                            <p className="text-red-500">
+                                {warningMessageRefusVide && warningMessageRefusVide[proposition.id] ? warningMessageRefusVide[proposition.id] : null}
+                            </p>
                         </div>
                     </Card>
                 ))}
