@@ -8,7 +8,6 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use App\Entity\Utilisateur;
 use App\Entity\GenreMusical;
-use App\Entity\Reseau;
 use App\Entity\PreferenceNotification;
 use App\Entity\EtatReponse;
 
@@ -22,9 +21,9 @@ class AppFixtures extends Fixture
 
         // Utilisateurs
         $admin = new Utilisateur();
-        $admin->setEmailUtilisateur("marmionsteven8@gmail.com");
-        $admin->setMdpUtilisateur("admin");
-        $admin->setUsername("admin");
+        $admin->setEmailUtilisateur("%env(MAIL_UMOJA)%");
+        $admin->setMdpUtilisateur("admin_umoja");
+        $admin->setUsername("admin_umoja");
         $admin->setRoles("ROLE_ADMIN");
         $admin->setPreferenceNotification($preferenceNotification);
 
@@ -75,14 +74,6 @@ class AppFixtures extends Fixture
             $manager->persist($genreMusical);
         }
 
-        $reseauF = $this->createReseau("Facebook");
-        $reseauT = $this->createReseau("Twitter");
-        $reseauI = $this->createReseau("Instagram");
-
-        $manager->persist($reseauF);
-        $manager->persist($reseauT);
-        $manager->persist($reseauI);
-
         // Persist and flush
         $manager->flush();
     }
@@ -118,13 +109,5 @@ class AppFixtures extends Fixture
         $genreMusical->setNomGenreMusical($nomGenreMusical);
 
         return $genreMusical;
-    }
-
-    public function createReseau(string $nomReseau): Reseau
-    {
-        $reseauObject = new Reseau();
-        $reseauObject->setNomReseau($nomReseau);
-
-        return $reseauObject;
     }
 }
