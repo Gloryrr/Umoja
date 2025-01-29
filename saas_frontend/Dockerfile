@@ -1,24 +1,32 @@
-# importe l'image de node pour l'environnement
+# Étape de build
 FROM node:18 AS builder
 
 WORKDIR /app_frontend
 
-# copie les fichiers de dépendances pour l'install
+# Copier uniquement les fichiers nécessaires à l'installation des dépendances
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm ci
 
+# Copier le reste du projet
 COPY . .
 
+# Générer le build de Next.js
 RUN npm run build
 
-# importe l'image de node pour l'environnement
+# Étape de production
 FROM node:18 AS production
 
 WORKDIR /app_frontend
 
-COPY --from=builder /app_frontend ./
+# Copier uniquement les fichiers nécessaires
+COPY --from=builder /app_frontend/package.json /app_frontend/package-lock.json ./
+COPY --from=builder /app_frontend/.next /app_frontend/.next
+COPY --from=builder /app_frontend/public /app_frontend/public
+COPY --from=builder /app_frontend/node_modules /app_frontend/node_modules
 
-# Exposer le port sur lequel l'application sera accessible
+# Définir les variables d'environnement
+ENV NODE_ENV=production
 EXPOSE 3000
 
-CMD ["npm", "start"]
+# Commande pour démarrer l'application
+CMD ["npm", "run", "start"]
