@@ -63,7 +63,7 @@ elif [ $instruction == "14" ]; then
 elif [ $instruction == "15" ]; then
     docker-compose exec application php bin/console doctrine:database:create --env=prod
     docker-compose exec application php bin/console doctrine:schema:update --force --env=prod
-    docker-compose exec application php bin/console doctrine:fixtures:load --env=prod
+    docker-compose exec application php bin/console doctrine:fixtures:load
 elif [ $instruction == "16" ]; then
     echo "Fermeture de l'utilitaire"
     exit
