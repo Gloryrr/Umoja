@@ -1,4 +1,5 @@
-const BASE_URL = 'http://localhost:8000/api/v1';
+// const BASE_URL = 'http://localhost:8000/api/v1';
+const BASE_URL = 'http://169.99.137.127:8000/api/v1';
 
 const renvoieReponsePromise = async (response: Response) => {
     if (!response.ok) {
