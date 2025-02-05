@@ -1,4 +1,4 @@
-name: Construit et pousse les images Docker pour le backend d'Umoja
+name: Construit et pousse les images umoja
 
 on:
   push:
@@ -21,24 +21,24 @@ jobs:
 
       - name: 🏗️ Build et tag de l'image `application`
         run: |
-          docker build -t marmionsteven/umoja-backend:application-latest -f Dockerfile .
+          docker build -t umoja/umoja-application:application-latest -f Dockerfile ./saas_backend/
           
       - name: 📤 Push de l'image `application`
         run: |
-          docker push marmionsteven/umoja-backend:application-latest
+          docker push umoja/umoja-application:application-latest
 
       - name: 🏗️ Build et tag de l'image `sftp`
         run: |
-          docker build -t marmionsteven/umoja-backend:sftp-latest -f DockerfileSFTP .
+          docker build -t umoja/umoja-application:sftp-latest -f DockerfileSFTP ./saas_backend/
 
       - name: 📤 Push de l'image `sftp`
         run: |
-          docker push marmionsteven/umoja-backend:sftp-latest
+          docker push umoja/umoja-application:sftp-latest
 
       - name: 🏗 Build de l'image Frontend
         run: |
-          docker build -t marmionsteven/umoja-frontend:latest .
+          docker build -t umoja/umoja-application:latest -f Dockerfile ./saas_frontend/
 
       - name: 📤 Push de l'image Frontend
         run: |
-          docker push marmionsteven/umoja-frontend:latest
+          docker push umoja/umoja-application:latest
