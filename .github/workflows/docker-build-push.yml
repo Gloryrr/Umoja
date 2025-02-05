@@ -1,4 +1,4 @@
-name: Construit et pousse les images umoja
+name: Build / Push Umoja images
 
 on:
   push:
