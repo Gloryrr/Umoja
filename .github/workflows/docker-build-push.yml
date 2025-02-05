@@ -21,7 +21,7 @@ jobs:
 
       - name: 🏗️ Build et tag de l'image `application`
         run: |
-          docker build -t umoja/umoja-application:application-latest -f Dockerfile ./saas_backend/
+          docker build -t umoja/umoja-application:application-latest -f ./saas_backend/Dockerfile ./saas_backend/
           
       - name: 📤 Push de l'image `application`
         run: |
@@ -29,7 +29,7 @@ jobs:
 
       - name: 🏗️ Build et tag de l'image `sftp`
         run: |
-          docker build -t umoja/umoja-application:sftp-latest -f DockerfileSFTP ./saas_backend/
+          docker build -t umoja/umoja-application:sftp-latest -f ./saas_backend/DockerfileSFTP ./saas_backend/
 
       - name: 📤 Push de l'image `sftp`
         run: |
@@ -37,7 +37,7 @@ jobs:
 
       - name: 🏗 Build de l'image Frontend
         run: |
-          docker build -t umoja/umoja-application:latest -f Dockerfile ./saas_frontend/
+          docker build -t umoja/umoja-application:latest -f ./saas_frontend/Dockerfile ./saas_frontend/
 
       - name: 📤 Push de l'image Frontend
         run: |
