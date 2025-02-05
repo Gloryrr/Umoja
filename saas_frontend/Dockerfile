@@ -8,10 +8,12 @@ WORKDIR /app_frontend
 
 # Copier uniquement les fichiers nécessaires à l'installation des dépendances
 COPY package.json package-lock.json ./
-RUN npm ci --only=production
+RUN npm ci --omit=dev
 
 # Copier le reste du projet
 COPY . .
+
+RUN ls -R
 
 # Générer le build de Next.js
 RUN npm run build
