@@ -61,7 +61,11 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToDashboard('Panel admin', 'fa fa-home');
 
         yield MenuItem::section('Umoja', 'fa fa-home');
-        yield MenuItem::linkToUrl('Revenir sur l\'application', 'fas fa-arrow-left', 'http://167.99.137.127:3000/profil');
+        yield MenuItem::linkToUrl(
+            'Revenir sur l\'application',
+            'fas fa-arrow-left',
+            'http://167.99.137.127:3000/profil'
+        );
 
         yield MenuItem::section('Instances gérables');
         yield MenuItem::linkToCrud('Utilisateur', 'fas fa-user', Utilisateur::class);
@@ -86,6 +90,10 @@ class DashboardController extends AbstractDashboardController
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
 
         yield MenuItem::section('Liens utiles');
-        yield MenuItem::linkToUrl('Revenir sur l\'application', 'fas fa-arrow-left', 'http://167.99.137.127:3000/profil');
+        yield MenuItem::linkToUrl(
+            'Revenir sur l\'application',
+            'fas fa-arrow-left',
+            'http://167.99.137.127:3000/profil'
+        );
     }
 }
