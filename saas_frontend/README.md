@@ -32,7 +32,7 @@ Pour démarrer le frontend, merci de prendre en compte les deux manières suivan
 
 Une fois le lancement du serveur effectué, merci d'ouvrir votre navigateur et d'entrer l'adresse suivante :
 ```text
-localhost:3000
+167.99.137.127:3000
 ```
 
 ## Testting
