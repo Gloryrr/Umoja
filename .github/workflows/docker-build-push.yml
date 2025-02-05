@@ -20,7 +20,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: 🏗️ Build et tag de l'image `application`
-        run: |
+        run: | 
           docker build -t umoja/umoja-application:application-latest -f ./saas_backend/Dockerfile ./saas_backend/
           
       - name: 📤 Push de l'image `application`
@@ -36,8 +36,8 @@ jobs:
           docker push umoja/umoja-application:sftp-latest
 
       - name: 🏗 Build de l'image Frontend
-        run: |
-          docker build -t umoja/umoja-application:latest -f ./saas_frontend/Dockerfile ./saas_frontend/
+        run: | 
+          cd ./saas_frontend && docker build -t umoja/umoja-application:latest -f Dockerfile .
 
       - name: 📤 Push de l'image Frontend
         run: |
