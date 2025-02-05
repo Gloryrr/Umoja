@@ -2,9 +2,9 @@
 
 import { Button, Spinner, Card, Dropdown, Checkbox, Select } from "flowbite-react";
 import { useEffect, useState } from "react";
-import { apiGet, apiPost } from "@/app/services/internalApiClients";
+import { apiGet, apiPost } from "../../app/services/internalApiClients";
 import { MdArrowLeft, MdArrowRight } from "react-icons/md";
-import NetworksOffres from "@/app/components/NetworksOffres";
+import NetworksOffres from "../../app/components/NetworksOffres";
 import { IoMdMailOpen } from "react-icons/io";
 
 interface Reseau {

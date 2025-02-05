@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
-import { apiGet } from "@/app/services/externalApiClients";
+import { apiGet } from "../../../../app/services/externalApiClients";
 import { Card, Label, TextInput, Select, Button, Checkbox, FileInput } from "flowbite-react";
 import { FiRefreshCw } from "react-icons/fi";
-import { apiPostSFTP, apiPost } from "@/app/services/internalApiClients";
+import { apiPostSFTP, apiPost } from "../../../../app/services/internalApiClients";
 
 interface ConditionsFinancieresFormProps {
     conditionsFinancieres: {

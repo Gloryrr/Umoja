@@ -1,4 +1,4 @@
-import TableauDeBord from "@/app/components/TableauDeBord";
+import TableauDeBord from "../../app/components/TableauDeBord";
 
 function TableauDeBordPage() {
   return (

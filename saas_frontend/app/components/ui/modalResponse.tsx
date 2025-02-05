@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 // import DatePicker from 'react-datepicker';
 import { Button, Label, Modal, TextInput, Datepicker, Textarea, Select, FileInput } from 'flowbite-react';
 import 'react-datepicker/dist/react-datepicker.css';
-import { apiPost, /*apiGet*/ } from "@/app/services/internalApiClients";
-import { apiGet } from "@/app/services/externalApiClients";
-import { apiPostSFTP } from "@/app/services/internalApiClients";
+import { apiPost, /*apiGet*/ } from "../../../app/services/internalApiClients";
+import { apiGet } from "../../../app/services/externalApiClients";
+import { apiPostSFTP } from "../../../app/services/internalApiClients";
 
 interface NumberInputModalProps {
   username: string;

@@ -1,4 +1,4 @@
-import ParticipationsProjet from "@/app/components/ParticipationsProjet";
+import ParticipationsProjet from "../../app/components/ParticipationsProjet";
 
 function ParticipationsProjetPage() {
   return (

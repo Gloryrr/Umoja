@@ -9,9 +9,9 @@ import {
     FileInput,
     Checkbox,
 } from 'flowbite-react';
-import { apiPostSFTP } from '@/app/services/internalApiClients';
+import { apiPostSFTP } from '../../../../app/services/internalApiClients';
 import { FiRefreshCw } from 'react-icons/fi';
-import { apiPost} from '@/app/services/internalApiClients';
+import { apiPost} from '../../../../app/services/internalApiClients';
 
 interface ExtrasFormProps {
     extras: {

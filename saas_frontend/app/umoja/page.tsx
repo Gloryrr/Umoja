@@ -1,4 +1,4 @@
-import UmodDJA from "@/app/components/umoja";
+import UmodDJA from "../../app/components/umoja";
 
 function UmojaPage() {
   return (

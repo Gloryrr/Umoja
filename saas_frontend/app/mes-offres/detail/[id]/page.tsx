@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import OffreDetail from "@/app/components/OffreDetail";
+import OffreDetail from "../../../../app/components/OffreDetail";
 
 export default function DetailPage() {
   const { id } = useParams();

@@ -6,14 +6,14 @@ import { HiCheck } from 'react-icons/hi';
 import { useSearchParams } from 'next/navigation';
 // import { FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
 import { Progress, Button, Modal, Card, Spinner, Textarea, Avatar, Tabs, Toast } from 'flowbite-react';
-import NumberInputModal from '@/app/components/ui/modalResponse';
-import { apiGet, apiPost, apiDelete, apiPatch } from '@/app/services/internalApiClients';
-import NavigationHandler from '@/app/navigation/Router';
-import CommentaireSection from "@/app/components/Commentaires/CommentaireSection";
+import NumberInputModal from '../../app/components/ui/modalResponse';
+import { apiGet, apiPost, apiDelete, apiPatch } from '../../app/services/internalApiClients';
+import NavigationHandler from '../../app/navigation/Router';
+import CommentaireSection from "../../app/components/Commentaires/CommentaireSection";
 import Image from 'next/image';
-import { FicheTechniqueArtiste, FormData } from '@/app/types/FormDataType';
-import ModifierOffreForm from '@/app/components/ui/modifierOffre';
-import DownloadButton from '@/app/components/DowloadFilePDF';
+import { FicheTechniqueArtiste, FormData } from '../../app/types/FormDataType';
+import ModifierOffreForm from '../../app/components/ui/modifierOffre';
+import DownloadButton from '../../app/components/DowloadFilePDF';
 
 interface Extras {
     extrasParPDF: boolean;

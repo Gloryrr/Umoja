@@ -13,8 +13,6 @@ RUN npm ci --omit=dev
 # Copier le reste du projet
 COPY . .
 
-RUN ls -R
-
 # Générer le build de Next.js
 RUN npm run build
 

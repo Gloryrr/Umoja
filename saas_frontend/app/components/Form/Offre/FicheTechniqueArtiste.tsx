@@ -2,8 +2,8 @@
 import React, {useEffect, useState, useRef } from 'react';
 import { TextInput, Label, Card, Button, Checkbox, FileInput } from 'flowbite-react';
 import { FiRefreshCw } from "react-icons/fi";
-import { Artiste } from '@/app/types/FormDataType';
-import { apiPostSFTP, apiPost } from '@/app/services/internalApiClients';
+import { Artiste } from '../../../../app/types/FormDataType';
+import { apiPostSFTP, apiPost } from '../../../../app/services/internalApiClients';
 
 interface FicheTechniqueArtisteFormProps {
     ficheTechniqueArtiste: {

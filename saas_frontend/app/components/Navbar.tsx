@@ -6,7 +6,7 @@ import NavigationHandler from "../navigation/Router";
 import Image from "next/image";
 import { HiSearch } from "react-icons/hi";
 import { IoIosTime } from "react-icons/io";
-import { apiGet, apiPost } from "@/app/services/internalApiClients";
+import { apiGet, apiPost } from "../../app/services/internalApiClients";
 import { DarkThemeToggle } from "flowbite-react";
 
 interface SearchResult {

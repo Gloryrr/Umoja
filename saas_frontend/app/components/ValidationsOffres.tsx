@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { apiGet, apiPatch, apiPost } from "@/app//services/internalApiClients";
+import { apiGet, apiPatch, apiPost } from "../../app/services/internalApiClients";
 import { Alert, Button, Card, Pagination, Checkbox, Textarea } from "flowbite-react";
-import NavigationHandler from "@/app/navigation/Router";
+import NavigationHandler from "../../app/navigation/Router";
 
 interface EtatReponse {
     nomEtatReponse: string;

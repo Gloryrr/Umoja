@@ -1,4 +1,4 @@
-import { apiGet } from '@/app/services/internalApiClients';
+import { apiGet } from '../../../app/services/internalApiClients';
 import React, { useState } from 'react';
 import { User, Reseaux } from './modal';
 

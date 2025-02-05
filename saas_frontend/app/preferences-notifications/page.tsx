@@ -1,4 +1,4 @@
-import PreferencesNotifications from "@/app/components/PreferencesNotifications";
+import PreferencesNotifications from "../../app/components/PreferencesNotifications";
 
 function PreferencesNotificationsPage() {
   return (

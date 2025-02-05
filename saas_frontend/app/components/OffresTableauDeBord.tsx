@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { Table, Spinner, Pagination } from "flowbite-react";
-import { apiGet, apiPost } from "@/app/services/internalApiClients";
+import { apiGet, apiPost } from "../../app/services/internalApiClients";
 
 interface Offre {
     id: number;

@@ -1,4 +1,4 @@
-import ConsentementMail from "@/app/components/ConsentementMail";
+import ConsentementMail from "../../app/components/ConsentementMail";
 
 function ConsentementMailPage() {
   return (

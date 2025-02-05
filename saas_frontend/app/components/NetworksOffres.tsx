@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { apiPost, apiGet } from "@/app/services/internalApiClients";
+import { apiPost, apiGet } from "../../app/services/internalApiClients";
 import { Card, Button, Pagination, Select, TextInput, Dropdown, Checkbox, Spinner } from "flowbite-react";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 import Image from "next/image";

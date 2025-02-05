@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import ValidationsOffres from "@/app/components/ValidationsOffres";
+import ValidationsOffres from "../../../app/components/ValidationsOffres";
 
 export default function DetailPage() {
   const { id } = useParams();

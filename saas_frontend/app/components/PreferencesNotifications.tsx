@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { Card, ToggleSwitch, Button, ListGroup } from 'flowbite-react';
-import { apiGet, apiPatch } from '@/app/services/internalApiClients';
+import { apiGet, apiPatch } from '../../app/services/internalApiClients';
 import { DarkThemeToggle, Flowbite, Toast } from "flowbite-react";
 import { HiCheck } from 'react-icons/hi';
 

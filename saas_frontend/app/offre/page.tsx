@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
-import NavigationHandler from '@/app/navigation/Router';
-import OffreForm from '@/app/components/Form/Offre/OffreForm';
+import NavigationHandler from '../../app/navigation/Router';
+import OffreForm from '../../app/components/Form/Offre/OffreForm';
 import { Button } from 'flowbite-react';
 
 export default function Offre() {

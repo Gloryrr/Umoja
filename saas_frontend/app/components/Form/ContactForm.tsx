@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Button, Label, Textarea, Card, Spinner, Toast } from "flowbite-react";
 import { HiCheck } from "react-icons/hi"; // Icone pour la popup
-import { apiPost } from "@/app/services/internalApiClients";
+import { apiPost } from "../../../app/services/internalApiClients";
 
 export default function ContactForm() {
   const [message, setMessage] = useState<string>("");

@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { Button, Label, Modal, Progress, Accordion, Textarea } from "flowbite-react";
 import { HiArrowLeft, HiPencil, HiTrash } from "react-icons/hi";
-import { apiGet, apiDelete, apiPost } from "@/app/services/internalApiClients";
-import CommentaireSection from "@/app/components/Commentaires/CommentaireSection";
+import { apiGet, apiDelete, apiPost } from "../../app/services/internalApiClients";
+import CommentaireSection from "../../app/components/Commentaires/CommentaireSection";
 import NavigationHandler from "../navigation/Router";
 
 interface Offre {

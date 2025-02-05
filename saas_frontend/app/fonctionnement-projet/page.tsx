@@ -1,4 +1,4 @@
-import FonctionnementProjet from "@/app/components/FonctionnementProjet";
+import FonctionnementProjet from "../../app/components/FonctionnementProjet";
 
 function FonctionnementProjetPage() {
   return (

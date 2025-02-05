@@ -1,7 +1,7 @@
 "use client"
 import React from 'react';
 import { FaUser, FaLock } from "react-icons/fa";
-import NavigationHandler from '@/app/navigation/Router';
+import NavigationHandler from '../../app/navigation/Router';
 
 export default function connection_form() {
 

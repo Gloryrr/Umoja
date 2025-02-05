@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { apiGet } from '@/app/services/externalApiClients';
+import { apiGet } from '../../../../app/services/externalApiClients';
 import { Card, Label, TextInput, Textarea, Button } from 'flowbite-react';
 import { FiRefreshCw } from "react-icons/fi";
 

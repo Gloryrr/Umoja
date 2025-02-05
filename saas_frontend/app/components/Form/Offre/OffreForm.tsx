@@ -1,16 +1,16 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Accordion, Button, Alert, Timeline, FileInput, Label, Card } from 'flowbite-react';
-import ExtrasForm from '@/app/components/Form/Offre/ExtrasForm';
-import ConditionsFinancieresForm from '@/app/components/Form/Offre/ConditionsFinancieresForm';
-import BudgetEstimatifForm from '@/app/components/Form/Offre/BudgetEstimatifForm';
-import DetailOffreForm from '@/app/components/Form/Offre/DetailOffreForm';
-import FicheTechniqueArtisteForm from '@/app/components/Form/Offre/FicheTechniqueArtiste';
-import InfoAdditionnelAlert from '@/app/components/Alerte/InfoAdditionnelAlerte';
-import { apiPost,apiGet } from '@/app/services/internalApiClients';
+import ExtrasForm from '../../../../app/components/Form/Offre/ExtrasForm';
+import ConditionsFinancieresForm from '../../../../app/components/Form/Offre/ConditionsFinancieresForm';
+import BudgetEstimatifForm from '../../../../app/components/Form/Offre/BudgetEstimatifForm';
+import DetailOffreForm from '../../../../app/components/Form/Offre/DetailOffreForm';
+import FicheTechniqueArtisteForm from '../../../../app/components/Form/Offre/FicheTechniqueArtiste';
+import InfoAdditionnelAlert from '../../../../app/components/Alerte/InfoAdditionnelAlerte';
+import { apiPost,apiGet } from '../../../../app/services/internalApiClients';
 import { HiInformationCircle } from "react-icons/hi";
-import { FormData, GenreMusical, Reseau } from '@/app/types/FormDataType';
-import SelectCheckbox from '@/app/components/SelectCheckbox';
+import { FormData, GenreMusical, Reseau } from '../../../../app/types/FormDataType';
+import SelectCheckbox from '../../../../app/components/SelectCheckbox';
 
 const OffreForm: React.FC = () => {
     const dateParDefaut = new Date().toISOString().split('T')[0] as string;

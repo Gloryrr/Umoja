@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
 import { Button, Card, TextInput, Label, Badge, Spinner, Toast } from "flowbite-react";
-import { apiGet, apiPatch, apiPost } from "@/app/services/internalApiClients";
+import { apiGet, apiPatch, apiPost } from "../../app/services/internalApiClients";
 import { HiCheck } from 'react-icons/hi';
 
 const Profil: React.FC = () => {

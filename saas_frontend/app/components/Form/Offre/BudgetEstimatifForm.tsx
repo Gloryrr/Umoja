@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Card, Label, TextInput, Button, Checkbox, FileInput } from 'flowbite-react';
 import { FiRefreshCw } from "react-icons/fi";
-import { apiPostSFTP, apiPost } from '@/app/services/internalApiClients';
+import { apiPostSFTP, apiPost } from '../../../../app/services/internalApiClients';
 
 interface BudgetEstimatifFormProps {
     budgetEstimatif: {

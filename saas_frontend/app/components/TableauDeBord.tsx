@@ -2,7 +2,7 @@
 
 import { Breadcrumb } from "flowbite-react";
 import { HiHome } from "react-icons/hi";
-import TableDesOffres from "@/app/components/OffresTableauDeBord";
+import TableDesOffres from "../../app/components/OffresTableauDeBord";
 
 export function TableauDeBord() {
     return (
