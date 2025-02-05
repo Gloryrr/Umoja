@@ -29,6 +29,8 @@ export function Networks() {
 
     const [nomReseauChoisi, setNomReseauChoisi] = useState<string | null>();
 
+    const [reseauxExistant, setReseauxExistant] = useState<boolean>(false);
+
     useEffect(() => {
         const fetchData = async () => {
             await apiGet("/me").then(async (response) => {
@@ -40,6 +42,11 @@ export function Networks() {
                 };
                 await apiPost("/reseaux/utilisateur", JSON.parse(JSON.stringify(data))).then(async (rep) => {
                     const fetchedReseaux = JSON.parse(rep.reseaux) || [];
+                    if (fetchedReseaux == null || fetchedReseaux.length == 0) {
+                        setReseauxExistant(false);
+                    } else {
+                        setReseauxExistant(true);
+                    }
                     setFilteredReseaux(fetchedReseaux);
                     setTotalPages(Number(rep.nb_pages));
                 });
@@ -233,10 +240,12 @@ export function Networks() {
                             ))}
                         </div>
                     ) : (
+                        reseauxExistant === true && (
                         <div className="flex items-center justify-center w-full h-full">
                             <p className="text-center">Chargement de vos réseaux...</p>
                             <Spinner size="lg" className="ml-2" />
                         </div>
+                        )
                     )}
                 </div>
     

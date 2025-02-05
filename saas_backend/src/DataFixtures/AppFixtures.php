@@ -21,7 +21,7 @@ class AppFixtures extends Fixture
 
         // Utilisateurs
         $admin = new Utilisateur();
-        $admin->setEmailUtilisateur("%env(MAIL_UMOJA)%");
+        $admin->setEmailUtilisateur($_ENV['MAIL_UMOJA']);
         $admin->setMdpUtilisateur("admin_umoja");
         $admin->setUsername("admin_umoja");
         $admin->setRoles("ROLE_ADMIN");
