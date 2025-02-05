@@ -1,10 +1,10 @@
 services:
   umoja:
-    build:
-      context: .
+    # build:
+    #   context: .
+    image: umoja/umoja-application:frontend-latest
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=production
     restart: always
-    mem_limit: 512m # on limite l'utilisation de la mémoire à 512 Mo

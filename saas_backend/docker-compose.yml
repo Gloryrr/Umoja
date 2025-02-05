@@ -12,9 +12,10 @@ services:
             - application
 
     application:
-        build:
-            context: .
-            dockerfile: Dockerfile
+        # build:
+        #     context: .
+        #     dockerfile: Dockerfile
+        image: umoja/umoja-application:application-latest
         volumes:
             - .:/app/saas/backend/
         networks:
@@ -35,9 +36,10 @@ services:
             - symfony-network
 
     sftp:
-        build:
-            context: .
-            dockerfile: DockerfileSFTP
+        # build:
+        #     context: .
+        #     dockerfile: DockerfileSFTP
+        image: umoja/umoja-application:sftp-latest
         ports:
             - "2222:22"
         volumes:

@@ -1,0 +1,44 @@
+name: Construit et pousse les images Docker pour le backend d'Umoja
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 🛎️ Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: 🔑 Connexion à Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: 🏗️ Build et tag de l'image `application`
+        run: |
+          docker build -t marmionsteven/umoja-backend:application-latest -f Dockerfile .
+          
+      - name: 📤 Push de l'image `application`
+        run: |
+          docker push marmionsteven/umoja-backend:application-latest
+
+      - name: 🏗️ Build et tag de l'image `sftp`
+        run: |
+          docker build -t marmionsteven/umoja-backend:sftp-latest -f DockerfileSFTP .
+
+      - name: 📤 Push de l'image `sftp`
+        run: |
+          docker push marmionsteven/umoja-backend:sftp-latest
+
+      - name: 🏗 Build de l'image Frontend
+        run: |
+          docker build -t marmionsteven/umoja-frontend:latest .
+
+      - name: 📤 Push de l'image Frontend
+        run: |
+          docker push marmionsteven/umoja-frontend:latest
