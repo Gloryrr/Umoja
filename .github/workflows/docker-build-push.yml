@@ -37,8 +37,8 @@ jobs:
 
       - name: 🏗 Build de l'image Frontend
         run: | 
-          cd ./saas_frontend/ && docker build -t umoja/umoja-application:latest -f Dockerfile ./
+          cd ./saas_frontend/ && docker build -t umoja/umoja-application:frontend-latest -f Dockerfile ./
 
       - name: 📤 Push de l'image Frontend
         run: |
-          docker push umoja/umoja-application:latest
+          docker push umoja/umoja-application:frontend-latest
