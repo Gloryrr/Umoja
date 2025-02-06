@@ -21,7 +21,7 @@ class MailerService
     public function __construct(MailerInterface $mailer)
     {
         $this->mailer = $mailer;
-        $this->umojaEmail = "%env(MAIL_UMOJA)%";
+        $this->umojaEmail = $_ENV['MAIL_UMOJA'];
         $this->umojaName = "Umoja";
     }
 
