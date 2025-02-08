@@ -1,22 +1,24 @@
-# see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
     secret: '%env(APP_SECRET)%'
     annotations: false
     http_method_override: false
     handle_all_throwables: true
 
-    # Enables session support. Note that the session will ONLY be started if you read or write from it.
-    # Remove or comment this section to explicitly disable session support.
+    # Enable trusted proxies for handling proxy headers
+    trusted_proxies: '127.0.0.1'  # Assurez-vous que l'IP de votre proxy est incluse, généralement '127.0.0.1' si Nginx et Symfony sont sur la même machine.
+    trusted_headers: ['X-Forwarded-For', 'X-Forwarded-Proto', 'X-Forwarded-Port']  # Ces en-têtes sont essentiels pour que Symfony reconnaisse la requête comme HTTPS.
+
+    # Enables session support
     session:
         handler_id: null
         cookie_secure: auto
         cookie_samesite: lax
 
-    #esi: true
-    #fragments: true
+    # Error logging
     php_errors:
         log: true
 
+    # Assets
     assets:
         json_manifest_path: '%kernel.project_dir%/public/build/manifest.json'
 
