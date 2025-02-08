@@ -1075,7 +1075,7 @@ function ProjectDetailsContent() {
                                                 <Card className="hover:shadow-lg transition-shadow">
                                                     <div className="flex items-center space-x-4">
                                                         <Avatar
-                                                            img={`https://flowbite.com/docs/images/people/profile-picture-${index % 6}.jpg`}
+                                                            img={`https://flowbite.com/docs/images/people/profile-picture-${(index % 5) + 1}.jpg`}
                                                             rounded={true}
                                                             alt={`Avatar de ${reponse.utilisateur.username}`}
                                                         />

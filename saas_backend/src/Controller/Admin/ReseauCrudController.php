@@ -4,8 +4,6 @@ namespace App\Controller\Admin;
 
 use App\Entity\Reseau;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 
@@ -19,7 +17,6 @@ class ReseauCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
             TextField::new('nomReseau'),
             AssociationField::new('utilisateurs')
                 ->setFormTypeOption('by_reference', false)

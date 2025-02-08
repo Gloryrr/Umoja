@@ -59,7 +59,7 @@ const CommentSection = ({ commentaires }: CommentSectionProps) => {
                                     width={28}
                                     height={28}
                                 />
-                                    <div className='bg-gray-100 p-4 rounded-lg'>
+                                    <div className='p-4 rounded-lg bg-gray-100 dark:bg-gray-800'>
                                         <div>
                                             <p className="font-semibold text-lg">{commentaire.utilisateur?.username || "Utilisateur inconnu"}</p>
                                         </div>
