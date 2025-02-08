@@ -6,7 +6,7 @@ framework:
 
     # Enable trusted proxies for handling proxy headers
     trusted_proxies: '127.0.0.1'  # Assurez-vous que l'IP de votre proxy est incluse, généralement '127.0.0.1' si Nginx et Symfony sont sur la même machine.
-    trusted_headers: ['X-Forwarded-For', 'X-Forwarded-Proto', 'X-Forwarded-Port']  # Ces en-têtes sont essentiels pour que Symfony reconnaisse la requête comme HTTPS.
+    trusted_headers: ['x-forwarded-for', 'x-forwarded-proto', 'x-forwarded-port']  # Correction ici avec les en-têtes en minuscules.
 
     # Enables session support
     session:
