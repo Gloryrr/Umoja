@@ -390,7 +390,7 @@ const Profil: React.FC = () => {
                         Vous avez le rôle d&apos;administrateur. Vous pouvez accéder au panel administrateur.
                     </p>
                     <div className="flex justify-between">
-                        <Button href="https://umoja.alexstevenslabs.io/api/v1/admin_umoja" className="w-full">
+                        <Button href="https://umoja.alexstevenslabs.io/admin_umoja" className="w-full">
                             Panel administrateur
                         </Button>
                     </div>
