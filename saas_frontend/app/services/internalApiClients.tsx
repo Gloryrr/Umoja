@@ -1,5 +1,5 @@
 // const BASE_URL = 'http://localhost:8000/api/v1';
-const BASE_URL = 'http://umoja.alexstevenslabs.io/api/v1';
+const BASE_URL = 'https://umoja.alexstevenslabs.io/api/v1';
 
 const renvoieReponsePromise = async (response: Response) => {
     if (!response.ok) {

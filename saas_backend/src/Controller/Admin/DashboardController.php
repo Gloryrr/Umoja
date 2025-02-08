@@ -64,7 +64,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToUrl(
             'Revenir sur l\'application',
             'fas fa-arrow-left',
-            'http://167.99.137.127:3000/profil'
+            "{$_ENV['CORS_ALLOW_ORIGIN_SERVEUR_FRONT']}/profil"
         );
 
         yield MenuItem::section('Instances gérables');
@@ -93,7 +93,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToUrl(
             'Revenir sur l\'application',
             'fas fa-arrow-left',
-            'http://167.99.137.127:3000/profil'
+            "{$_ENV['CORS_ALLOW_ORIGIN_SERVEUR_FRONT']}/profil"
         );
     }
 }

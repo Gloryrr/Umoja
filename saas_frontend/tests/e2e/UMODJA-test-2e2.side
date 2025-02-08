@@ -2,7 +2,7 @@
   "id": "babe5a0e-e9aa-4de4-bd86-19cb890a9559",
   "version": "2.0",
   "name": "Umoja-test-2e2",
-  "url": "http://167.99.137.127:3000",
+  "url": "https://umoja.alexstevenslabs.io/",
   "tests": [{
     "id": "4b129a34-2b9d-45b5-9299-fa3b2deea17b",
     "name": "connexion",
@@ -4957,6 +4957,6 @@
     "timeout": 300,
     "tests": ["937203f0-5f4a-4899-a8d7-b1597cbe1f7b", "4b129a34-2b9d-45b5-9299-fa3b2deea17b", "dc560684-1f38-4140-9353-dd9e608b4e77", "87e0c405-4ec4-4fb4-b00f-72d6dc714b53", "9e5513bb-94c9-42f1-ae64-6ae34965454d", "a482efd0-5634-4a9b-838a-d1ce6a4fd362", "8f06ab84-3dde-4e5c-8628-5500d389e016", "aef691bc-ac2b-4803-b0f9-8935b410a2e3", "6c0699f8-3148-4abd-8861-f48c96ed6844", "4512ad3e-d6aa-4a88-8687-660ab7947c19", "2a940e90-0f1d-408e-be44-cabe42777d90", "55d30fca-b38f-4eb9-9c2f-5446b13ea963", "c59d10c4-92e5-4b31-84d5-b352d9e2e32a", "9230a6bf-103b-40fa-ac0a-c3ff7bf9f971", "ece62535-df53-4cd5-9367-b971d75251c8"]
   }],
-  "urls": ["http://167.99.137.127:3000/"],
+  "urls": ["https://umoja.alexstevenslabs.io/"],
   "plugins": []
 }
