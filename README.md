@@ -44,7 +44,7 @@ bash config_sh/frontend/start_front.sh
 
 ### Accessible partout
 
-Notre plateforme est dès maintenant disponible depuis : **<https://lien-vers-la-platforme/SaaS/cloud/>**
+Notre plateforme est dès maintenant disponible depuis : **<https://umoja.alexstevenslabs.io>**
 
 ## Contribution
 
